@@ -1,9 +1,11 @@
+CREATE schema inha_item_borrow_service;
+
 use inha_item_borrow_service;
 
 
 CREATE TABLE admin_role(
-    id int auto_increment,
-    role varchar(15)
+    id int auto_increment primary key,
+    role varchar(15) unique
 );
 
 INSERT INTO admin_role(role) VALUE("PRESIDENT");
@@ -19,7 +21,7 @@ CREATE TABLE admin(
     name varchar(10) NOT NULL,
     phonenumber char(13) NOT NULL,
     position varchar(15) NOT NULL,
-    foreign key position references admin_role(role)
+    foreign key (position) references admin_role(role)
 );
 
 -- borrower table 생성
