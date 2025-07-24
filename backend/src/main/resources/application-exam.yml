@@ -1,0 +1,11 @@
+spring:
+    application:
+        name: backend
+    datasource:
+        url: jdbc:mysql://userpath
+        username: user-username
+        password: yourpassword
+        driver-class-name: com.mysql.cj.jdbc.Driver
+logging:
+    level:
+        root: debug
