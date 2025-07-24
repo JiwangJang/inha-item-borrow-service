@@ -1,0 +1,11 @@
+spring:
+    application:
+        name: backend
+    datasource:
+        url: jdbc:mysql://localhost:3306/inha_item_borrow_service
+        username: root
+        password: fuckDruid1!
+        driver-class-name: com.mysql.cj.jdbc.Driver
+logging:
+    level:
+        root: debug

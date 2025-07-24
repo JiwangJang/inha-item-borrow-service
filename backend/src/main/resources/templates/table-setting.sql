@@ -31,7 +31,7 @@ CREATE TABLE borrower(
     email varchar(50) NOT NULL,
     name varchar(10) NOT NULL,
     phonenumber char(13) NOT NULL,
-    student_number varchar(50) NOT NULL,
+    student_number char(8) NOT NULL,
     account_number varchar(20) NOT NULL,
     withdrawal boolean default false,
     ban boolean default false
