@@ -40,7 +40,7 @@ CREATE TABLE borrower(
 create table item (
     id int NOT NULL primary key auto_increment,
     name varchar(10) NOT NULL,
-    location varchar(10) NOT NULL,
+    location varchar(50) NOT NULL,
     password varchar(8) NOT NULL,
     delete_reason varchar(50),
     price int NOT NULL,
