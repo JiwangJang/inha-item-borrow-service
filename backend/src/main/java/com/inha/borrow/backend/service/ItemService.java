@@ -2,10 +2,11 @@ package com.inha.borrow.backend.service;
 
 import com.inha.borrow.backend.domain.Item;
 import com.inha.borrow.backend.repository.ItemRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class ItemService {
     private final ItemRepository repository;
 

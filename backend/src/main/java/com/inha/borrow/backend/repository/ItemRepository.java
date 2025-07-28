@@ -1,5 +1,6 @@
 package com.inha.borrow.backend.repository;
 import com.inha.borrow.backend.domain.Item;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class ItemRepository {
     private final DataSource dataSource;
 
