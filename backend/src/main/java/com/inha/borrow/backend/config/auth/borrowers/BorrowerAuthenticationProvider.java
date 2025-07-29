@@ -3,8 +3,6 @@ package com.inha.borrow.backend.config.auth.borrowers;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -27,24 +25,15 @@ public class BorrowerAuthenticationProvider implements AuthenticationProvider {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication) {
         String id = (String) authentication.getPrincipal();
         String rawPassword = (String) authentication.getCredentials();
 
-        try {
-            Borrower borrower = (Borrower) borrowerService.loadUserByUsername(id);
-            if (!passwordEncoder.matches(rawPassword, borrower.getPassword())) {
-                throw new BadCredentialsException("비밀번호 다름");
-            }
-
-            return new BorrowerAuthenticationToken(id, null, borrower.getAuthorities());
-        } catch (Exception e) {
-            if (e.getClass() == UsernameNotFoundException.class) {
-                throw new UsernameNotFoundException("등록되지 않은 사용자");
-            } else {
-                throw e;
-            }
+        Borrower borrower = (Borrower) borrowerService.loadUserByUsername(id);
+        if (!passwordEncoder.matches(rawPassword, borrower.getPassword())) {
+            throw new BadCredentialsException("비밀번호 다름");
         }
+        return new BorrowerAuthenticationToken(id, null, borrower.getAuthorities());
     }
 
     @Override

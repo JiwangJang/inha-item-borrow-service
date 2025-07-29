@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import com.inha.borrow.backend.eunms.Role;
+import com.inha.borrow.backend.enums.Role;
 
 /**
  * 관리자(Admin) 유저를 나타내는 클래스

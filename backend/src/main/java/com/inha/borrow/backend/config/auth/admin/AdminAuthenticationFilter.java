@@ -1,16 +1,18 @@
 package com.inha.borrow.backend.config.auth.admin;
 
+import java.io.IOException;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.web.server.ServerErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.config.auth.handler.LoginSuccessHandler;
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.config.auth.handler.LoginFailureHandler;
 import com.inha.borrow.backend.model.auth.LoginRequest;
 
@@ -45,15 +47,14 @@ public class AdminAuthenticationFilter extends UsernamePasswordAuthenticationFil
      * 여기서 인증 및 SecurityContextRepository 등록, 그 후 처리(리다이렉팅, 적절한 상태코드 반환 등)이 이루어짐
      */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         try {
             LoginRequest loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
             AdminAuthenticationToken authenticationToken = new AdminAuthenticationToken(loginRequest.getId(),
                     loginRequest.getPassword());
             return this.getAuthenticationManager().authenticate(authenticationToken);
-        } catch (Exception e) {
-            throw new AuthenticationServiceException("유효하지 않은 로그인 요청");
+        } catch (IOException e) {
+            throw new ServerErrorException(ApiErrorCode.JSON_PARSING_ERROR.name(), e);
         }
     }
 }

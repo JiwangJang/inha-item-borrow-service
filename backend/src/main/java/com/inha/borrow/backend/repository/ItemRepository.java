@@ -9,9 +9,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import com.inha.borrow.backend.model.Item;
-import com.inha.borrow.backend.model.ItemDeleteRequestDto;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+import com.inha.borrow.backend.model.item.Item;
+import com.inha.borrow.backend.model.item.ItemDeleteRequestDto;
 
 import lombok.AllArgsConstructor;
 

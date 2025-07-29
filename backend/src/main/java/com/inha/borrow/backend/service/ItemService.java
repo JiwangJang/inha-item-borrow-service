@@ -1,7 +1,7 @@
 package com.inha.borrow.backend.service;
 
-import com.inha.borrow.backend.model.Item;
-import com.inha.borrow.backend.model.ItemDeleteRequestDto;
+import com.inha.borrow.backend.model.item.Item;
+import com.inha.borrow.backend.model.item.ItemDeleteRequestDto;
 import com.inha.borrow.backend.repository.ItemRepository;
 
 import lombok.AllArgsConstructor;

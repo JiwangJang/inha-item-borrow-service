@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.model;
+package com.inha.borrow.backend.model.item;
 
 import lombok.Data;
 

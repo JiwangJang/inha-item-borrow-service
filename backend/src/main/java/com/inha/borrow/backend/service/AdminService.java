@@ -1,11 +1,11 @@
 package com.inha.borrow.backend.service;
 
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.repository.AdminRepository;
 
 import lombok.AllArgsConstructor;
@@ -31,12 +31,8 @@ public class AdminService implements UserDetailsService {
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         try {
             return adminRepository.findById(id);
-        } catch (Exception e) {
-            if (e.getClass() == IncorrectResultSizeDataAccessException.class) {
-                throw new UsernameNotFoundException("등록되지 않은 사용자입니다.");
-            } else {
-                throw e;
-            }
+        } catch (ResourceNotFoundException e) {
+            throw new UsernameNotFoundException(id);
         }
     }
 }

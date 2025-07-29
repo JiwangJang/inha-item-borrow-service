@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.eunms;
+package com.inha.borrow.backend.enums;
 
 public enum Role {
     PRESIDENT,

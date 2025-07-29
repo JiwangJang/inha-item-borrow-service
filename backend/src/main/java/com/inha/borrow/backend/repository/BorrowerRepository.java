@@ -2,12 +2,13 @@ package com.inha.borrow.backend.repository;
 
 import java.util.List;
 
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.model.user.Borrower;
 
 import lombok.AllArgsConstructor;
@@ -25,27 +26,30 @@ public class BorrowerRepository {
      * 
      * @param id 대여자 아이디
      * @return Borrower
-     * @throws DataAccessException
+     * @throws ResourceNotFoundException 없는 아이디를 찾을 경우
      * @author 장지왕
      */
-    public Borrower findById(String id) throws DataAccessException {
+    public Borrower findById(String id) {
         String sql = "SELECT * FROM borrower WHERE id=?;";
-        return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> {
-            String adminId = resultSet.getString("id");
-            String password = resultSet.getString("password");
-            String email = resultSet.getString("email");
-            String name = resultSet.getString("name");
-            String phonenumber = resultSet.getString("phonenumber");
-            String studentNumber = resultSet.getString("student_number");
-            String accountNumber = resultSet.getString("account_number");
-            boolean ban = resultSet.getBoolean("ban");
+        try {
+            return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> {
+                String adminId = resultSet.getString("id");
+                String password = resultSet.getString("password");
+                String email = resultSet.getString("email");
+                String name = resultSet.getString("name");
+                String phonenumber = resultSet.getString("phonenumber");
+                String studentNumber = resultSet.getString("student_number");
+                String accountNumber = resultSet.getString("account_number");
+                boolean ban = resultSet.getBoolean("ban");
 
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("USER");
-            List<GrantedAuthority> authorities = List.of(authority);
+                SimpleGrantedAuthority authority = new SimpleGrantedAuthority("USER");
+                List<GrantedAuthority> authorities = List.of(authority);
 
-            return new Borrower(adminId, password, email, name, phonenumber, authorities, ban, studentNumber,
-                    accountNumber);
-        }, id);
-
+                return new Borrower(adminId, password, email, name, phonenumber, authorities, ban, studentNumber,
+                        accountNumber);
+            }, id);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            throw new ResourceNotFoundException("요청하신 아이디를 가진 대여자가 없습니다.");
+        }
     }
 }
