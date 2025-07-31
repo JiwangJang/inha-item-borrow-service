@@ -32,13 +32,9 @@ public class BorrowerRepository {
      * @author 장지왕
      */
     public Borrower findById(String id) {
-        try {
-            String sql = "SELECT * FROM borrower WHERE id=?;";
-            return jdbcTemplate.queryForObject(sql, borrowerRowMapper(), id);
-        }catch (EmptyResultDataAccessException e){
-            throw new ResourceNotFoundException("해당 아이디를 가진 유저가 없습니다.");
+        String sql = "SELECT * FROM borrower WHERE id=?;";
+        return jdbcTemplate.queryForObject(sql, borrowerRowMapper(), id);
         }
-    }
 
     /**
      * 대여자 리스트를 반환하는 메서드
