@@ -1,0 +1,14 @@
+{
+    "properties": [
+        {
+            "name": "sms-service.api-key",
+            "type": "java.lang.String",
+            "description": "coolsms서비스 api-key"
+        },
+        {
+            "name": "sms-service.secret-api-key",
+            "type": "java.lang.String",
+            "description": "coolsms서비스 secret-api-key"
+        }
+    ]
+}

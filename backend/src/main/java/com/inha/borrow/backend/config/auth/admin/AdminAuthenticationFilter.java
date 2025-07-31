@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.config.auth.handler.LoginSuccessHandler;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.config.auth.handler.LoginFailureHandler;
-import com.inha.borrow.backend.model.auth.LoginRequest;
+import com.inha.borrow.backend.model.auth.LoginRequestDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -49,7 +49,7 @@ public class AdminAuthenticationFilter extends UsernamePasswordAuthenticationFil
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         try {
-            LoginRequest loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
+            LoginRequestDto loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
             AdminAuthenticationToken authenticationToken = new AdminAuthenticationToken(loginRequest.getId(),
                     loginRequest.getPassword());
             return this.getAuthenticationManager().authenticate(authenticationToken);

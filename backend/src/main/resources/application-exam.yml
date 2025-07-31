@@ -9,3 +9,6 @@ spring:
 logging:
     level:
         root: debug
+sms-service:
+    api-key: ${API-KEY}
+    secret-api-key: ${SECRET-API-KEY}

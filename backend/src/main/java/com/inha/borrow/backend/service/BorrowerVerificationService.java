@@ -1,0 +1,101 @@
+package com.inha.borrow.backend.service;
+
+import java.security.SecureRandom;
+import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.springframework.stereotype.Service;
+
+import com.inha.borrow.backend.cache.IdCache;
+import com.inha.borrow.backend.cache.SMSCodeCache;
+import com.inha.borrow.backend.cache.SignUpRequestSessionCache;
+import com.inha.borrow.backend.model.auth.SMSCode;
+import com.inha.borrow.backend.model.exception.ExistIdException;
+import com.inha.borrow.backend.model.exception.InvalidCodeException;
+import com.inha.borrow.backend.model.exception.InvalidIdException;
+import com.inha.borrow.backend.model.exception.InvalidPasswordException;
+import com.inha.borrow.backend.model.exception.MessageServiceException;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+
+import lombok.AllArgsConstructor;
+import net.nurigo.sdk.message.exception.NurigoEmptyResponseException;
+import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
+import net.nurigo.sdk.message.model.Message;
+
+@Service
+@AllArgsConstructor
+public class BorrowerVerificationService {
+    private final DefaultMessageService messageService;
+    IdCache idCache;
+    SMSCodeCache smsCodeCache;
+    SignUpRequestSessionCache signUpRequestSessionCache;
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final int VERIFICATION_CODE_LENGTH = 6;
+
+    BorrowerVerificationService(DefaultMessageService messageService) {
+        this.messageService = messageService;
+    }
+
+    private String getSMSCode() {
+        StringBuilder code = new StringBuilder();
+        for (int i = 0; i < VERIFICATION_CODE_LENGTH; i++) {
+            code.append(secureRandom.nextInt(10));
+        }
+        return code.toString();
+    }
+
+    public void verifyPassword(String id, String password) {
+        if (!password.matches(
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=])[A-Za-z\\d!@#$%^&*()_\\-+=]{9,13}$")) {
+            throw new InvalidPasswordException();
+        }
+        signUpRequestSessionCache.PasswordCheckSuccess(id);
+    }
+
+    public void verifyId(String id) {
+        if (!id.matches("^[a-zA-Z0-9]{4,10}$")) {
+            throw new InvalidIdException();
+        }
+        if (idCache.contains(id)) {
+            throw new ExistIdException();
+        }
+
+        signUpRequestSessionCache.set(id);
+    }
+
+    public void sendVerificationCode(String id, String phoneNumber) {
+        // 사용자가 몇번보냈는지 확인 필요
+        // String code = getVerificationCode();
+        // Message message = new Message();
+        // 폰번호는 000-0000-0000에서 -를 빼고 입력
+        // message.setFrom("01088800495");
+        // message.setTo(phoneNumber);
+        // message.setText("인하대학교 미래융합대학 물품대여서비스입니다. 인증번호는 [" + code + "] 입니다.");
+
+        // try {
+        // messageService.send(message);
+        // } catch (Exception e) {
+        // throw new MessageServiceException();
+        // }
+
+        // 임시 코드
+        String code = "123456";
+        smsCodeCache.set(id, new SMSCode(code));
+        signUpRequestSessionCache.extendTtl(id);
+    }
+
+    public void verifySMSCode(String id, String inputedCode) {
+        SMSCode code = smsCodeCache.get(id).orElseThrow(() -> {
+            throw new ResourceNotFoundException();
+        });
+        if (code.getTtl() > System.currentTimeMillis()) {
+            // 나중에 사유 넣을 수 있도록 예외 전체적으로 수정하기
+            throw new InvalidCodeException();
+        }
+        if (code.getCode().equals(inputedCode)) {
+            signUpRequestSessionCache.phoneCheckSuccess(id);
+            return;
+        }
+        throw new InvalidCodeException();
+    }
+
+}

@@ -49,7 +49,7 @@ public class BorrowerRepository {
                         accountNumber);
             }, id);
         } catch (IncorrectResultSizeDataAccessException e) {
-            throw new ResourceNotFoundException("요청하신 아이디를 가진 대여자가 없습니다.");
+            throw new ResourceNotFoundException();
         }
     }
 }
