@@ -1,19 +1,18 @@
 package com.inha.borrow.backend.repository;
-
 import java.util.List;
-
 import com.inha.borrow.backend.model.dto.BorrowerDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
-
 import com.inha.borrow.backend.model.user.Borrower;
-
 import lombok.AllArgsConstructor;
+import org.springframework.util.StringUtils;
 
 /**
  * borrower table을 다루는 클래스
@@ -32,14 +31,17 @@ public class BorrowerRepository {
      * @throws DataAccessException
      * @author 장지왕
      */
-    public Borrower findById(String id) throws DataAccessException {
-        String sql = "SELECT * FROM borrower WHERE id=?;";
-        return jdbcTemplate.queryForObject(sql,borrowerRowMapper(),id);
-
+    public Borrower findById(String id) {
+        try {
+            String sql = "SELECT * FROM borrower WHERE id=?;";
+            return jdbcTemplate.queryForObject(sql, borrowerRowMapper(), id);
+        }catch (EmptyResultDataAccessException e){
+            throw new ResourceNotFoundException("해당 아이디를 가진 유저가 없습니다.");
+        }
     }
 
     /**
-     * 대여자 리스트를 갖는 메서드
+     * 대여자 리스트를 반환하는 메서드
      * @return List<Borrower>
      * @author 형민재
      */
@@ -49,6 +51,15 @@ public class BorrowerRepository {
     }
 
     public BorrowerDto save(BorrowerDto borrower){
+        if(!StringUtils.hasText(borrower.getId())||
+            !StringUtils.hasText(borrower.getPassword())||
+            !StringUtils.hasText(borrower.getEmail())||
+            !StringUtils.hasText(borrower.getName())||
+            !StringUtils.hasText(borrower.getPhonenumber())||
+            !StringUtils.hasText(borrower.getStudentNumber())||
+            !StringUtils.hasText(borrower.getAccountNumber())){
+            throw new DataIntegrityViolationException("공백값은 넣을 수 없습니다");
+        }
         String sql = "INSERT INTO borrower(id, password, email, name, phonenumber, " +
                 "student_number, account_number) VALUES(?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
@@ -68,51 +79,73 @@ public class BorrowerRepository {
      * @throws DataAccessException
      * @author 형민재
      */
-    public Borrower patchPassword(String password, String id){
+    public void patchPassword(String password, String id){
+        if(!StringUtils.hasText(password)){
+            throw new DataIntegrityViolationException("공백값은 널을 수 없습니다.");
+        }
         String sql ="UPDATE borrower SET password = ? WHERE id = ?";
         jdbcTemplate.update(sql,password, id);
-        return findById(id);
     }
 
-    public Borrower patchEmail(String email, String id){
+    public void patchEmail(String email, String id){
+        if(!StringUtils.hasText(email)){
+            throw new DataIntegrityViolationException("공백값은 널을 수 없습니다.");
+        }
         String sql = " UPDATE borrower SET email = ? where id = ?";
         jdbcTemplate.update(sql, email, id);
-        return findById(id);
     }
-    public Borrower patchName(String name, String id){
+    public void patchName(String name, String id){
+        if(!StringUtils.hasText(name)){
+            throw new DataIntegrityViolationException("공백값은 널을 수 없습니다.");
+        }
         String sql = " UPDATE borrower SET name = ? where id = ?";
         jdbcTemplate.update(sql, name, id);
-        return findById(id);
     }
-    public Borrower patchPhoneNumber(String phoneNumber, String id) {
+    public void patchPhoneNumber(String phoneNumber, String id) {
+        if(!StringUtils.hasText(phoneNumber)){
+            throw new DataIntegrityViolationException("공백값은 널을 수 없습니다.");
+        }
         String sql = " UPDATE borrower SET phonenumber = ? where id = ?";
         jdbcTemplate.update(sql, phoneNumber, id);
-        return findById(id);
     }
-    public Borrower patchStudentNumber(String studentNumber, String id){
+    public void patchStudentNumber(String studentNumber, String id){
+        if(!StringUtils.hasText(studentNumber)){
+            throw new DataIntegrityViolationException("공백값은 널을 수 없습니다.");
+        }
         String sql = " UPDATE borrower SET student_number = ? where id = ?";
         jdbcTemplate.update(sql, studentNumber, id);
-        return findById(id);
     }
-    public Borrower patchAccountNumber(String AccountNumber, String id){
+    public void patchAccountNumber(String accountNumber, String id){
+        if(!StringUtils.hasText(accountNumber)){
+            throw new DataIntegrityViolationException("공백값은 널을 수 없습니다.");
+        }
         String sql = " UPDATE borrower SET account_number = ? where id = ?";
-        jdbcTemplate.update(sql, AccountNumber, id);
-        return findById(id);
+        jdbcTemplate.update(sql, accountNumber, id);
     }
-    public Borrower pathcWithDrawal(int withDrawal, String id) {
+    public void pathcWithDrawal(Integer withDrawal, String id) {
+        if(withDrawal==null){
+            throw new DataIntegrityViolationException("공백값은 널을 수 없습니다.");
+        }
         String sql = " UPDATE borrower SET withdrawal = ? where id = ?";
         jdbcTemplate.update(sql, withDrawal, id);
-        return findById(id);
     }
-    public Borrower patchBan(int ban, String id){
+    public void patchBan(Integer ban, String id){
+        if(ban==null){
+            throw new DataIntegrityViolationException("공백값은 널을 수 없습니다.");
+        }
         String sql = " UPDATE borrower SET ban = ? where id = ?";
         jdbcTemplate.update(sql, ban, id);
-        return findById(id);
     }
+
+    /**
+     * test 코드에 사용하기 위한 메서드
+     */
     public void delete(){
         String sql = "DELETE FROM borrower";
         jdbcTemplate.update(sql);
     }
+
+
     private RowMapper<Borrower> borrowerRowMapper() {
         return (rs, rowNum) -> {
             String id = rs.getString("id");

@@ -1,16 +1,12 @@
 package com.inha.borrow.backend.service;
 
 import com.inha.borrow.backend.model.user.Borrower;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import com.inha.borrow.backend.repository.BorrowerRepository;
-
 import lombok.AllArgsConstructor;
-
 import java.util.List;
 
 /**
@@ -32,98 +28,117 @@ public class BorrowerService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        try {
             return borrowerRepository.findById(id);
-        } catch (Exception e) {
-            if (e.getClass() == IncorrectResultSizeDataAccessException.class) {
-                throw new UsernameNotFoundException("등록되지 않은 사용자입니다.");
-            } else {
-                throw e;
-            }
-        }
     }
 
-    public class BorrowerNotFoundException extends RuntimeException {
-        public BorrowerNotFoundException(String message) {
-            super(message);
-        }
-    }
+    /**
+     *대여자를 id로 찾는 메서드
+     *
+     * @param id
+     * @return 대여자 정보
+     * @author 형민재
+     */
 
     public Borrower findById(String id ){
-        Borrower find = borrowerRepository.findById(id);
-        if(find==null){
-            throw new BorrowerNotFoundException("해당 ID를 갖는 대여자를 찾을 수 없습니다");
-        }
-        return  find;
+        return borrowerRepository.findById(id);
     }
+
+    /**
+     *대여자들의 정보를 반환하는 메서드
+     *
+     * @return 대여자 정보
+     * @author 형민재
+     */
 
     public List<Borrower> findAll(){
         return borrowerRepository.findAll();
     }
 
-    public Borrower patchEmail(String email, String id) {
-        Borrower patch = borrowerRepository.patchEmail(email, id);
-        if (patch == null) {
-            throw new BorrowerNotFoundException("해당 ID를 갖는 대여자를 찾을 수 없습니다");
-        }
-        return patch;
+    /**
+     *대여자의 정보를 수정하는 메서드
+     *
+     * @param email
+     * @param id
+     * @author 형민재
+     */
+    public void patchEmail(String email, String id) {
+        borrowerRepository.patchEmail(email, id);
     }
 
-    public Borrower patchName(String name, String id) {
-        Borrower patch = borrowerRepository.patchName(name, id);
-        if (patch == null) {
-            throw new BorrowerNotFoundException("해당 ID를 갖는 대여자를 찾을 수 없습니다");
-        }
-        return patch;
-
-    }
-    public Borrower patchPhoneNumber(String phoneNumber, String id) {
-        Borrower patch = borrowerRepository.patchPhoneNumber(phoneNumber, id);
-        if (patch == null) {
-            throw new BorrowerNotFoundException("해당 ID를 갖는 대여자를 찾을 수 없습니다");
-        }
-        return patch;
-
-    }
-    public Borrower patchStudentNumber(String studentNumber, String id) {
-        Borrower patch = borrowerRepository.patchStudentNumber(studentNumber, id);
-        if (patch == null) {
-            throw new BorrowerNotFoundException("해당 ID를 갖는 대여자를 찾을 수 없습니다");
-        }
-        return patch;
-
-    }
-    public Borrower patchAccountNumber(String accountNumber, String id) {
-        Borrower patch = borrowerRepository.patchAccountNumber(accountNumber, id);
-        if (patch == null) {
-            throw new BorrowerNotFoundException("해당 ID를 갖는 대여자를 찾을 수 없습니다");
-        }
-        return patch;
-
-    }
-    public Borrower patchWithDrawal(int withDrawal, String id) {
-        Borrower patch = borrowerRepository.pathcWithDrawal(withDrawal, id);
-        if (patch == null) {
-            throw new BorrowerNotFoundException("해당 ID를 갖는 대여자를 찾을 수 없습니다");
-        }
-        return patch;
-
-    }
-    public Borrower patchBan(int ban, String id) {
-        Borrower patch = borrowerRepository.patchBan(ban, id);
-        if (patch == null) {
-            throw new BorrowerNotFoundException("해당 ID를 갖는 대여자를 찾을 수 없습니다");
-        }
-        return patch;
-
-    }
-    public Borrower patchPassword(String password, String id) {
-        Borrower patch = borrowerRepository.patchPassword(password, id);
-        if (patch == null) {
-            throw new BorrowerNotFoundException("해당 ID를 갖는 대여자를 찾을 수 없습니다");
-        }
-        return patch;
-
+    /**
+     *대여자의 정보를 수정하는 메서드
+     *
+     * @param name
+     * @param id
+     * @author 형민재
+     */
+    public void patchName(String name, String id) {
+        borrowerRepository.patchName(name, id);
     }
 
+    /**
+     *대여자의 정보를 수정하는 메서드
+     *
+     * @param phoneNumber
+     * @param id
+     * @author 형민재
+     */
+    public void patchPhoneNumber(String phoneNumber, String id) {
+        borrowerRepository.patchPhoneNumber(phoneNumber, id);
+    }
+
+    /**
+     *대여자의 정보를 수정하는 메서드
+     *
+     * @param studentNumber
+     * @param id
+     * @author 형민재
+     */
+    public void patchStudentNumber(String studentNumber, String id) {
+       borrowerRepository.patchStudentNumber(studentNumber, id);
+    }
+
+    /**
+     *대여자의 정보를 수정하는 메서드
+     *
+     * @param accountNumber
+     * @param id
+     * @author 형민재
+     */
+    public void patchAccountNumber(String accountNumber, String id) {
+         borrowerRepository.patchAccountNumber(accountNumber, id);
+    }
+
+    /**
+     *대여자의 정보를 수정하는 메서드
+     *
+     * @param withDrawal
+     * @param id
+     * @author 형민재
+     */
+    public void patchWithDrawal(int withDrawal, String id) {
+         borrowerRepository.pathcWithDrawal(withDrawal, id);
+    }
+
+    /**
+     *대여자의 정보를 수정하는 메서드
+     *
+     * @param ban
+     * @param id
+     * @author 형민재
+     */
+    public void patchBan(int ban, String id) {
+        borrowerRepository.patchBan(ban, id);
+    }
+
+    /**
+     *대여자의 정보를 수정하는 메서드
+     *
+     * @param password
+     * @param id
+     * @author 형민재
+     */
+    public void patchPassword(String password, String id) {
+        borrowerRepository.patchPassword(password, id);
+    }
 }

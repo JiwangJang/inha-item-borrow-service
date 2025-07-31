@@ -1,11 +1,14 @@
 package com.inha.borrow.backend.repository;
-
 import com.inha.borrow.backend.model.dto.EvaluationRequest;
 import com.inha.borrow.backend.model.dto.SignUpForm;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.util.StringUtils;
 import java.util.List;
 
 /**
@@ -18,13 +21,21 @@ public class SignUpRequestRepository {
 
 /**
  * signup_request를 저장하는 메서드
- *
- * @param "id signup_request 아이디
- * @return int
- * @throws org.springframework.dao.DataAccessException
+ * @param signupform
+ * @return SignUpForm
  * @author 형민재
 */
     public SignUpForm save(SignUpForm signupform) {
+        if (!StringUtils.hasText(signupform.getId()) ||
+                !StringUtils.hasText(signupform.getPassword()) ||
+                !StringUtils.hasText(signupform.getEmail()) ||
+                !StringUtils.hasText(signupform.getName()) ||
+                !StringUtils.hasText(signupform.getPhoneNumber()) ||
+                !StringUtils.hasText(signupform.getIdentityPhoto()) ||
+                !StringUtils.hasText(signupform.getStudentCouncilFeePhoto()) ||
+                !StringUtils.hasText(signupform.getAccountNumber())) {
+            throw new DataIntegrityViolationException("공백값은 넣을 수 없습니다");
+        }
         String sql = "INSERT INTO signup_request(id, password, email, name, phonenumber, " +
                 "identity_photo, student_council_fee_photo, account_number) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(
@@ -37,76 +48,58 @@ public class SignUpRequestRepository {
                 signupform.getIdentityPhoto(),
                 signupform.getStudentCouncilFeePhoto(),
                 signupform.getAccountNumber());
-        return findById(signupform.getId());
+        return signupform;
     }
     /**
-     * signup_request를 갖는 메서드
+     * signup_request들을 반환하는 메서드
      *
-     * @param "id signup_request 아이디
-     * @return List<SignUpForm>
-     * @throws org.springframework.dao.DataAccessException
+     * @return SignUpForm
      * @author 형민재
      */
 
     public List<SignUpForm> findAll() {
         String sql = "SELECT * FROM signup_request";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            SignUpForm signUpForm = new SignUpForm();
-            signUpForm.setId(rs.getString("id"));
-            signUpForm.setPassword(rs.getString("password"));
-            signUpForm.setEmail(rs.getString("email"));
-            signUpForm.setName(rs.getString("name"));
-            signUpForm.setPhoneNumber(rs.getString("phonenumber"));
-            signUpForm.setIdentityPhoto(rs.getString("identity_photo"));
-            signUpForm.setStudentCouncilFeePhoto(rs.getString("student_council_fee_photo"));
-            signUpForm.setAccountNumber(rs.getString("account_number"));
-            return signUpForm;
-        });
+        return jdbcTemplate.query(sql, rowMapper());
     }
     /**
-     * signup_request를 id로 갖는 메서드
-     *
-     * @param id signup_request 아이디
+     * signup_request를 id로 찾는 메서드
+     * @param id
      * @return SignUpForm
-     * @throws org.springframework.dao.DataAccessException
      * @author 형민재
      */
 
     public SignUpForm findById(String id) {
-        String sql = "SELECT * FROM signup_request WHERE ID = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-            SignUpForm signUpForm = new SignUpForm();
-            signUpForm.setId(rs.getString("id"));
-            signUpForm.setPassword(rs.getString("password"));
-            signUpForm.setEmail(rs.getString("email"));
-            signUpForm.setName(rs.getString("name"));
-            signUpForm.setPhoneNumber(rs.getString("phonenumber"));
-            signUpForm.setIdentityPhoto(rs.getString("identity_photo"));
-            signUpForm.setStudentCouncilFeePhoto(rs.getString("student_council_fee_photo"));
-            signUpForm.setAccountNumber(rs.getString("account_number"));
-            return signUpForm;
-        }, id);
+        try {
+            String sql = "SELECT * FROM signup_request WHERE ID = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException("해당 아이디를 가진 리퀘스트를 찾을 수 없습니다");
+        }
     }
+
     /**
      * signup_request의 state,rejectReason을 설정하는 메서드
      *
-     * @param id signup_request 아이디
+     * @param evaluationRequest
+     * @param id
      * @return int
-     * @throws org.springframework.dao.DataAccessException
      * @author 형민재
      */
 
-    public SignUpForm patchEvaluation(EvaluationRequest evaluationRequest, String id) {
+    public int patchEvaluation(EvaluationRequest evaluationRequest, String id) {
+        if (!StringUtils.hasText(evaluationRequest.getState()) ||
+                !StringUtils.hasText(evaluationRequest.getRejectReason())) {
+            throw new DataIntegrityViolationException("공백값은 넣을 수 없습니다");
+        }
         String sql = "UPDATE signup_request SET state = ?, rejectReason = ? WHERE id = ?";
-        jdbcTemplate.update(sql, evaluationRequest.getState(),evaluationRequest.getRejectReason(), id);
-        return findById(id);
+        return jdbcTemplate.update(sql, evaluationRequest.getState(),evaluationRequest.getRejectReason(), id);
     }
     /**
      * signup_request를 수정하는 메서드
      *
-     * @param id signup_request 아이디
-     * @return int
-     * @throws org.springframework.dao.DataAccessException
+     * @param signUpForm
+     * @param id
+     * @return signUpForm
      * @author 형민재
      */
 
@@ -128,16 +121,29 @@ public class SignUpRequestRepository {
     /**
      * signup_request를 삭제하는 메서드
      *
-     * @param id signup_request 아이디
+     * @param id
      * @return int
-     * @throws org.springframework.dao.DataAccessException
      * @author 형민재
      */
 
-    public SignUpForm deleteSignUpRequest(String id) {
+    public int deleteSignUpRequest(String id) {
         String sql = "DELETE FROM signup_request WHERE id = ?";
-        jdbcTemplate.update(sql, id);
-        return findById(id);
+        return jdbcTemplate.update(sql, id);
+
+    }
+
+    public RowMapper<SignUpForm> rowMapper() {
+        return (rs, rowNum) -> {
+            String id = rs.getString("id");
+            String password = rs.getString("password");
+            String email = rs.getString("email");
+            String name = rs.getString("name");
+            String phoneNumber = rs.getString("phonenumber");
+            String identityPhoto = rs.getString("identity_Photo");
+            String StudentCouncilFeePhoto = rs.getString("Student_Council_Fee_Photo");
+            String accountNumber = rs.getString("account_number");
+            return new SignUpForm(id,password,email,name, phoneNumber, identityPhoto, StudentCouncilFeePhoto, accountNumber);
+        };
     }
 
 }
