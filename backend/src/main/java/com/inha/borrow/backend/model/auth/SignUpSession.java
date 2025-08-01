@@ -1,5 +1,7 @@
 package com.inha.borrow.backend.model.auth;
 
+import com.inha.borrow.backend.util.ServiceUtils;
+
 import lombok.Data;
 
 /**
@@ -8,14 +10,14 @@ import lombok.Data;
  * @author 장지왕
  */
 @Data
-public class SignUpRequestSession {
+public class SignUpSession {
     boolean idCheck = true;
     boolean passwordCheck = false;
     boolean phoneCheck = false;
     long ttl;
 
-    public SignUpRequestSession() {
-        // 5분후 무효가 됨
-        ttl = System.currentTimeMillis() + 300000;
+    public SignUpSession() {
+        // 10분후 무효가 됨
+        ttl = ServiceUtils.getTtl();
     }
 }

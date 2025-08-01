@@ -1,11 +1,12 @@
 package com.inha.borrow.backend.cache;
 
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
 import com.inha.borrow.backend.model.auth.SMSCode;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+import com.inha.borrow.backend.model.exception.SMSCodeExpiredException;
 
 /**
  * 대여자의 핸드폰 인증코드를 잠시 저장하는 클래스
@@ -14,16 +15,23 @@ import com.inha.borrow.backend.model.auth.SMSCode;
  */
 @Component
 public class SMSCodeCache {
-    public ConcurrentHashMap<String, SMSCode> cache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, SMSCode> cache = new ConcurrentHashMap<>();
 
     /**
      * 특정 대여자의 인증코드를 가져오는 메서드
      * 
      * @param id 대여자 아이디
-     * @return Optional<BorrowerPhoneVerificationCode>
+     * @return BorrowerPhoneVerificationCode
      */
-    public Optional<SMSCode> get(String id) {
-        return Optional.ofNullable(cache.get(id));
+    public SMSCode get(String id) {
+        SMSCode smsCode = cache.get(id);
+        if (smsCode == null)
+            throw new ResourceNotFoundException();
+        if (smsCode.getTtl() <= System.currentTimeMillis()) {
+            remove(id);
+            throw new SMSCodeExpiredException();
+        }
+        return smsCode;
     }
 
     /**
@@ -38,6 +46,7 @@ public class SMSCodeCache {
 
     /**
      * 특정 대여자의 인증코드를 지우는 메서드
+     * <p>
      * 유효시간이 만료됐을때나 인증이 완료됐을때 삭제
      * 
      * @param id 대여자 아이디

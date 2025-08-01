@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
  * @author 장지왕
  */
 @NoArgsConstructor
-public class RequestSessionExpireException extends RuntimeException {
+public class SignUpSessionExpiredException extends RuntimeException {
 
 }

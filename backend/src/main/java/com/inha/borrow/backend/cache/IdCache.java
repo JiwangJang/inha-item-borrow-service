@@ -1,11 +1,12 @@
 package com.inha.borrow.backend.cache;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import com.inha.borrow.backend.util.ServiceUtils;
 
 import jakarta.annotation.PostConstruct;
 
@@ -16,7 +17,8 @@ import jakarta.annotation.PostConstruct;
  */
 @Component
 public class IdCache {
-    public Set<String> cache = ConcurrentHashMap.newKeySet();
+    // 아이디가 키, 유효시간(방금 아이디 검증한 경우, 10분인데 새로운 요청할 때마다 증가)이 값
+    private final ConcurrentHashMap<String, Long> cache = new ConcurrentHashMap<>();
     private final JdbcTemplate jdbcTemplate;
 
     public IdCache(JdbcTemplate jdbcTemplate) {
@@ -28,7 +30,7 @@ public class IdCache {
         String sql = "SELECT id FROM borrower UNION SELECT id FROM signup_request;";
         List<String> idList = jdbcTemplate.queryForList(sql, String.class);
         for (String id : idList) {
-            add(id);
+            setOldUser(id);
         }
     }
 
@@ -39,21 +41,37 @@ public class IdCache {
      * @return 아이디 존재여부
      */
     public boolean contains(String id) {
-        return cache.contains(id);
+        Long ttl = cache.get(id);
+        if (ttl == null) {
+            return false;
+        }
+        if (ttl == 0L) {
+            return true; // 기존 유저
+        }
+        boolean isValid = ttl > System.currentTimeMillis();
+        if (!isValid) {
+            remove(id);
+        }
+        return isValid;
+    }
+
+    public void setOldUser(String id) {
+        cache.put(id, 0l);
     }
 
     /**
-     * 아이디 추가 메서드
+     * 아이디 추가 메서드(신청하려는 유저)
      * 
      * @param id 대여자 아이디
      */
-    public void add(String id) {
-        cache.add(id);
+    public void setNewUser(String id) {
+        // 회원가입 캐시와 똑같이 10분을 준다
+        cache.put(id, ServiceUtils.getTtl());
     }
 
     /**
      * 아이디 삭제 메서드
-     * 사용자가 탈퇴할 때 사용
+     * 사용자가 탈퇴할 때나 유효기간이 만료된 아이디 제거할 때 사용
      * 
      * @param id 대여자 아아디
      */
@@ -70,6 +88,25 @@ public class IdCache {
      */
     public void revise(String oldId, String newId) {
         cache.remove(oldId);
-        cache.add(newId);
+        cache.put(newId, 0l);
+    }
+
+    /**
+     * 아이디 수명 연장 메서드
+     */
+    public void extendTtl(String id) {
+        cache.computeIfPresent(id, (k, v) -> {
+            return ServiceUtils.getTtl();
+        });
+    }
+
+    /**
+     * 회원가입 신청시 사용하는 메서드
+     * ttl값을 0으로 둬서 영구적인 아이디로 변환
+     */
+    public void fixSignUpId(String id) {
+        cache.computeIfPresent(id, (k, v) -> {
+            return 0l;
+        });
     }
 }

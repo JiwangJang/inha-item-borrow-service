@@ -9,7 +9,7 @@ import com.inha.borrow.backend.cache.SMSCodeCache;
 import com.inha.borrow.backend.cache.SignUpRequestSessionCache;
 import com.inha.borrow.backend.model.auth.SMSCode;
 import com.inha.borrow.backend.model.exception.ExistIdException;
-import com.inha.borrow.backend.model.exception.InvalidCodeException;
+import com.inha.borrow.backend.model.exception.IncorrectSMSCodeException;
 import com.inha.borrow.backend.model.exception.InvalidIdException;
 import com.inha.borrow.backend.model.exception.InvalidPasswordException;
 import com.inha.borrow.backend.model.exception.MessageServiceException;
@@ -43,14 +43,6 @@ public class BorrowerVerificationService {
         return code.toString();
     }
 
-    public void verifyPassword(String id, String password) {
-        if (!password.matches(
-                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=])[A-Za-z\\d!@#$%^&*()_\\-+=]{9,13}$")) {
-            throw new InvalidPasswordException();
-        }
-        signUpRequestSessionCache.PasswordCheckSuccess(id);
-    }
-
     public void verifyId(String id) {
         if (!id.matches("^[a-zA-Z0-9]{4,10}$")) {
             throw new InvalidIdException();
@@ -60,6 +52,16 @@ public class BorrowerVerificationService {
         }
 
         signUpRequestSessionCache.set(id);
+        idCache.setNewUser(id);
+    }
+
+    public void verifyPassword(String id, String password) {
+        if (!password.matches(
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=])[A-Za-z\\d!@#$%^&*()_\\-+=]{9,13}$")) {
+            throw new InvalidPasswordException();
+        }
+        signUpRequestSessionCache.PasswordCheckSuccess(id);
+        idCache.extendTtl(id);
     }
 
     public void sendVerificationCode(String id, String phoneNumber) {
@@ -80,22 +82,20 @@ public class BorrowerVerificationService {
         // 임시 코드
         String code = "123456";
         smsCodeCache.set(id, new SMSCode(code));
+
         signUpRequestSessionCache.extendTtl(id);
+        idCache.extendTtl(id);
     }
 
     public void verifySMSCode(String id, String inputedCode) {
-        SMSCode code = smsCodeCache.get(id).orElseThrow(() -> {
-            throw new ResourceNotFoundException();
-        });
-        if (code.getTtl() > System.currentTimeMillis()) {
-            // 나중에 사유 넣을 수 있도록 예외 전체적으로 수정하기
-            throw new InvalidCodeException();
+        SMSCode code = smsCodeCache.get(id);
+        if (!code.getCode().equals(inputedCode)) {
+            throw new IncorrectSMSCodeException();
         }
-        if (code.getCode().equals(inputedCode)) {
-            signUpRequestSessionCache.phoneCheckSuccess(id);
-            return;
-        }
-        throw new InvalidCodeException();
+
+        signUpRequestSessionCache.phoneCheckSuccess(id);
+        idCache.extendTtl(id);
+        smsCodeCache.remove(id);
     }
 
 }

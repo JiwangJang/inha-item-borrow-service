@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.exception.ExistIdException;
-import com.inha.borrow.backend.model.exception.InvalidCodeException;
+import com.inha.borrow.backend.model.exception.IncorrectSMSCodeException;
 import com.inha.borrow.backend.model.exception.InvalidIdException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.model.response.ApiResponse;
@@ -20,14 +20,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GlobalErrorHandler {
 
-    @ExceptionHandler(InvalidCodeException.class)
-    public ResponseEntity<ApiResponse<String>> invalidCodeException(InvalidCodeException e) {
+    /**
+     * sms인증 코드를 잘못입력했을때 발생하는 예외를 처리하는 핸들러
+     * 
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(IncorrectSMSCodeException.class)
+    public ResponseEntity<ApiResponse<String>> invalidCodeException(IncorrectSMSCodeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse<>(false, ApiErrorCode.INVALID_CODE.name()));
+                .body(new ApiResponse<>(false, ApiErrorCode.INCORRECT_CODE.name()));
     }
 
     /**
-     * 이미있는 아이디를 아이디로 쓰려했을때 발생하는 핸들러
+     * 이미있는 아이디를 아이디로 쓰려했을때 발생하는 예외를 처리하는 핸들러
      * 
      * @param e
      * @return
@@ -40,7 +46,7 @@ public class GlobalErrorHandler {
     }
 
     /**
-     * 아이디 조건에 맞지 않는 값을 아이디로 쓰려했을때 발생하는 핸들러
+     * 아이디 조건에 맞지 않는 값을 아이디로 쓰려했을때 발생하는 예외를 처리하는 핸들러
      * 
      * @param e
      * @return
