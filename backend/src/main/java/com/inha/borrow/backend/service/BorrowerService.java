@@ -1,9 +1,14 @@
 package com.inha.borrow.backend.service;
 
+import com.inha.borrow.backend.model.dto.PatchPasswordDto;
+import com.inha.borrow.backend.model.exception.PasswordMismatchException;
 import com.inha.borrow.backend.model.user.Borrower;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import lombok.AllArgsConstructor;
@@ -17,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 public class BorrowerService implements UserDetailsService {
     private BorrowerRepository borrowerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 대여자 계정 정보를 가져오는 메서드
@@ -116,8 +122,8 @@ public class BorrowerService implements UserDetailsService {
      * @param id
      * @author 형민재
      */
-    public void patchWithDrawal(int withDrawal, String id) {
-         borrowerRepository.pathcWithDrawal(withDrawal, id);
+    public void patchWithDrawal(boolean withDrawal, String id) {
+         borrowerRepository.patchWithDrawal(withDrawal, id);
     }
 
     /**
@@ -127,18 +133,24 @@ public class BorrowerService implements UserDetailsService {
      * @param id
      * @author 형민재
      */
-    public void patchBan(int ban, String id) {
+    public void patchBan(boolean ban, String id) {
         borrowerRepository.patchBan(ban, id);
     }
 
     /**
      *대여자의 정보를 수정하는 메서드
      *
-     * @param password
+     * @param patchPasswordDto
      * @param id
      * @author 형민재
      */
-    public void patchPassword(String password, String id) {
-        borrowerRepository.patchPassword(password, id);
+    public void patchPassword(PatchPasswordDto patchPasswordDto, String id) {
+        String newPassword = patchPasswordDto.getNewPassword();
+        Borrower borrower = borrowerRepository.findById(id);
+        if(!passwordEncoder.matches(patchPasswordDto.getOriginPassword(), borrower.getPassword())){
+            throw new PasswordMismatchException("기존 비밀번호가 일치하지 않습니다");
+        }
+        borrowerRepository.patchPassword(newPassword, id);
     }
+
 }

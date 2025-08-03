@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @Repository
 @AllArgsConstructor
 public class SignUpRequestRepository {
+    private final PasswordEncoder passwordEncoder;
     private JdbcTemplate jdbcTemplate;
 
 /**
@@ -36,12 +38,13 @@ public class SignUpRequestRepository {
                 !StringUtils.hasText(signupform.getAccountNumber())) {
             throw new DataIntegrityViolationException("공백값은 넣을 수 없습니다");
         }
+        String encodedPassword =passwordEncoder.encode(signupform.getPassword());
         String sql = "INSERT INTO signup_request(id, password, email, name, phonenumber, " +
                 "identity_photo, student_council_fee_photo, account_number) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(
                 sql,
                 signupform.getId(),
-                signupform.getPassword(),
+                encodedPassword,
                 signupform.getEmail(),
                 signupform.getName(),
                 signupform.getPhoneNumber(),
@@ -86,13 +89,13 @@ public class SignUpRequestRepository {
      * @author 형민재
      */
 
-    public int patchEvaluation(EvaluationRequest evaluationRequest, String id) {
+    public void patchEvaluation(EvaluationRequest evaluationRequest, String id) {
         if (!StringUtils.hasText(evaluationRequest.getState()) ||
                 !StringUtils.hasText(evaluationRequest.getRejectReason())) {
             throw new DataIntegrityViolationException("공백값은 넣을 수 없습니다");
         }
         String sql = "UPDATE signup_request SET state = ?, rejectReason = ? WHERE id = ?";
-        return jdbcTemplate.update(sql, evaluationRequest.getState(),evaluationRequest.getRejectReason(), id);
+        jdbcTemplate.update(sql, evaluationRequest.getState(),evaluationRequest.getRejectReason(), id);
     }
     /**
      * signup_request를 수정하는 메서드
@@ -103,12 +106,23 @@ public class SignUpRequestRepository {
      * @author 형민재
      */
 
-    public SignUpForm patchSignUpRequest(SignUpForm signUpForm, String id) {
+    public void patchSignUpRequest(SignUpForm signUpForm, String id) {
+        if (!StringUtils.hasText(signUpForm.getId()) ||
+                !StringUtils.hasText(signUpForm.getPassword()) ||
+                !StringUtils.hasText(signUpForm.getEmail()) ||
+                !StringUtils.hasText(signUpForm.getName()) ||
+                !StringUtils.hasText(signUpForm.getPhoneNumber()) ||
+                !StringUtils.hasText(signUpForm.getIdentityPhoto()) ||
+                !StringUtils.hasText(signUpForm.getStudentCouncilFeePhoto()) ||
+                !StringUtils.hasText(signUpForm.getAccountNumber())) {
+            throw new DataIntegrityViolationException("공백값은 넣을 수 없습니다");
+        }
+        String encodedPassword =passwordEncoder.encode(signUpForm.getPassword());
         String sql = "UPDATE signup_request SET id = ? , password = ?, email = ?, name = ?, phonenumber = ?, " +
                 "identity_Photo = ?,student_council_fee_photo = ? ,account_number = ? WHERE id =?";
         jdbcTemplate.update(sql,
                 signUpForm.getId(),
-                signUpForm.getPassword(),
+                encodedPassword,
                 signUpForm.getEmail(),
                 signUpForm.getName(),
                 signUpForm.getPhoneNumber(),
@@ -116,7 +130,6 @@ public class SignUpRequestRepository {
                 signUpForm.getStudentCouncilFeePhoto(),
                 signUpForm.getAccountNumber(),
                 id);
-        return findById(id);
     }
     /**
      * signup_request를 삭제하는 메서드
@@ -126,10 +139,12 @@ public class SignUpRequestRepository {
      * @author 형민재
      */
 
-    public int deleteSignUpRequest(String id) {
-        String sql = "DELETE FROM signup_request WHERE id = ?";
-        return jdbcTemplate.update(sql, id);
-
+    public void deleteSignUpRequest(String id, String password) {
+        SignUpForm signUpForm =findById(id);
+        if(passwordEncoder.matches(signUpForm.getPassword(), password)) {
+            String sql = "DELETE FROM signup_request WHERE id = ?";
+            jdbcTemplate.update(sql, id);
+        }
     }
 
     public RowMapper<SignUpForm> rowMapper() {

@@ -1,10 +1,12 @@
 package com.inha.borrow.backend.controller;
 
+import com.inha.borrow.backend.model.dto.PatchPasswordDto;
 import com.inha.borrow.backend.model.response.ApiResponse;
 import com.inha.borrow.backend.model.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +22,6 @@ import java.util.List;
 @RestController
 public class BorrowerController {
     private BorrowerService borrowerService;
-
     /**
      *대여자목록을 불러오는 메서드
      * @return 200 요청 성공
@@ -34,78 +35,73 @@ public class BorrowerController {
 
     /**
      *대여자목록을 id로 불러오는 메서드
-     * @param borrowerId
      * @return 200 요청 성공
      * @author 형민재
      */
-    @GetMapping("/{borrower-id}/info")
-    public ResponseEntity<ApiResponse<Borrower>> findById(@PathVariable("borrower-id") String borrowerId) {
-        Borrower borrower = borrowerService.findById(borrowerId);
+    @GetMapping("/info")
+    public ResponseEntity<ApiResponse<Borrower>> findById(@AuthenticationPrincipal String id) {
+        Borrower borrower = borrowerService.findById(id);
         return ResponseEntity.ok(new ApiResponse<>(true, borrower));
     }
 
     /**
      *password를 수정하는 메서드
-     * @param borrowerId
-     * @param password
+     * @param patchPasswordDto
      * @return 200 요청 성공
      * @author 형민재
      */
-    @PutMapping("/{borrower-id}/info/password")
-    public ResponseEntity<ApiResponse<Void>> patchPassword(@RequestBody String password, @PathVariable("borrower-id") String borrowerId) {
-        borrowerService.patchPassword(password, borrowerId);
+    @PutMapping("/info/password")
+    public ResponseEntity<ApiResponse<Void>> patchPassword(@RequestBody PatchPasswordDto patchPasswordDto, @AuthenticationPrincipal String id){
+        borrowerService.patchPassword(patchPasswordDto, id);
         return ResponseEntity.ok().build();
 
     }
 
     /**
-     *password를 수정하는 메서드
-     * @param borrowerId
+     *email을 수정하는 메서드
      * @param email
      * @return 200 요청 성공
      * @author 형민재
      */
-    @PutMapping("/{borrower-id}/info/email")
-    public ResponseEntity<Void> patchEmail(@PathVariable("borrower-id") String borrowerId, @RequestBody String email) {
-        borrowerService.patchEmail(borrowerId, email);
+    @PutMapping("/info/email")
+    public ResponseEntity<Void> patchEmail(@AuthenticationPrincipal String id, @RequestBody String email) {
+        borrowerService.patchEmail(id, email);
         return ResponseEntity.ok().build();
     }
 
     /**
-     *password를 수정하는 메서드
-     * @param borrowerId
+     *name을 수정하는 메서드
      * @param name
      * @return 200 요청 성공
      * @author 형민재
      */
-    @PutMapping("/{borrower-id}/info/name")
-    public ResponseEntity<Void> patchName(@PathVariable("borrower-id") String borrowerId, @RequestBody String name) {
-        borrowerService.patchName(borrowerId, name);
+    @PutMapping("/info/name")
+    public ResponseEntity<Void> patchName(@AuthenticationPrincipal String id, @RequestBody String name) {
+        borrowerService.patchName(id, name);
         return ResponseEntity.ok().build();
     }
 
     /**
-     *password를 수정하는 메서드
-     * @param borrowerId
+     *phoneNumber를 수정하는 메서드
      * @param phoneNumber
      * @return 200 요청 성공
      * @author 형민재
      */
-    @PutMapping("/{borrower-id}/info/phonenum")
-    public ResponseEntity<Void> patchPhoneNumber(@PathVariable("borrower-id") String borrowerId, @RequestBody String phoneNumber) {
-        borrowerService.patchPhoneNumber(borrowerId, phoneNumber);
+    @PutMapping("/info/phonenum")
+    public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal String id, @RequestBody String phoneNumber) {
+        borrowerService.patchPhoneNumber(phoneNumber, id);
         return ResponseEntity.ok().build();
     }
 
     /**
-     *password를 수정하는 메서드
+     *ban을 수정하는 메서드
      * @param borrowerId
      * @param ban
      * @return 200 요청 성공
      * @author 형민재
      */
     @PutMapping("/{borrower-id}/info/ban")
-    public ResponseEntity<Void> patchBan(@PathVariable("borrower-id") String borrowerId, @RequestBody int ban) {
+    public ResponseEntity<Void> patchBan(@PathVariable("borrower-id") String borrowerId, @RequestBody boolean ban) {
         borrowerService.patchBan(ban, borrowerId);
         return ResponseEntity.ok().build();
     }

@@ -1,7 +1,9 @@
 package com.inha.borrow.backend.service;
+import com.inha.borrow.backend.enums.EvaluateSignUP;
 import com.inha.borrow.backend.model.dto.BorrowerDto;
 import com.inha.borrow.backend.model.dto.EvaluationRequest;
 import com.inha.borrow.backend.model.dto.SignUpForm;
+import com.inha.borrow.backend.model.jwtToken.JwtToken;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.SignUpRequestRepository;
 import lombok.AllArgsConstructor;
@@ -15,8 +17,10 @@ import java.util.List;
 @AllArgsConstructor
 public class SignUpRequestService {
 
+    private final BorrowerService borrowerService;
     private SignUpRequestRepository signUpRequestRepository;
     private BorrowerRepository borrowerRepository;
+    private JwtToken jwtToken;
 
 
     /**
@@ -49,15 +53,16 @@ public class SignUpRequestService {
      * @author 형민재
      */
 
-    public int updateStateAndCreateBorrower(EvaluationRequest evaluationRequest, String id){
-        if("PERMIT".equals(evaluationRequest.getState())){
+    public void updateStateAndCreateBorrower(EvaluationRequest evaluationRequest, String id){
+        if(EvaluateSignUP.PERMIT.equals(evaluationRequest.getState())){
             SignUpForm signUpForm = signUpRequestRepository.findById(id);
             if(signUpForm != null){
                 BorrowerDto borrower = transition(signUpForm);
                 borrowerRepository.save(borrower);
+                borrowerRepository.patchRefreshToken(jwtToken.createToken(id),id);
             }
         }
-        return signUpRequestRepository.patchEvaluation(evaluationRequest,id);
+        signUpRequestRepository.patchEvaluation(evaluationRequest,id);
     }
 
     /**
@@ -68,8 +73,8 @@ public class SignUpRequestService {
      * @return 수정 정보
      * @author 형민재
      */
-    public SignUpForm patchSignUpRequest(SignUpForm signUpForm, String id){
-        return signUpRequestRepository.patchSignUpRequest(signUpForm,id);
+    public void patchSignUpRequest(SignUpForm signUpForm, String id){
+        signUpRequestRepository.patchSignUpRequest(signUpForm,id);
     }
 
     /**
@@ -78,8 +83,8 @@ public class SignUpRequestService {
      * @param id
      * @author 형민재
      */
-    public void deleteSignUpRequest(String id){
-        signUpRequestRepository.deleteSignUpRequest(id);
+    public void deleteSignUpRequest(String id, String password){
+        signUpRequestRepository.deleteSignUpRequest(id, password);
 
     }
     public BorrowerDto transition(SignUpForm signUpForm){

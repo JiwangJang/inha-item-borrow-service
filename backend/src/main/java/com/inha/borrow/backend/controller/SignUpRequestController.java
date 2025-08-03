@@ -39,9 +39,9 @@ public class SignUpRequestController {
      * @author 형민재
      */
     @PutMapping("/borrowers/signup-request/{signup-request-id}")
-    public ResponseEntity<ApiResponse<Integer>> evaluateRequest(@RequestBody EvaluationRequest evaluationRequest, @PathVariable("signup-request-id") String id) {
-        int result = signUpRequestService.updateStateAndCreateBorrower(evaluationRequest, id);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, result));
+    public ResponseEntity<ApiResponse<Void>> evaluateRequest(@RequestBody EvaluationRequest evaluationRequest, @PathVariable("signup-request-id") String id) {
+        signUpRequestService.updateStateAndCreateBorrower(evaluationRequest, id);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -52,9 +52,9 @@ public class SignUpRequestController {
      * @author 형민재
      */
     @PutMapping("/signup-requests/{signup-request-id}")
-    public ResponseEntity<ApiResponse<SignUpForm>> rewriteRequest(@PathVariable("signup-request-id") String id, @RequestBody SignUpForm signUpForm) {
-        SignUpForm result = signUpRequestService.patchSignUpRequest(signUpForm, id);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, result));
+    public ResponseEntity<ApiResponse<Void>> rewriteRequest(@PathVariable("signup-request-id") String id, @RequestBody SignUpForm signUpForm) {
+        signUpRequestService.patchSignUpRequest(signUpForm, id);
+        return ResponseEntity.ok().build();
     }
     /**
      *회원가입 요청을 삭제하는 메서드
@@ -64,8 +64,8 @@ public class SignUpRequestController {
      */
 
     @DeleteMapping("/signup-request/{signup-request-id}")
-    public ResponseEntity<Void> deleteRequest(@PathVariable("signup-request-id") String id) {
-        signUpRequestService.deleteSignUpRequest(id);
+    public ResponseEntity<Void> deleteRequest(@PathVariable("signup-request-id") String id, @RequestBody String password) {
+        signUpRequestService.deleteSignUpRequest(id, password);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
