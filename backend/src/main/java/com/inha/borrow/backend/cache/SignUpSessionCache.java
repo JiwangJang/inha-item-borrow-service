@@ -89,7 +89,7 @@ public class SignUpSessionCache {
      * 
      * @param id 대상 대여자 아이디
      */
-    public void PasswordCheckSuccess(String id) {
+    public void passwordCheckSuccess(String id) {
         computeIfValid(id, (session) -> {
             session.setPasswordCheck(true);
             session.setTtl(ServiceUtils.getTtl());
@@ -119,5 +119,23 @@ public class SignUpSessionCache {
     public boolean isAllPassed(String id) {
         SignUpSession session = cache.get(id);
         return session.isIdCheck() && session.isPasswordCheck() && session.isPhoneCheck();
+    }
+
+    // 테스트용 메서드
+    /**
+     * 테스트용 세션을 등록하는 메서드
+     * 
+     * @param id
+     * @param ttl
+     */
+    public void setForTest(String id, long ttl) {
+        cache.put(id, new SignUpSession(ttl));
+    }
+
+    /**
+     * 캐시 초기화 메서드
+     */
+    public void deleteAll() {
+        cache.clear();
     }
 }

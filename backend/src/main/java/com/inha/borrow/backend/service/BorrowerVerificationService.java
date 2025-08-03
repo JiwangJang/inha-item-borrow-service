@@ -60,7 +60,7 @@ public class BorrowerVerificationService {
                 "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=])[A-Za-z\\d!@#$%^&*()_\\-+=]{9,13}$")) {
             throw new InvalidPasswordException();
         }
-        signUpSessionCache.PasswordCheckSuccess(id);
+        signUpSessionCache.passwordCheckSuccess(id);
         idCache.extendTtl(id);
     }
 

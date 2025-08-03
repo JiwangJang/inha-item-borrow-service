@@ -20,4 +20,12 @@ public class SignUpSession {
         // 10분후 무효가 됨
         ttl = ServiceUtils.getTtl();
     }
+
+    /*
+     * 테스트용 생성자
+     */
+    public SignUpSession(Long ttl) {
+        // 10분후 무효가 됨
+        this.ttl = ttl;
+    }
 }
