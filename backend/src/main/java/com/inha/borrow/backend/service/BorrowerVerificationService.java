@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.cache.SMSCodeCache;
-import com.inha.borrow.backend.cache.SignUpRequestSessionCache;
+import com.inha.borrow.backend.cache.SignUpSessionCache;
 import com.inha.borrow.backend.model.auth.SMSCode;
 import com.inha.borrow.backend.model.exception.ExistIdException;
 import com.inha.borrow.backend.model.exception.IncorrectSMSCodeException;
@@ -26,7 +26,7 @@ public class BorrowerVerificationService {
     private final DefaultMessageService messageService;
     IdCache idCache;
     SMSCodeCache smsCodeCache;
-    SignUpRequestSessionCache signUpRequestSessionCache;
+    SignUpSessionCache signUpSessionCache;
 
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final int VERIFICATION_CODE_LENGTH = 6;
@@ -51,7 +51,7 @@ public class BorrowerVerificationService {
             throw new ExistIdException();
         }
 
-        signUpRequestSessionCache.set(id);
+        signUpSessionCache.set(id);
         idCache.setNewUser(id);
     }
 
@@ -60,7 +60,7 @@ public class BorrowerVerificationService {
                 "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=])[A-Za-z\\d!@#$%^&*()_\\-+=]{9,13}$")) {
             throw new InvalidPasswordException();
         }
-        signUpRequestSessionCache.PasswordCheckSuccess(id);
+        signUpSessionCache.PasswordCheckSuccess(id);
         idCache.extendTtl(id);
     }
 
@@ -83,7 +83,7 @@ public class BorrowerVerificationService {
         String code = "123456";
         smsCodeCache.set(id, new SMSCode(code));
 
-        signUpRequestSessionCache.extendTtl(id);
+        signUpSessionCache.extendTtl(id);
         idCache.extendTtl(id);
     }
 
@@ -93,7 +93,7 @@ public class BorrowerVerificationService {
             throw new IncorrectSMSCodeException();
         }
 
-        signUpRequestSessionCache.phoneCheckSuccess(id);
+        signUpSessionCache.phoneCheckSuccess(id);
         idCache.extendTtl(id);
         smsCodeCache.remove(id);
     }

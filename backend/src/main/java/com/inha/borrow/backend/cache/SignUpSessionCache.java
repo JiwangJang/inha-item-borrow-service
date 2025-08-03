@@ -16,7 +16,7 @@ import com.inha.borrow.backend.util.ServiceUtils;
  * @author 장지왕
  */
 @Component
-public class SignUpRequestSessionCache {
+public class SignUpSessionCache {
     private final ConcurrentHashMap<String, SignUpSession> cache = new ConcurrentHashMap<>();
 
     private void computeIfValid(String id, Consumer<SignUpSession> consumer) {
@@ -30,7 +30,7 @@ public class SignUpRequestSessionCache {
      * 특정 대여자의 인증상황을 가져오는 메서드
      * 
      * @param id 대상 대여자 아이디
-     * @return Optional<BorrowerSignUpRequestSession>
+     * @return SignUpSession
      * @throws ResourceNotFoundException 저장되지 않은 유저의 상태를 가져오려 할때
      * @throws
      */

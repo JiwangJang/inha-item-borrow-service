@@ -42,16 +42,13 @@ public class IdCache {
      */
     public boolean contains(String id) {
         Long ttl = cache.get(id);
-        if (ttl == null) {
+        if (ttl == null)
             return false;
-        }
-        if (ttl == 0L) {
+        if (ttl == 0L)
             return true; // 기존 유저
-        }
         boolean isValid = ttl > System.currentTimeMillis();
-        if (!isValid) {
+        if (!isValid)
             remove(id);
-        }
         return isValid;
     }
 
@@ -109,4 +106,30 @@ public class IdCache {
             return 0l;
         });
     }
+
+    // 테스트용 메서드
+    /**
+     * 테스트 후 캐시초기화용
+     */
+    public void deleteAll() {
+        cache.clear();
+    }
+
+    /**
+     * ttl만료 테스트용
+     * 
+     * @param id
+     * @param ttl
+     */
+    public void setUserForTest(String id, Long ttl) {
+        cache.put(id, ttl);
+    }
+
+    /**
+     * 테스트 결과확인용 메서드
+     */
+    public Long getTtl(String id) {
+        return cache.get(id);
+    }
+
 }
