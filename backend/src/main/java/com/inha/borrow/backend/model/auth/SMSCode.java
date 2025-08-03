@@ -17,4 +17,15 @@ public class SMSCode {
         // 3분의 유효기간을 준다
         this.ttl = System.currentTimeMillis() + 180000;
     }
+
+    /**
+     * 테스트용 생성자
+     * 
+     * @param code
+     * @param ttl
+     */
+    public SMSCode(String code, Long ttl) {
+        this.code = code;
+        this.ttl = ttl;
+    }
 }

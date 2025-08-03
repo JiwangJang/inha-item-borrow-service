@@ -54,4 +54,19 @@ public class SMSCodeCache {
     public void remove(String id) {
         cache.remove(id);
     }
+
+    // 테스트용 메서드
+    /*
+     * 테스트를 위해 유효기간을 임의로 지정해 캐시에 저장하는 메서드
+     */
+    public void setForTest(String id, SMSCode code) {
+        cache.put(id, code);
+    }
+
+    /**
+     * 테스트 후 모두 지워버리는 메서드
+     */
+    public void deleteAll() {
+        cache.clear();
+    }
 }
