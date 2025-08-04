@@ -73,7 +73,7 @@ public class BorrowerAuthController {
      */
     @PostMapping("/send-sms-code")
     public ResponseEntity<Void> sendSMSCode(@RequestBody SMSCodeRequestDto dto) {
-        borrowerVerificationService.sendVerificationCode(dto.getId(), dto.getPhoneNumber());
+        borrowerVerificationService.sendSMSCode(dto.getId(), dto.getPhoneNumber());
         return ResponseEntity.ok().build();
     }
 }

@@ -31,8 +31,8 @@ public class SignUpSessionCache {
      * 
      * @param id 대상 대여자 아이디
      * @return SignUpSession
-     * @throws ResourceNotFoundException 저장되지 않은 유저의 상태를 가져오려 할때
-     * @throws
+     * @throws ResourceNotFoundException     저장되지 않은 유저의 상태를 가져오려 할때
+     * @throws SignUpSessionExpiredException 회원가입 세션이 만료됐을때
      */
     public SignUpSession get(String id) {
         SignUpSession session = cache.get(id);

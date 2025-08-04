@@ -132,4 +132,5 @@ public class SignUpSessionCacheTest {
         });
     }
 
+    // isAllPass 메서드 테스트 할 것 + 추가 동작(아이디 영구 전환 및 SignUpSession 삭제)
 }

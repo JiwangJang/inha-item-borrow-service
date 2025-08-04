@@ -24,16 +24,12 @@ import net.nurigo.sdk.message.model.Message;
 @AllArgsConstructor
 public class BorrowerVerificationService {
     private final DefaultMessageService messageService;
-    IdCache idCache;
-    SMSCodeCache smsCodeCache;
-    SignUpSessionCache signUpSessionCache;
+    private final IdCache idCache;
+    private final SMSCodeCache smsCodeCache;
+    private final SignUpSessionCache signUpSessionCache;
 
     private static final SecureRandom secureRandom = new SecureRandom();
     private static final int VERIFICATION_CODE_LENGTH = 6;
-
-    BorrowerVerificationService(DefaultMessageService messageService) {
-        this.messageService = messageService;
-    }
 
     private String getSMSCode() {
         StringBuilder code = new StringBuilder();
@@ -56,6 +52,7 @@ public class BorrowerVerificationService {
     }
 
     public void verifyPassword(String id, String password) {
+        // 조건 : 영어 대소문자와 숫자, 특수기호(!@#$%^&*()_\-+=)를 포함하여 9~13자
         if (!password.matches(
                 "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=])[A-Za-z\\d!@#$%^&*()_\\-+=]{9,13}$")) {
             throw new InvalidPasswordException();
@@ -64,7 +61,7 @@ public class BorrowerVerificationService {
         idCache.extendTtl(id);
     }
 
-    public void sendVerificationCode(String id, String phoneNumber) {
+    public void sendSMSCode(String id, String phoneNumber) {
         // 사용자가 몇번보냈는지 확인 필요
         // String code = getVerificationCode();
         // Message message = new Message();
@@ -79,6 +76,8 @@ public class BorrowerVerificationService {
         // throw new MessageServiceException();
         // }
 
+        // 만료됐거나 없는 아이디인지 확인
+        signUpSessionCache.get(id);
         // 임시 코드
         String code = "123456";
         smsCodeCache.set(id, new SMSCode(code));
