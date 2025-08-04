@@ -3,7 +3,6 @@ package com.inha.borrow.backend.cache;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.inha.borrow.backend.model.auth.SignUpSession;
@@ -25,11 +24,29 @@ public class SignUpSessionCache {
         this.idCache = idCache;
     }
 
+    /**
+     * 유효한 회원가입 세션에 대해서만 consumer를 동작시키는 메서드
+     * 
+     * @param id       회원가입 하려는 아이디
+     * @param consumer 해당 객체에 적용할 동작
+     */
     private void computeIfValid(String id, Consumer<SignUpSession> consumer) {
         SignUpSession session = get(id);
         if (session != null) {
             consumer.accept(session);
         }
+    }
+
+    /**
+     * 주기적으로 오래된 회원가입 세션을 지워주는 메서드
+     */
+    public void removeOldSignUpSession() {
+        cache.forEach((id, session) -> {
+            long ttl = session.getTtl();
+            if (ttl <= System.currentTimeMillis()) {
+                cache.remove(id);
+            }
+        });
     }
 
     /**

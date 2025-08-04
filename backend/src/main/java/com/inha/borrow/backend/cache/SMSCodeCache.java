@@ -34,6 +34,15 @@ public class SMSCodeCache {
         return smsCode;
     }
 
+    public void removeOldSMSCode() {
+        cache.forEach((id, smsCode) -> {
+            long ttl = smsCode.getTtl();
+            if (ttl <= System.currentTimeMillis()) {
+                cache.remove(id);
+            }
+        });
+    }
+
     /**
      * 특정 대여자의 인증코드를 저장하는 메서드
      * 

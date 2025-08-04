@@ -34,6 +34,17 @@ public class IdCache {
         }
     }
 
+    /*
+     * 주기적으로 오래된 아이디 캐시를 삭제하는 메서드
+     */
+    public void removeOldId() {
+        cache.forEach((id, ttl) -> {
+            if (ttl > 0L && ttl <= System.currentTimeMillis()) {
+                cache.remove(id);
+            }
+        });
+    }
+
     /**
      * 아이디가 존재하는지 확인하는 메서드
      * 
