@@ -48,7 +48,6 @@ public class BorrowerVerificationService {
         }
 
         signUpSessionCache.set(id);
-        idCache.setNewUser(id);
     }
 
     public void verifyPassword(String id, String password) {
@@ -83,7 +82,6 @@ public class BorrowerVerificationService {
         smsCodeCache.set(id, new SMSCode(code));
 
         signUpSessionCache.extendTtl(id);
-        idCache.extendTtl(id);
     }
 
     public void verifySMSCode(String id, String inputedCode) {
@@ -93,7 +91,6 @@ public class BorrowerVerificationService {
         }
 
         signUpSessionCache.phoneCheckSuccess(id);
-        idCache.extendTtl(id);
         smsCodeCache.remove(id);
     }
 

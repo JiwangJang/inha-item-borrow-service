@@ -3,6 +3,7 @@ package com.inha.borrow.backend.cache;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.inha.borrow.backend.model.auth.SignUpSession;
@@ -17,7 +18,12 @@ import com.inha.borrow.backend.util.ServiceUtils;
  */
 @Component
 public class SignUpSessionCache {
+    private final IdCache idCache;
     private final ConcurrentHashMap<String, SignUpSession> cache = new ConcurrentHashMap<>();
+
+    public SignUpSessionCache(IdCache idCache) {
+        this.idCache = idCache;
+    }
 
     private void computeIfValid(String id, Consumer<SignUpSession> consumer) {
         SignUpSession session = get(id);
@@ -57,6 +63,7 @@ public class SignUpSessionCache {
      */
     public void set(String id) {
         cache.put(id, new SignUpSession());
+        idCache.setNewUser(id);
     }
 
     /**
@@ -81,6 +88,7 @@ public class SignUpSessionCache {
             session.setPhoneCheck(true);
             session.setTtl(ServiceUtils.getTtl());
         });
+        idCache.extendTtl(id);
     }
 
     /**
@@ -94,6 +102,7 @@ public class SignUpSessionCache {
             session.setPasswordCheck(true);
             session.setTtl(ServiceUtils.getTtl());
         });
+        idCache.extendTtl(id);
     }
 
     /**
@@ -107,18 +116,27 @@ public class SignUpSessionCache {
             v.setTtl(ServiceUtils.getTtl());
             return v;
         });
+        idCache.extendTtl(id);
     }
 
     /**
      * 최종 회원가입 신청시 모든 검증을 통과했는지 확인하는 메서드
+     * 모두 통과했다면 아이디를 영구로 전환하고 SignUpSession을 삭제한다
      * 
      * @param id 대상 대여자 아아디
      * @return T or F
      * @throws ResourceNotFoundException
      */
     public boolean isAllPassed(String id) {
-        SignUpSession session = cache.get(id);
-        return session.isIdCheck() && session.isPasswordCheck() && session.isPhoneCheck();
+        SignUpSession session = get(id);
+        boolean allPass = session.isIdCheck() && session.isPasswordCheck() && session.isPhoneCheck();
+        if (allPass) {
+            // SignUpSession 삭제
+            remove(id);
+            // 아이디 영구전환
+            idCache.fixSignUpId(id);
+        }
+        return allPass;
     }
 
     // 테스트용 메서드

@@ -2,24 +2,30 @@ package com.inha.borrow.backend.authentication.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.cache.SignUpSessionCache;
 import com.inha.borrow.backend.model.auth.SignUpSession;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.model.exception.SignUpSessionExpiredException;
 
 public class SignUpSessionCacheTest {
-    private SignUpSessionCache cache = new SignUpSessionCache();
+    private IdCache idCache = new IdCache(new JdbcTemplate());
+    private SignUpSessionCache cache = new SignUpSessionCache(idCache);
 
     @AfterEach
     void afterEach() {
         cache.deleteAll();
+        idCache.deleteAll();
     }
 
     @Test
@@ -132,5 +138,79 @@ public class SignUpSessionCacheTest {
         });
     }
 
-    // isAllPass 메서드 테스트 할 것 + 추가 동작(아이디 영구 전환 및 SignUpSession 삭제)
+    @Test
+    @DisplayName("회원가입 신청전 모든 조건 통과했는지 테스트(성공)")
+    void isAllPassedSuccessTest() {
+        // given
+        String id = "test1";
+        // when
+        cache.set(id);
+        cache.passwordCheckSuccess(id);
+        cache.phoneCheckSuccess(id);
+        boolean result = cache.isAllPassed(id);
+        // then
+        assertTrue(result);
+        assertThrows(ResourceNotFoundException.class, () -> {
+            cache.get(id);
+        });
+        assertThat(idCache.getTtl(id)).isZero();
+    }
+
+    @Test
+    @DisplayName("회원가입 신청전 모든 조건 통과했는지 테스트(실패-비번통과 못함)")
+    void isAllPassedFailForNotPassPWTest() {
+        // given
+        String id = "test1";
+        // when
+        cache.set(id);
+        cache.phoneCheckSuccess(id);
+        boolean result = cache.isAllPassed(id);
+        SignUpSession session = cache.get(id);
+        // then
+        assertFalse(result);
+        assertFalse(session.isPasswordCheck());
+        assertThat(idCache.getTtl(id)).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("회원가입 신청전 모든 조건 통과했는지 테스트(실패-핸드폰 통과 못함)")
+    void isAllPassedFailForNotPassPhoneTest() {
+        // given
+        String id = "test1";
+        // when
+        cache.set(id);
+        cache.passwordCheckSuccess(id);
+        boolean result = cache.isAllPassed(id);
+        SignUpSession session = cache.get(id);
+        // then
+        assertFalse(result);
+        assertFalse(session.isPhoneCheck());
+        assertThat(idCache.getTtl(id)).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("회원가입 신청전 모든 조건 통과했는지 테스트(실패-아이디 부존재)")
+    void isAllPassedFailForNotExistIdTest() {
+        // given
+        String id = "test1";
+        // when
+        // then
+        assertThrows(ResourceNotFoundException.class, () -> {
+            cache.isAllPassed(id);
+        });
+    }
+
+    @Test
+    @DisplayName("회원가입 신청전 모든 조건 통과했는지 테스트(실패-세션만료)")
+    void isAllPassedFailForSignUpSessionExpiredTest() {
+        // given
+        String id = "test1";
+        // when
+        cache.setForTest(id, System.currentTimeMillis());
+        // then
+        assertThrows(SignUpSessionExpiredException.class, () -> {
+            cache.isAllPassed(id);
+        });
+    }
+
 }
