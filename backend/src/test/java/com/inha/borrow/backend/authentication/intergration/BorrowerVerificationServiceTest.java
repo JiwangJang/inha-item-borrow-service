@@ -59,7 +59,7 @@ public class BorrowerVerificationServiceTest {
         long idCacheResult = idCache.getTtl(testId);
         SignUpSession session = signUpSessionCache.get(testId);
         // then
-        assertInstanceOf(Long.class, idCacheResult);
+        assertThat(idCacheResult).isEqualTo(session.getTtl());
         assertTrue(session.isIdCheck());
     }
 
@@ -114,6 +114,7 @@ public class BorrowerVerificationServiceTest {
         // then
         assertTrue(session.isPasswordCheck());
         assertTrue(session.isIdCheck());
+        assertThat(idCache.getTtl(id)).isEqualTo(session.getTtl());
     }
 
     @Test
@@ -153,9 +154,12 @@ public class BorrowerVerificationServiceTest {
         service.verifyId(id);
         service.sendSMSCode(id, "000-0000-0000");
         SMSCode codeSession = smsCodeCache.get(id);
+        SignUpSession signUpSession = signUpSessionCache.get(id);
+        Long idTtl = idCache.getTtl(id);
         // then
         assertEquals(codeSession.getCode(), "123456");
         assertThat(codeSession.getTtl()).isGreaterThan(System.currentTimeMillis() + 170000);
+        assertThat(signUpSession.getTtl()).isEqualTo(idTtl);
     }
 
     @Test
@@ -193,9 +197,11 @@ public class BorrowerVerificationServiceTest {
         // when
         service.verifySMSCode(id, "123456");
         SignUpSession signUpSession = signUpSessionCache.get(id);
+        Long idTtl = idCache.getTtl(id);
         // then
         assertTrue(signUpSession.isIdCheck());
         assertTrue(signUpSession.isPhoneCheck());
+        assertThat(signUpSession.getTtl()).isEqualTo(idTtl);
     }
 
     @Test

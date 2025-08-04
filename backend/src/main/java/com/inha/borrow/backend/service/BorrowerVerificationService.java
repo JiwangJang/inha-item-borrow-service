@@ -57,7 +57,6 @@ public class BorrowerVerificationService {
             throw new InvalidPasswordException();
         }
         signUpSessionCache.passwordCheckSuccess(id);
-        idCache.extendTtl(id);
     }
 
     public void sendSMSCode(String id, String phoneNumber) {
@@ -93,5 +92,4 @@ public class BorrowerVerificationService {
         signUpSessionCache.phoneCheckSuccess(id);
         smsCodeCache.remove(id);
     }
-
 }
