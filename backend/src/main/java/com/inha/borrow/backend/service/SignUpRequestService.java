@@ -3,10 +3,10 @@ import com.inha.borrow.backend.enums.EvaluateSignUP;
 import com.inha.borrow.backend.model.dto.BorrowerDto;
 import com.inha.borrow.backend.model.dto.EvaluationRequest;
 import com.inha.borrow.backend.model.dto.SignUpForm;
-import com.inha.borrow.backend.model.jwtToken.JwtToken;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.SignUpRequestRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -17,10 +17,10 @@ import java.util.List;
 @AllArgsConstructor
 public class SignUpRequestService {
 
-    private final BorrowerService borrowerService;
+    private PasswordEncoder passwordEncoder;
     private SignUpRequestRepository signUpRequestRepository;
     private BorrowerRepository borrowerRepository;
-    private JwtToken jwtToken;
+    private JwtTokenService jwtTokenService;
 
 
     /**
@@ -31,6 +31,8 @@ public class SignUpRequestService {
      * @author 형민재
      */
     public SignUpForm saveSignUpRequest(SignUpForm signUpForm){
+        String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
+        signUpForm.setPassword(encodedPassword);
         return signUpRequestRepository.save(signUpForm);
     }
 
@@ -56,11 +58,9 @@ public class SignUpRequestService {
     public void updateStateAndCreateBorrower(EvaluationRequest evaluationRequest, String id){
         if(EvaluateSignUP.PERMIT.equals(evaluationRequest.getState())){
             SignUpForm signUpForm = signUpRequestRepository.findById(id);
-            if(signUpForm != null){
                 BorrowerDto borrower = transition(signUpForm);
+                borrower.setRefreshToken(jwtTokenService.createToken(id));
                 borrowerRepository.save(borrower);
-                borrowerRepository.patchRefreshToken(jwtToken.createToken(id),id);
-            }
         }
         signUpRequestRepository.patchEvaluation(evaluationRequest,id);
     }
@@ -73,8 +73,13 @@ public class SignUpRequestService {
      * @return 수정 정보
      * @author 형민재
      */
-    public void patchSignUpRequest(SignUpForm signUpForm, String id){
-        signUpRequestRepository.patchSignUpRequest(signUpForm,id);
+    public void patchSignUpRequest(SignUpForm signUpForm, String id) {
+        SignUpForm signUpForm1 = signUpRequestRepository.findById(id);
+        if (passwordEncoder.matches(signUpForm.getPassword(), signUpForm1.getPassword())) {
+            String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
+            signUpForm.setPassword(encodedPassword);
+            signUpRequestRepository.patchSignUpRequest(signUpForm, id);
+        }
     }
 
     /**
@@ -84,8 +89,10 @@ public class SignUpRequestService {
      * @author 형민재
      */
     public void deleteSignUpRequest(String id, String password){
-        signUpRequestRepository.deleteSignUpRequest(id, password);
-
+        SignUpForm signUpForm = signUpRequestRepository.findById(id);
+        if(passwordEncoder.matches(signUpForm.getPassword(), password)) {
+            signUpRequestRepository.deleteSignUpRequest(id, password);
+        }
     }
     public BorrowerDto transition(SignUpForm signUpForm){
         return new BorrowerDto(
@@ -95,7 +102,8 @@ public class SignUpRequestService {
                 signUpForm.getName(),
                 signUpForm.getPhoneNumber(),
                 signUpForm.getIdentityPhoto(),
-                signUpForm.getAccountNumber()
+                signUpForm.getAccountNumber(),
+                null
         );
     }
 

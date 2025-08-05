@@ -2,10 +2,13 @@ spring:
     application:
         name: backend
     datasource:
-        url: jdbc:mysql://localhost:3306/inha_item_borrower_service
+        url: jdbc:mysql://localhost:3306/inha_item_borrow_service
         username: root
         password: 1234
         driver-class-name: com.mysql.cj.jdbc.Driver
 logging:
     level:
         root: debug
+app:
+    jwt:
+        secret-key: 8B73D9C4956669F1C6EC3FECD6CC18B73D9C4956669F1C6EC3FECD6CC1

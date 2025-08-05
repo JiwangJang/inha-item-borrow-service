@@ -1,15 +1,17 @@
-package com.inha.borrow.backend.model.jwtToken;
+package com.inha.borrow.backend.service;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
-public class JwtToken {
-    private final String JWT_SECRET_KEY = "8B73D9C4956669F1C6EC3FECD6CC18B73D9C4956669F1C6EC3FECD6CC1";
+public class JwtTokenService {
+   @Value("${app.jwt.secret-key")
+   private String JWT_SECRET_KEY;
     private final long validityInMilliseconds = 3600000;
 
     public String createToken(String id) {

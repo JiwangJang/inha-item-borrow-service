@@ -5,10 +5,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.security.access.method.P;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import com.inha.borrow.backend.model.user.Borrower;
@@ -60,7 +58,7 @@ public class BorrowerRepository {
         }
         String encodedPassword = passwordEncoder.encode(borrower.getPassword());
         String sql = "INSERT INTO borrower(id, password, email, name, phonenumber, " +
-                "student_number, account_number) VALUES(?, ?, ?, ?, ?, ?, ?)";
+                "student_number, account_number, refreshToken) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 borrower.getId(),
                 encodedPassword,
@@ -68,7 +66,8 @@ public class BorrowerRepository {
                 borrower.getName(),
                 borrower.getPhonenumber(),
                 borrower.getStudentNumber(),
-                borrower.getAccountNumber());
+                borrower.getAccountNumber(),
+                borrower.getRefreshToken());
     }
     /**
      * 아이디로 대여자 정보 수정 메서드
@@ -135,17 +134,7 @@ public class BorrowerRepository {
         String sql = " UPDATE borrower SET ban = ? WHERE id = ?";
         jdbcTemplate.update(sql, ban, id);
     }
-    /**
-     * 토큰부여 메소드
-     *
-     * @param id
-     * @author 형민재
-     */
 
-    public void patchRefreshToken(String token, String id){
-        String sql = "UPDATE borrower SET refresh_token = ?  WHERE ID =?";
-        jdbcTemplate.update(sql,token,id);
-    }
     /**
      * test 코드에 사용하기 위한 메서드
      */

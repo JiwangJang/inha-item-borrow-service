@@ -38,13 +38,12 @@ public class SignUpRequestRepository {
                 !StringUtils.hasText(signupform.getAccountNumber())) {
             throw new DataIntegrityViolationException("공백값은 넣을 수 없습니다");
         }
-        String encodedPassword =passwordEncoder.encode(signupform.getPassword());
         String sql = "INSERT INTO signup_request(id, password, email, name, phonenumber, " +
                 "identity_photo, student_council_fee_photo, account_number) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(
                 sql,
                 signupform.getId(),
-                encodedPassword,
+                signupform.getPassword(),
                 signupform.getEmail(),
                 signupform.getName(),
                 signupform.getPhoneNumber(),
@@ -117,12 +116,11 @@ public class SignUpRequestRepository {
                 !StringUtils.hasText(signUpForm.getAccountNumber())) {
             throw new DataIntegrityViolationException("공백값은 넣을 수 없습니다");
         }
-        String encodedPassword =passwordEncoder.encode(signUpForm.getPassword());
         String sql = "UPDATE signup_request SET id = ? , password = ?, email = ?, name = ?, phonenumber = ?, " +
                 "identity_Photo = ?,student_council_fee_photo = ? ,account_number = ? WHERE id =?";
         jdbcTemplate.update(sql,
                 signUpForm.getId(),
-                encodedPassword,
+                signUpForm.getPassword(),
                 signUpForm.getEmail(),
                 signUpForm.getName(),
                 signUpForm.getPhoneNumber(),
@@ -140,11 +138,8 @@ public class SignUpRequestRepository {
      */
 
     public void deleteSignUpRequest(String id, String password) {
-        SignUpForm signUpForm =findById(id);
-        if(passwordEncoder.matches(signUpForm.getPassword(), password)) {
             String sql = "DELETE FROM signup_request WHERE id = ?";
             jdbcTemplate.update(sql, id);
-        }
     }
 
     public RowMapper<SignUpForm> rowMapper() {

@@ -15,4 +15,5 @@ public class BorrowerDto {
     String phonenumber;
     String studentNumber;
     String accountNumber;
+    String refreshToken;
 }

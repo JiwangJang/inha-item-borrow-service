@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class PatchPasswordDto {
-    private String id;
     private String originPassword;
     private String newPassword;
 }
