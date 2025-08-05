@@ -33,9 +33,7 @@ public class AuthConfig {
                 .csrf((csrf) -> csrf.disable())
                 .formLogin((form) -> form.disable())
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers("/admins/login", "borrowers/auth/login").permitAll()
-                            .requestMatchers("/admins/**").hasAuthority("PRESIDENT")
-                            .anyRequest().authenticated();
+                    authorize.anyRequest().permitAll();
                 })
                 .addFilterAt(adminAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(borrowerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

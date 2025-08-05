@@ -100,7 +100,7 @@ public class ItemRepository {
             String sql = "SELECT * FROM item WHERE id = ?;";
             return jdbcTemplate.queryForObject(sql, itemRowMapper, id);
         } catch (IncorrectResultSizeDataAccessException e) {
-            throw new ResourceNotFoundException("id가" + id + "인 아이템은 없습니다.");
+            throw new ResourceNotFoundException();
         }
     }
 
@@ -118,7 +118,7 @@ public class ItemRepository {
         String sql = "UPDATE item SET state = 'DELETED', delete_reason = ? WHERE id = ?;";
         int affectedRow = jdbcTemplate.update(sql, deleteRequestDto.getDeleteReason(), id);
         if (affectedRow == 0) {
-            throw new ResourceNotFoundException("id가" + id + "인 아이템은 없습니다.");
+            throw new ResourceNotFoundException();
         }
     }
 
@@ -141,7 +141,7 @@ public class ItemRepository {
                 item.getDeleteReason(),
                 item.getPrice(), item.getState(), id);
         if (affectedRow == 0) {
-            throw new ResourceNotFoundException("id가" + id + "인 아이템은 없습니다.");
+            throw new ResourceNotFoundException();
         }
     }
 }

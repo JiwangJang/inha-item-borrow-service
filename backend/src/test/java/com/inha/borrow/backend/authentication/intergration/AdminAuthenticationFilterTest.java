@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.authentication;
+package com.inha.borrow.backend.authentication.intergration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

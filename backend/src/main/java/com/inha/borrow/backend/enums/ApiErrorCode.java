@@ -1,6 +1,8 @@
 package com.inha.borrow.backend.enums;
 
 public enum ApiErrorCode {
+    EXIST_ID("이미 사용중인 아이디입니다."),
+    INCORRECT_CODE("코드를 다시 확인해주세요."),
     NOT_ALLOWED_VALUE("허용되지 않는 값입니다."),
     DB_ERROR("데이터베이스 에러입니다."),
     SERVER_ERROR("서버쪽의 알 수 없는 에러입니다."),
