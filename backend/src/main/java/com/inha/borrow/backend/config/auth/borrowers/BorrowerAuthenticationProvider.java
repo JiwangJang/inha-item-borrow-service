@@ -31,7 +31,7 @@ public class BorrowerAuthenticationProvider implements AuthenticationProvider {
 
         Borrower borrower = (Borrower) borrowerService.loadUserByUsername(id);
         if (!passwordEncoder.matches(rawPassword, borrower.getPassword())) {
-            throw new BadCredentialsException("비밀번호 다름");
+            throw new BadCredentialsException("");
         }
         return new BorrowerAuthenticationToken(id, null, borrower.getAuthorities());
     }

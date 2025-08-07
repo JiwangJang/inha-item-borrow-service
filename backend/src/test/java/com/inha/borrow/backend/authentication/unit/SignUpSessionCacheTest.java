@@ -3,7 +3,6 @@ package com.inha.borrow.backend.authentication.unit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,7 +15,7 @@ import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.cache.SignUpSessionCache;
 import com.inha.borrow.backend.model.auth.SignUpSession;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import com.inha.borrow.backend.model.exception.SignUpSessionExpiredException;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 
 public class SignUpSessionCacheTest {
     private IdCache idCache = new IdCache(new JdbcTemplate());
@@ -65,7 +64,7 @@ public class SignUpSessionCacheTest {
         cache.setForTest(id, System.currentTimeMillis());
         // when
         // then
-        assertThrows(SignUpSessionExpiredException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             cache.get(id);
         });
         assertThrows(ResourceNotFoundException.class, () -> {
@@ -106,7 +105,7 @@ public class SignUpSessionCacheTest {
         cache.setForTest(id, System.currentTimeMillis());
         // when
         // then
-        assertThrows(SignUpSessionExpiredException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             cache.phoneCheckSuccess(id);
         });
     }
@@ -133,7 +132,7 @@ public class SignUpSessionCacheTest {
         cache.setForTest(id, System.currentTimeMillis());
         // when
         // then
-        assertThrows(SignUpSessionExpiredException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             cache.passwordCheckSuccess(id);
         });
     }
@@ -208,7 +207,7 @@ public class SignUpSessionCacheTest {
         // when
         cache.setForTest(id, System.currentTimeMillis());
         // then
-        assertThrows(SignUpSessionExpiredException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             cache.isAllPassed(id);
         });
     }

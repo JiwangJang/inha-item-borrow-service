@@ -9,6 +9,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.response.ApiResponse;
+import com.inha.borrow.backend.model.response.ErrorResponse;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,9 +26,13 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
+        ErrorResponse errorResponse = new ErrorResponse(ApiErrorCode.CHECK_YOUR_INFO.name(),
+                ApiErrorCode.CHECK_YOUR_INFO.getMessage());
+        ApiResponse<ErrorResponse> apiResponse = new ApiResponse<>(false, errorResponse);
+
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.getWriter()
-                .write(objectMapper.writeValueAsString(new ApiResponse<>(false, ApiErrorCode.CHECK_YOUR_INFO.name())));
+                .write(objectMapper.writeValueAsString(apiResponse));
         response.flushBuffer();
         return;
     }

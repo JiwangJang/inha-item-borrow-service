@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.model.user.Borrower;
 
@@ -49,7 +50,8 @@ public class BorrowerRepository {
                         accountNumber);
             }, id);
         } catch (IncorrectResultSizeDataAccessException e) {
-            throw new ResourceNotFoundException();
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
 }

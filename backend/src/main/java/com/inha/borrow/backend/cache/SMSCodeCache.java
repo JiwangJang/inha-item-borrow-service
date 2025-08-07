@@ -4,9 +4,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.auth.SMSCode;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import com.inha.borrow.backend.model.exception.SMSCodeExpiredException;
 
 /**
  * 대여자의 핸드폰 인증코드를 잠시 저장하는 클래스
@@ -25,11 +26,15 @@ public class SMSCodeCache {
      */
     public SMSCode get(String id) {
         SMSCode smsCode = cache.get(id);
-        if (smsCode == null)
-            throw new ResourceNotFoundException();
+        if (smsCode == null) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+
+        }
         if (smsCode.getTtl() <= System.currentTimeMillis()) {
+            ApiErrorCode errorCode = ApiErrorCode.SMS_CODE_EXPIRED;
             remove(id);
-            throw new SMSCodeExpiredException();
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
         }
         return smsCode;
     }

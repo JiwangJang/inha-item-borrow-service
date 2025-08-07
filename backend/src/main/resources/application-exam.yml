@@ -12,3 +12,8 @@ logging:
 sms-service:
     api-key: ${API-KEY}
     secret-api-key: ${SECRET-API-KEY}
+server:
+    error:
+        include-message: never
+        include-binding-errors: never
+        include-stacktrace: never

@@ -3,7 +3,6 @@ package com.inha.borrow.backend.authentication.intergration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,12 +17,8 @@ import com.inha.borrow.backend.cache.SMSCodeCache;
 import com.inha.borrow.backend.cache.SignUpSessionCache;
 import com.inha.borrow.backend.model.auth.SMSCode;
 import com.inha.borrow.backend.model.auth.SignUpSession;
-import com.inha.borrow.backend.model.exception.ExistIdException;
-import com.inha.borrow.backend.model.exception.IncorrectSMSCodeException;
-import com.inha.borrow.backend.model.exception.InvalidIdException;
-import com.inha.borrow.backend.model.exception.InvalidPasswordException;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import com.inha.borrow.backend.model.exception.SignUpSessionExpiredException;
 import com.inha.borrow.backend.service.BorrowerVerificationService;
 
 @SpringBootTest
@@ -70,7 +65,7 @@ public class BorrowerVerificationServiceTest {
         String testId = "a";
         // when
         // then
-        assertThrows(InvalidIdException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             service.verifyId(testId);
         });
     }
@@ -82,7 +77,7 @@ public class BorrowerVerificationServiceTest {
         String testId = "aA1234!";
         // when
         // then
-        assertThrows(InvalidIdException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             service.verifyId(testId);
         });
     }
@@ -96,7 +91,7 @@ public class BorrowerVerificationServiceTest {
         service.verifyId(testId);
         // when
         // then
-        assertThrows(ExistIdException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             service.verifyId(existId);
         });
     }
@@ -126,7 +121,7 @@ public class BorrowerVerificationServiceTest {
         // when
         service.verifyId(id);
         // then
-        assertThrows(InvalidPasswordException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             service.verifyPassword(id, password);
         });
     }
@@ -140,7 +135,7 @@ public class BorrowerVerificationServiceTest {
         // when
         service.verifyId(id);
         // then
-        assertThrows(InvalidPasswordException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             service.verifyPassword(id, password);
         });
     }
@@ -182,7 +177,7 @@ public class BorrowerVerificationServiceTest {
         // when
         signUpSessionCache.setForTest(id, System.currentTimeMillis());
         // then
-        assertThrows(SignUpSessionExpiredException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             service.sendSMSCode(id, "000-0000-0000");
         });
     }
@@ -213,7 +208,7 @@ public class BorrowerVerificationServiceTest {
         service.sendSMSCode(id, "000-0000-0000");
         // when
         // then
-        assertThrows(IncorrectSMSCodeException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             service.verifySMSCode(id, "111111");
         });
         SignUpSession signUpSession = signUpSessionCache.get(id);

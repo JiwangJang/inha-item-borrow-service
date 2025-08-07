@@ -7,11 +7,9 @@ import org.springframework.stereotype.Service;
 import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.cache.SMSCodeCache;
 import com.inha.borrow.backend.cache.SignUpSessionCache;
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.auth.SMSCode;
-import com.inha.borrow.backend.model.exception.ExistIdException;
-import com.inha.borrow.backend.model.exception.IncorrectSMSCodeException;
-import com.inha.borrow.backend.model.exception.InvalidIdException;
-import com.inha.borrow.backend.model.exception.InvalidPasswordException;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.MessageServiceException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
@@ -41,10 +39,12 @@ public class BorrowerVerificationService {
 
     public void verifyId(String id) {
         if (!id.matches("^[a-zA-Z0-9]{4,10}$")) {
-            throw new InvalidIdException();
+            ApiErrorCode errorCode = ApiErrorCode.INVALID_ID;
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
         }
         if (idCache.contains(id)) {
-            throw new ExistIdException();
+            ApiErrorCode errorCode = ApiErrorCode.EXIST_ID;
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
         }
 
         signUpSessionCache.set(id);
@@ -54,7 +54,8 @@ public class BorrowerVerificationService {
         // 조건 : 영어 대소문자와 숫자, 특수기호(!@#$%^&*()_\-+=)를 포함하여 9~13자
         if (!password.matches(
                 "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=])[A-Za-z\\d!@#$%^&*()_\\-+=]{9,13}$")) {
-            throw new InvalidPasswordException();
+            ApiErrorCode errorCode = ApiErrorCode.INVALID_PASSWORD;
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
         }
         signUpSessionCache.passwordCheckSuccess(id);
     }
@@ -86,7 +87,8 @@ public class BorrowerVerificationService {
     public void verifySMSCode(String id, String inputedCode) {
         SMSCode code = smsCodeCache.get(id);
         if (!code.getCode().equals(inputedCode)) {
-            throw new IncorrectSMSCodeException();
+            ApiErrorCode errorCode = ApiErrorCode.INCORRECT_CODE;
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
         }
 
         signUpSessionCache.phoneCheckSuccess(id);

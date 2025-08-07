@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import com.inha.borrow.backend.cache.SMSCodeCache;
 import com.inha.borrow.backend.model.auth.SMSCode;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import com.inha.borrow.backend.model.exception.SMSCodeExpiredException;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 
 public class SMSCodeCacheTest {
     private SMSCodeCache cache = new SMSCodeCache();
@@ -44,7 +44,7 @@ public class SMSCodeCacheTest {
         // when
         cache.set(id, code);
         // then
-        assertThrows(SMSCodeExpiredException.class, () -> {
+        assertThrows(InvalidValueException.class, () -> {
             cache.get(id);
         });
     }
