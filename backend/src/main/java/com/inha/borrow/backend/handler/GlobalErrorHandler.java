@@ -1,11 +1,10 @@
 package com.inha.borrow.backend.handler;
 
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.exception.PasswordMismatchException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.model.response.ApiResponse;
-import com.inha.borrow.backend.service.BorrowerService;
-import com.mysql.cj.exceptions.PasswordExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -48,5 +47,11 @@ public class GlobalErrorHandler {
     public ResponseEntity<ApiResponse<String>> passwordMismatchHandler(PasswordMismatchException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse<>(false,ApiErrorCode.PASSWORD_MISMATCH.name()));
+    }
+
+    @ExceptionHandler(AmazonS3Exception.class)
+    public ResponseEntity<ApiResponse<String>>failedUpload(AmazonS3Exception e){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(false,ApiErrorCode.FAILED_UPLOAD.name()));
     }
 }
