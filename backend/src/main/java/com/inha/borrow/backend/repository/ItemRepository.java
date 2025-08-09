@@ -1,187 +1,151 @@
 package com.inha.borrow.backend.repository;
-import com.inha.borrow.backend.domain.Item;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.ArrayList;
+import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+import com.inha.borrow.backend.model.item.Item;
+import com.inha.borrow.backend.model.item.ItemDeleteRequestDto;
+
+import lombok.AllArgsConstructor;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Item객체와 관련된 DB작업을 하는 클래스
+ * 
+ * @author 장지왕
+ */
 @Repository
+@AllArgsConstructor
 public class ItemRepository {
-    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
 
-    public ItemRepository(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private final RowMapper<Item> itemRowMapper = (ResultSet resultSet, int index) -> {
+        Item item = new Item();
+        item.setId(resultSet.getInt("id"));
+        item.setName(resultSet.getString("name"));
+        item.setLocation(resultSet.getString("location"));
+        item.setPassword(resultSet.getString("password"));
+        item.setPrice(resultSet.getInt("price"));
+        item.setState(resultSet.getString("state"));
+        item.setDeleteReason(resultSet.getString("delete_reason"));
+        return item;
+    };
 
-    public Item save(Item item) {
-        String sql = "insert into item(name,location,password,delete_reason,price,state) values(?,?,?,?,?,?)";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        try {
-            conn = dataSource.getConnection();
-
-            pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-            pstmt.setString(1, item.getName());
-            pstmt.setString(2, item.getLocation());
-            pstmt.setString(3, item.getPassword());
-            pstmt.setString(4, item.getDeleteReason());
-            pstmt.setInt(5, item.getPrice());
-            pstmt.setString(6, item.getState());
-
-            pstmt.executeUpdate();
-
-            rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                item.setId(rs.getInt(1));
-            } else {
-                throw new SQLException("ID 조회 실패");
-            }
-            return item;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } finally {
-            close(conn, pstmt, rs);
+    /**
+     * Item객체를 DB에 저장하는 메서드
+     * 
+     * @param item
+     * @return DB에 저장되는 Item 아이디 값
+     * @author 장지왕
+     */
+    public int save(Item item) {
+        // 공백문자인지 체크
+        if (!StringUtils.hasText(item.getLocation()) ||
+                !StringUtils.hasText(item.getName()) ||
+                !StringUtils.hasText(item.getPassword())) {
+            throw new DataIntegrityViolationException("location, name, password column can't be NULL");
         }
+
+        String sql = """
+                INSERT INTO item(name, location, password, delete_reason, price)
+                VALUES(?, ?, ?, ?, ?);
+                """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update((connection) -> {
+            PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, item.getName());
+            ps.setString(2, item.getLocation());
+            ps.setString(3, item.getPassword());
+            ps.setString(4, item.getDeleteReason());
+            ps.setInt(5, item.getPrice());
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().intValue();
     }
 
+    /**
+     * 모든 Item객체를 DB에서 가져오는 메서드
+     * 
+     * @return Item객체 목록
+     * @author 장지왕
+     */
     public List<Item> findAll() {
-        String sql = "select * from item";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
+        String sql = "SELECT * FROM item ORDER BY id DESC;";
+        return jdbcTemplate.query(sql, itemRowMapper);
+    }
+
+    /**
+     * 특정 Item을 DB에서 찾는 메서드
+     * 
+     * @param id
+     * @return Item
+     * @author 장지왕
+     * @throws ResourceNotFoundException 없는 자원에 대해 조회 요청을 보낸경우
+     */
+    public Item findById(int id) {
         try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            rs = pstmt.executeQuery();
-
-            List<Item> items = new ArrayList<>();
-            while(rs.next()){
-                Item itemss = new Item();
-                itemss.setId(rs.getInt("id"));
-                itemss.setName(rs.getString("name"));
-                itemss.setLocation(rs.getString("location"));
-                itemss.setPassword(rs.getString("password"));
-                itemss.setDeleteReason(rs.getString("delete_reason"));
-                itemss.setPrice(rs.getInt("price"));
-                itemss.setState(rs.getString("state"));
-                items.add(itemss);
-            }
-            return items;
-        }
-            catch(Exception e){
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            } finally{
-                close(conn, pstmt, rs);
-            }
-        }
-    public Optional<Item> findById(int id) {
-        String sql = "select * from item where id= ?";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setLong(1,id);
-            rs = pstmt.executeQuery();
-            if(rs.next()){
-                Item item = new Item();
-                item.setId(rs.getInt("id"));
-                item.setName(rs.getString("name"));
-                item.setLocation(rs.getString("location"));
-                item.setPassword(rs.getString("password"));
-                item.setDeleteReason(rs.getString("delete_reason"));
-                item.setPrice(rs.getInt("price"));
-                item.setState(rs.getString("state"));
-                return Optional.of(item);
-            }else return Optional.empty();
-
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } finally{
-            close(conn, pstmt, rs);
-        }
-    }
-    public boolean deleteItem(int id, String deleteReason){
-        String sql = "update item set state='delete', delete_reason = ? where id =?";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try{
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, deleteReason);
-            pstmt.setInt(2, id);
-            pstmt.executeUpdate();
-            return true;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } finally {
-            close(conn, pstmt, rs);
-        }
-
-
-    }
-    public boolean updateItem(Item item, int id){
-        String sql = "update item set name = ?, location = ?, password = ?, delete_reason = ?, price = ?, state = ? where id =?";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try{
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, item.getName());
-            pstmt.setString(2, item.getLocation());
-            pstmt.setString(3,item.getPassword());
-            pstmt.setString(4,item.getDeleteReason());
-            pstmt.setInt(5,item.getPrice());
-            pstmt.setString(6,item.getState());
-            pstmt.setInt(7,id);
-            pstmt.executeUpdate();
-            return true;
-
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }finally {
-            close(conn, pstmt, rs);
-        }
-    }
-    public void deleteAll() {
-        String sql = "DELETE FROM item";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } finally {
-            close(conn, pstmt, null);
+            String sql = "SELECT * FROM item WHERE id = ?;";
+            return jdbcTemplate.queryForObject(sql, itemRowMapper, id);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
 
-    private void close(Connection conn, PreparedStatement pstmt, ResultSet rs){
-        try { if (rs != null) rs.close(); } catch (Exception e) {}
-        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
-        try { if (conn != null) conn.close(); } catch (Exception e) {}
+    /**
+     * 특정 Item객체를 DB에서 삭제하는 메서드
+     * 
+     * @param id           삭제할 Item의 아이디
+     * @param deleteReason 삭제 이유
+     * @throws ResourceNotFoundException 없는 자원에 대해 삭제 요청을 보낸경우
+     */
+    public void deleteItem(int id, ItemDeleteRequestDto deleteRequestDto) {
+        if (!StringUtils.hasText(deleteRequestDto.getDeleteReason())) {
+            throw new DataIntegrityViolationException("location, name, password column can't be NULL");
+        }
+        String sql = "UPDATE item SET state = 'DELETED', delete_reason = ? WHERE id = ?;";
+        int affectedRow = jdbcTemplate.update(sql, deleteRequestDto.getDeleteReason(), id);
+        if (affectedRow == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 
-
-
+    /**
+     * 특정 Item객체의 변경사항을 DB에 반영하는 메서드
+     * 
+     * @param item 변경 내용이 담긴 Item
+     * @param id   변경할 Item객체의 아이디
+     * @throws ResourceNotFoundException 없는 자원에 대해 변경 요청을 보낸 경우
+     */
+    public void updateItem(Item item, int id) {
+        // 공백문자인지 체크
+        if (!StringUtils.hasText(item.getLocation()) ||
+                !StringUtils.hasText(item.getName()) ||
+                !StringUtils.hasText(item.getPassword())) {
+            throw new DataIntegrityViolationException("location, name, password column can't be NULL");
+        }
+        String sql = "UPDATE item SET name = ?, location = ?, password = ?, delete_reason = ?, price = ?, state = ? WHERE id = ?;";
+        int affectedRow = jdbcTemplate.update(sql, item.getName(), item.getLocation(), item.getPassword(),
+                item.getDeleteReason(),
+                item.getPrice(), item.getState(), id);
+        if (affectedRow == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+    }
 }
-

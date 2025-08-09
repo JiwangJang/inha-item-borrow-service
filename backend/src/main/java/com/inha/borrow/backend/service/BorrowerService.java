@@ -34,34 +34,34 @@ public class BorrowerService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-            return borrowerRepository.findById(id);
+        return borrowerRepository.findById(id);
     }
 
     /**
-     *대여자를 id로 찾는 메서드
+     * 대여자를 id로 찾는 메서드
      *
      * @param id
      * @return 대여자 정보
      * @author 형민재
      */
 
-    public Borrower findById(String id ){
+    public Borrower findById(String id) {
         return borrowerRepository.findById(id);
     }
 
     /**
-     *대여자들의 정보를 반환하는 메서드
+     * 대여자들의 정보를 반환하는 메서드
      *
      * @return 대여자 정보
      * @author 형민재
      */
 
-    public List<Borrower> findAll(){
+    public List<Borrower> findAll() {
         return borrowerRepository.findAll();
     }
 
     /**
-     *대여자의 정보를 수정하는 메서드
+     * 대여자의 정보를 수정하는 메서드
      *
      * @param email
      * @param id
@@ -72,7 +72,7 @@ public class BorrowerService implements UserDetailsService {
     }
 
     /**
-     *대여자의 정보를 수정하는 메서드
+     * 대여자의 정보를 수정하는 메서드
      *
      * @param name
      * @param id
@@ -83,7 +83,7 @@ public class BorrowerService implements UserDetailsService {
     }
 
     /**
-     *대여자의 정보를 수정하는 메서드
+     * 대여자의 정보를 수정하는 메서드
      *
      * @param phoneNumber
      * @param id
@@ -94,40 +94,40 @@ public class BorrowerService implements UserDetailsService {
     }
 
     /**
-     *대여자의 정보를 수정하는 메서드
+     * 대여자의 정보를 수정하는 메서드
      *
      * @param studentNumber
      * @param id
      * @author 형민재
      */
     public void patchStudentNumber(String studentNumber, String id) {
-       borrowerRepository.patchStudentNumber(studentNumber, id);
+        borrowerRepository.patchStudentNumber(studentNumber, id);
     }
 
     /**
-     *대여자의 정보를 수정하는 메서드
+     * 대여자의 정보를 수정하는 메서드
      *
      * @param accountNumber
      * @param id
      * @author 형민재
      */
     public void patchAccountNumber(String accountNumber, String id) {
-         borrowerRepository.patchAccountNumber(accountNumber, id);
+        borrowerRepository.patchAccountNumber(accountNumber, id);
     }
 
     /**
-     *대여자의 정보를 수정하는 메서드
+     * 대여자의 정보를 수정하는 메서드
      *
      * @param withDrawal
      * @param id
      * @author 형민재
      */
     public void patchWithDrawal(boolean withDrawal, String id) {
-         borrowerRepository.patchWithDrawal(withDrawal, id);
+        borrowerRepository.patchWithDrawal(withDrawal, id);
     }
 
     /**
-     *대여자의 정보를 수정하는 메서드
+     * 대여자의 정보를 수정하는 메서드
      *
      * @param ban
      * @param id
@@ -138,7 +138,7 @@ public class BorrowerService implements UserDetailsService {
     }
 
     /**
-     *대여자의 정보를 수정하는 메서드
+     * 대여자의 정보를 수정하는 메서드
      *
      * @param patchPasswordDto
      * @param id
@@ -147,7 +147,7 @@ public class BorrowerService implements UserDetailsService {
     public void patchPassword(PatchPasswordDto patchPasswordDto, String id) {
         String newPassword = patchPasswordDto.getNewPassword();
         Borrower borrower = borrowerRepository.findById(id);
-        if(!passwordEncoder.matches(patchPasswordDto.getOriginPassword(), borrower.getPassword())){
+        if (!passwordEncoder.matches(patchPasswordDto.getOriginPassword(), borrower.getPassword())) {
             throw new PasswordMismatchException("기존 비밀번호가 일치하지 않습니다");
         }
         borrowerRepository.patchPassword(newPassword, id);

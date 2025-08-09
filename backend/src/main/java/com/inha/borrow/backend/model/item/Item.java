@@ -1,11 +1,7 @@
-package com.inha.borrow.backend.domain;
+package com.inha.borrow.backend.model.item;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 @Data
 public class Item {
     private int id;
@@ -15,5 +11,4 @@ public class Item {
     private String deleteReason;
     private int price;
     private String state;
-
 }
