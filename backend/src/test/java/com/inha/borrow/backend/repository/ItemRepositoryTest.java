@@ -131,9 +131,12 @@ class ItemRepositoryTest {
     @DisplayName("아이디로 삭제(실패))")
     public void deleteFailedTest() {
         // given
+        ItemDeleteRequestDto dto = new ItemDeleteRequestDto();
+        dto.setDeleteReason("null");
         // when
         // then
-        assertThatThrownBy(() -> repository.deleteItem(1234, null)).isInstanceOf(ResourceNotFoundException.class);
+        assertThatThrownBy(() -> repository.deleteItem(1234, dto))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test

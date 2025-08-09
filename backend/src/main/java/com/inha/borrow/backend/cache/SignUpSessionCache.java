@@ -5,8 +5,9 @@ import java.util.function.Consumer;
 
 import org.springframework.stereotype.Component;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.auth.SignUpSession;
-import com.inha.borrow.backend.model.exception.SignUpSessionExpiredException;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.util.ServiceUtils;
 
@@ -54,16 +55,19 @@ public class SignUpSessionCache {
      * 
      * @param id 대상 대여자 아이디
      * @return SignUpSession
-     * @throws ResourceNotFoundException     저장되지 않은 유저의 상태를 가져오려 할때
-     * @throws SignUpSessionExpiredException 회원가입 세션이 만료됐을때
+     * @throws ResourceNotFoundException 저장되지 않은 유저의 상태를 가져오려 할때
+     * @throws InvalidValueException     회원가입 세션이 만료됐을때
      */
     public SignUpSession get(String id) {
         SignUpSession session = cache.get(id);
-        if (session == null)
-            throw new ResourceNotFoundException();
+        if (session == null) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
         if (session.getTtl() <= System.currentTimeMillis()) {
             remove(id);
-            throw new SignUpSessionExpiredException();
+            ApiErrorCode errorCode = ApiErrorCode.SIGN_UP_SESSION_EXPIRED;
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
         }
 
         return session;

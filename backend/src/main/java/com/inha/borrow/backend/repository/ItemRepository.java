@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.model.item.Item;
 import com.inha.borrow.backend.model.item.ItemDeleteRequestDto;
@@ -100,7 +101,8 @@ public class ItemRepository {
             String sql = "SELECT * FROM item WHERE id = ?;";
             return jdbcTemplate.queryForObject(sql, itemRowMapper, id);
         } catch (IncorrectResultSizeDataAccessException e) {
-            throw new ResourceNotFoundException();
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
 
@@ -118,7 +120,8 @@ public class ItemRepository {
         String sql = "UPDATE item SET state = 'DELETED', delete_reason = ? WHERE id = ?;";
         int affectedRow = jdbcTemplate.update(sql, deleteRequestDto.getDeleteReason(), id);
         if (affectedRow == 0) {
-            throw new ResourceNotFoundException();
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
 
@@ -141,7 +144,8 @@ public class ItemRepository {
                 item.getDeleteReason(),
                 item.getPrice(), item.getState(), id);
         if (affectedRow == 0) {
-            throw new ResourceNotFoundException();
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
 }

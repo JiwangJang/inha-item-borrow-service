@@ -33,9 +33,9 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Item>> getItemById(@PathVariable int id) {
+    public ResponseEntity<ApiResponse<Item>> getItemById(@PathVariable("id") int id) {
         Item result = itemService.getItemById(id);
-        return ResponseEntity.ok(new ApiResponse<>(true, result));
+        return ResponseEntity.ok(new ApiResponse<Item>(true, result));
     }
 
     @PostMapping
@@ -45,13 +45,13 @@ public class ItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> updateItem(@PathVariable int id, @RequestBody Item item) {
+    public ResponseEntity<ApiResponse<Void>> updateItem(@PathVariable("id") int id, @RequestBody Item item) {
         itemService.updateItemDetail(item, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(true, null));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteItem(@PathVariable int id,
+    public ResponseEntity<ApiResponse<Void>> deleteItem(@PathVariable("id") int id,
             @RequestBody ItemDeleteRequestDto deleteRequestDto) {
         itemService.deleteItem(id, deleteRequestDto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(true, null));
