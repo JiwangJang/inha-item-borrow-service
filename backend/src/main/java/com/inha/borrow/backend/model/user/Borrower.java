@@ -2,6 +2,9 @@ package com.inha.borrow.backend.model.user;
 
 import java.util.List;
 
+
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -11,11 +14,15 @@ import org.springframework.security.core.GrantedAuthority;
  * 
  * @author 장지왕
  */
+@Getter
+@Setter
 public class Borrower extends User {
     /**
      * 대여 정지 사용자인지 표시
      */
     boolean ban;
+
+
     /**
      * 학번
      */
@@ -24,6 +31,7 @@ public class Borrower extends User {
      * 보증금 반환계좌
      */
     String accountNumber;
+
 
     /**
      * 대여자 객체를 생성
@@ -47,4 +55,5 @@ public class Borrower extends User {
         this.studentNumber = studentNumber;
         this.accountNumber = accountNumber;
     }
+
 }
