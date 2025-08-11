@@ -1,14 +1,49 @@
 {
     "properties": [
         {
-            "name": "sms-service.api-key",
+            "name": "app.sms-service.api-key",
             "type": "java.lang.String",
             "description": "coolsms서비스 api-key"
         },
         {
-            "name": "sms-service.secret-api-key",
+            "name": "app.sms-service.secret-api-key",
             "type": "java.lang.String",
             "description": "coolsms서비스 secret-api-key"
+        },
+        {
+            "name": "app.jwt.secret-key",
+            "type": "java.lang.String",
+            "description": "JWT 서명키"
+        },
+        {
+            "name": "app.cloud.aws.s3.credentials.access-key",
+            "type": "java.lang.String",
+            "description": "S3 액세스키"
+        },
+        {
+            "name": "app.cloud.aws.s3.credentials.secret-key",
+            "type": "java.lang.String",
+            "description": "S3 비밀액세스키"
+        },
+        {
+            "name": "app.cloud.aws.s3.bucket",
+            "type": "java.lang.String",
+            "description": "S3 버킷"
+        },
+        {
+            "name": "app.cloud.aws.s3.dir.student-identification",
+            "type": "java.lang.String",
+            "description": "학생증사진을 저장하는 S3 폴더 경로"
+        },
+        {
+            "name": "app.cloud.aws.s3.dir.student-council-fee",
+            "type": "java.lang.String",
+            "description": "학생회비 납부내역 사진을 저장하는 S3 폴더 경로"
+        },
+        {
+            "name": "app.cloud.aws.s3.region",
+            "type": "java.lang.String",
+            "description": "S3 버킷 위치"
         }
     ]
 }

@@ -9,18 +9,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import com.inha.borrow.backend.model.user.Admin;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * admin table을 다루는 클래스
  */
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AdminRepository {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     /**
      * 아이디로 관리자 정보를 가져오는 메서드
@@ -33,16 +33,17 @@ public class AdminRepository {
     public Admin findById(String id) {
         String sql = "SELECT * FROM admin WHERE id=?;";
         try {
-            return jdbcTemplate.queryForObject(sql, (resultSet, rowNum) -> {
-                String adminId = resultSet.getString("id");
-                String password = resultSet.getString("password");
-                String email = resultSet.getString("email");
-                String name = resultSet.getString("name");
-                String phonenumber = resultSet.getString("phonenumber");
-                String position = resultSet.getString("position");
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                String adminId = rs.getString("id");
+                String password = rs.getString("password");
+                String email = rs.getString("email");
+                String name = rs.getString("name");
+                String phonenumber = rs.getString("phonenumber");
+                String position = rs.getString("position");
+                String refreshToken = rs.getString("refresh_token");
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(position);
                 List<GrantedAuthority> authorities = List.of(authority);
-                return new Admin(adminId, password, email, name, phonenumber, authorities);
+                return new Admin(adminId, password, email, name, phonenumber, authorities, refreshToken);
             }, id);
         } catch (IncorrectResultSizeDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;

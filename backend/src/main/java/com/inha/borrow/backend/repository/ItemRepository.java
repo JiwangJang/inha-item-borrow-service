@@ -1,24 +1,25 @@
 package com.inha.borrow.backend.repository;
 
-import org.springframework.dao.DataIntegrityViolationException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
+
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.enums.ItemState;
+import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
+import com.inha.borrow.backend.model.dto.item.ItemDto;
+import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
+import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import com.inha.borrow.backend.model.item.Item;
-import com.inha.borrow.backend.model.item.ItemDeleteRequestDto;
 
 import lombok.AllArgsConstructor;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.List;
 
 /**
  * Item객체와 관련된 DB작업을 하는 클래스
@@ -37,7 +38,7 @@ public class ItemRepository {
         item.setLocation(resultSet.getString("location"));
         item.setPassword(resultSet.getString("password"));
         item.setPrice(resultSet.getInt("price"));
-        item.setState(resultSet.getString("state"));
+        item.setState(ItemState.valueOf(resultSet.getString("state")));
         item.setDeleteReason(resultSet.getString("delete_reason"));
         return item;
     };
@@ -45,36 +46,29 @@ public class ItemRepository {
     /**
      * Item객체를 DB에 저장하는 메서드
      * 
-     * @param item
-     * @return DB에 저장되는 Item 아이디 값
+     * @param itemDto
+     * @return Item
      * @author 장지왕
      */
-    public int save(Item item) {
-        // 공백문자인지 체크
-        if (!StringUtils.hasText(item.getLocation()) ||
-                !StringUtils.hasText(item.getName()) ||
-                !StringUtils.hasText(item.getPassword())) {
-            throw new DataIntegrityViolationException("location, name, password column can't be NULL");
-        }
-
+    @SuppressWarnings("null")
+    public Item save(ItemDto itemDto) {
         String sql = """
-                INSERT INTO item(name, location, password, delete_reason, price)
-                VALUES(?, ?, ?, ?, ?);
+                INSERT INTO item(name, location, password, price)
+                VALUES(?, ?, ?, ?);
                 """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update((connection) -> {
             PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 
-            ps.setString(1, item.getName());
-            ps.setString(2, item.getLocation());
-            ps.setString(3, item.getPassword());
-            ps.setString(4, item.getDeleteReason());
-            ps.setInt(5, item.getPrice());
+            ps.setString(1, itemDto.getName());
+            ps.setString(2, itemDto.getLocation());
+            ps.setString(3, itemDto.getPassword());
+            ps.setInt(4, itemDto.getPrice());
             return ps;
         }, keyHolder);
-
-        return keyHolder.getKey().intValue();
+        int id = keyHolder.getKey().intValue();
+        return itemDto.getItem(id);
     }
 
     /**
@@ -114,9 +108,6 @@ public class ItemRepository {
      * @throws ResourceNotFoundException 없는 자원에 대해 삭제 요청을 보낸경우
      */
     public void deleteItem(int id, ItemDeleteRequestDto deleteRequestDto) {
-        if (!StringUtils.hasText(deleteRequestDto.getDeleteReason())) {
-            throw new DataIntegrityViolationException("location, name, password column can't be NULL");
-        }
         String sql = "UPDATE item SET state = 'DELETED', delete_reason = ? WHERE id = ?;";
         int affectedRow = jdbcTemplate.update(sql, deleteRequestDto.getDeleteReason(), id);
         if (affectedRow == 0) {
@@ -132,13 +123,7 @@ public class ItemRepository {
      * @param id   변경할 Item객체의 아이디
      * @throws ResourceNotFoundException 없는 자원에 대해 변경 요청을 보낸 경우
      */
-    public void updateItem(Item item, int id) {
-        // 공백문자인지 체크
-        if (!StringUtils.hasText(item.getLocation()) ||
-                !StringUtils.hasText(item.getName()) ||
-                !StringUtils.hasText(item.getPassword())) {
-            throw new DataIntegrityViolationException("location, name, password column can't be NULL");
-        }
+    public void updateItem(ItemReviseRequestDto item, int id) {
         String sql = "UPDATE item SET name = ?, location = ?, password = ?, delete_reason = ?, price = ?, state = ? WHERE id = ?;";
         int affectedRow = jdbcTemplate.update(sql, item.getName(), item.getLocation(), item.getPassword(),
                 item.getDeleteReason(),

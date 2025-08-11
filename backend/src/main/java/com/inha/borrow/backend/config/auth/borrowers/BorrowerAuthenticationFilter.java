@@ -13,8 +13,8 @@ import org.springframework.web.server.ServerErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.config.auth.handler.LoginSuccessHandler;
 import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.model.dto.auth.LoginRequestDto;
 import com.inha.borrow.backend.config.auth.handler.LoginFailureHandler;
-import com.inha.borrow.backend.model.auth.LoginRequestDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

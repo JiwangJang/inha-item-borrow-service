@@ -1,10 +1,13 @@
 package com.inha.borrow.backend.controller;
 
-import com.inha.borrow.backend.model.item.Item;
-import com.inha.borrow.backend.model.item.ItemDeleteRequestDto;
-import com.inha.borrow.backend.model.response.ApiResponse;
+import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
+import com.inha.borrow.backend.model.dto.item.ItemDto;
+import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
+import com.inha.borrow.backend.model.dto.response.ApiResponse;
+import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.service.ItemService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,20 +42,21 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Item>> createItem(@RequestBody Item item) {
-        Item newItem = itemService.createItem(item);
+    public ResponseEntity<ApiResponse<Item>> createItem(@RequestBody @Valid ItemDto itemDto) {
+        Item newItem = itemService.createItem(itemDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, newItem));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> updateItem(@PathVariable("id") int id, @RequestBody Item item) {
-        itemService.updateItemDetail(item, id);
+    public ResponseEntity<ApiResponse<Void>> updateItem(@PathVariable("id") int id,
+            @Valid @RequestBody ItemReviseRequestDto itemReviseRequestDto) {
+        itemService.updateItemDetail(itemReviseRequestDto, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(true, null));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteItem(@PathVariable("id") int id,
-            @RequestBody ItemDeleteRequestDto deleteRequestDto) {
+            @Valid @RequestBody ItemDeleteRequestDto deleteRequestDto) {
         itemService.deleteItem(id, deleteRequestDto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(true, null));
     }

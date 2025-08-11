@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.model.auth;
+package com.inha.borrow.backend.model.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class SMSCodeVerifyDto {
-    String id;
-    String code;
+    private String id;
+    private String code;
 }

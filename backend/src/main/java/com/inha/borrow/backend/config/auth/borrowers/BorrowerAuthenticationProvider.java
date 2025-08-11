@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.inha.borrow.backend.model.user.Borrower;
+import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerService;
 
 import lombok.AllArgsConstructor;

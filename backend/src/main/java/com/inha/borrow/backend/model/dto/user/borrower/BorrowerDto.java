@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.model.dto;
+package com.inha.borrow.backend.model.dto.user.borrower;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

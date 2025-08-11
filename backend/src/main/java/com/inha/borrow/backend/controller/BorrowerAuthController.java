@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inha.borrow.backend.model.auth.PasswordVerifyRequestDto;
-import com.inha.borrow.backend.model.auth.SMSCodeRequestDto;
-import com.inha.borrow.backend.model.auth.SMSCodeVerifyDto;
+import com.inha.borrow.backend.model.dto.auth.PasswordVerifyRequestDto;
+import com.inha.borrow.backend.model.dto.auth.SMSCodeRequestDto;
+import com.inha.borrow.backend.model.dto.auth.SMSCodeVerifyDto;
 import com.inha.borrow.backend.service.BorrowerVerificationService;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +35,8 @@ public class BorrowerAuthController {
      * @author 장지왕
      */
     @GetMapping("/id-check")
-    public ResponseEntity<Void> verifyId(@RequestParam String id) {
+    public ResponseEntity<Void> verifyId(
+            @Valid @RequestParam("id") @Pattern(regexp = "^[a-zA-Z0-9]{4,10}$", message = "아이디는 영어대소문자와 숫자를 조합해 4~10자여야 합니다.") String id) {
         borrowerVerificationService.verifyId(id);
         return ResponseEntity.ok().build();
     }
@@ -46,7 +49,7 @@ public class BorrowerAuthController {
      * @author 장지왕
      */
     @PatchMapping("/password-check")
-    public ResponseEntity<Void> verifyPassword(@RequestBody PasswordVerifyRequestDto dto) {
+    public ResponseEntity<Void> verifyPassword(@Valid @RequestBody PasswordVerifyRequestDto dto) {
         borrowerVerificationService.verifyPassword(dto.getId(), dto.getPassword());
         return ResponseEntity.ok().build();
     }

@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.model.auth;
+package com.inha.borrow.backend.model.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import org.springframework.stereotype.Component;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
-import com.inha.borrow.backend.model.auth.SignUpSession;
+import com.inha.borrow.backend.model.entity.SignUpSession;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.util.ServiceUtils;

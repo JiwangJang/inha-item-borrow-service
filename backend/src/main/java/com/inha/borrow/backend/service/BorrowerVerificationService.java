@@ -8,7 +8,7 @@ import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.cache.SMSCodeCache;
 import com.inha.borrow.backend.cache.SignUpSessionCache;
 import com.inha.borrow.backend.enums.ApiErrorCode;
-import com.inha.borrow.backend.model.auth.SMSCode;
+import com.inha.borrow.backend.model.entity.SMSCode;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.MessageServiceException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
@@ -21,7 +21,7 @@ import net.nurigo.sdk.message.model.Message;
 @Service
 @AllArgsConstructor
 public class BorrowerVerificationService {
-    private final DefaultMessageService messageService;
+    // private final DefaultMessageService messageService;
     private final IdCache idCache;
     private final SMSCodeCache smsCodeCache;
     private final SignUpSessionCache signUpSessionCache;
@@ -38,10 +38,6 @@ public class BorrowerVerificationService {
     }
 
     public void verifyId(String id) {
-        if (!id.matches("^[a-zA-Z0-9]{4,10}$")) {
-            ApiErrorCode errorCode = ApiErrorCode.INVALID_ID;
-            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
-        }
         if (idCache.contains(id)) {
             ApiErrorCode errorCode = ApiErrorCode.EXIST_ID;
             throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
@@ -51,12 +47,6 @@ public class BorrowerVerificationService {
     }
 
     public void verifyPassword(String id, String password) {
-        // 조건 : 영어 대소문자와 숫자, 특수기호(!@#$%^&*()_\-+=)를 포함하여 9~13자
-        if (!password.matches(
-                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=])[A-Za-z\\d!@#$%^&*()_\\-+=]{9,13}$")) {
-            ApiErrorCode errorCode = ApiErrorCode.INVALID_PASSWORD;
-            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
-        }
         signUpSessionCache.passwordCheckSuccess(id);
     }
 

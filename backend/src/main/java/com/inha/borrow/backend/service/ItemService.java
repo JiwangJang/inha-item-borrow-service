@@ -1,7 +1,9 @@
 package com.inha.borrow.backend.service;
 
-import com.inha.borrow.backend.model.item.Item;
-import com.inha.borrow.backend.model.item.ItemDeleteRequestDto;
+import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
+import com.inha.borrow.backend.model.dto.item.ItemDto;
+import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
+import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.repository.ItemRepository;
 
 import lombok.AllArgsConstructor;
@@ -27,10 +29,8 @@ public class ItemService {
      * @return 저장된 item객체
      * @author 장지왕
      */
-    public Item createItem(Item item) {
-        int id = itemRepository.save(item);
-        item.setId(id);
-        return item;
+    public Item createItem(ItemDto item) {
+        return itemRepository.save(item);
     }
 
     /**
@@ -70,7 +70,7 @@ public class ItemService {
      * @param item 변경 내용이 담긴 Item
      * @param id   변경할 Item객체의 아이디
      */
-    public void updateItemDetail(Item item, int id) {
-        itemRepository.updateItem(item, id);
+    public void updateItemDetail(ItemReviseRequestDto itemReviseRequestDto, int id) {
+        itemRepository.updateItem(itemReviseRequestDto, id);
     }
 }
