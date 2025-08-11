@@ -9,8 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.inha.borrow.backend.cache.SMSCodeCache;
-import com.inha.borrow.backend.model.auth.SMSCode;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+import com.inha.borrow.backend.model.entity.SMSCode;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 
 public class SMSCodeCacheTest {

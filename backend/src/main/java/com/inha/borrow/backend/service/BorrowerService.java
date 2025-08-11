@@ -1,17 +1,18 @@
 package com.inha.borrow.backend.service;
 
-import com.inha.borrow.backend.model.dto.PatchPasswordDto;
-import com.inha.borrow.backend.model.exception.PasswordMismatchException;
-import com.inha.borrow.backend.model.user.Borrower;
-import org.springframework.security.access.method.P;
+import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.model.dto.user.PatchPasswordDto;
+import com.inha.borrow.backend.model.entity.user.Borrower;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.inha.borrow.backend.repository.BorrowerRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 
 /**
@@ -19,9 +20,9 @@ import java.util.List;
  * 
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BorrowerService implements UserDetailsService {
-    private BorrowerRepository borrowerRepository;
+    private final BorrowerRepository borrowerRepository;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -148,7 +149,8 @@ public class BorrowerService implements UserDetailsService {
         String newPassword = patchPasswordDto.getNewPassword();
         Borrower borrower = borrowerRepository.findById(id);
         if (!passwordEncoder.matches(patchPasswordDto.getOriginPassword(), borrower.getPassword())) {
-            throw new PasswordMismatchException("기존 비밀번호가 일치하지 않습니다");
+            ApiErrorCode errorCode = ApiErrorCode.INVALID_PASSWORD;
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
         }
         borrowerRepository.patchPassword(newPassword, id);
     }

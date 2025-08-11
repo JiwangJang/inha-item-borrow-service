@@ -14,10 +14,10 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 
 @Configuration
 public class Config {
-    @Value("sms-service.api-key")
-    private String smsServiceApiKey;
-    @Value("sms-service.secret-api-key")
-    private String smsServiceSecretApiKey;
+    // @Value("sms-service.api-key")
+    // private String smsServiceApiKey;
+    // @Value("sms-service.secret-api-key")
+    // private String smsServiceSecretApiKey;
 
     @Bean
     JdbcTemplate jdbcTemplate(DataSource dataSource) {
@@ -29,8 +29,9 @@ public class Config {
         return new ObjectMapper();
     }
 
-    @Bean
-    DefaultMessageService messageService() {
-        return NurigoApp.INSTANCE.initialize(smsServiceApiKey, smsServiceSecretApiKey, "https://api.solapi.com");
-    }
+    // @Bean
+    // DefaultMessageService messageService() {
+    // return NurigoApp.INSTANCE.initialize(smsServiceApiKey,
+    // smsServiceSecretApiKey, "https://api.solapi.com");
+    // }
 }

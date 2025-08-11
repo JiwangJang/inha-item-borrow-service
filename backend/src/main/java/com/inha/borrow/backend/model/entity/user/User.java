@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.model.user;
+package com.inha.borrow.backend.model.entity.user;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ public abstract class User implements UserDetails {
     String email;
     String name;
     String phonenumber;
+    String refreshToken;
     List<GrantedAuthority> authorities;
 
     public String getUsername() {

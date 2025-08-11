@@ -1,10 +1,13 @@
-package com.inha.borrow.backend.model.user;
+package com.inha.borrow.backend.model.entity.user;
 
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 
 import com.inha.borrow.backend.enums.Role;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 관리자(Admin) 유저를 나타내는 클래스
@@ -13,6 +16,8 @@ import com.inha.borrow.backend.enums.Role;
  * 
  * @author 장지왕
  */
+@Getter
+@Setter
 public class Admin extends User {
     /**
      * 관리자 직책. 예: "학생회장", "부학생회장", "사업국장" 등
@@ -36,8 +41,8 @@ public class Admin extends User {
      * @param authorities 관리자 권한 목록(무조건 한개 담겨있음)
      */
     public Admin(String id, String password, String email, String name, String phonenumber,
-            List<GrantedAuthority> authorities) {
-        super(id, password, email, name, phonenumber, authorities);
+            List<GrantedAuthority> authorities, String refreshToken) {
+        super(id, password, email, name, phonenumber, refreshToken, authorities);
 
         Role role = Role.valueOf(authorities.get(0).getAuthority());
 

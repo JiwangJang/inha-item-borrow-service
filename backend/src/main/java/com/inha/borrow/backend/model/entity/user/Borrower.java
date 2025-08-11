@@ -1,7 +1,6 @@
-package com.inha.borrow.backend.model.user;
+package com.inha.borrow.backend.model.entity.user;
 
 import java.util.List;
-
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +21,6 @@ public class Borrower extends User {
      */
     boolean ban;
 
-
     /**
      * 학번
      */
@@ -31,7 +29,6 @@ public class Borrower extends User {
      * 보증금 반환계좌
      */
     String accountNumber;
-
 
     /**
      * 대여자 객체를 생성
@@ -49,8 +46,9 @@ public class Borrower extends User {
      * @param accountNumber 대여자 보증금 반환 계좌
      */
     public Borrower(String id, String password, String email, String name, String phonenumber,
-            List<GrantedAuthority> authorities, boolean ban, String studentNumber, String accountNumber) {
-        super(id, password, email, name, phonenumber, authorities);
+            List<GrantedAuthority> authorities, boolean ban, String studentNumber, String accountNumber,
+            String refreshToken) {
+        super(id, password, email, name, phonenumber, refreshToken, authorities);
         this.ban = ban;
         this.studentNumber = studentNumber;
         this.accountNumber = accountNumber;

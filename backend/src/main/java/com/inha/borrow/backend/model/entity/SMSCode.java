@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.model.auth;
+package com.inha.borrow.backend.model.entity;
 
 import lombok.Data;
 

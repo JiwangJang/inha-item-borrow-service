@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
-import com.inha.borrow.backend.model.auth.SMSCode;
+import com.inha.borrow.backend.model.entity.SMSCode;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 

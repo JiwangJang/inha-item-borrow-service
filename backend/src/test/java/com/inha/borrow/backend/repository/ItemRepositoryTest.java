@@ -1,8 +1,8 @@
 package com.inha.borrow.backend.repository;
 
+import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
+import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import com.inha.borrow.backend.model.item.Item;
-import com.inha.borrow.backend.model.item.ItemDeleteRequestDto;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
@@ -178,7 +178,8 @@ class ItemRepositoryTest {
         item.setState("BORROWED");
         ;
         // then
-        assertThatThrownBy(() -> repository.updateItem(item, id)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> repository.updateItem(item,
+                id)).isInstanceOf(DataAccessException.class);
     }
 
 }

@@ -13,8 +13,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.cache.SignUpSessionCache;
-import com.inha.borrow.backend.model.auth.SignUpSession;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+import com.inha.borrow.backend.model.entity.SignUpSession;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 
 public class SignUpSessionCacheTest {
