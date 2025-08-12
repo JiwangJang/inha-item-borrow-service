@@ -5,5 +5,5 @@ public enum Role {
     VICE_PRESIDENT,
     DIVISION_HEAD,
     DIVISION_MEMBER,
-    USER
+    BORROWER
 }

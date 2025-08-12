@@ -30,8 +30,9 @@
 | 버그 수정   | `fix/`      | `fix/signup-validation-error` |
 | 리팩토링    | `refactor/` | `refactor/user-service`       |
 | 문서 작성   | `docs/`     | `docs/readme-convention`      |
-| 테스트 코드 | `test/`     | `test/user-service-test`      |
 | 설정 변경   | `chore/`    | `chore/gradle-dependencies`   |
+
+-   기능 개발이나 리팩토링시 같이 테스트도 수행합니다.
 
 -   Git Flow 흐름:
     1. `dev` 브랜치에서 기능 브랜치 분기
