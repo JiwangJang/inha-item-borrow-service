@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.authentication.unit;
+package com.inha.borrow.backend.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.inha.borrow.backend.cache.SMSCodeCache;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.model.entity.SMSCode;
 import com.inha.borrow.backend.model.exception.InvalidValueException;

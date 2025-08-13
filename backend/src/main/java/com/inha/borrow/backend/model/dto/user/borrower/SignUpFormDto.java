@@ -17,7 +17,7 @@ public class SignUpFormDto {
     @NotBlank
     private String password;
     @NotBlank
-    @Pattern(regexp = "\"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$\"")
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
     private String email;
     @NotBlank
     private String name;
