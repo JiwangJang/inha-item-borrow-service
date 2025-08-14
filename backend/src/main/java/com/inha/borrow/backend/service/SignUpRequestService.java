@@ -1,100 +1,128 @@
 package com.inha.borrow.backend.service;
-import com.inha.borrow.backend.enums.EvaluateSignUP;
-import com.inha.borrow.backend.model.dto.BorrowerDto;
-import com.inha.borrow.backend.model.dto.EvaluationRequest;
-import com.inha.borrow.backend.model.dto.SignUpForm;
+
+import com.inha.borrow.backend.cache.SignUpSessionCache;
+import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.enums.SignUpRequestState;
+import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
+import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
+import com.inha.borrow.backend.model.entity.SignUpForm;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.SignUpRequestRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
  * signup_request table을 다루는 클래스
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SignUpRequestService {
-
-    private PasswordEncoder passwordEncoder;
-    private SignUpRequestRepository signUpRequestRepository;
-    private BorrowerRepository borrowerRepository;
-    private JwtTokenService jwtTokenService;
-
+    private final PasswordEncoder passwordEncoder;
+    private final SignUpRequestRepository signUpRequestRepository;
+    private final BorrowerRepository borrowerRepository;
+    private final JwtTokenService jwtTokenService;
+    private final SignUpSessionCache signUpSessionCache;
+    private final S3Service s3Service;
 
     /**
-     *signUpRequest를 저장하는 메서드
+     * signUpRequest를 저장하는 메서드
      *
      * @param signUpForm
      * @return 저장 정보
      * @author 형민재
      */
-    public SignUpForm saveSignUpRequest(SignUpForm signUpForm){
-        String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
-        signUpForm.setPassword(encodedPassword);
-        return signUpRequestRepository.save(signUpForm);
+    @Transactional
+    public SignUpForm saveSignUpRequest(SignUpForm signUpForm) {
+        if (signUpSessionCache.isAllPassed(signUpForm.getId())) {
+            String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
+            signUpForm.setPassword(encodedPassword);
+            try{
+                return signUpRequestRepository.save(signUpForm);
+        }catch (DataAccessException e){
+                s3Service.deleteAllFile("bucket",signUpForm.getId());
+                throw e;
+            }
+        }
+        ApiErrorCode errorCode = ApiErrorCode.SIGN_UP_PASS_FAILED;
+        throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
     }
 
     /**
-     *signUpRequest들을 반환하는 메서드
+     * signUpRequest들을 반환하는 메서드
      *
      * @return request 목록
      * @author 형민재
      */
-    public List<SignUpForm>findSignRequest(){
+    public List<SignUpForm> findSignUpRequest() {
         return signUpRequestRepository.findAll();
+    }
+    public SignUpForm findById(String id){
+        return signUpRequestRepository.findById(id);
     }
 
     /**
-     *signUpRequest의 state rejection을 설정하는 메서드
+     * signUpRequest의 state rejection을 설정하는 메서드
      *
-     * @param evaluationRequest
+     * @param evaluationRequestDto
      * @param id
      * @return 수정 정보
      * @author 형민재
      */
 
-    public void updateStateAndCreateBorrower(EvaluationRequest evaluationRequest, String id){
-        if(EvaluateSignUP.PERMIT.equals(evaluationRequest.getState())){
+    public void updateStateAndCreateBorrower(EvaluationRequestDto evaluationRequestDto, String id) {
+        if (SignUpRequestState.PERMIT == evaluationRequestDto.getState()) {
             SignUpForm signUpForm = signUpRequestRepository.findById(id);
-                BorrowerDto borrower = transition(signUpForm);
-                borrower.setRefreshToken(jwtTokenService.createToken(id));
-                borrowerRepository.save(borrower);
+            BorrowerDto borrower = transition(signUpForm);
+            borrower.setRefreshToken(jwtTokenService.createToken(id));
+            s3Service.deleteAllFile("bucket",id);
+            borrowerRepository.save(borrower);
         }
-        signUpRequestRepository.patchEvaluation(evaluationRequest,id);
+        signUpRequestRepository.patchEvaluation(evaluationRequestDto, id);
     }
 
     /**
-     *signUpRequest를 수정하는 메서드
+     * signUpRequest를 수정하는 메서드
      *
      * @param signUpForm
      * @param id
      * @return 수정 정보
      * @author 형민재
      */
-    public void patchSignUpRequest(SignUpForm signUpForm, String id) {
+    public void patchSignUpRequest(SignUpForm signUpForm, String id, String originPassword) {
         SignUpForm signUpForm1 = signUpRequestRepository.findById(id);
-        if (passwordEncoder.matches(signUpForm.getPassword(), signUpForm1.getPassword())) {
+        if (passwordEncoder.matches(originPassword, signUpForm1.getPassword())) {
             String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
             signUpForm.setPassword(encodedPassword);
             signUpRequestRepository.patchSignUpRequest(signUpForm, id);
+        }else {
+            ApiErrorCode errorCode = ApiErrorCode.INCORRECT_PASSWORD;
+            throw new InvalidValueException(errorCode.name(),errorCode.getMessage());
         }
     }
 
     /**
-     *signUpRequest를 수정하는 메서드
+     * signUpRequest를 수정하는 메서드
      *
      * @param id
      * @author 형민재
      */
-    public void deleteSignUpRequest(String id, String password){
+    public void deleteSignUpRequest(String id, String password) {
         SignUpForm signUpForm = signUpRequestRepository.findById(id);
-        if(passwordEncoder.matches(signUpForm.getPassword(), password)) {
+        if (passwordEncoder.matches(signUpForm.getPassword(), password)) {
             signUpRequestRepository.deleteSignUpRequest(id, password);
+        } else {
+            ApiErrorCode errorCode = ApiErrorCode.INCORRECT_PASSWORD;
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
         }
     }
-    public BorrowerDto transition(SignUpForm signUpForm){
+
+    private BorrowerDto transition(SignUpForm signUpForm) {
         return new BorrowerDto(
                 signUpForm.getId(),
                 signUpForm.getPassword(),
@@ -103,9 +131,6 @@ public class SignUpRequestService {
                 signUpForm.getPhoneNumber(),
                 signUpForm.getIdentityPhoto(),
                 signUpForm.getAccountNumber(),
-                null
-        );
+                null);
     }
-
 }
-
