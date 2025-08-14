@@ -1,43 +1,46 @@
 package com.inha.borrow.backend.repository;
-import com.inha.borrow.backend.model.dto.EvaluationRequest;
-import com.inha.borrow.backend.model.dto.SignUpForm;
+
+import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
+import com.inha.borrow.backend.model.entity.SignUpForm;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import lombok.AllArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 import java.util.List;
 
 /**
  * signup_request table을 다루는 클래스
  */
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SignUpRequestRepository {
-    private final PasswordEncoder passwordEncoder;
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-/**
- * signup_request를 저장하는 메서드
- * @param signupform
- * @return SignUpForm
- * @author 형민재
-*/
+    private RowMapper<SignUpForm> rowMapper = (rs, rowNum) -> {
+        String id = rs.getString("id");
+        String password = rs.getString("password");
+        String email = rs.getString("email");
+        String name = rs.getString("name");
+        String phoneNumber = rs.getString("phonenumber");
+        String identityPhoto = rs.getString("identity_Photo");
+        String StudentCouncilFeePhoto = rs.getString("Student_Council_Fee_Photo");
+        String accountNumber = rs.getString("account_number");
+        return new SignUpForm(id, password, email, name, phoneNumber, identityPhoto, StudentCouncilFeePhoto,
+                accountNumber);
+    };
+
+    /**
+     * signup_request를 저장하는 메서드
+     * 
+     * @param signupform
+     * @return SignUpForm
+     * @author 형민재
+     */
     public SignUpForm save(SignUpForm signupform) {
-        if (!StringUtils.hasText(signupform.getId()) ||
-                !StringUtils.hasText(signupform.getPassword()) ||
-                !StringUtils.hasText(signupform.getEmail()) ||
-                !StringUtils.hasText(signupform.getName()) ||
-                !StringUtils.hasText(signupform.getPhoneNumber()) ||
-                !StringUtils.hasText(signupform.getIdentityPhoto()) ||
-                !StringUtils.hasText(signupform.getStudentCouncilFeePhoto()) ||
-                !StringUtils.hasText(signupform.getAccountNumber())) {
-            throw new DataIntegrityViolationException("공백값은 넣을 수 없습니다");
-        }
         String sql = "INSERT INTO signup_request(id, password, email, name, phonenumber, " +
                 "identity_photo, student_council_fee_photo, account_number) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(
@@ -52,6 +55,7 @@ public class SignUpRequestRepository {
                 signupform.getAccountNumber());
         return signupform;
     }
+
     /**
      * signup_request들을 반환하는 메서드
      *
@@ -61,10 +65,12 @@ public class SignUpRequestRepository {
 
     public List<SignUpForm> findAll() {
         String sql = "SELECT * FROM signup_request";
-        return jdbcTemplate.query(sql, rowMapper());
+        return jdbcTemplate.query(sql, rowMapper);
     }
+
     /**
      * signup_request를 id로 찾는 메서드
+     * 
      * @param id
      * @return SignUpForm
      * @author 형민재
@@ -72,10 +78,11 @@ public class SignUpRequestRepository {
 
     public SignUpForm findById(String id) {
         try {
-            String sql = "SELECT * FROM signup_request WHERE ID = ?";
-            return jdbcTemplate.queryForObject(sql, rowMapper(), id);
+            String sql = "SELECT * FROM signup_request WHERE id = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotFoundException("해당 아이디를 가진 리퀘스트를 찾을 수 없습니다");
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
 
@@ -88,14 +95,11 @@ public class SignUpRequestRepository {
      * @author 형민재
      */
 
-    public void patchEvaluation(EvaluationRequest evaluationRequest, String id) {
-        if (!StringUtils.hasText(evaluationRequest.getState()) ||
-                !StringUtils.hasText(evaluationRequest.getRejectReason())) {
-            throw new DataIntegrityViolationException("공백값은 넣을 수 없습니다");
-        }
+    public void patchEvaluation(EvaluationRequestDto evaluationRequest, String id) {
         String sql = "UPDATE signup_request SET state = ?, rejectReason = ? WHERE id = ?";
-        jdbcTemplate.update(sql, evaluationRequest.getState(),evaluationRequest.getRejectReason(), id);
+        jdbcTemplate.update(sql, evaluationRequest.getState(), evaluationRequest.getRejectReason(), id);
     }
+
     /**
      * signup_request를 수정하는 메서드
      *
@@ -106,19 +110,9 @@ public class SignUpRequestRepository {
      */
 
     public void patchSignUpRequest(SignUpForm signUpForm, String id) {
-        if (!StringUtils.hasText(signUpForm.getId()) ||
-                !StringUtils.hasText(signUpForm.getPassword()) ||
-                !StringUtils.hasText(signUpForm.getEmail()) ||
-                !StringUtils.hasText(signUpForm.getName()) ||
-                !StringUtils.hasText(signUpForm.getPhoneNumber()) ||
-                !StringUtils.hasText(signUpForm.getIdentityPhoto()) ||
-                !StringUtils.hasText(signUpForm.getStudentCouncilFeePhoto()) ||
-                !StringUtils.hasText(signUpForm.getAccountNumber())) {
-            throw new DataIntegrityViolationException("공백값은 넣을 수 없습니다");
-        }
         String sql = "UPDATE signup_request SET id = ? , password = ?, email = ?, name = ?, phonenumber = ?, " +
                 "identity_Photo = ?,student_council_fee_photo = ? ,account_number = ? WHERE id =?";
-        jdbcTemplate.update(sql,
+        int affectedRow = jdbcTemplate.update(sql,
                 signUpForm.getId(),
                 signUpForm.getPassword(),
                 signUpForm.getEmail(),
@@ -128,7 +122,12 @@ public class SignUpRequestRepository {
                 signUpForm.getStudentCouncilFeePhoto(),
                 signUpForm.getAccountNumber(),
                 id);
+        if (affectedRow == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
+
     /**
      * signup_request를 삭제하는 메서드
      *
@@ -138,22 +137,11 @@ public class SignUpRequestRepository {
      */
 
     public void deleteSignUpRequest(String id, String password) {
-            String sql = "DELETE FROM signup_request WHERE id = ?";
-            jdbcTemplate.update(sql, id);
+        String sql = "DELETE FROM signup_request WHERE id = ?";
+        int affectedRow = jdbcTemplate.update(sql, id);
+        if (affectedRow == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
-
-    public RowMapper<SignUpForm> rowMapper() {
-        return (rs, rowNum) -> {
-            String id = rs.getString("id");
-            String password = rs.getString("password");
-            String email = rs.getString("email");
-            String name = rs.getString("name");
-            String phoneNumber = rs.getString("phonenumber");
-            String identityPhoto = rs.getString("identity_Photo");
-            String StudentCouncilFeePhoto = rs.getString("Student_Council_Fee_Photo");
-            String accountNumber = rs.getString("account_number");
-            return new SignUpForm(id,password,email,name, phoneNumber, identityPhoto, StudentCouncilFeePhoto, accountNumber);
-        };
-    }
-
 }

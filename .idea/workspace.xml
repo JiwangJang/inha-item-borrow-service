@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="265b5cd3-076b-41bb-bf4e-b4e018b144cc" name="변경" comment="S3Service 삭제 메서드 추가&#10;saveSignUpRequest s3 transactional 추가&#10;updateStateAndCreateBorrower s3 삭제 추가&#10;patchSignUpRequest originPassword 인자 추가&#10;&#10;rewriteRequest &#10;-세션확인&#10;-아이디확인&#10;-파일이 하나만 들어와도 patch 가능하게 로직 추가&#10;&#10;의문 &#10;사용자가 id를 수정하면 수정 전 아이디 경로로 저장한 s3는 어떻게 처리?">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gradlew.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/controller/SignUpRequestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/controller/SignUpRequestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/controller/TestController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/user/borrower/SignUpFormDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/user/borrower/SignUpFormDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/S3Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/S3Service.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/SignUpRequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/SignUpRequestService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application-exam.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/inha/borrow/backend/BackendApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/inha/borrow/backend/repository/SignUpRequestRepositoryTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/inha/borrow/backend/service/SignUpRequestServiceTest.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/backend">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/backend">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="backend" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="backend" type="f1a62948:ProjectNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit5 Test Class" />
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="= &lt;jiwang0917@naver.com&gt;" />
+      </list>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature/item-api" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;dmddo1111111&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/JiwangJang/inha-item-borrow-service.git&quot;,
+    &quot;accountId&quot;: &quot;ce57991d-d445-4319-bef0-9e3a09be3267&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="30EHpEPJFzwri2YaZ7NfMNmyXKu" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.BackendApplicationTests.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.BorrowerRepositoryTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.BorrowerRepositoryTest.대여자저장.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.BorrowerRepositoryTest.대여자조회.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.C:/Users/9512h/Desktop/inha-item-borrow-service/backend/build.gradle.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemRepositoryTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemRepositoryTest.아이디로삭제.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemRepositoryTest.아이디로찾기.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemRepositoryTest.아이템업데이트.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemRepositoryTest.아이템저장.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemRepositoryTest.이름으로찾기.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemRepositoryTest.전체조회.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemServiceTest.아이디로조회.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemServiceTest.아이템삭제.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemServiceTest.아이템수정.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemServiceTest.아이템저장.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ItemServiceTest.전체조회.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend 빌드.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.소스 다운로드.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BorrowerRepositoryTest.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.BackendApplication.executor&quot;: &quot;Run&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;s3revise&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/9512h/Desktop/inha-item-borrow-service/backend/src/main/java/com/inha/borrow/backend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\9512h\Desktop\inha-item-borrow-service\backend\src\main\java\com\inha\borrow\backend" />
+      <recent name="C:\Users\9512h\Desktop\inha-item-borrow-service\backend\src\main\java\com\inha\borrow\backend\enums" />
+      <recent name="C:\Users\9512h\Desktop\inha-item-borrow-service\backend\src\main\java\com\inha\borrow\backend\model" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.inha.borrow.backend.service" />
+      <recent name="com.inha.borrow.backend.repository" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.inha.borrow.backend.model.auth" />
+      <recent name="com.inha.borrow.backend.model.user" />
+      <recent name="com.inha.borrow.backend.service" />
+      <recent name="com.inha.borrow.backend.repository" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.BackendApplication">
+    <configuration name="BackendApplicationTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.inha.borrow.backend.BackendApplicationTests&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="BorrowerRepositoryTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.inha.borrow.backend.repository.BorrowerRepositoryTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="BorrowerRepositoryTest.대여자저장" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.inha.borrow.backend.repository.BorrowerRepositoryTest.대여자저장&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="BorrowerRepositoryTest.대여자조회" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.inha.borrow.backend.repository.BorrowerRepositoryTest.대여자조회&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="BorrowerRepositoryTest.대여자조회" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.inha.borrow.backend.repository.BorrowerRepositoryTest.대여자조회&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="ItemServiceTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.inha.borrow.backend.service.ItemServiceTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="BorrowerRepositoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="backend.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.inha.borrow.backend.repository.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.inha.borrow.backend.repository" />
+      <option name="MAIN_CLASS_NAME" value="com.inha.borrow.backend.repository.BorrowerRepositoryTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="backend.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.inha.borrow.backend.BackendApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.BackendApplicationTests" />
+        <item itemvalue="Gradle.BorrowerRepositoryTest.대여자저장" />
+        <item itemvalue="Gradle.BorrowerRepositoryTest" />
+        <item itemvalue="Gradle.ItemServiceTest" />
+        <item itemvalue="JUnit.BorrowerRepositoryTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="StructureViewState">
+    <option name="selectedTab" value="논리" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="265b5cd3-076b-41bb-bf4e-b4e018b144cc" name="변경" comment="" />
+      <created>1753185992589</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1753185992589</updated>
+      <workItem from="1753185993885" duration="8102000" />
+      <workItem from="1753261473087" duration="10891000" />
+      <workItem from="1753275662459" duration="34473000" />
+      <workItem from="1753518887598" duration="9070000" />
+      <workItem from="1753574257554" duration="35530000" />
+      <workItem from="1753692661799" duration="5017000" />
+      <workItem from="1753699683866" duration="201000" />
+      <workItem from="1753699896271" duration="725000" />
+      <workItem from="1753700633789" duration="175000" />
+      <workItem from="1753700821034" duration="234000" />
+      <workItem from="1753701066661" duration="7071000" />
+      <workItem from="1753869661453" duration="23598000" />
+      <workItem from="1754094894393" duration="13769000" />
+      <workItem from="1754194419422" duration="13703000" />
+      <workItem from="1754379848666" duration="8287000" />
+      <workItem from="1754641747480" duration="4171000" />
+      <workItem from="1754714240465" duration="7118000" />
+      <workItem from="1754725013046" duration="44000" />
+      <workItem from="1754725066544" duration="695000" />
+      <workItem from="1754725778929" duration="2998000" />
+      <workItem from="1754906428929" duration="3235000" />
+      <workItem from="1754985015391" duration="117000" />
+      <workItem from="1754985395996" duration="148000" />
+      <workItem from="1754985581357" duration="14094000" />
+      <workItem from="1755167771308" duration="4861000" />
+    </task>
+    <task id="LOCAL-00001" summary="fix:DB 세팅 쿼리 오류 수정&#10;  - admin_role 테이블 role 컬럼 unique 설정 추가&#10;  - 스키마 생성 쿼리 추가">
+      <option name="closed" value="true" />
+      <created>1753360658378</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1753360658378</updated>
+    </task>
+    <task id="LOCAL-00002" summary="fix:DB 세팅 쿼리 오류 수정&#10;  - admin_role 테이블 role 컬럼 unique 설정 추가&#10;  - 스키마 생성 쿼리 추가">
+      <option name="closed" value="true" />
+      <created>1753704881748</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1753704881748</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fix:DB 세팅 쿼리 오류 수정&#10;  - admin_role 테이블 role 컬럼 unique 설정 추가&#10;  - 스키마 생성 쿼리 추가">
+      <option name="closed" value="true" />
+      <created>1753705000690</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1753705000690</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fix:DB 세팅 쿼리 오류 수정&#10;  - admin_role 테이블 role 컬럼 unique 설정 추가&#10;  - 스키마 생성 쿼리 추가">
+      <option name="closed" value="true" />
+      <created>1753705202436</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1753705202436</updated>
+    </task>
+    <task id="LOCAL-00005" summary="fix:DB 세팅 쿼리 오류 수정&#10;  - admin_role 테이블 role 컬럼 unique 설정 추가&#10;  - 스키마 생성 쿼리 추가">
+      <option name="closed" value="true" />
+      <created>1753705573191</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1753705573191</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fix:DB 세팅 쿼리 오류 수정&#10;  - admin_role 테이블 role 컬럼 unique 설정 추가&#10;  - 스키마 생성 쿼리 추가">
+      <option name="closed" value="true" />
+      <created>1753952171531</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1753952171531</updated>
+    </task>
+    <task id="LOCAL-00007" summary="fix:DB 세팅 쿼리 오류 수정&#10;  - admin_role 테이블 role 컬럼 unique 설정 추가&#10;  - 스키마 생성 쿼리 추가">
+      <option name="closed" value="true" />
+      <created>1753952268604</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1753952268604</updated>
+    </task>
+    <task id="LOCAL-00008" summary="fix: ban 메서드 타입 변경&#10;컨트롤러 dock 수정&#10;컨트롤러 사용자정보 적용&#10;delSignUpRequest password 까지 검증&#10;updateStateAndCreateBorrower enum 으로 수정&#10;password 암호화&#10;토큰 구현">
+      <option name="closed" value="true" />
+      <created>1754212482381</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1754212482381</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fix: 비밀번호 검증 수정 등">
+      <option name="closed" value="true" />
+      <created>1754387993349</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1754387993349</updated>
+    </task>
+    <task id="LOCAL-00010" summary="fix: s3 업로드 수정">
+      <option name="closed" value="true" />
+      <created>1754724101382</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1754724101382</updated>
+    </task>
+    <task id="LOCAL-00011" summary="fix: s3 업로드 수정">
+      <option name="closed" value="true" />
+      <created>1754725148023</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1754725148024</updated>
+    </task>
+    <task id="LOCAL-00012" summary="fix: s3 업로드 수정">
+      <option name="closed" value="true" />
+      <created>1754725921869</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1754725921869</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fix: s3 업로드 수정">
+      <option name="closed" value="true" />
+      <created>1754726183074</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1754726183074</updated>
+    </task>
+    <task id="LOCAL-00014" summary="fix: s3 업로드 수정">
+      <option name="closed" value="true" />
+      <created>1754726485719</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1754726485719</updated>
+    </task>
+    <task id="LOCAL-00015" summary="fix: s3 업로드 수정">
+      <option name="closed" value="true" />
+      <created>1754985604880</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1754985604880</updated>
+    </task>
+    <task id="LOCAL-00016" summary="S3Service 삭제 메서드 추가&#10;saveSignUpRequest s3 transactional 추가&#10;updateStateAndCreateBorrower s3 삭제 추가&#10;patchSignUpRequest originPassword 인자 추가&#10;&#10;rewriteRequest &#10;-세션확인&#10;-아이디확인&#10;-파일이 하나만 들어와도 patch 가능하게 로직 추가&#10;&#10;의문 &#10;사용자가 id를 수정하면 수정 전 아이디 경로로 저장한 s3는 어떻게 처리?">
+      <option name="closed" value="true" />
+      <created>1755171973377</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1755171973377</updated>
+    </task>
+    <task id="LOCAL-00017" summary="S3Service 삭제 메서드 추가&#10;saveSignUpRequest s3 transactional 추가&#10;updateStateAndCreateBorrower s3 삭제 추가&#10;patchSignUpRequest originPassword 인자 추가&#10;&#10;rewriteRequest &#10;-세션확인&#10;-아이디확인&#10;-파일이 하나만 들어와도 patch 가능하게 로직 추가&#10;&#10;의문 &#10;사용자가 id를 수정하면 수정 전 아이디 경로로 저장한 s3는 어떻게 처리?">
+      <option name="closed" value="true" />
+      <created>1755172278580</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1755172278580</updated>
+    </task>
+    <task id="LOCAL-00018" summary="S3Service 삭제 메서드 추가&#10;saveSignUpRequest s3 transactional 추가&#10;updateStateAndCreateBorrower s3 삭제 추가&#10;patchSignUpRequest originPassword 인자 추가&#10;&#10;rewriteRequest &#10;-세션확인&#10;-아이디확인&#10;-파일이 하나만 들어와도 patch 가능하게 로직 추가&#10;&#10;의문 &#10;사용자가 id를 수정하면 수정 전 아이디 경로로 저장한 s3는 어떻게 처리?">
+      <option name="closed" value="true" />
+      <created>1755172457704</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1755172457704</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="feature/borrowerInfo" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fix:DB 세팅 쿼리 오류 수정&#10;  - admin_role 테이블 role 컬럼 unique 설정 추가&#10;  - 스키마 생성 쿼리 추가" />
+    <MESSAGE value="fix: ban 메서드 타입 변경&#10;컨트롤러 dock 수정&#10;컨트롤러 사용자정보 적용&#10;delSignUpRequest password 까지 검증&#10;updateStateAndCreateBorrower enum 으로 수정&#10;password 암호화&#10;토큰 구현" />
+    <MESSAGE value="fix: 비밀번호 검증 수정 등" />
+    <MESSAGE value="fix: s3 업로드 수정" />
+    <MESSAGE value="Merge branch 'dev' of https://github.com/JiwangJang/inha-item-borrow-service into s3revise&#10;&#10;# Conflicts:&#10;#&#9;backend/.gitignore&#10;#&#9;backend/src/main/java/com/inha/borrow/backend/controller/SignUpRequestController.java&#10;#&#9;backend/src/main/java/com/inha/borrow/backend/repository/SignUpRequestRepository.java&#10;#&#9;backend/src/main/java/com/inha/borrow/backend/service/SignUpRequestService.java&#10;#&#9;backend/src/main/resources/application-exam.yml" />
+    <MESSAGE value="S3Service 삭제 메서드 추가&#10;saveSignUpRequest s3 transactional 추가&#10;updateStateAndCreateBorrower s3 삭제 추가&#10;patchSignUpRequest originPassword 인자 추가&#10;&#10;rewriteRequest &#10;-세션확인&#10;-아이디확인&#10;-파일이 하나만 들어와도 patch 가능하게 로직 추가&#10;&#10;의문 &#10;사용자가 id를 수정하면 수정 전 아이디 경로로 저장한 s3는 어떻게 처리?" />
+    <option name="LAST_COMMIT_MESSAGE" value="S3Service 삭제 메서드 추가&#10;saveSignUpRequest s3 transactional 추가&#10;updateStateAndCreateBorrower s3 삭제 추가&#10;patchSignUpRequest originPassword 인자 추가&#10;&#10;rewriteRequest &#10;-세션확인&#10;-아이디확인&#10;-파일이 하나만 들어와도 patch 가능하게 로직 추가&#10;&#10;의문 &#10;사용자가 id를 수정하면 수정 전 아이디 경로로 저장한 s3는 어떻게 처리?" />
+  </component>
+</project>

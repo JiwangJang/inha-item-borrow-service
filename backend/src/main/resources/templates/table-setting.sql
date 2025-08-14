@@ -21,7 +21,8 @@ CREATE TABLE admin(
     name varchar(10) NOT NULL,
     phonenumber char(13) NOT NULL,
     position varchar(15) NOT NULL,
-    foreign key (position) references admin_role(role)
+    foreign key (position) references admin_role(role),
+    refresh_token varchar(50) NOT NULL
 );
 
 -- borrower table 생성
@@ -34,13 +35,14 @@ CREATE TABLE borrower(
     student_number char(8) NOT NULL,
     account_number varchar(20) NOT NULL,
     withdrawal boolean default false,
-    ban boolean default false
+    ban boolean default false,
+    refresh_token varchar(50) NOT NULL
 );
 
 create table item (
     id int NOT NULL primary key auto_increment,
     name varchar(10) NOT NULL,
-    location varchar(10) NOT NULL,
+    location varchar(50) NOT NULL,
     password varchar(8) NOT NULL,
     delete_reason varchar(50),
     price int NOT NULL,
@@ -54,8 +56,8 @@ create table signup_request(
     name varchar(10) NOT NULL,
     phonenumber char(13) NOT NULL,
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    identity_photo varchar(100) NOT NULL,
-    student_council_fee_photo varchar(100) NOT NULL,
+    identity_photo TEXT NOT NULL,
+    student_council_fee_photo TEXT NOT NULL,
     account_number varchar(20) NOT NULL,
     state varchar(10) default 'PENDING',
     rejectReason varchar(100)
