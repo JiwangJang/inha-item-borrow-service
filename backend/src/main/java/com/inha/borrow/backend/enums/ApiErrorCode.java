@@ -18,7 +18,7 @@ public enum ApiErrorCode {
     JSON_PARSING_ERROR("JSON파싱중 에러가 발생했습니다."),
     FILE_SIZE_TOO_LARGE("사진의 크기가 너무 큽니다.");
 
-    private final String message;
+    private String message;
 
     ApiErrorCode(String message) {
         this.message = message;
@@ -26,5 +26,9 @@ public enum ApiErrorCode {
 
     public String getMessage() {
         return this.message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

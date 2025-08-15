@@ -39,7 +39,7 @@ public class AuthConfig {
                 .authorizeHttpRequests((authorize) -> {
                     authorize
                             .requestMatchers("/borrowers").hasAuthority(Role.DIVISION_HEAD.name())
-                            .requestMatchers("/items/**", "/borrowers/info/ban")
+                            .requestMatchers("/items/**", "/borrowers/{borrower-id}/info/ban")
                             .hasAuthority(Role.DIVISION_MEMBER.name())
                             .requestMatchers("/borrowers/auth/**", "/admins/login").permitAll()
                             .requestMatchers(HttpMethod.POST, "/borrowers/signup-requests").permitAll()
