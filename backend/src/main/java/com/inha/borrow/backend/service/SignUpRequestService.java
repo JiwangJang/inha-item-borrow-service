@@ -11,8 +11,10 @@ import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.SignUpRequestRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,7 +39,6 @@ public class SignUpRequestService {
     @Value("${app.cloud.aws.s3.dir.name}")
     private String STUDENT_IDENTIFICATION_PATH;
 
-
     /**
      * signUpRequest를 저장하는 메서드
      *
@@ -45,7 +46,6 @@ public class SignUpRequestService {
      * @return 저장 정보
      * @author 형민재
      */
-
     public SignUpForm saveSignUpRequest(SignUpFormDto signUpForm, MultipartFile studentIdentification, MultipartFile studentCouncilFee) {
         if (signUpSessionCache.isAllPassed(signUpForm.getId())) {
             String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
