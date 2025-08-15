@@ -1,10 +1,13 @@
 package com.inha.borrow.backend.controller;
 
+import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.cache.SignUpSessionCache;
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.service.S3Service;
 import com.inha.borrow.backend.service.SignUpRequestService;
 
@@ -30,12 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class SignUpRequestController {
     private final S3Service s3Service;
     private final SignUpRequestService signUpRequestService;
-    private final SignUpSessionCache signUpSessionCache;
-
-    @Value("${app.cloud.aws.s3.dir.name}")
-    private String STUDENT_COUNCIL_FEE_PATH;
-    @Value("${app.cloud.aws.s3.dir.name}")
-    private String STUDENT_IDENTIFICATION_PATH;
+    private final IdCache idCache;
 
     /**
      * 회원가입을 진행하는 메서드
@@ -52,10 +50,7 @@ public class SignUpRequestController {
             @Valid @RequestPart("signUpFormDto") SignUpFormDto signUpFormDto,
             @RequestPart("student-identification") MultipartFile studentIdentification,
             @RequestPart("student-council-fee") MultipartFile studentCouncilFee) {
-        String idCard = s3Service.uploadFile(studentIdentification, STUDENT_IDENTIFICATION_PATH, signUpFormDto.getId());
-        String councilFee = s3Service.uploadFile(studentCouncilFee, STUDENT_COUNCIL_FEE_PATH, signUpFormDto.getId());
-        SignUpForm signUpForm = signUpFormDto.getSignUpForm(idCard, councilFee);
-        SignUpForm result = signUpRequestService.saveSignUpRequest(signUpForm);
+        SignUpForm result = signUpRequestService.saveSignUpRequest(transitianSignUpForm(signUpFormDto),studentIdentification,studentCouncilFee);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, result));
     }
 
@@ -92,9 +87,10 @@ public class SignUpRequestController {
             @RequestPart SignUpForm signUpForm,
             @RequestPart(value = "student-identification", required = false) MultipartFile studentIdentification,
             @RequestPart(value = "student-council-fee", required = false) MultipartFile studentCouncilFee) {
-        signUpRequestService.findById(id);
-        signUpSessionCache.get(id);
-
+        if(!idCache.contains(id)){
+            ApiErrorCode errorCode = ApiErrorCode.SIGN_UP_REQUEST_NOT_FOUND;
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
+        }
         if(studentCouncilFee!=null && !studentCouncilFee.isEmpty()) {
             String councilFee = s3Service.uploadFile(studentCouncilFee,
                     "student-council-fee", id);
@@ -123,6 +119,19 @@ public class SignUpRequestController {
         signUpRequestService.deleteSignUpRequest(id, password);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
+    }
+
+    public SignUpForm transitianSignUpForm(SignUpFormDto signUpFormDto){
+        return new SignUpForm(
+        signUpFormDto.getId(),
+        signUpFormDto.getName(),
+        signUpFormDto.getPassword(),
+        signUpFormDto.getEmail(),
+        signUpFormDto.getPhoneNumber(),
+        signUpFormDto.getAccountNumber(),
+                null,
+                null
+        );
     }
 
 }

@@ -11,10 +11,13 @@ import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.SignUpRequestRepository;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 /**
@@ -30,6 +33,12 @@ public class SignUpRequestService {
     private final SignUpSessionCache signUpSessionCache;
     private final S3Service s3Service;
 
+    @Value("${app.cloud.aws.s3.dir.name}")
+    private String STUDENT_COUNCIL_FEE_PATH;
+    @Value("${app.cloud.aws.s3.dir.name}")
+    private String STUDENT_IDENTIFICATION_PATH;
+
+
     /**
      * signUpRequest를 저장하는 메서드
      *
@@ -37,12 +46,17 @@ public class SignUpRequestService {
      * @return 저장 정보
      * @author 형민재
      */
-    @Transactional
-    public SignUpForm saveSignUpRequest(SignUpForm signUpForm) {
+
+    public SignUpForm saveSignUpRequest(SignUpForm signUpForm, MultipartFile studentIdentification, MultipartFile studentCouncilFee) {
         if (signUpSessionCache.isAllPassed(signUpForm.getId())) {
             String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
             signUpForm.setPassword(encodedPassword);
+            signUpSessionCache.get(signUpForm.getId());
             try{
+                String idCard = s3Service.uploadFile(studentIdentification, STUDENT_IDENTIFICATION_PATH, signUpForm.getId());
+                String councilFee = s3Service.uploadFile(studentCouncilFee, STUDENT_COUNCIL_FEE_PATH, signUpForm.getId());
+                signUpForm.setIdentityPhoto(idCard);
+                signUpForm.setStudentCouncilFeePhoto(councilFee);
                 return signUpRequestRepository.save(signUpForm);
         }catch (DataAccessException e){
                 s3Service.deleteAllFile("bucket",signUpForm.getId());
@@ -95,8 +109,8 @@ public class SignUpRequestService {
      * @author 형민재
      */
     public void patchSignUpRequest(SignUpForm signUpForm, String id, String originPassword) {
-        SignUpForm signUpForm1 = signUpRequestRepository.findById(id);
-        if (passwordEncoder.matches(originPassword, signUpForm1.getPassword())) {
+        String password = signUpRequestRepository.findPasswordById(id);
+        if (passwordEncoder.matches(originPassword, password)) {
             String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
             signUpForm.setPassword(encodedPassword);
             signUpRequestRepository.patchSignUpRequest(signUpForm, id);

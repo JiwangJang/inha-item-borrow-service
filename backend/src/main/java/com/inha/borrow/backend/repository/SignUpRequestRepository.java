@@ -86,6 +86,16 @@ public class SignUpRequestRepository {
         }
     }
 
+    public String findPasswordById(String id){
+        try {
+            String sql = "SELECT password FROM signup_request WHERE id = ?";
+            return jdbcTemplate.queryForObject(sql,String.class,id);
+        } catch (EmptyResultDataAccessException e) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+    }
+
     /**
      * signup_request의 state,rejectReason을 설정하는 메서드
      *
