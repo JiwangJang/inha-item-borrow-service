@@ -4,25 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="265b5cd3-076b-41bb-bf4e-b4e018b144cc" name="변경" comment="S3Service 삭제 메서드 추가&#10;saveSignUpRequest s3 transactional 추가&#10;updateStateAndCreateBorrower s3 삭제 추가&#10;patchSignUpRequest originPassword 인자 추가&#10;&#10;rewriteRequest &#10;-세션확인&#10;-아이디확인&#10;-파일이 하나만 들어와도 patch 가능하게 로직 추가&#10;&#10;의문 &#10;사용자가 id를 수정하면 수정 전 아이디 경로로 저장한 s3는 어떻게 처리?">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gradlew" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/backend/gradlew.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/controller/SignUpRequestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/controller/SignUpRequestController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/controller/TestController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/user/borrower/SignUpFormDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/user/borrower/SignUpFormDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/S3Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/S3Service.java" afterDir="false" />
+    <list default="true" id="265b5cd3-076b-41bb-bf4e-b4e018b144cc" name="변경" comment="fix:&#10;SignUpRequestController 에러 반환 수정 트렌지션 삭제">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2bb33c50-c9e1-4d7a-9e78-6decac6656e5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2bb33c50-c9e1-4d7a-9e78-6decac6656e5/storage_v2/_src_/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2bb33c50-c9e1-4d7a-9e78-6decac6656e5/storage_v2/_src_/schema/mysql.osA4Bg.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2bb33c50-c9e1-4d7a-9e78-6decac6656e5/storage_v2/_src_/schema/performance_schema.kIw0nw.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/2bb33c50-c9e1-4d7a-9e78-6decac6656e5/storage_v2/_src_/schema/sys.zb4BAA.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/SignUpRequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/SignUpRequestService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application-exam.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/inha/borrow/backend/BackendApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/inha/borrow/backend/repository/SignUpRequestRepositoryTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/inha/borrow/backend/service/SignUpRequestServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application-exam.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application-exam.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/inha/borrow/backend/repository/ItemRepositoryTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -396,7 +388,9 @@
       <workItem from="1754985015391" duration="117000" />
       <workItem from="1754985395996" duration="148000" />
       <workItem from="1754985581357" duration="14094000" />
-      <workItem from="1755167771308" duration="4861000" />
+      <workItem from="1755167771308" duration="6092000" />
+      <workItem from="1755176499237" duration="2906000" />
+      <workItem from="1755247537279" duration="4403000" />
     </task>
     <task id="LOCAL-00001" summary="fix:DB 세팅 쿼리 오류 수정&#10;  - admin_role 테이블 role 컬럼 unique 설정 추가&#10;  - 스키마 생성 쿼리 추가">
       <option name="closed" value="true" />
@@ -542,7 +536,47 @@
       <option name="project" value="LOCAL" />
       <updated>1755172457704</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="S3Service 삭제 메서드 추가&#10;saveSignUpRequest s3 transactional 추가&#10;updateStateAndCreateBorrower s3 삭제 추가&#10;patchSignUpRequest originPassword 인자 추가&#10;&#10;rewriteRequest &#10;-세션확인&#10;-아이디확인&#10;-파일이 하나만 들어와도 patch 가능하게 로직 추가&#10;&#10;의문 &#10;사용자가 id를 수정하면 수정 전 아이디 경로로 저장한 s3는 어떻게 처리?">
+      <option name="closed" value="true" />
+      <created>1755172836668</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1755172836668</updated>
+    </task>
+    <task id="LOCAL-00020" summary="S">
+      <option name="closed" value="true" />
+      <created>1755172962579</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1755172962579</updated>
+    </task>
+    <task id="LOCAL-00021" summary="fix:&#10;idCache 체크&#10;SignUpRequestController 로직 서비스로 이동&#10;SignUpRequestService 비밀번호만 가져오게 수정">
+      <option name="closed" value="true" />
+      <created>1755249493861</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1755249493861</updated>
+    </task>
+    <task id="LOCAL-00022" summary="fix:&#10;idCache 체크&#10;SignUpRequestController 로직 서비스로 이동&#10;SignUpRequestService 비밀번호만 가져오게 수정">
+      <option name="closed" value="true" />
+      <created>1755249578713</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1755249578713</updated>
+    </task>
+    <task id="LOCAL-00023" summary="fix:&#10;idCache 체크&#10;SignUpRequestController 에러 반환 수정 트렌지션 삭제">
+      <option name="closed" value="true" />
+      <created>1755252846792</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1755252846792</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -578,6 +612,9 @@
     <MESSAGE value="fix: s3 업로드 수정" />
     <MESSAGE value="Merge branch 'dev' of https://github.com/JiwangJang/inha-item-borrow-service into s3revise&#10;&#10;# Conflicts:&#10;#&#9;backend/.gitignore&#10;#&#9;backend/src/main/java/com/inha/borrow/backend/controller/SignUpRequestController.java&#10;#&#9;backend/src/main/java/com/inha/borrow/backend/repository/SignUpRequestRepository.java&#10;#&#9;backend/src/main/java/com/inha/borrow/backend/service/SignUpRequestService.java&#10;#&#9;backend/src/main/resources/application-exam.yml" />
     <MESSAGE value="S3Service 삭제 메서드 추가&#10;saveSignUpRequest s3 transactional 추가&#10;updateStateAndCreateBorrower s3 삭제 추가&#10;patchSignUpRequest originPassword 인자 추가&#10;&#10;rewriteRequest &#10;-세션확인&#10;-아이디확인&#10;-파일이 하나만 들어와도 patch 가능하게 로직 추가&#10;&#10;의문 &#10;사용자가 id를 수정하면 수정 전 아이디 경로로 저장한 s3는 어떻게 처리?" />
-    <option name="LAST_COMMIT_MESSAGE" value="S3Service 삭제 메서드 추가&#10;saveSignUpRequest s3 transactional 추가&#10;updateStateAndCreateBorrower s3 삭제 추가&#10;patchSignUpRequest originPassword 인자 추가&#10;&#10;rewriteRequest &#10;-세션확인&#10;-아이디확인&#10;-파일이 하나만 들어와도 patch 가능하게 로직 추가&#10;&#10;의문 &#10;사용자가 id를 수정하면 수정 전 아이디 경로로 저장한 s3는 어떻게 처리?" />
+    <MESSAGE value="S" />
+    <MESSAGE value="fix:&#10;idCache 체크&#10;SignUpRequestController 로직 서비스로 이동&#10;SignUpRequestService 비밀번호만 가져오게 수정" />
+    <MESSAGE value="fix:&#10;idCache 체크&#10;SignUpRequestController 에러 반환 수정 트렌지션 삭제" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix:&#10;idCache 체크&#10;SignUpRequestController 에러 반환 수정 트렌지션 삭제" />
   </component>
 </project>
