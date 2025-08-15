@@ -24,7 +24,8 @@ public class S3Service {
     /**
      *
      * @param multipartFile
-     * @param url
+     * @param id
+     * @param folder
      * @return 사진이 저장된 url
      * @author 형민재
      */
@@ -44,5 +45,14 @@ public class S3Service {
             throw new AmazonS3Exception("s3 업로드 실패");
         }
         return amazonS3.getUrl(bucket, fileName).toString();
+
+    }
+    public void deleteFile(String bucket,String folder, String id){
+        String key = folder+"/"+id;
+        amazonS3.deleteObject(bucket,key);
+    }
+    public void deleteAllFile(String bucket ,String id){
+        amazonS3.deleteObject(bucket,"student-council-fee/"+id);
+        amazonS3.deleteObject(bucket,"student-identification/"+id);
     }
 }
