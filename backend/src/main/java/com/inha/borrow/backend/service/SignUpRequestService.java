@@ -5,17 +5,16 @@ import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.SignUpRequestState;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
+import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.SignUpRequestRepository;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -47,7 +46,7 @@ public class SignUpRequestService {
      * @author 형민재
      */
 
-    public SignUpForm saveSignUpRequest(SignUpForm signUpForm, MultipartFile studentIdentification, MultipartFile studentCouncilFee) {
+    public SignUpForm saveSignUpRequest(SignUpFormDto signUpForm, MultipartFile studentIdentification, MultipartFile studentCouncilFee) {
         if (signUpSessionCache.isAllPassed(signUpForm.getId())) {
             String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
             signUpForm.setPassword(encodedPassword);
@@ -55,9 +54,7 @@ public class SignUpRequestService {
             try{
                 String idCard = s3Service.uploadFile(studentIdentification, STUDENT_IDENTIFICATION_PATH, signUpForm.getId());
                 String councilFee = s3Service.uploadFile(studentCouncilFee, STUDENT_COUNCIL_FEE_PATH, signUpForm.getId());
-                signUpForm.setIdentityPhoto(idCard);
-                signUpForm.setStudentCouncilFeePhoto(councilFee);
-                return signUpRequestRepository.save(signUpForm);
+                return signUpRequestRepository.save(signUpForm.getSignUpForm(idCard,councilFee));
         }catch (DataAccessException e){
                 s3Service.deleteAllFile("bucket",signUpForm.getId());
                 throw e;

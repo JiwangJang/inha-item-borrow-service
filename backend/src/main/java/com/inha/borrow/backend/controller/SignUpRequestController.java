@@ -8,6 +8,7 @@ import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.service.S3Service;
 import com.inha.borrow.backend.service.SignUpRequestService;
 
@@ -50,7 +51,7 @@ public class SignUpRequestController {
             @Valid @RequestPart("signUpFormDto") SignUpFormDto signUpFormDto,
             @RequestPart("student-identification") MultipartFile studentIdentification,
             @RequestPart("student-council-fee") MultipartFile studentCouncilFee) {
-        SignUpForm result = signUpRequestService.saveSignUpRequest(transitianSignUpForm(signUpFormDto),studentIdentification,studentCouncilFee);
+        SignUpForm result = signUpRequestService.saveSignUpRequest(signUpFormDto,studentIdentification,studentCouncilFee);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, result));
     }
 
@@ -89,7 +90,7 @@ public class SignUpRequestController {
             @RequestPart(value = "student-council-fee", required = false) MultipartFile studentCouncilFee) {
         if(!idCache.contains(id)){
             ApiErrorCode errorCode = ApiErrorCode.SIGN_UP_REQUEST_NOT_FOUND;
-            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
         if(studentCouncilFee!=null && !studentCouncilFee.isEmpty()) {
             String councilFee = s3Service.uploadFile(studentCouncilFee,
@@ -121,17 +122,5 @@ public class SignUpRequestController {
 
     }
 
-    public SignUpForm transitianSignUpForm(SignUpFormDto signUpFormDto){
-        return new SignUpForm(
-        signUpFormDto.getId(),
-        signUpFormDto.getName(),
-        signUpFormDto.getPassword(),
-        signUpFormDto.getEmail(),
-        signUpFormDto.getPhoneNumber(),
-        signUpFormDto.getAccountNumber(),
-                null,
-                null
-        );
-    }
 
 }
