@@ -29,7 +29,8 @@ public class AuthConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager)
             throws Exception {
-        AdminAuthenticationFilter adminAuthenticationFilter = new AdminAuthenticationFilter(authenticationManager);
+        AdminAuthenticationFilter adminAuthenticationFilter = new AdminAuthenticationFilter(
+                authenticationManager);
         BorrowerAuthenticationFilter borrowerAuthenticationFilter = new BorrowerAuthenticationFilter(
                 authenticationManager);
 
@@ -38,22 +39,37 @@ public class AuthConfig {
                 .formLogin((form) -> form.disable())
                 .authorizeHttpRequests((authorize) -> {
                     authorize
-                            .requestMatchers("/borrowers").hasAuthority(Role.DIVISION_HEAD.name())
-                            .requestMatchers("/items/**", "/borrowers/{borrower-id}/info/ban")
+                            // /borrowers 경로는 국장이상만 접근 가능하다
+                            .requestMatchers("/borrowers")
+                            .hasAuthority(Role.DIVISION_HEAD.name())
+                            // /borrower/info와 그 아래 경로는 대여자만 접근가능하다.
+                            .requestMatchers("/borrowers/info", "/borrowers/info/**")
+                            .hasAuthority(Role.BORROWER.name())
+                            // /items 아래 경로와 /borrowers/{borrower-id} 아래경로는 국원 이상만 접근 가능하다
+                            .requestMatchers("/items/**", "/borrowers/{borrower-id}/**")
                             .hasAuthority(Role.DIVISION_MEMBER.name())
-                            .requestMatchers("/borrowers/auth/**", "/admins/login").permitAll()
-                            .requestMatchers(HttpMethod.POST, "/borrowers/signup-requests").permitAll()
-                            .requestMatchers(HttpMethod.PATCH, "/borrowers/signup-requests/{signup-request-id}")
+                            // 인증과 관련된 경로는 누구나 접근 가능하다.
+                            .requestMatchers("/borrowers/auth/**", "/admins/login")
+                            .permitAll()
+                            // 회원가입 신청하는 경로는 누구나 접근 가능하다.
+                            .requestMatchers(HttpMethod.POST, "/borrowers/signup-requests")
+                            .permitAll()
+                            //
+                            .requestMatchers(HttpMethod.PATCH,
+                                    "/borrowers/signup-requests/{signup-request-id}")
                             .hasAuthority(Role.DIVISION_MEMBER.name())
-                            .requestMatchers("/borrowers/signup-requests/{signup-request-id}")
+                            //
+                            //
+                            .requestMatchers(
+                                    "/borrowers/signup-requests/{signup-request-id}")
                             .access(new WebExpressionAuthorizationManager(
                                     "hasAuthority('BORROWER') && #signup-request-id == authentication.id"))
-                            .requestMatchers("/borrowers/info/**").hasAuthority(Role.BORROWER.name())
                             .anyRequest().authenticated();
 
                 })
                 .addFilterAt(adminAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(borrowerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(borrowerAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
@@ -75,8 +91,8 @@ public class AuthConfig {
     static RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.withDefaultRolePrefix()
                 .role(Role.PRESIDENT.name()).implies(Role.VICE_PRESIDENT.name())
+                .role(Role.VICE_PRESIDENT.name()).implies(Role.DIVISION_HEAD.name())
                 .role(Role.DIVISION_HEAD.name()).implies(Role.DIVISION_MEMBER.name())
                 .build();
     }
-
 }

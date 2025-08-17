@@ -32,7 +32,7 @@ import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.service.BorrowerVerificationService;
 
-// 해당 컨트롤러는 누구나 접근가능하므로 WithMockUser사용
+// 해당 컨트롤러는 누구나 접근가능하므로 filter꺼서 테스트
 /**
  * @author 장지왕
  */
