@@ -5,9 +5,13 @@ import com.inha.borrow.backend.enums.ItemState;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemReviseRequestDto {
     @NotBlank(message = "대여물품 이름은 비울수 없습니다.")
     private String name;
