@@ -12,18 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignUpFormDto {
-    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z0-9]{4,10}$", message = "아이디는 영어대소문자와 숫자로 4~10자여야 합니다.")
     private String id;
-    @NotBlank
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=])[A-Za-z\\d!@#$%^&*()_\\-+=]{9,13}$", message = "비밀번호는 영어 대소문자와 숫자, 특수기호((!@#$%^&*()_\\-+=)를 포함해 9~13자여야 합니다.")
     private String password;
-    @NotBlank
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "이메일 형식에 맞지 않습니다.")
     private String email;
-    @NotBlank
+    @NotBlank(message = "이름을 작성해주세요.")
     private String name;
-    @NotBlank
+    @NotBlank(message = "핸드폰 번호를 기입해주세요.")
     private String phoneNumber;
-    @NotBlank
+    @NotBlank(message = "환불계좌번호를 기입해주세요.")
     private String accountNumber;
 
     public SignUpForm getSignUpForm(String studentIdentification, String studentCouncilFee) {

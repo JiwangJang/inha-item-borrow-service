@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationFilter;
@@ -78,12 +77,22 @@ public class AuthConfig {
 				})
 				.authorizeHttpRequests((authorize) -> {
 					authorize
+							// 인증과 관련된 경로는 누구나 접근 가능하다.
+							.requestMatchers("/borrowers/auth/**", "/admins/login")
+							.permitAll()
+							//
+							// /borrowers 관련 인증설정
 							// /borrowers 경로는 국장이상만 접근 가능하다
 							.requestMatchers("/borrowers")
 							.hasAuthority(Role.DIVISION_HEAD.name())
 							// /borrower/info와 그 아래 경로는 대여자만 접근가능하다.
 							.requestMatchers("/borrowers/info", "/borrowers/info/**")
 							.hasAuthority(Role.BORROWER.name())
+							// /borrowers/{borrower-id} 아래경로는 국원 이상만 접근 가능하다
+							.requestMatchers("/borrowers/*/info/**")
+							.hasAuthority(Role.DIVISION_MEMBER.name())
+							//
+							// /items 관련 인증설정
 							// /items 이하 경로에 대한 GET요청은 모든유저가 가능하다. 단, 사용자의 권한에 따라 볼 수 있는 정보가 제한된다.
 							.requestMatchers(HttpMethod.GET, "/items")
 							.permitAll()
@@ -94,25 +103,21 @@ public class AuthConfig {
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							.requestMatchers(HttpMethod.DELETE, "/items/**")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
-							// /borrowers/{borrower-id} 아래경로는 국원 이상만 접근 가능하다
-							.requestMatchers("/borrowers/*/**")
+							//
+							// /borrowers/signup-requests 관련 인증설정
+							// 회원가입 목록 전체 조회하는 경로는 국원이상만 접근 가능하다.
+							.requestMatchers(HttpMethod.GET, "/borrowers/signup-requests")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
-							// 인증과 관련된 경로는 누구나 접근 가능하다.
-							.requestMatchers("/borrowers/auth/**", "/admins/login")
-							.permitAll()
 							// 회원가입 신청하는 경로는 누구나 접근 가능하다.
 							.requestMatchers(HttpMethod.POST, "/borrowers/signup-requests")
 							.permitAll()
-							//
+							// 회원가입 처리 결과를 처리하는 경로는 국원이상만 접근 가능하다.
 							.requestMatchers(HttpMethod.PATCH,
-									"/borrowers/signup-requests/{signup-request-id}")
+									"/borrowers/signup-requests/**")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
-							//
-							//
-							.requestMatchers(
-									"/borrowers/signup-requests/{signup-request-id}")
-							.access(new WebExpressionAuthorizationManager(
-									"hasAuthority('BORROWER') && #signup-request-id == authentication.id"))
+							// 회원가입 신청을 조회, 수정하거나 삭제하는 경로는 대여자 권한인 경우에만 가능하다(서비스단에서 검증 수행)
+							.requestMatchers("/borrowers/signup-requests/**")
+							.hasAuthority(Role.BORROWER.name())
 							.anyRequest().authenticated();
 
 				})
