@@ -105,37 +105,37 @@ public class BorrowerRepository {
     }
 
     public void patchEmail(String email, String id) {
-        String sql = " UPDATE borrower SET email = ? WHERE id = ?";
+        String sql = "UPDATE borrower SET email = ? WHERE id = ?";
         jdbcTemplate.update(sql, email, id);
     }
 
     public void patchName(String name, String id) {
-        String sql = " UPDATE borrower SET name = ? WHERE id = ?";
+        String sql = "UPDATE borrower SET name = ? WHERE id = ?";
         jdbcTemplate.update(sql, name, id);
     }
 
     public void patchPhoneNumber(String phoneNumber, String id) {
-        String sql = " UPDATE borrower SET phonenumber = ? WHERE id = ?";
+        String sql = "UPDATE borrower SET phonenumber = ? WHERE id = ?";
         jdbcTemplate.update(sql, phoneNumber, id);
     }
 
     public void patchStudentNumber(String studentNumber, String id) {
-        String sql = " UPDATE borrower SET student_number = ? WHERE id = ?";
+        String sql = "UPDATE borrower SET student_number = ? WHERE id = ?";
         jdbcTemplate.update(sql, studentNumber, id);
     }
 
     public void patchAccountNumber(String accountNumber, String id) {
-        String sql = " UPDATE borrower SET account_number = ? WHERE id = ?";
+        String sql = "UPDATE borrower SET account_number = ? WHERE id = ?";
         jdbcTemplate.update(sql, accountNumber, id);
     }
 
     public void patchWithDrawal(Boolean withDrawal, String id) {
-        String sql = " UPDATE borrower SET withdrawal = ? WHERE id = ?";
+        String sql = "UPDATE borrower SET withdrawal = ? WHERE id = ?";
         jdbcTemplate.update(sql, withDrawal, id);
     }
 
     public void patchBan(Boolean ban, String id) {
-        String sql = " UPDATE borrower SET ban = ? WHERE id = ?";
+        String sql = "UPDATE borrower SET ban = ? WHERE id = ?";
         jdbcTemplate.update(sql, ban, id);
     }
 

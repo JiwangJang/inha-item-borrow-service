@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.authentication.unit;
+package com.inha.borrow.backend.cache;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -9,8 +9,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import com.inha.borrow.backend.cache.IdCache;
 
 public class IdCacheTest {
     private JdbcTemplate jdbcTemplate = new JdbcTemplate();

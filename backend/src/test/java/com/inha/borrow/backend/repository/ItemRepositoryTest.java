@@ -1,24 +1,35 @@
 package com.inha.borrow.backend.repository;
 
+import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
+import com.inha.borrow.backend.model.dto.item.ItemDto;
+import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
+@Slf4j
 class ItemRepositoryTest {
     private final ItemRepository repository;
 
@@ -27,14 +38,12 @@ class ItemRepositoryTest {
         this.repository = repository;
     }
 
-    int setUp() {
-        Item item = new Item();
-        item.setName("장우산");
-        item.setLocation("2층 333번 사물함");
-        item.setPassword("1234");
-        item.setDeleteReason("");
+    Item setUp() {
+        ItemDto item = new ItemDto();
+        item.setName("우산");
+        item.setLocation("어딘가");
+        item.setPassword("1111");
         item.setPrice(1000);
-        item.setState("");
         return repository.save(item);
     }
 
@@ -53,34 +62,72 @@ class ItemRepositoryTest {
             String sql = "DELETE FROM item;";
             statement.execute(sql);
         } catch (Exception e) {
+            log.info(e.getMessage());
         }
     }
 
     @Test
-    @DisplayName("아이템 저장(성공)")
-    public void itemSaveSuccessTest() {
+    @DisplayName("아이템 업데이트 객체 유효성 검사")
+    public void ItemReviseRequestDtoValidationTest() {
         // given
+        ItemReviseRequestDto itemReviseRequestDto = new ItemReviseRequestDto();
+        itemReviseRequestDto.setName("");
+        itemReviseRequestDto.setLocation("");
+        itemReviseRequestDto.setDeleteReason("");
+        itemReviseRequestDto.setPassword("");
+        itemReviseRequestDto.setState(ItemState.AFFORD);
         // when
-        int newId = setUp();
-        // then
-        assertThat(newId).isInstanceOf(Integer.class);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<ItemReviseRequestDto>> constraintViolations = validator.validate(itemReviseRequestDto);
+        assertThat(constraintViolations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains("대여물품 이름은 비울수 없습니다.");
     }
 
     @Test
-    @DisplayName("아이템 저장(실패)")
-    public void itemSaveFailedTest() {
+    @DisplayName("아이템 객체 유효성 검사테스트")
+    public void itemDtoValidationTest() {
         // given
-        Item item = new Item();
-        item.setName("");
+        ItemDto item = new ItemDto();
         item.setLocation("");
+        item.setName("");
         item.setPassword("");
-        item.setDeleteReason("");
-        item.setPrice(1000);
-        item.setState("");
+        item.setPrice(0);
         // when
         // then
-        assertThatThrownBy(() -> repository.save(item))
-                .isInstanceOf(DataAccessException.class);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<ItemDto>> constraintViolations = validator.validate(item);
+        assertThat(constraintViolations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains("대여물품 이름은 비울수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("아이템 삭제 유효성 검사")
+    public void itemDeleteRequestDtoValidationTest() {
+        // given
+        ItemDeleteRequestDto dto = new ItemDeleteRequestDto();
+        dto.setDeleteReason("");
+        // when
+        // then
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<ItemDeleteRequestDto>> constraintViolations = validator.validate(dto);
+        assertThat(constraintViolations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains("삭제이유는 비워둘 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("아이템 저장")
+    public void itemSaveSuccessTest() {
+        // given
+        // when
+        Item newId = setUp();
+        // then
+        assertThat(newId).isInstanceOf(Item.class);
     }
 
     @Test
@@ -97,11 +144,11 @@ class ItemRepositoryTest {
     @DisplayName("아이디로 찾기(성공)")
     public void findByIdSuccessTest() {
         // given
-        int id = setUp();
+        Item item = setUp();
         // when
-        Item item = repository.findById(id);
+        Item founded = repository.findById(item.getId());
         // then
-        assertThat(item.getId()).isEqualTo(id);
+        assertThat(item.getId()).isEqualTo(founded.getId());
     }
 
     @Test
@@ -114,72 +161,41 @@ class ItemRepositoryTest {
     }
 
     @Test
-    @DisplayName("아이디로 삭제(성공))")
+    @DisplayName("아이디로 삭제")
     public void deleteSuccessTest() {
         // given
-        int id = setUp();
+        Item item = setUp();
         ItemDeleteRequestDto itemDeleteRequestDto = new ItemDeleteRequestDto();
         itemDeleteRequestDto.setDeleteReason("그냥");
         // when
-        repository.deleteItem(id, itemDeleteRequestDto);
+        repository.deleteItem(item.getId(), itemDeleteRequestDto);
         // then
-        Item deletedItem = repository.findById(id);
-        assertThat(deletedItem.getState()).isEqualTo("DELETED");
+        Item deletedItem = repository.findById(item.getId());
+        assertThat(deletedItem.getState()).isEqualTo(ItemState.DELETED);
     }
 
     @Test
-    @DisplayName("아이디로 삭제(실패))")
-    public void deleteFailedTest() {
-        // given
-        ItemDeleteRequestDto dto = new ItemDeleteRequestDto();
-        dto.setDeleteReason("null");
-        // when
-        // then
-        assertThatThrownBy(() -> repository.deleteItem(1234, dto))
-                .isInstanceOf(ResourceNotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("아이템업데이트(성공)")
+    @DisplayName("아이템업데이트 테스트")
     public void itemUpdateSuccessTest() {
         // given
-        int id = setUp();
+        Item item = setUp();
         // when
-        Item item = new Item();
-        item.setLocation("1층 333번 사물함");
-        item.setName("장우산");
-        item.setPassword("4321");
-        item.setDeleteReason("");
-        item.setPrice(10000);
-        item.setState("BORROWED");
-        repository.updateItem(item, id);
-        Item revisedItem = repository.findById(id);
-        // then
-        assertThat(revisedItem.getLocation()).isEqualTo("1층 333번 사물함");
-        assertThat(revisedItem.getPassword()).isEqualTo("4321");
-        assertThat(revisedItem.getPrice()).isEqualTo(10000);
-        assertThat(revisedItem.getState()).isEqualTo("BORROWED");
-        assertThat(revisedItem.getName()).isEqualTo("장우산");
-        assertThat(revisedItem.getDeleteReason()).isEqualTo("");
-    }
+        ItemReviseRequestDto dto = new ItemReviseRequestDto();
+        dto.setName("새로운 이름");
+        dto.setLocation(item.getLocation());
+        dto.setPassword(item.getPassword());
+        dto.setPrice(item.getPrice());
+        dto.setDeleteReason(null);
+        dto.setState(ItemState.BORROWED);
 
-    @Test
-    @DisplayName("아이템업데이트(실패)")
-    public void itemUpdateFailedTest() {
-        // given
-        int id = setUp();
-        // when
-        Item item = new Item();
-        item.setLocation(null);
-        item.setName(null);
-        item.setPassword(null);
-        item.setDeleteReason("");
-        item.setPrice(10000);
-        item.setState("BORROWED");
-        ;
+        repository.updateItem(dto, item.getId());
+        Item revisedItem = repository.findById(item.getId());
         // then
-        assertThatThrownBy(() -> repository.updateItem(item,
-                id)).isInstanceOf(DataAccessException.class);
+        assertThat(revisedItem.getLocation()).isEqualTo(item.getLocation());
+        assertThat(revisedItem.getPassword()).isEqualTo(item.getPassword());
+        assertThat(revisedItem.getPrice()).isEqualTo(item.getPrice());
+        assertThat(revisedItem.getState()).isEqualTo(ItemState.BORROWED);
+        assertThat(revisedItem.getName()).isEqualTo("새로운 이름");
+        assertThat(revisedItem.getDeleteReason()).isEqualTo(item.getDeleteReason());
     }
-
 }

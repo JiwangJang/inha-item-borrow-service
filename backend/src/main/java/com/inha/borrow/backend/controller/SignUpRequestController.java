@@ -7,14 +7,16 @@ import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
-import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
 import com.inha.borrow.backend.service.S3Service;
 import com.inha.borrow.backend.service.SignUpRequestService;
 
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * signUpRequest를 관리하는 컨트롤러
@@ -32,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/borrowers/signup-requests")
 public class SignUpRequestController {
     private final S3Service s3Service;
     private final SignUpRequestService signUpRequestService;
@@ -42,8 +46,45 @@ public class SignUpRequestController {
     @Value("${app.cloud.aws.s3.dir.student-identification}")
     private String STUDENT_IDENTIFICATION_PATH;
 
+    /// 회원가입 신청을 확인하는 메서드 제작하기(개별)
+
     /**
-     * 회원가입을 진행하는 메서드
+     * 회원가입 신청서 전체를 조회하는 메서드
+     * 
+     * @author 장지왕
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<SignUpForm>>> findAllSignUpRequest() {
+        List<SignUpForm> signUpForms = signUpRequestService.findSignUpRequest();
+        ApiResponse<List<SignUpForm>> apiResponse = new ApiResponse<>(false, signUpForms);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    /**
+     * 회원가입 신청 정보를 조회하는 메서드(일단 권한접근 테스트용으로 만듦)
+     * <p>
+     * 본인만 조회 가능하도록 서비스단에서 검증 필요
+     * 
+     * @param param
+     * @return
+     */
+    @GetMapping("/{signup-request-id}")
+    public ResponseEntity<ApiResponse<SignUpForm>> findBySignUpRequestId(@PathParam("signup-request-id") String param) {
+        SignUpForm signUpForm = new SignUpForm(
+                "test",
+                "1234",
+                "ddd",
+                "ddd",
+                "ddd",
+                "ddd",
+                "ddd",
+                "ddd");
+        ApiResponse<SignUpForm> apiResponse = new ApiResponse<SignUpForm>(false, signUpForm);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    /**
+     * 회원가입 신청하는 메서드
      * 
      * @param signUpFormDto
      * @param studentCouncilFee
@@ -51,13 +92,14 @@ public class SignUpRequestController {
      * @return 201 생성성공
      * @author 형민재
      */
-    @PostMapping(value = "/borrowers/signup-requests", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE,
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<ApiResponse<SignUpForm>> signUpBorrower(
             @Valid @RequestPart("signUpFormDto") SignUpFormDto signUpFormDto,
             @RequestPart("student-identification") MultipartFile studentIdentification,
             @RequestPart("student-council-fee") MultipartFile studentCouncilFee) {
-        SignUpForm result = signUpRequestService.saveSignUpRequest(signUpFormDto,studentIdentification,studentCouncilFee);
+        SignUpForm result = signUpRequestService.saveSignUpRequest(signUpFormDto, studentIdentification,
+                studentCouncilFee);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, result));
     }
 
@@ -69,7 +111,7 @@ public class SignUpRequestController {
      * @return 200 생성성공
      * @author 형민재
      */
-    @PutMapping("/borrowers/signup-request/{signup-request-id}")
+    @PatchMapping("/{signup-request-id}")
     public ResponseEntity<ApiResponse<Void>> evaluateRequest(
             @Valid @RequestBody EvaluationRequestDto EvaluationRequestDto,
             @PathVariable("signup-request-id") String id) {
@@ -94,21 +136,21 @@ public class SignUpRequestController {
             @RequestPart SignUpForm signUpForm,
             @RequestPart(value = "student-identification", required = false) MultipartFile studentIdentification,
             @RequestPart(value = "student-council-fee", required = false) MultipartFile studentCouncilFee) {
-        if(!idCache.contains(id)){
+        if (!idCache.contains(id)) {
             ApiErrorCode errorCode = ApiErrorCode.SIGN_UP_REQUEST_NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
-        if(studentCouncilFee!=null && !studentCouncilFee.isEmpty()) {
+        if (studentCouncilFee != null && !studentCouncilFee.isEmpty()) {
             String councilFee = s3Service.uploadFile(studentCouncilFee,
                     "student-council-fee", id);
             signUpForm.setStudentCouncilFeePhoto(councilFee);
         }
-        if(studentIdentification!=null && !studentIdentification.isEmpty()) {
+        if (studentIdentification != null && !studentIdentification.isEmpty()) {
             String idCard = s3Service.uploadFile(studentIdentification,
                     "student-identification", id);
             signUpForm.setIdentityPhoto(idCard);
         }
-        signUpRequestService.patchSignUpRequest(signUpForm,id,originPassword);
+        signUpRequestService.patchSignUpRequest(signUpForm, id, originPassword);
         return ResponseEntity.ok().build();
     }
 
@@ -120,13 +162,10 @@ public class SignUpRequestController {
      * @author 형민재
      */
 
-    @DeleteMapping("/signup-request/{signup-request-id}")
+    @DeleteMapping("/{signup-request-id}")
     public ResponseEntity<Void> deleteRequest(@PathVariable("signup-request-id") String id,
             @RequestBody String password) {
         signUpRequestService.deleteSignUpRequest(id, password);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-
     }
-
-
 }

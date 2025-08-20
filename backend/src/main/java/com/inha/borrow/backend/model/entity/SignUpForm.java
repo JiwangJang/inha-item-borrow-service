@@ -14,5 +14,4 @@ public class SignUpForm {
     private String identityPhoto;
     private String studentCouncilFeePhoto;
     private String accountNumber;
-
 }

@@ -6,8 +6,10 @@ import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +26,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/borrowers")
+@Slf4j
 public class BorrowerController {
     private final BorrowerService borrowerService;
 
@@ -33,7 +37,7 @@ public class BorrowerController {
      * @return 200 요청 성공
      * @author 형민재
      */
-    @GetMapping("/borrowers")
+    @GetMapping
     public ResponseEntity<ApiResponse<List<Borrower>>> findAllBorrower() {
         List<Borrower> borrower = borrowerService.findAll();
         return ResponseEntity.ok(new ApiResponse<>(true, borrower));
@@ -46,9 +50,10 @@ public class BorrowerController {
      * @author 형민재
      */
     @GetMapping("/info")
-    public ResponseEntity<ApiResponse<Borrower>> findById(@AuthenticationPrincipal String id) {
-        Borrower borrower = borrowerService.findById(id);
-        return ResponseEntity.ok(new ApiResponse<>(true, borrower));
+    public ResponseEntity<ApiResponse<Borrower>> findById(
+            @AuthenticationPrincipal String id) {
+        Borrower foundedBorrower = borrowerService.findById(id);
+        return ResponseEntity.ok(new ApiResponse<>(true, foundedBorrower));
     }
 
     /**
@@ -81,21 +86,6 @@ public class BorrowerController {
     }
 
     /**
-     * name을 수정하는 메서드
-     * 
-     * @param name
-     * @return 200 요청 성공
-     * @author 형민재
-     */
-    @PatchMapping("/info/name")
-    public ResponseEntity<Void> patchName(@AuthenticationPrincipal String id,
-            @Valid @RequestBody String name) {
-        // 관리자만 수정가능하게 바꿔야함
-        borrowerService.patchName(id, name);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
      * phoneNumber를 수정하는 메서드
      * 
      * @param phoneNumber
@@ -105,8 +95,22 @@ public class BorrowerController {
     @PatchMapping("/info/phonenum")
     public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal String id,
             @RequestBody String phoneNumber) {
-        // 핸드폰 재인증 로직 구현해야함
+        // 핸드폰 재인증 로직 구현해야함(서비스)
         borrowerService.patchPhoneNumber(phoneNumber, id);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * name을 수정하는 메서드
+     * 
+     * @param name
+     * @return 200 요청 성공
+     * @author 형민재
+     */
+    @PatchMapping("/{borrower-id}/info/name")
+    public ResponseEntity<Void> patchName(@PathVariable("borrower-id") String borrowerId,
+            @Valid @NotBlank @RequestBody String name) {
+        borrowerService.patchName(borrowerId, name);
         return ResponseEntity.ok().build();
     }
 
@@ -120,8 +124,8 @@ public class BorrowerController {
      */
     @PatchMapping("/{borrower-id}/info/ban")
     public ResponseEntity<Void> patchBan(@PathVariable("borrower-id") String borrowerId,
-            @RequestBody boolean ban) {
-        borrowerService.patchBan(ban, borrowerId);
+            @RequestBody String ban) {
+        borrowerService.patchBan(Boolean.parseBoolean(ban), borrowerId);
         return ResponseEntity.ok().build();
     }
 }
