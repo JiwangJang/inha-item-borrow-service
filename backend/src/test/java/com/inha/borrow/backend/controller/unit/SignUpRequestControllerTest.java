@@ -25,6 +25,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.config.AuthConfig;
 import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
 import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
@@ -50,6 +51,9 @@ public class SignUpRequestControllerTest {
 
         @MockitoBean
         private S3Service s3Service;
+
+        @MockitoBean
+        private IdCache idCache;
 
         @MockitoBean
         AdminAuthenticationProvider mockAdminAuthenticationProvider;
@@ -116,7 +120,8 @@ public class SignUpRequestControllerTest {
                 SignUpForm signUpForm = signUpFormDto.getSignUpForm("path", "path");
                 when(s3Service.uploadFile(mockStudentIdentificationPhoto, "path", "path")).thenReturn("path");
                 when(s3Service.uploadFile(mockStudentCouncilFee, "path", "path")).thenReturn("path");
-                when(signUpRequestService.saveSignUpRequest(signUpForm)).thenReturn(signUpForm);
+                when(signUpRequestService.saveSignUpRequest(signUpFormDto, mockStudentCouncilFee,
+                                mockStudentIdentificationPhoto)).thenReturn(signUpForm);
                 mockMvc.perform(multipart("/borrowers/signup-requests")
                                 .file(mockStudentIdentificationPhoto)
                                 .file(mockStudentCouncilFee)
@@ -170,8 +175,10 @@ public class SignUpRequestControllerTest {
         @DisplayName("회원가입 수정(성공-대여자권한만 수정가능)")
         @WithMockUser(authorities = "BORROWER")
         void rewriteRequestSuccessTest() throws Exception {
+                // 서비스로 코드 다 내린 뒤 테스트
                 mockMvc.perform(
-                                put("/borrowers/signup-requests/ddd"))
+                                put("/borrowers/signup-requests/ddd")
+                                                .contentType(MediaType.APPLICATION_JSON_VALUE))
                                 .andExpect(status().isOk());
         }
 

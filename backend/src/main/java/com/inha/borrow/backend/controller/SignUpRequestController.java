@@ -129,7 +129,7 @@ public class SignUpRequestController {
      * @return 200 생성성공
      * @author 형민재
      */
-    @PutMapping(value = "/signup-requests/{signup-request-id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE,
+    @PutMapping(value = "/{signup-request-id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<ApiResponse<Void>> rewriteRequest(@PathVariable("signup-request-id") String id,
             @RequestPart String originPassword,
@@ -138,7 +138,8 @@ public class SignUpRequestController {
             @RequestPart(value = "student-council-fee", required = false) MultipartFile studentCouncilFee) {
         if (!idCache.contains(id)) {
             ApiErrorCode errorCode = ApiErrorCode.SIGN_UP_REQUEST_NOT_FOUND;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+            throw new ResourceNotFoundException(errorCode.name(),
+                    errorCode.getMessage());
         }
         if (studentCouncilFee != null && !studentCouncilFee.isEmpty()) {
             String councilFee = s3Service.uploadFile(studentCouncilFee,
