@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.controller.intergration;
+package com.inha.borrow.backend.controller.unit;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -8,22 +8,28 @@ import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inha.borrow.backend.config.AuthConfig;
+import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
+import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
+import com.inha.borrow.backend.controller.BorrowerController;
 import com.inha.borrow.backend.forAuthTest.borrower.WithMockBorrower;
 import com.inha.borrow.backend.model.dto.user.PatchPasswordDto;
 import com.inha.borrow.backend.service.BorrowerService;
 
 /**
  * 권한 테스트만 진행함(장지왕), 세부 기능테스트는 따로 진행하여야 함
+ * 단위테스트로 다시 작성할것
  */
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = true)
+@WebMvcTest(BorrowerController.class)
+@Import(AuthConfig.class)
 public class BorrowerControllerTest {
         @Autowired
         MockMvc mockMvc;
@@ -31,8 +37,14 @@ public class BorrowerControllerTest {
         @Autowired
         ObjectMapper objectMapper;
 
-        @Autowired
+        @MockitoBean
         BorrowerService borrowerService;
+
+        @MockitoBean
+        AdminAuthenticationProvider mockAdminAuthenticationProvider;
+
+        @MockitoBean
+        BorrowerAuthenticationProvider mockAuthenticationProvider;
 
         @Test
         @DisplayName("/borrowers 경로 접근은 국장급(DIVISION_HEAD)이상만 가능")
@@ -63,7 +75,7 @@ public class BorrowerControllerTest {
         @WithAnonymousUser
         void findByIdFailForAnonymousUserTest() throws Exception {
                 mockMvc.perform(get("/borrowers/info"))
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isUnauthorized());
         }
 
         @Test
@@ -105,7 +117,7 @@ public class BorrowerControllerTest {
                                 patch("/borrowers/info/password")
                                                 .content(objectMapper.writeValueAsString(passwordDto))
                                                 .contentType(ContentType.APPLICATION_JSON.getMimeType()))
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isUnauthorized());
         }
 
         @Test
@@ -150,7 +162,7 @@ public class BorrowerControllerTest {
                 mockMvc.perform(
                                 patch("/borrowers/info/email")
                                                 .content(email))
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isUnauthorized());
         }
 
         @Test
@@ -192,7 +204,7 @@ public class BorrowerControllerTest {
                 mockMvc.perform(
                                 patch("/borrowers/info/email")
                                                 .content(phoneNumber))
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isUnauthorized());
         }
 
         @Test
@@ -248,7 +260,7 @@ public class BorrowerControllerTest {
                 mockMvc.perform(
                                 patch("/borrowers/test_borrower/info/name")
                                                 .content(name))
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isUnauthorized());
         }
 
         @Test
@@ -290,6 +302,6 @@ public class BorrowerControllerTest {
                 mockMvc.perform(
                                 patch("/borrowers/test_borrower/info/ban")
                                                 .content(String.valueOf(ban)))
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isUnauthorized());
         }
 }
