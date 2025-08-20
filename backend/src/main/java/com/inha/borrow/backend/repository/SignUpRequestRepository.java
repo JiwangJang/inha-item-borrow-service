@@ -26,8 +26,8 @@ public class SignUpRequestRepository {
         String email = rs.getString("email");
         String name = rs.getString("name");
         String phoneNumber = rs.getString("phonenumber");
-        String identityPhoto = rs.getString("identity_Photo");
-        String StudentCouncilFeePhoto = rs.getString("Student_Council_Fee_Photo");
+        String identityPhoto = rs.getString("identity_photo");
+        String StudentCouncilFeePhoto = rs.getString("student_council_fee_photo");
         String accountNumber = rs.getString("account_number");
         return new SignUpForm(id, password, email, name, phoneNumber, identityPhoto, StudentCouncilFeePhoto,
                 accountNumber);
@@ -80,6 +80,16 @@ public class SignUpRequestRepository {
         try {
             String sql = "SELECT * FROM signup_request WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+    }
+
+    public String findPasswordById(String id){
+        try {
+            String sql = "SELECT password FROM signup_request WHERE id = ?";
+            return jdbcTemplate.queryForObject(sql,String.class,id);
         } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());

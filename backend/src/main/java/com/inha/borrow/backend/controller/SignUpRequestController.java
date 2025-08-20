@@ -1,9 +1,14 @@
 package com.inha.borrow.backend.controller;
 
+import com.inha.borrow.backend.cache.IdCache;
+import com.inha.borrow.backend.enums.ApiErrorCode;
+
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+
 import com.inha.borrow.backend.service.S3Service;
 import com.inha.borrow.backend.service.SignUpRequestService;
 
@@ -34,6 +39,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class SignUpRequestController {
     private final S3Service s3Service;
     private final SignUpRequestService signUpRequestService;
+    private final IdCache idCache;
 
     @Value("${app.cloud.aws.s3.dir.student-council-fee}")
     private String STUDENT_COUNCIL_FEE_PATH;
@@ -80,7 +86,7 @@ public class SignUpRequestController {
     /**
      * 회원가입 신청하는 메서드
      * 
-     * @param signUpForm
+     * @param signUpFormDto
      * @param studentCouncilFee
      * @param studentIdentification
      * @return 201 생성성공
@@ -92,17 +98,15 @@ public class SignUpRequestController {
             @Valid @RequestPart("signUpFormDto") SignUpFormDto signUpFormDto,
             @RequestPart("student-identification") MultipartFile studentIdentification,
             @RequestPart("student-council-fee") MultipartFile studentCouncilFee) {
-        String idCard = s3Service.uploadFile(studentIdentification, STUDENT_IDENTIFICATION_PATH, signUpFormDto.getId());
-        String councilFee = s3Service.uploadFile(studentCouncilFee, STUDENT_COUNCIL_FEE_PATH, signUpFormDto.getId());
-        SignUpForm signUpForm = signUpFormDto.getSignUpForm(idCard, councilFee);
-        SignUpForm result = signUpRequestService.saveSignUpRequest(signUpForm);
+        SignUpForm result = signUpRequestService.saveSignUpRequest(signUpFormDto, studentIdentification,
+                studentCouncilFee);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, result));
     }
 
     /**
      * 회원가입 요청을 승인하는 메서드
      * 
-     * @param evaluationRequest
+     * @param EvaluationRequestDto
      * @param id
      * @return 200 생성성공
      * @author 형민재
@@ -120,25 +124,33 @@ public class SignUpRequestController {
      * 
      * @param signUpForm
      * @param id
-     * @param studentCouncilFdd
+     * @param studentCouncilFee
      * @param studentIdentification
      * @return 200 생성성공
      * @author 형민재
      */
-    @PutMapping(value = "/{signup-request-id}"
-    // consumes = { MediaType.MULTIPART_FORM_DATA_VALUE,
-    // MediaType.APPLICATION_JSON_VALUE }
-    )
-    public ResponseEntity<ApiResponse<Void>> rewriteRequest(@PathVariable("signup-request-id") String id) {
-        // 기존 파일 삭제하는 로직필요함 + 관리자 권한을 가졌다면 그냥 수정가능하게(또한 관리자만 이름 수정가능)
-        // 사진 있을때 없을때 로직 분리 필요
-        // String idCard = s3Service.uploadFile(studentIdentification,
-        // "student-identification");
-        // String councilFee = s3Service.uploadFile(studentCouncilFdd,
-        // "student-council-fee");
-        // signUpForm.setIdentityPhoto(idCard);
-        // signUpForm.setStudentCouncilFeePhoto(councilFee);
-        // signUpRequestService.patchSignUpRequest(signUpForm, id);
+    @PutMapping(value = "/signup-requests/{signup-request-id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE,
+            MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<ApiResponse<Void>> rewriteRequest(@PathVariable("signup-request-id") String id,
+            @RequestPart String originPassword,
+            @RequestPart SignUpForm signUpForm,
+            @RequestPart(value = "student-identification", required = false) MultipartFile studentIdentification,
+            @RequestPart(value = "student-council-fee", required = false) MultipartFile studentCouncilFee) {
+        if (!idCache.contains(id)) {
+            ApiErrorCode errorCode = ApiErrorCode.SIGN_UP_REQUEST_NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+        if (studentCouncilFee != null && !studentCouncilFee.isEmpty()) {
+            String councilFee = s3Service.uploadFile(studentCouncilFee,
+                    "student-council-fee", id);
+            signUpForm.setStudentCouncilFeePhoto(councilFee);
+        }
+        if (studentIdentification != null && !studentIdentification.isEmpty()) {
+            String idCard = s3Service.uploadFile(studentIdentification,
+                    "student-identification", id);
+            signUpForm.setIdentityPhoto(idCard);
+        }
+        signUpRequestService.patchSignUpRequest(signUpForm, id, originPassword);
         return ResponseEntity.ok().build();
     }
 
