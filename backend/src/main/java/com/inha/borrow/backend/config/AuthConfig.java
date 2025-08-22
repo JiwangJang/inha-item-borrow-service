@@ -108,16 +108,13 @@ public class AuthConfig {
 							// 회원가입 목록 전체 조회하는 경로는 국원이상만 접근 가능하다.
 							.requestMatchers(HttpMethod.GET, "/borrowers/signup-requests")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
-							// 회원가입 신청하는 경로는 누구나 접근 가능하다.
-							.requestMatchers(HttpMethod.POST, "/borrowers/signup-requests")
-							.permitAll()
 							// 회원가입 처리 결과를 처리하는 경로는 국원이상만 접근 가능하다.
 							.requestMatchers(HttpMethod.PATCH,
-									"/borrowers/signup-requests/**")
+									"/borrowers/signup-requests/*")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
-							// 회원가입 신청을 조회, 수정하거나 삭제하는 경로는 대여자 권한인 경우에만 가능하다(서비스단에서 검증 수행)
-							.requestMatchers("/borrowers/signup-requests/**")
-							.hasAuthority(Role.BORROWER.name())
+							// 회원가입 신청, 삭제, 수정하는 경로는 누구나 접근 가능하다.(서비스단에서 인증 수행)
+							.requestMatchers("/borrowers/signup-requests/*")
+							.permitAll()
 							.anyRequest().authenticated();
 
 				})

@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EvaluationRequestDto {
-    @NotNull(message = "회원가입 요청 상태는 null일수 없습니다.")
+    @NotNull(message = "회원가입 요청 상태는 필수입니다.")
     private SignUpRequestState state;
-    @NotBlank(message = "회원가업 거절 이유는 비울수 없습니다.")
+    @NotBlank(message = "회원가입 거절 이유는 필수입니다.")
     private String rejectReason;
 }
