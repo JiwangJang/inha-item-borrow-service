@@ -1,12 +1,16 @@
 package com.inha.borrow.backend.controller.unit;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
@@ -14,6 +18,8 @@ import java.util.List;
 import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -23,6 +29,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.cache.IdCache;
@@ -30,15 +37,21 @@ import com.inha.borrow.backend.config.AuthConfig;
 import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
 import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
 import com.inha.borrow.backend.controller.SignUpRequestController;
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.SignUpRequestState;
+import com.inha.borrow.backend.handler.GlobalErrorHandler;
+import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.service.S3Service;
 import com.inha.borrow.backend.service.SignUpRequestService;
 
+import net.nurigo.sdk.message.response.ErrorResponse;
+
 @WebMvcTest(controllers = SignUpRequestController.class)
-@Import(AuthConfig.class)
+@Import({ GlobalErrorHandler.class, AuthConfig.class })
 public class SignUpRequestControllerTest {
         @Autowired
         private MockMvc mockMvc;
@@ -60,6 +73,29 @@ public class SignUpRequestControllerTest {
 
         @MockitoBean
         BorrowerAuthenticationProvider mockAuthenticationProvider;
+
+        private ResultActions performSignUpPost(SignUpFormDto dto) throws Exception {
+                MockMultipartFile studentId = new MockMultipartFile(
+                                "student-identification", "id.png", MediaType.IMAGE_PNG_VALUE, "x".getBytes());
+                MockMultipartFile council = new MockMultipartFile(
+                                "student-council-fee", "fee.png", MediaType.IMAGE_PNG_VALUE, "x".getBytes());
+                MockMultipartFile body = new MockMultipartFile(
+                                "signUpFormDto", "", MediaType.APPLICATION_JSON_VALUE,
+                                objectMapper.writeValueAsBytes(dto));
+
+                // 서비스 호출이 일어나지 않는(검증 실패) 케이스들에서는 굳이 stubbing 불필요
+                return mockMvc.perform(multipart("/borrowers/signup-requests")
+                                .file(studentId).file(council).file(body));
+        }
+
+        @Test
+        @DisplayName("회원가입 신청서 단건 조회(성공-단건 조회 경로는 누구나 접근가능하다)")
+        @WithAnonymousUser
+        void findBySignUpRequestId() throws Exception {
+                mockMvc.perform(
+                                get("/borrowers/signup-requests/ddd"))
+                                .andExpect(status().isOk());
+        }
 
         @Test
         @DisplayName("전체 회원가입 신청서 조회(성공-국원 이상만 접근가능)")
@@ -129,6 +165,37 @@ public class SignUpRequestControllerTest {
                                 .andExpect(status().isCreated());
         }
 
+        @ParameterizedTest
+        @DisplayName("회원가입 신청(실패-허용되지 않는 값)")
+        @CsvSource({
+                        // id, password, email, name, phonenumber, accountNumber, expected, message
+                        "testId, Abcdef1!2, test@a.com, 내이름, 010-0000-0000, 10101010101010, 201, ' '",
+                        "t, Abcdef1!2, test@a.com, 내이름, 010-0000-0000, 10101010101010, 400, 아이디는 영어대소문자와 숫자로 4~10자여야 합니다.",
+                        "testId, abc, test@a.com, 내이름, 010-0000-0000, 10101010101010, 400, '비밀번호는 영어 대소문자와 숫자, 특수기호((!@#$%^&*()_\\-+=)를 포함해 9~13자여야 합니다.'",
+                        "testId, Abcdef1!2, nope, 내이름, 010-0000-0000, 10101010101010, 400, 이메일 형식에 맞지 않습니다.",
+                        "testId, Abcdef1!2, test@a.com, ' ', 010-0000-0000, 10101010101010, 400, 이름을 작성해주세요.",
+                        "testId, Abcdef1!2, test@a.com, 내이름, ' ', 10101010101010, 400, 핸드폰 번호를 기입해주세요.",
+                        "testId, Abcdef1!2, test@a.com, 내이름, 010-0000-0000, ' ', 400, 환불계좌번호를 기입해주세요."
+        })
+        @WithAnonymousUser
+        void signUpBorrowerFailForInvalidValueTest(String id, String password, String email, String name,
+                        String phonenumber, String accountNumber, int expected, String errorMsg) throws Exception {
+                SignUpFormDto dto = new SignUpFormDto(id, password, email, name, phonenumber, accountNumber);
+                ApiResponse<Object> apiResponse = new ApiResponse<Object>(false,
+                                new ErrorResponse(ApiErrorCode.INVALID_VALUE.name(), errorMsg));
+                if (expected == 201) {
+                        when(s3Service.uploadFile(any(), anyString(), anyString())).thenReturn("path");
+                        when(signUpRequestService.saveSignUpRequest(any(), any(), any()))
+                                        .thenReturn(dto.getSignUpForm("path", "path"));
+                        performSignUpPost(dto)
+                                        .andExpect(status().is(expected));
+                        return;
+                }
+                performSignUpPost(dto)
+                                .andExpect(status().is(expected))
+                                .andExpect(content().json(objectMapper.writeValueAsString(apiResponse)));
+        }
+
         @Test
         @DisplayName("회원가입 승인(성공-국원이상만 승인가능)")
         @WithMockUser(authorities = "DIVISION_MEMBER")
@@ -171,39 +238,55 @@ public class SignUpRequestControllerTest {
                                 .andExpect(status().isUnauthorized());
         }
 
-        @Test
-        @DisplayName("회원가입 수정(성공-대여자권한만 수정가능)")
-        @WithMockUser(authorities = "BORROWER")
-        void rewriteRequestSuccessTest() throws Exception {
-                // 서비스로 코드 다 내린 뒤 테스트
-                mockMvc.perform(
-                                put("/borrowers/signup-requests/ddd")
-                                                .contentType(MediaType.APPLICATION_JSON_VALUE))
-                                .andExpect(status().isOk());
-        }
-
-        @Test
-        @DisplayName("국원이상의 권한으로 회원가입 수정(실패-대여자 권한만 수정가능)")
+        @ParameterizedTest
+        @DisplayName("회원가입 승인 실패(허락되지 않는 값)")
+        @CsvSource({
+                        // SignUpRequestState, rejectReason, expected, message
+                        "PERMIT, 허락함, 200, ' '",
+                        "REJECT, 안됨, 200, ' '",
+                        "PERMIT, ' ', 400, 회원가입 거절 이유는 필수입니다.",
+                        "' ', 이유, 400, 회원가입 요청 상태는 필수입니다."
+        })
         @WithMockUser(authorities = "DIVISION_MEMBER")
-        void rewriteRequestFailForAuthorityTest() throws Exception {
-                mockMvc.perform(
-                                put("/borrowers/signup-requests/ddd"))
-                                .andExpect(status().isForbidden());
+        void evaluateRequestFailForArgument(String signUpRequestState, String rejectReason, int expected,
+                        String errorMsg) throws Exception {
+                SignUpRequestState state = null;
+                if (!signUpRequestState.equals(" ")) {
+                        state = SignUpRequestState.valueOf(signUpRequestState);
+                }
+                EvaluationRequestDto dto = new EvaluationRequestDto(state,
+                                rejectReason);
+                if (expected == 200) {
+                        mockMvc.perform(patch("/borrowers/signup-requests/exam-signup-requets-id")
+                                        .content(objectMapper.writeValueAsString(dto))
+                                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                                        .andExpect(status().isOk());
+                        return;
+                }
+                ErrorResponse errorResponse = new ErrorResponse(ApiErrorCode.INVALID_VALUE.name(), errorMsg);
+                ApiResponse<Object> apiResponse = new ApiResponse<Object>(false, errorResponse);
+                mockMvc.perform(patch("/borrowers/signup-requests/exam-signup-requets-id")
+                                .content(objectMapper.writeValueAsString(dto))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                                .andExpect(status().is(expected))
+                                .andExpect(content().json(objectMapper.writeValueAsString(apiResponse)));
         }
 
         @Test
-        @DisplayName("로그인하지 않고 회원가입 수정(실패-대여자 권한만 수정 가능)")
+        @DisplayName("로그인하지 않고 회원가입 수정(성공-수정 경로는 누구나 접근 가능하다)")
         @WithAnonymousUser
         void rewirteRequestFailForAnonymousUserTest() throws Exception {
+                // 이건 수정 메서드 수정된거 보고 수정하기
                 mockMvc.perform(
                                 put("/borrowers/signup-requests/ddd"))
                                 .andExpect(status().isUnauthorized());
         }
 
         @Test
-        @DisplayName("회원가입 신청 취소 수정(성공-대여자권한만 수정가능)")
-        @WithMockUser(authorities = "BORROWER")
-        void deleteRequestSuccessTest() throws Exception {
+        @DisplayName("로그인하지 않고 회원가입 신청 취소(성공-취소 경로는 누구나 접근 가능하다)")
+        @WithAnonymousUser
+        void deleteRequestFailForAnonymousUserTest() throws Exception {
+                doNothing().when(signUpRequestService).deleteSignUpRequest(anyString(), anyString());
                 mockMvc.perform(
                                 delete("/borrowers/signup-requests/ddd")
                                                 .content("password"))
@@ -211,22 +294,13 @@ public class SignUpRequestControllerTest {
         }
 
         @Test
-        @DisplayName("국원이상의 권한으로 회원가입 신청 취소(실패-대여자 권한만 수정가능)")
-        @WithMockUser(authorities = "DIVISION_MEMBER")
-        void deleteRequestFailForAuthorityTest() throws Exception {
-                mockMvc.perform(
-                                delete("/borrowers/signup-requests/ddd")
-                                                .content("password"))
-                                .andExpect(status().isForbidden());
-        }
-
-        @Test
-        @DisplayName("로그인하지 않고 회원가입 신청 취소(실패-대여자 권한만 수정 가능)")
+        @DisplayName("회원가입 신청 취소(실패-비밀번호 다름)")
         @WithAnonymousUser
-        void deleteRequestFailForAnonymousUserTest() throws Exception {
-                mockMvc.perform(
-                                delete("/borrowers/signup-requests/ddd")
-                                                .content("password"))
-                                .andExpect(status().isUnauthorized());
+        void deleteRequestFailForInvalidPasswordTest() throws Exception {
+                doThrow(InvalidValueException.class).when(signUpRequestService).deleteSignUpRequest(anyString(),
+                                anyString());
+                mockMvc.perform(delete("/borrowers/signup-requests/ddd")
+                                .content("password"))
+                                .andExpect(status().isBadRequest());
         }
 }
