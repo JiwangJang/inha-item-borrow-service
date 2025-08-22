@@ -7,16 +7,11 @@ import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
-import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-
 import com.inha.borrow.backend.service.S3Service;
 import com.inha.borrow.backend.service.SignUpRequestService;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,11 +31,6 @@ public class SignUpRequestController {
     private final S3Service s3Service;
     private final SignUpRequestService signUpRequestService;
     private final IdCache idCache;
-
-    @Value("${app.cloud.aws.s3.dir.student-council-fee}")
-    private String STUDENT_COUNCIL_FEE_PATH;
-    @Value("${app.cloud.aws.s3.dir.student-identification}")
-    private String STUDENT_IDENTIFICATION_PATH;
 
     /**
      * 회원가입을 진행하는 메서드

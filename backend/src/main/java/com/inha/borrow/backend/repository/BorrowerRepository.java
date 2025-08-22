@@ -39,11 +39,12 @@ public class BorrowerRepository {
         String studentNumber = rs.getString("student_number");
         String accountNumber = rs.getString("account_number");
         boolean ban = rs.getBoolean("ban");
+        boolean withDrawal = rs.getBoolean("withdrawal");
 
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("BORROWER"));
 
         return new Borrower(id, password, email, name, phonenumber, authorities, ban, studentNumber, accountNumber,
-                refreshToken);
+                refreshToken,withDrawal);
     };
 
     /**
@@ -78,7 +79,7 @@ public class BorrowerRepository {
     public void save(BorrowerDto borrower) {
         String encodedPassword = passwordEncoder.encode(borrower.getPassword());
         String sql = "INSERT INTO borrower(id, password, email, name, phonenumber, " +
-                "student_number, account_number, refreshToken) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+                "student_number, account_number, refresh_Token) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 borrower.getId(),
                 encodedPassword,

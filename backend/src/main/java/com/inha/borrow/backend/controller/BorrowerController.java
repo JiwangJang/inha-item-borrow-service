@@ -2,6 +2,7 @@ package com.inha.borrow.backend.controller;
 
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.dto.user.PatchPasswordDto;
+import com.inha.borrow.backend.model.dto.user.borrower.PatchEmailDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerService;
 
@@ -46,7 +47,7 @@ public class BorrowerController {
      * @author 형민재
      */
     @GetMapping("/info")
-    public ResponseEntity<ApiResponse<Borrower>> findById(@AuthenticationPrincipal String id) {
+    public ResponseEntity<ApiResponse<Borrower>> findById(@AuthenticationPrincipal(expression = "username") String id) {
         Borrower borrower = borrowerService.findById(id);
         return ResponseEntity.ok(new ApiResponse<>(true, borrower));
     }
@@ -60,7 +61,7 @@ public class BorrowerController {
      */
     @PatchMapping("/info/password")
     public ResponseEntity<ApiResponse<Void>> patchPassword(@Valid @RequestBody PatchPasswordDto patchPasswordDto,
-            @AuthenticationPrincipal String id) {
+                                                           @AuthenticationPrincipal(expression = "username") String id) {
         borrowerService.patchPassword(patchPasswordDto, id);
         return ResponseEntity.ok().build();
 
@@ -69,14 +70,14 @@ public class BorrowerController {
     /**
      * email을 수정하는 메서드
      * 
-     * @param email
+     * @param emailDto
      * @return 200 요청 성공
      * @author 형민재
      */
     @PatchMapping("/info/email")
-    public ResponseEntity<Void> patchEmail(@AuthenticationPrincipal String id,
-            @Valid @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$") @RequestBody String email) {
-        borrowerService.patchEmail(id, email);
+    public ResponseEntity<Void> patchEmail(@AuthenticationPrincipal(expression = "username") String id,
+                                           @Valid @RequestBody PatchEmailDto emailDto) {
+        borrowerService.patchEmail(id, emailDto.getEmail());
         return ResponseEntity.ok().build();
     }
 
@@ -88,7 +89,7 @@ public class BorrowerController {
      * @author 형민재
      */
     @PatchMapping("/info/name")
-    public ResponseEntity<Void> patchName(@AuthenticationPrincipal String id,
+    public ResponseEntity<Void> patchName(@AuthenticationPrincipal(expression = "username") String id,
             @Valid @RequestBody String name) {
         // 관리자만 수정가능하게 바꿔야함
         borrowerService.patchName(id, name);
@@ -103,7 +104,7 @@ public class BorrowerController {
      * @author 형민재
      */
     @PatchMapping("/info/phonenum")
-    public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal String id,
+    public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal(expression = "username") String id,
             @RequestBody String phoneNumber) {
         // 핸드폰 재인증 로직 구현해야함
         borrowerService.patchPhoneNumber(phoneNumber, id);

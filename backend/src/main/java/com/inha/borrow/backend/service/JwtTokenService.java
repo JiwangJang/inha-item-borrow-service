@@ -6,9 +6,11 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -21,7 +23,7 @@ public class JwtTokenService {
     private final long EXPIRE_TIME = 864_000_000;
 
     private SecretKey getSignKey() {
-        return Jwts.SIG.HS256.key().build();
+        return Keys.hmacShaKeyFor(JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
     public String createToken(String id) {

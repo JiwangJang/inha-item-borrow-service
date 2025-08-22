@@ -5,12 +5,14 @@ import com.inha.borrow.backend.model.entity.SignUpForm;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class SignUpFormDto {
     @NotBlank
     private String id;

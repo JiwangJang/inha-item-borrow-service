@@ -2,6 +2,7 @@ package com.inha.borrow.backend.model.entity.user;
 
 import java.util.List;
 
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,6 +16,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@SuperBuilder
 public abstract class User implements UserDetails {
     String id;
     String password;

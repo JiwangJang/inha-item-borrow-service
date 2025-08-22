@@ -1,10 +1,12 @@
 package com.inha.borrow.backend.model.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class SignUpForm {
     private String id;
     private String password;

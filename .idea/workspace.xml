@@ -4,17 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="265b5cd3-076b-41bb-bf4e-b4e018b144cc" name="변경" comment="fix:&#10;SignUpRequestController 에러 반환 수정 트렌지션 삭제">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="265b5cd3-076b-41bb-bf4e-b4e018b144cc" name="변경" comment="feature:&#10;test 코드 작성">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/2bb33c50-c9e1-4d7a-9e78-6decac6656e5.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/2bb33c50-c9e1-4d7a-9e78-6decac6656e5/storage_v2/_src_/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/2bb33c50-c9e1-4d7a-9e78-6decac6656e5/storage_v2/_src_/schema/mysql.osA4Bg.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/2bb33c50-c9e1-4d7a-9e78-6decac6656e5/storage_v2/_src_/schema/performance_schema.kIw0nw.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/2bb33c50-c9e1-4d7a-9e78-6decac6656e5/storage_v2/_src_/schema/sys.zb4BAA.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4055ffec-8b33-410e-b4ed-1f84aeafc349.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/4055ffec-8b33-410e-b4ed-1f84aeafc349.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/controller/BorrowerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/controller/BorrowerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/controller/SignUpRequestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/controller/SignUpRequestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/signUpRequest/EvaluationRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/signUpRequest/EvaluationRequestDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/user/PatchPasswordDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/user/PatchPasswordDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/user/borrower/BorrowerDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/user/borrower/BorrowerDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/user/borrower/SignUpFormDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/dto/user/borrower/SignUpFormDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/entity/SignUpForm.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/entity/SignUpForm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/entity/user/Borrower.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/entity/user/Borrower.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/entity/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/entity/user/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/exception/abstractException/ServiceException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/model/exception/abstractException/ServiceException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/repository/BorrowerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/repository/BorrowerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/repository/SignUpRequestRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/repository/SignUpRequestRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/JwtTokenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/JwtTokenService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/SignUpRequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/inha/borrow/backend/service/SignUpRequestService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application-exam.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application-exam.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/inha/borrow/backend/repository/ItemRepositoryTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application-exam.yml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,9 +67,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JUnit5 Test Class" />
         <option value="Enum" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -100,54 +113,76 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.BackendApplicationTests.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.BorrowerRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.BorrowerRepositoryTest.대여자저장.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.BorrowerRepositoryTest.대여자조회.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.C:/Users/9512h/Desktop/inha-item-borrow-service/backend/build.gradle.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemRepositoryTest.아이디로삭제.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemRepositoryTest.아이디로찾기.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemRepositoryTest.아이템업데이트.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemRepositoryTest.아이템저장.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemRepositoryTest.이름으로찾기.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemRepositoryTest.전체조회.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemServiceTest.아이디로조회.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemServiceTest.아이템삭제.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemServiceTest.아이템수정.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemServiceTest.아이템저장.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.ItemServiceTest.전체조회.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend 빌드.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.소스 다운로드.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.BorrowerRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Spring Boot.BackendApplication.executor&quot;: &quot;Run&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;s3revise&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/9512h/Desktop/inha-item-borrow-service/backend/src/main/java/com/inha/borrow/backend&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.BackendApplicationTests.executor": "Run",
+    "Gradle.BorrowerControllerTest.executor": "Run",
+    "Gradle.BorrowerControllerTest.findById.executor": "Run",
+    "Gradle.BorrowerControllerTest.patchEmail.executor": "Run",
+    "Gradle.BorrowerControllerTest.patchName.executor": "Run",
+    "Gradle.BorrowerControllerTest.patchPassword.executor": "Run",
+    "Gradle.BorrowerRepositoryTest.executor": "Run",
+    "Gradle.BorrowerRepositoryTest.대여자저장.executor": "Run",
+    "Gradle.BorrowerRepositoryTest.대여자조회.executor": "Run",
+    "Gradle.BorrowerServiceTest.executor": "Run",
+    "Gradle.BorrowerServiceTest.patchEmail.executor": "Run",
+    "Gradle.C:/Users/9512h/Desktop/inha-item-borrow-service/backend/build.gradle.executor": "Run",
+    "Gradle.ItemRepositoryTest.executor": "Run",
+    "Gradle.ItemRepositoryTest.아이디로삭제.executor": "Run",
+    "Gradle.ItemRepositoryTest.아이디로찾기.executor": "Run",
+    "Gradle.ItemRepositoryTest.아이템업데이트.executor": "Run",
+    "Gradle.ItemRepositoryTest.아이템저장.executor": "Run",
+    "Gradle.ItemRepositoryTest.이름으로찾기.executor": "Run",
+    "Gradle.ItemRepositoryTest.전체조회.executor": "Run",
+    "Gradle.ItemServiceTest.executor": "Run",
+    "Gradle.ItemServiceTest.아이디로조회.executor": "Run",
+    "Gradle.ItemServiceTest.아이템삭제.executor": "Run",
+    "Gradle.ItemServiceTest.아이템수정.executor": "Run",
+    "Gradle.ItemServiceTest.아이템저장.executor": "Run",
+    "Gradle.ItemServiceTest.전체조회.executor": "Run",
+    "Gradle.JwtTokenServiceTest.executor": "Run",
+    "Gradle.S3ServiceTest.executor": "Run",
+    "Gradle.SignUpRequestRepositoryTest.executor": "Run",
+    "Gradle.SignUpRequestRepositoryTest.failedFindById.executor": "Run",
+    "Gradle.SignUpRequestRepositoryTest.patchEvaluation.executor": "Debug",
+    "Gradle.SignUpRequestServiceTest.deleteSignUpRequest.executor": "Run",
+    "Gradle.SignUpRequestServiceTest.executor": "Run",
+    "Gradle.SignUpRequestServiceTest.failedPatchSignUp.executor": "Run",
+    "Gradle.SignUpRequestServiceTest.findById.executor": "Run",
+    "Gradle.SignUpRequestServiceTest.findSignUpRequest.executor": "Run",
+    "Gradle.SignUpRequestServiceTest.patchSignUpRequest.executor": "Run",
+    "Gradle.SignUpRequestServiceTest.saveSignUpRequest.executor": "Run",
+    "Gradle.SignUpRequestServiceTest.saveSignUpRequest_fail_dbError.executor": "Run",
+    "Gradle.SignUpRequestServiceTest.saveSignUpRequest_fail_session.executor": "Run",
+    "Gradle.SignUpRequestServiceTest.updateStateAndCreateBorrower.executor": "Run",
+    "Gradle.backend 빌드.executor": "Run",
+    "Gradle.소스 다운로드.executor": "Run",
+    "JUnit.BorrowerRepositoryTest.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.BackendApplication.executor": "Run",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "feature/testcode",
+    "last_opened_file_path": "C:/Users/9512h/Desktop/inha-item-borrow-service/backend/src/main/java/com/inha/borrow/backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\9512h\Desktop\inha-item-borrow-service\backend\src\main\java\com\inha\borrow\backend" />
@@ -159,6 +194,7 @@
     </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="com.inha.borrow.backend.service" />
+      <recent name="com.inha.borrow.backend.controller" />
       <recent name="com.inha.borrow.backend.repository" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -168,8 +204,8 @@
       <recent name="com.inha.borrow.backend.repository" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.BackendApplication">
-    <configuration name="BackendApplicationTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+  <component name="RunManager" selected="Gradle.SignUpRequestServiceTest.updateStateAndCreateBorrower">
+    <configuration name="S3ServiceTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
@@ -182,7 +218,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;com.inha.borrow.backend.BackendApplicationTests&quot;" />
+            <option value="&quot;com.inha.borrow.backend.service.S3ServiceTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -193,7 +229,7 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="BorrowerRepositoryTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="SignUpRequestServiceTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
@@ -206,7 +242,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;com.inha.borrow.backend.repository.BorrowerRepositoryTest&quot;" />
+            <option value="&quot;com.inha.borrow.backend.service.SignUpRequestServiceTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -217,7 +253,7 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="BorrowerRepositoryTest.대여자저장" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="SignUpRequestServiceTest.findById" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
@@ -230,7 +266,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;com.inha.borrow.backend.repository.BorrowerRepositoryTest.대여자저장&quot;" />
+            <option value="&quot;com.inha.borrow.backend.service.SignUpRequestServiceTest.findById&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -241,7 +277,7 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="BorrowerRepositoryTest.대여자조회" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="SignUpRequestServiceTest.findSignUpRequest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
@@ -254,7 +290,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;com.inha.borrow.backend.repository.BorrowerRepositoryTest.대여자조회&quot;" />
+            <option value="&quot;com.inha.borrow.backend.service.SignUpRequestServiceTest.findSignUpRequest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -265,7 +301,7 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="BorrowerRepositoryTest.대여자조회" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="SignUpRequestServiceTest.updateStateAndCreateBorrower" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
@@ -278,7 +314,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;com.inha.borrow.backend.repository.BorrowerRepositoryTest.대여자조회&quot;" />
+            <option value="&quot;com.inha.borrow.backend.service.SignUpRequestServiceTest.updateStateAndCreateBorrower&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -288,45 +324,6 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>true</RunAsTest>
       <method v="2" />
-    </configuration>
-    <configuration name="ItemServiceTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;com.inha.borrow.backend.service.ItemServiceTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="BorrowerRepositoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="backend.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.inha.borrow.backend.repository.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.inha.borrow.backend.repository" />
-      <option name="MAIN_CLASS_NAME" value="com.inha.borrow.backend.repository.BorrowerRepositoryTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
     </configuration>
     <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
@@ -338,11 +335,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.BackendApplicationTests" />
-        <item itemvalue="Gradle.BorrowerRepositoryTest.대여자저장" />
-        <item itemvalue="Gradle.BorrowerRepositoryTest" />
-        <item itemvalue="Gradle.ItemServiceTest" />
-        <item itemvalue="JUnit.BorrowerRepositoryTest" />
+        <item itemvalue="Gradle.SignUpRequestServiceTest.updateStateAndCreateBorrower" />
+        <item itemvalue="Gradle.SignUpRequestServiceTest" />
+        <item itemvalue="Gradle.SignUpRequestServiceTest.findById" />
+        <item itemvalue="Gradle.SignUpRequestServiceTest.findSignUpRequest" />
+        <item itemvalue="Gradle.S3ServiceTest" />
       </list>
     </recent_temporary>
   </component>
@@ -391,6 +388,16 @@
       <workItem from="1755167771308" duration="6092000" />
       <workItem from="1755176499237" duration="2906000" />
       <workItem from="1755247537279" duration="4403000" />
+      <workItem from="1755297527066" duration="189000" />
+      <workItem from="1755298565120" duration="2293000" />
+      <workItem from="1755323527909" duration="1400000" />
+      <workItem from="1755508064365" duration="366000" />
+      <workItem from="1755508443998" duration="184000" />
+      <workItem from="1755508638832" duration="1881000" />
+      <workItem from="1755516256319" duration="3218000" />
+      <workItem from="1755649004534" duration="20607000" />
+      <workItem from="1755759882107" duration="18825000" />
+      <workItem from="1755847672824" duration="7300000" />
     </task>
     <task id="LOCAL-00001" summary="fix:DB 세팅 쿼리 오류 수정&#10;  - admin_role 테이블 role 컬럼 unique 설정 추가&#10;  - 스키마 생성 쿼리 추가">
       <option name="closed" value="true" />
@@ -576,7 +583,47 @@
       <option name="project" value="LOCAL" />
       <updated>1755252846792</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="fix:&#10;SignUpRequestController 에러 반환 수정 트렌지션 삭제">
+      <option name="closed" value="true" />
+      <created>1755297606757</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1755297606757</updated>
+    </task>
+    <task id="LOCAL-00025" summary="fix:&#10;SignUpRequestController 에러 반환 수정 트렌지션 삭제">
+      <option name="closed" value="true" />
+      <created>1755297625980</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1755297625980</updated>
+    </task>
+    <task id="LOCAL-00026" summary="fix:&#10;SignUpRequestController 에러 반환 수정 트렌지션 삭제">
+      <option name="closed" value="true" />
+      <created>1755297647569</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1755297647569</updated>
+    </task>
+    <task id="LOCAL-00027" summary="feature:&#10;test 코드 작성">
+      <option name="closed" value="true" />
+      <created>1755855047183</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1755855047183</updated>
+    </task>
+    <task id="LOCAL-00028" summary="feature:&#10;test 코드 작성">
+      <option name="closed" value="true" />
+      <created>1755855195435</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1755855195435</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -615,6 +662,8 @@
     <MESSAGE value="S" />
     <MESSAGE value="fix:&#10;idCache 체크&#10;SignUpRequestController 로직 서비스로 이동&#10;SignUpRequestService 비밀번호만 가져오게 수정" />
     <MESSAGE value="fix:&#10;idCache 체크&#10;SignUpRequestController 에러 반환 수정 트렌지션 삭제" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix:&#10;idCache 체크&#10;SignUpRequestController 에러 반환 수정 트렌지션 삭제" />
+    <MESSAGE value="fix:&#10;SignUpRequestController 에러 반환 수정 트렌지션 삭제" />
+    <MESSAGE value="feature:&#10;test 코드 작성" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature:&#10;test 코드 작성" />
   </component>
 </project>

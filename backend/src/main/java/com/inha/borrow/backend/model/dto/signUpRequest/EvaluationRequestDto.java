@@ -11,7 +11,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EvaluationRequestDto {
     @NotNull(message = "회원가입 요청 상태는 null일수 없습니다.")
-    private final SignUpRequestState state;
+    private SignUpRequestState state;
     @NotBlank(message = "회원가업 거절 이유는 비울수 없습니다.")
-    private final String rejectReason;
+    private String rejectReason;
+
+    public EvaluationRequestDto(SignUpRequestState state, String rejectReason) {
+        this.state = state;
+        this.rejectReason = rejectReason;
+    }
 }
+

@@ -132,7 +132,7 @@ public class SignUpRequestService {
         }
     }
 
-    private BorrowerDto transition(SignUpForm signUpForm) {
+    protected BorrowerDto transition(SignUpForm signUpForm) {
         return new BorrowerDto(
                 signUpForm.getId(),
                 signUpForm.getPassword(),
