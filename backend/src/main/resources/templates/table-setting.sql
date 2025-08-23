@@ -8,9 +8,14 @@ CREATE TABLE admin_role(
     role varchar(15) unique
 );
 
+CREATE TABLE division(
+    id int auto_increment primary key,
+    role varchar(20) unique
+);
+
 INSERT INTO admin_role(role) VALUE("PRESIDENT");
 INSERT INTO admin_role(role) VALUE("VICE_PRESIDENT");
-INSERT INTO admin_role(role) VALUE("DIVISION_HEADER");
+INSERT INTO admin_role(role) VALUE("DIVISION_HEAD");
 INSERT INTO admin_role(role) VALUE("DIVISION_MEMBER");
 
 -- admin table 생성

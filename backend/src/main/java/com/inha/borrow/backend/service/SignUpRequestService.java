@@ -34,9 +34,9 @@ public class SignUpRequestService {
     private final SignUpSessionCache signUpSessionCache;
     private final S3Service s3Service;
 
-    @Value("${app.cloud.aws.s3.dir.name}")
+    @Value("${app.cloud.aws.s3.dir.student-council-fee}")
     private String STUDENT_COUNCIL_FEE_PATH;
-    @Value("${app.cloud.aws.s3.dir.name}")
+    @Value("${app.cloud.aws.s3.dir.student-identification}")
     private String STUDENT_IDENTIFICATION_PATH;
 
     /**
@@ -46,17 +46,20 @@ public class SignUpRequestService {
      * @return 저장 정보
      * @author 형민재
      */
-    public SignUpForm saveSignUpRequest(SignUpFormDto signUpForm, MultipartFile studentIdentification, MultipartFile studentCouncilFee) {
+    public SignUpForm saveSignUpRequest(SignUpFormDto signUpForm, MultipartFile studentIdentification,
+            MultipartFile studentCouncilFee) {
         if (signUpSessionCache.isAllPassed(signUpForm.getId())) {
             String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
             signUpForm.setPassword(encodedPassword);
             signUpSessionCache.get(signUpForm.getId());
-            try{
-                String idCard = s3Service.uploadFile(studentIdentification, STUDENT_IDENTIFICATION_PATH, signUpForm.getId());
-                String councilFee = s3Service.uploadFile(studentCouncilFee, STUDENT_COUNCIL_FEE_PATH, signUpForm.getId());
-                return signUpRequestRepository.save(signUpForm.getSignUpForm(idCard,councilFee));
-        }catch (DataAccessException e){
-                s3Service.deleteAllFile("bucket",signUpForm.getId());
+            try {
+                String idCard = s3Service.uploadFile(studentIdentification, STUDENT_IDENTIFICATION_PATH,
+                        signUpForm.getId());
+                String councilFee = s3Service.uploadFile(studentCouncilFee, STUDENT_COUNCIL_FEE_PATH,
+                        signUpForm.getId());
+                return signUpRequestRepository.save(signUpForm.getSignUpForm(idCard, councilFee));
+            } catch (DataAccessException e) {
+                s3Service.deleteAllFile("bucket", signUpForm.getId());
                 throw e;
             }
         }
@@ -73,7 +76,8 @@ public class SignUpRequestService {
     public List<SignUpForm> findSignUpRequest() {
         return signUpRequestRepository.findAll();
     }
-    public SignUpForm findById(String id){
+
+    public SignUpForm findById(String id) {
         return signUpRequestRepository.findById(id);
     }
 
@@ -91,7 +95,7 @@ public class SignUpRequestService {
             SignUpForm signUpForm = signUpRequestRepository.findById(id);
             BorrowerDto borrower = transition(signUpForm);
             borrower.setRefreshToken(jwtTokenService.createToken(id));
-            s3Service.deleteAllFile("bucket",id);
+            s3Service.deleteAllFile("bucket", id);
             borrowerRepository.save(borrower);
         }
         signUpRequestRepository.patchEvaluation(evaluationRequestDto, id);
@@ -111,9 +115,9 @@ public class SignUpRequestService {
             String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
             signUpForm.setPassword(encodedPassword);
             signUpRequestRepository.patchSignUpRequest(signUpForm, id);
-        }else {
+        } else {
             ApiErrorCode errorCode = ApiErrorCode.INCORRECT_PASSWORD;
-            throw new InvalidValueException(errorCode.name(),errorCode.getMessage());
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
         }
     }
 
