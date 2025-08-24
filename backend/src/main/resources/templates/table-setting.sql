@@ -4,19 +4,21 @@ use inha_item_borrow_service;
 
 
 CREATE TABLE admin_role(
-    id int auto_increment primary key,
-    role varchar(15) unique
+    role varchar(15) primary key,
 );
 
 CREATE TABLE division(
-    id int auto_increment primary key,
-    role varchar(20) unique
+    code varchar(20) primary key,
+    name varchar(20) NOT NULL,
+    is_delete boolean default false
 );
 
 INSERT INTO admin_role(role) VALUE("PRESIDENT");
 INSERT INTO admin_role(role) VALUE("VICE_PRESIDENT");
 INSERT INTO admin_role(role) VALUE("DIVISION_HEAD");
 INSERT INTO admin_role(role) VALUE("DIVISION_MEMBER");
+
+INSERT INTO division(code, name) VALUE("TEST", "테스트 부서")
 
 -- admin table 생성
 CREATE TABLE admin(

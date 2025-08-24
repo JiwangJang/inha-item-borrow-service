@@ -115,6 +115,15 @@ public class AuthConfig {
 							// 회원가입 신청, 삭제, 수정하는 경로는 누구나 접근 가능하다.(서비스단에서 인증 수행)
 							.requestMatchers("/borrowers/signup-requests/*")
 							.permitAll()
+							//
+							// /divisions 관련 인증설정
+							// 부서 목록을 가져오는 경로는 국장권한 이상만 접근가능하다
+							.requestMatchers(HttpMethod.GET, "/divisions")
+							.hasAuthority(Role.DIVISION_HEAD.name())
+							// 부서 정보와 관련된 등로그 수정, 삭제 관련 경로는 학생회장만 접근가능하다
+							.requestMatchers("/divisions")
+							.hasAuthority(Role.PRESIDENT.name())
+							// 이외의 경로는 무조건 인증 필요함
 							.anyRequest().authenticated();
 
 				})
