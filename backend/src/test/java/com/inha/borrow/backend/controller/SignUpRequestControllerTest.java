@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.controller.unit;
+package com.inha.borrow.backend.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -36,7 +36,6 @@ import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.config.AuthConfig;
 import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
 import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
-import com.inha.borrow.backend.controller.SignUpRequestController;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.SignUpRequestState;
 import com.inha.borrow.backend.handler.GlobalErrorHandler;

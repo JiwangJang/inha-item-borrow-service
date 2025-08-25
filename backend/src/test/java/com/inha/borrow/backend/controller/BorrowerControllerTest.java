@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.controller.unit;
+package com.inha.borrow.backend.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.config.AuthConfig;
 import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
 import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
-import com.inha.borrow.backend.controller.BorrowerController;
 import com.inha.borrow.backend.forAuthTest.borrower.WithMockBorrower;
 import com.inha.borrow.backend.model.dto.user.PatchPasswordDto;
 import com.inha.borrow.backend.service.BorrowerService;

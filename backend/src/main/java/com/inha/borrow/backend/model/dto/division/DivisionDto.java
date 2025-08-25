@@ -2,6 +2,7 @@ package com.inha.borrow.backend.model.dto.division;
 
 import com.inha.borrow.backend.model.entity.Division;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DivisionDto {
+    @NotBlank
     private String code;
+    @NotBlank
     private String name;
 
     public Division getDivision() {
