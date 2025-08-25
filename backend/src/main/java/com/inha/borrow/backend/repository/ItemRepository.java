@@ -78,7 +78,7 @@ public class ItemRepository {
      * @author 장지왕
      */
     public List<Item> findAll() {
-        String sql = "SELECT * FROM item ORDER BY id DESC;";
+        String sql = "SELECT * FROM item WHERE state != 'DELETED' ORDER BY id DESC;";
         return jdbcTemplate.query(sql, itemRowMapper);
     }
 

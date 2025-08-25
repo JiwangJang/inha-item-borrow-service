@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.controller.unit;
+package com.inha.borrow.backend.controller;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -21,7 +21,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inha.borrow.backend.controller.BorrowerAuthController;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.auth.PasswordVerifyRequestDto;
 import com.inha.borrow.backend.model.dto.auth.SMSCodeRequestDto;

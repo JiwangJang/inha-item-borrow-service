@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.controller.unit;
+package com.inha.borrow.backend.controller;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.config.AuthConfig;
 import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
 import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
-import com.inha.borrow.backend.controller.ItemController;
 import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
