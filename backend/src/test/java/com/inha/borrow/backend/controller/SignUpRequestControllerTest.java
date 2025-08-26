@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -136,6 +135,12 @@ public class SignUpRequestControllerTest {
                                 "내이름",
                                 "010-0000-0000",
                                 "10101010101010");
+
+                MockMultipartFile signUpFormPart = new MockMultipartFile(
+                                "signUpFormDto", // part 이름은 컨트롤러 파라미터 이름과 맞춰야 함
+                                "",
+                                MediaType.APPLICATION_JSON_VALUE,
+                                objectMapper.writeValueAsBytes(signUpFormDto));
                 MockMultipartFile mockStudentIdentificationPhoto = new MockMultipartFile(
                                 "student-identification",
                                 "hello.png",
@@ -147,11 +152,6 @@ public class SignUpRequestControllerTest {
                                 MediaType.IMAGE_PNG_VALUE,
                                 "Hello, World!".getBytes());
 
-                MockMultipartFile signUpFormPart = new MockMultipartFile(
-                                "signUpFormDto", // part 이름은 컨트롤러 파라미터 이름과 맞춰야 함
-                                "",
-                                MediaType.APPLICATION_JSON_VALUE,
-                                objectMapper.writeValueAsBytes(signUpFormDto));
                 SignUpForm signUpForm = signUpFormDto.getSignUpForm("path", "path");
                 when(s3Service.uploadFile(mockStudentIdentificationPhoto, "path", "path")).thenReturn("path");
                 when(s3Service.uploadFile(mockStudentCouncilFee, "path", "path")).thenReturn("path");
@@ -275,10 +275,49 @@ public class SignUpRequestControllerTest {
         @DisplayName("로그인하지 않고 회원가입 수정(성공-수정 경로는 누구나 접근 가능하다)")
         @WithAnonymousUser
         void rewirteRequestFailForAnonymousUserTest() throws Exception {
-                // 이건 수정 메서드 수정된거 보고 수정하기
+                // given
+                SignUpForm signUpFormDto = new SignUpFormDto("testId",
+                                "examPw12!",
+                                "exam@naver.com",
+                                "내이름",
+                                "010-0000-0000",
+                                "10101010101010")
+                                .getSignUpForm("any", "any");
+
+                MockMultipartFile signUpFormPart = new MockMultipartFile(
+                                "signUpForm",
+                                "",
+                                MediaType.APPLICATION_JSON_VALUE,
+                                objectMapper.writeValueAsBytes(signUpFormDto));
+
+                MockMultipartFile mockStudentIdentificationPhoto = new MockMultipartFile(
+                                "student-identification",
+                                "hello.png",
+                                MediaType.IMAGE_PNG_VALUE,
+                                "Hello, World!".getBytes());
+                MockMultipartFile mockStudentCouncilFee = new MockMultipartFile(
+                                "student-council-fee",
+                                "file.png",
+                                MediaType.IMAGE_PNG_VALUE,
+                                "Hello, World!".getBytes());
+                MockMultipartFile originPassword = new MockMultipartFile(
+                                "originPassword",
+                                "",
+                                MediaType.TEXT_PLAIN_VALUE,
+                                "Hello, World!".getBytes());
+                doNothing().when(signUpRequestService).patchSignUpRequest(any(), any(), any(), any(), any());
+                // then
                 mockMvc.perform(
-                                put("/borrowers/signup-requests/ddd"))
-                                .andExpect(status().isUnauthorized());
+                                multipart("/borrowers/signup-requests/ddd")
+                                                .file(originPassword)
+                                                .file(signUpFormPart)
+                                                .file(mockStudentCouncilFee)
+                                                .file(mockStudentIdentificationPhoto)
+                                                .with(request -> {
+                                                        request.setMethod("PUT");
+                                                        return request;
+                                                }))
+                                .andExpect(status().isNoContent());
         }
 
         @Test

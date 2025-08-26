@@ -32,6 +32,7 @@ import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.service.ItemService;
 
+// 인자테스트 진행필요(ParamaterizedTest)
 @WebMvcTest(controllers = ItemController.class)
 @Import(AuthConfig.class)
 public class ItemControllerTest {

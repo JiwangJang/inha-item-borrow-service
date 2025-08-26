@@ -11,7 +11,6 @@ import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.SignUpRequestRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -43,8 +41,6 @@ class SignUpRequestServiceTest {
         private SignUpRequestRepository signUpRequestRepository;
         @Autowired
         private BorrowerRepository borrowerRepository;
-        @Autowired
-        private JwtTokenService jwtTokenService;
         @Autowired
         private SignUpSessionCache signUpSessionCache;
         @MockitoBean
@@ -340,7 +336,7 @@ class SignUpRequestServiceTest {
                 signUpRequestService.deleteSignUpRequest("123", "123");
                 assertThatThrownBy(() -> signUpRequestRepository.findById("123"))
                                 .isInstanceOf(ResourceNotFoundException.class)
-                                .hasMessageContaining("요청하신 자원을 찾을수 없습니다.");
+                                .hasMessageContaining("회원가입 신청내역이 존재하지 않습니다.");
         }
 
         @Test

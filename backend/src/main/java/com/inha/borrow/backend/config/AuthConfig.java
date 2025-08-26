@@ -113,7 +113,7 @@ public class AuthConfig {
 									"/borrowers/signup-requests/*")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							// 회원가입 신청, 삭제, 수정하는 경로는 누구나 접근 가능하다.(서비스단에서 인증 수행)
-							.requestMatchers("/borrowers/signup-requests/*")
+							.requestMatchers("/borrowers/signup-requests", "/borrowers/signup-requests/*")
 							.permitAll()
 							//
 							// /divisions 관련 인증설정

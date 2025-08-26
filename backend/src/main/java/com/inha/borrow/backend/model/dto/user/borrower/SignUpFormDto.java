@@ -27,7 +27,7 @@ public class SignUpFormDto {
     @NotBlank(message = "환불계좌번호를 기입해주세요.")
     private String accountNumber;
 
-    public SignUpForm getSignUpFormDto(String studentIdentification, String studentCouncilFee) {
+    public SignUpForm getSignUpForm(String studentIdentification, String studentCouncilFee) {
         return new SignUpForm(id, password, email, name, phoneNumber, studentIdentification, studentCouncilFee,
                 accountNumber);
     }

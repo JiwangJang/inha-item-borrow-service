@@ -4,6 +4,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
@@ -31,8 +32,7 @@ import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerService;
 
 /**
- * 권한 테스트만 진행함(장지왕), 세부 기능테스트는 따로 진행하여야 함
- * 단위테스트로 다시 작성할것
+ * 인자테스트 진행 필요(ParamaterizedTest)
  */
 @WebMvcTest(BorrowerController.class)
 @Import(AuthConfig.class)
@@ -55,7 +55,7 @@ public class BorrowerControllerTest {
         // 인자 테스트
         @Test
         @DisplayName("모든 대여자 조회")
-        @WithMockUser
+        @WithMockUser(authorities = "DIVISION_HEAD")
         void findAllBorrower() throws Exception {
                 Borrower borrower = Borrower.builder().id("123").name("홍길동").build();
                 given(borrowerService.findAll()).willReturn(List.of(borrower));
@@ -69,25 +69,28 @@ public class BorrowerControllerTest {
 
         @Test
         @DisplayName("대여자 id로 조회")
-        @WithMockUser(username = "123")
+        @WithMockBorrower
         void findById() throws Exception {
-                Borrower borrower = Borrower.builder().id("123").name("홍길동").build();
-                given(borrowerService.findById("123")).willReturn(borrower);
+                Borrower borrower = Borrower.builder()
+                                .id("test_borrower")
+                                .name("홍길동")
+                                .build();
+                given(borrowerService.findById("test_borrower")).willReturn(borrower);
 
-                mockMvc.perform(get("/info"))
+                mockMvc.perform(get("/borrowers/info"))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.data.id").value("123"))
+                                .andExpect(jsonPath("$.data.id").value("test_borrower"))
                                 .andExpect(jsonPath("$.data.name").value("홍길동"));
         }
 
         @Test
         @DisplayName("비밀번호 수정")
-        @WithMockUser(username = "123")
+        @WithMockBorrower
         void patchPassword() throws Exception {
                 PatchPasswordDto dto = new PatchPasswordDto("oldPass", "NewPass123!");
                 doNothing().when(borrowerService).patchPassword(dto, "123");
 
-                mockMvc.perform(patch("/info/password")
+                mockMvc.perform(patch("/borrowers/info/password")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(dto)))
                                 .andExpect(status().isOk());
@@ -95,13 +98,13 @@ public class BorrowerControllerTest {
 
         @Test
         @DisplayName("이메일 수정")
-        @WithMockUser(username = "123")
+        @WithMockBorrower
         void patchEmail() throws Exception {
                 doNothing().when(borrowerService).patchEmail("123", "test@example.com");
 
                 PatchEmailDto dto = new PatchEmailDto("test@example.com");
 
-                mockMvc.perform(patch("/info/email")
+                mockMvc.perform(patch("/borrowers/info/email")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(dto)))
                                 .andExpect(status().isOk());
@@ -109,11 +112,11 @@ public class BorrowerControllerTest {
 
         @Test
         @DisplayName("이름 수정")
-        @WithMockUser(username = "123")
+        @WithMockUser(authorities = "DIVISION_MEMBER")
         void patchName() throws Exception {
                 doNothing().when(borrowerService).patchName("123", "새이름");
 
-                mockMvc.perform(patch("/info/name")
+                mockMvc.perform(patch("/borrowers/123/info/name")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("\"새이름\""))
                                 .andExpect(status().isOk());
@@ -121,11 +124,11 @@ public class BorrowerControllerTest {
 
         @Test
         @DisplayName("전화번호 수정")
-        @WithMockUser(username = "123")
+        @WithMockBorrower
         void patchPhoneNumber() throws Exception {
                 doNothing().when(borrowerService).patchPhoneNumber("01012345678", "123");
 
-                mockMvc.perform(patch("/info/phonenum")
+                mockMvc.perform(patch("/borrowers/info/phonenum")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("01012345678"))
                                 .andExpect(status().isOk());
@@ -133,11 +136,11 @@ public class BorrowerControllerTest {
 
         @Test
         @DisplayName("Ban 상태 수정")
-        @WithMockUser
+        @WithMockUser(authorities = "DIVISION_MEMBER")
         void patchBan() throws Exception {
                 doNothing().when(borrowerService).patchBan(true, "123");
 
-                mockMvc.perform(patch("/123/info/ban")
+                mockMvc.perform(patch("/borrowers/123/info/ban")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("true"))
                                 .andExpect(status().isOk());
@@ -241,11 +244,13 @@ public class BorrowerControllerTest {
         void patchEmailSuccessTest() throws Exception {
                 // given
                 String email = "test1@naver.com";
+                PatchEmailDto patchEmailDto = new PatchEmailDto(email);
                 // when
                 // then
                 mockMvc.perform(
                                 patch("/borrowers/info/email")
-                                                .content(email))
+                                                .content(objectMapper.writeValueAsString(patchEmailDto))
+                                                .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isOk());
         }
 
@@ -287,7 +292,8 @@ public class BorrowerControllerTest {
                 // then
                 mockMvc.perform(
                                 patch("/borrowers/info/phonenum")
-                                                .content(phoneNumber))
+                                                .content(phoneNumber)
+                                                .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isOk());
         }
 

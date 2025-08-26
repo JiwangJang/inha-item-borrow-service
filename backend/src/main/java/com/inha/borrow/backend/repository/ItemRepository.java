@@ -96,6 +96,7 @@ public class ItemRepository {
             return jdbcTemplate.queryForObject(sql, itemRowMapper, id);
         } catch (IncorrectResultSizeDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("존재하지 않는 대여물품입니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -112,6 +113,7 @@ public class ItemRepository {
         int affectedRow = jdbcTemplate.update(sql, deleteRequestDto.getDeleteReason(), id);
         if (affectedRow == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("존재하지 않는 대여물품입니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -130,6 +132,7 @@ public class ItemRepository {
                 item.getPrice(), item.getState().name(), id);
         if (affectedRow == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("존재하지 않는 대여물품입니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }

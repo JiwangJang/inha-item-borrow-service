@@ -4,7 +4,7 @@ public enum ApiErrorCode {
     EXIST_ID("이미 사용중인 아이디입니다. 다른 아이디를 사용해주세요."),
     INVALID_ID("아이디 형식에 맞지 않습니다. 다른 아이디를 사용해주세요."),
     INVALID_PASSWORD("비밀번호 형식에 맞지 않습니다. 다른 비밀번호를 사용해주세요"),
-    INVALID_VALUE(""),
+    INVALID_VALUE("잘못된 값 입니다."),
     INCORRECT_PASSWORD("비밀번호가 다릅니다."),
     INCORRECT_CODE("일치하지 않는 인증코드입니다. 인증코드를 다시 확인해주세요."),
     SIGN_UP_SESSION_EXPIRED("회원가입세션이 만료됐습니다. 다시 처음부터 진행해주세요."),

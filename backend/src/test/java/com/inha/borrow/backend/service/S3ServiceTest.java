@@ -8,6 +8,7 @@ import org.mockito.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -44,9 +45,9 @@ class S3ServiceTest {
         when(file.getOriginalFilename()).thenReturn("photo.jpg");
         when(file.getSize()).thenReturn(10L);
         when(file.getContentType()).thenReturn("image/jpeg");
-        when(file.getInputStream()).thenReturn(new ByteArrayInputStream(new byte[]{1, 2, 3}));
+        when(file.getInputStream()).thenReturn(new ByteArrayInputStream(new byte[] { 1, 2, 3 }));
 
-        when(amazonS3.getUrl(anyString(), anyString())).thenReturn(new java.net.URL("http://mock-url/photo.jpg"));
+        when(amazonS3.getUrl(anyString(), anyString())).thenReturn(any());
 
         String result = s3Service.uploadFile(file, "folder", "123");
 

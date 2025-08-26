@@ -83,6 +83,7 @@ public class SignUpRequestRepository {
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("회원가입 신청내역이 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -95,12 +96,13 @@ public class SignUpRequestRepository {
      * @author 형민재
      */
 
-    public String findPasswordById(String id){
+    public String findPasswordById(String id) {
         try {
             String sql = "SELECT password FROM signup_request WHERE id = ?";
-            return jdbcTemplate.queryForObject(sql,String.class,id);
+            return jdbcTemplate.queryForObject(sql, String.class, id);
         } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("회원가입 신청내역이 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -143,6 +145,7 @@ public class SignUpRequestRepository {
                 id);
         if (affectedRow == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("회원가입 신청내역이 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -167,19 +170,20 @@ public class SignUpRequestRepository {
     /**
      * test 코드에 사용하기 위한 메서드
      */
-    public void deleteALL(){
+    public void deleteALL() {
         String sql = "DELETE FROM signup_request";
         jdbcTemplate.update(sql);
     }
+
     /**
      * test 코드에 사용하기 위한 메서드
      */
-    public EvaluationRequestDto findStateAndReject(String id){
+    public EvaluationRequestDto findStateAndReject(String id) {
         String sql = "SELECT state,rejectReason FROM signup_request WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql,(rs, rowNum) ->{
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             SignUpRequestState state = SignUpRequestState.valueOf(rs.getString("state"));
             String rejectReason = rs.getString("rejectReason");
-            return new EvaluationRequestDto(state,rejectReason);
-        },id );
+            return new EvaluationRequestDto(state, rejectReason);
+        }, id);
     }
 }

@@ -79,7 +79,7 @@ public class ItemServiceTest {
         });
 
         assertEquals(ex.getErrorCode(), expected.getErrorCode());
-        assertEquals(ex.getErrorMessage(), expected.getErrorMessage());
+        assertEquals(ex.getErrorMessage(), "존재하지 않는 대여물품입니다.");
     }
 
     @Test

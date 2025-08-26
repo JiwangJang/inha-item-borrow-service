@@ -93,7 +93,7 @@ public class BorrowerController {
      * @author 형민재
      */
     @PatchMapping("/info/phonenum")
-    public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal(expression = "username") String id,
+    public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal String id,
             @RequestBody String phoneNumber) {
         // 핸드폰 재인증 로직 구현해야함(서비스)
         borrowerService.patchPhoneNumber(phoneNumber, id);

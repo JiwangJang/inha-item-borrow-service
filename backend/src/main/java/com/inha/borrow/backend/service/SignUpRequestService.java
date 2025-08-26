@@ -1,6 +1,5 @@
 package com.inha.borrow.backend.service;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.cache.SignUpSessionCache;
 import com.inha.borrow.backend.enums.ApiErrorCode;
@@ -59,7 +58,7 @@ public class SignUpRequestService {
                         signUpForm.getId());
                 String councilFee = s3Service.uploadFile(studentCouncilFee, STUDENT_COUNCIL_FEE_PATH,
                         signUpForm.getId());
-                return signUpRequestRepository.save(signUpForm.getSignUpFormDto(idCard, councilFee));
+                return signUpRequestRepository.save(signUpForm.getSignUpForm(idCard, councilFee));
             } catch (DataAccessException e) {
                 s3Service.deleteAllFile("bucket", signUpForm.getId());
                 throw e;

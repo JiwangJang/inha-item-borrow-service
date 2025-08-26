@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
@@ -60,6 +59,7 @@ public class BorrowerRepository {
             return jdbcTemplate.queryForObject(sql, borrowerRowMapper, id);
         } catch (IncorrectResultSizeDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("찾으시는 대여자가 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -75,6 +75,7 @@ public class BorrowerRepository {
         List<Borrower> result = jdbcTemplate.query(sql, borrowerRowMapper);
         if (result.isEmpty()) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("등록된 대여자가 없습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
         return result;
@@ -107,6 +108,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, password, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("요청하신 대여자가 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -116,6 +118,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, email, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("요청하신 대여자가 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -125,6 +128,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, name, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("요청하신 대여자가 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -134,6 +138,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, phoneNumber, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("요청하신 대여자가 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
 
@@ -144,6 +149,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, studentNumber, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("요청하신 대여자가 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -153,6 +159,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, accountNumber, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("요청하신 대여자가 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -162,6 +169,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, withDrawal, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("요청하신 대여자가 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -171,6 +179,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, ban, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("요청하신 대여자가 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
