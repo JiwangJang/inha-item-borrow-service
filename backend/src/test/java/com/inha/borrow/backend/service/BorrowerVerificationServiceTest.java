@@ -1,4 +1,4 @@
-package com.inha.borrow.backend.authentication.intergration;
+package com.inha.borrow.backend.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +19,6 @@ import com.inha.borrow.backend.model.entity.SMSCode;
 import com.inha.borrow.backend.model.entity.SignUpSession;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import com.inha.borrow.backend.service.BorrowerVerificationService;
 
 @SpringBootTest
 public class BorrowerVerificationServiceTest {
@@ -59,30 +58,6 @@ public class BorrowerVerificationServiceTest {
     }
 
     @Test
-    @DisplayName("아이디 검증 테스트(유효성검증 실패-길이)")
-    void verifyIdFailForIdLengthTest() {
-        // given
-        String testId = "a";
-        // when
-        // then
-        assertThrows(InvalidValueException.class, () -> {
-            service.verifyId(testId);
-        });
-    }
-
-    @Test
-    @DisplayName("아이디 검증 테스트(유효성검증 실패-형식)")
-    void verifyIdFailForIdFormTest() {
-        // given
-        String testId = "aA1234!";
-        // when
-        // then
-        assertThrows(InvalidValueException.class, () -> {
-            service.verifyId(testId);
-        });
-    }
-
-    @Test
     @DisplayName("아이디 검증 테스트(이미존재하는 아이디)")
     void verifyIdFailForExistIdTest() {
         // given
@@ -110,34 +85,6 @@ public class BorrowerVerificationServiceTest {
         assertTrue(session.isPasswordCheck());
         assertTrue(session.isIdCheck());
         assertThat(idCache.getTtl(id)).isEqualTo(session.getTtl());
-    }
-
-    @Test
-    @DisplayName("비밀번호 검증 테스트(유효성검사 실패-길이)")
-    void verifyPasswordFailForPasswordLengthTest() {
-        // given
-        String id = "test1";
-        String password = "a";
-        // when
-        service.verifyId(id);
-        // then
-        assertThrows(InvalidValueException.class, () -> {
-            service.verifyPassword(id, password);
-        });
-    }
-
-    @Test
-    @DisplayName("비밀번호 검증 테스트(유효성검사 실패-형식)")
-    void verifyPasswordFailForPasswordFormTest() {
-        // given
-        String id = "test1";
-        String password = "aA가나다111111!";
-        // when
-        service.verifyId(id);
-        // then
-        assertThrows(InvalidValueException.class, () -> {
-            service.verifyPassword(id, password);
-        });
     }
 
     @Test

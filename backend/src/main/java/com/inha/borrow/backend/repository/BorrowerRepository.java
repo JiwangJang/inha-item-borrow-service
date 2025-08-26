@@ -43,7 +43,7 @@ public class BorrowerRepository {
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("BORROWER"));
 
         return new Borrower(id, password, email, name, phonenumber, authorities, ban, studentNumber, accountNumber,
-                refreshToken,withDrawal);
+                refreshToken, withDrawal);
     };
 
     /**
@@ -73,7 +73,7 @@ public class BorrowerRepository {
     public List<Borrower> findAll() {
         String sql = "SELECT * FROM borrower";
         List<Borrower> result = jdbcTemplate.query(sql, borrowerRowMapper);
-        if(result.isEmpty()){
+        if (result.isEmpty()) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
@@ -113,8 +113,8 @@ public class BorrowerRepository {
 
     public void patchEmail(String email, String id) {
         String sql = " UPDATE borrower SET email = ? WHERE id = ?";
-        int result =jdbcTemplate.update(sql, email, id);
-        if(result == 0) {
+        int result = jdbcTemplate.update(sql, email, id);
+        if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
@@ -123,7 +123,7 @@ public class BorrowerRepository {
     public void patchName(String name, String id) {
         String sql = " UPDATE borrower SET name = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, name, id);
-        if(result == 0) {
+        if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
@@ -132,10 +132,10 @@ public class BorrowerRepository {
     public void patchPhoneNumber(String phoneNumber, String id) {
         String sql = " UPDATE borrower SET phonenumber = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, phoneNumber, id);
-        if(result == 0){
+        if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-            }
+        }
 
     }
 

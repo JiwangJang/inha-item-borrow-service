@@ -29,6 +29,9 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
+    /// 아이템 조회의 경우 모든 유저가 볼 수 있지만 관리자 권한이 있거나 대여자만
+    /// 해당물품의 비밀번호 정보를 조회할 수 있어야 한다.
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<Item>>> getAllItems() {
         List<Item> result = itemService.getAllItem();
@@ -50,7 +53,7 @@ public class ItemController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> updateItem(@PathVariable("id") int id,
             @Valid @RequestBody ItemReviseRequestDto itemReviseRequestDto) {
-        itemService.updateItemDetail(itemReviseRequestDto, id);
+        itemService.updateItemDetail(id, itemReviseRequestDto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(true, null));
     }
 

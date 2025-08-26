@@ -78,7 +78,7 @@ public class ItemRepository {
      * @author 장지왕
      */
     public List<Item> findAll() {
-        String sql = "SELECT * FROM item ORDER BY id DESC;";
+        String sql = "SELECT * FROM item WHERE state != 'DELETED' ORDER BY id DESC;";
         return jdbcTemplate.query(sql, itemRowMapper);
     }
 
@@ -127,7 +127,7 @@ public class ItemRepository {
         String sql = "UPDATE item SET name = ?, location = ?, password = ?, delete_reason = ?, price = ?, state = ? WHERE id = ?;";
         int affectedRow = jdbcTemplate.update(sql, item.getName(), item.getLocation(), item.getPassword(),
                 item.getDeleteReason(),
-                item.getPrice(), item.getState(), id);
+                item.getPrice(), item.getState().name(), id);
         if (affectedRow == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());

@@ -18,9 +18,11 @@ public enum ApiErrorCode {
     JSON_PARSING_ERROR("JSON파싱중 에러가 발생했습니다."),
     FILE_SIZE_TOO_LARGE("사진의 크기가 너무 큽니다."),
     SIGN_UP_REQUEST_NOT_FOUND("기존 가입 요청을 찾을 수 없습니다"),
-    REQUIRED_FILE_MISSING("필수 사진이 누락되었습니다.");
+    REQUIRED_FILE_MISSING("필수 사진이 누락되었습니다."),
+    NOT_ALLOWED("요청하신 작업을 할 권한이 없습니다."),
+    NOT_LOGINED("로그인 후 이용가능합니다.");
 
-    private final String message;
+    private String message;
 
     ApiErrorCode(String message) {
         this.message = message;
@@ -28,5 +30,9 @@ public enum ApiErrorCode {
 
     public String getMessage() {
         return this.message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
