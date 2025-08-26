@@ -1,5 +1,7 @@
 package com.inha.borrow.backend.service;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.cache.SignUpSessionCache;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.SignUpRequestState;
@@ -8,6 +10,7 @@ import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.SignUpRequestRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +21,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 /**
@@ -33,6 +35,7 @@ public class SignUpRequestService {
     private final JwtTokenService jwtTokenService;
     private final SignUpSessionCache signUpSessionCache;
     private final S3Service s3Service;
+    private final IdCache idCache;
 
     @Value("${app.cloud.aws.s3.dir.student-council-fee}")
     private String STUDENT_COUNCIL_FEE_PATH;
@@ -51,13 +54,12 @@ public class SignUpRequestService {
         if (signUpSessionCache.isAllPassed(signUpForm.getId())) {
             String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
             signUpForm.setPassword(encodedPassword);
-            signUpSessionCache.get(signUpForm.getId());
             try {
                 String idCard = s3Service.uploadFile(studentIdentification, STUDENT_IDENTIFICATION_PATH,
                         signUpForm.getId());
                 String councilFee = s3Service.uploadFile(studentCouncilFee, STUDENT_COUNCIL_FEE_PATH,
                         signUpForm.getId());
-                return signUpRequestRepository.save(signUpForm.getSignUpForm(idCard, councilFee));
+                return signUpRequestRepository.save(signUpForm.getSignUpFormDto(idCard, councilFee));
             } catch (DataAccessException e) {
                 s3Service.deleteAllFile("bucket", signUpForm.getId());
                 throw e;
@@ -109,11 +111,31 @@ public class SignUpRequestService {
      * @return 수정 정보
      * @author 형민재
      */
-    public void patchSignUpRequest(SignUpForm signUpForm, String id, String originPassword) {
+    public void patchSignUpRequest(SignUpForm signUpForm, MultipartFile studentIdentification,
+            MultipartFile studentCouncilFee, String id, String originPassword) {
+        if (!idCache.contains(id)) {
+            ApiErrorCode errorCode = ApiErrorCode.SIGN_UP_REQUEST_NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
         String password = signUpRequestRepository.findPasswordById(id);
         if (passwordEncoder.matches(originPassword, password)) {
             String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
             signUpForm.setPassword(encodedPassword);
+            ApiErrorCode errorCodeFileMissing = ApiErrorCode.REQUIRED_FILE_MISSING;
+            if (studentCouncilFee != null && !studentCouncilFee.isEmpty()) {
+                String councilFee = s3Service.uploadFile(studentCouncilFee,
+                        "student-council-fee", id);
+                signUpForm.setStudentCouncilFeePhoto(councilFee);
+            } else {
+                throw new InvalidValueException(errorCodeFileMissing.name(), errorCodeFileMissing.getMessage());
+            }
+            if (studentIdentification != null && !studentIdentification.isEmpty()) {
+                String idCard = s3Service.uploadFile(studentIdentification,
+                        "student-identification", id);
+                signUpForm.setIdentityPhoto(idCard);
+            } else {
+                throw new InvalidValueException(errorCodeFileMissing.name(), errorCodeFileMissing.getMessage());
+            }
             signUpRequestRepository.patchSignUpRequest(signUpForm, id);
         } else {
             ApiErrorCode errorCode = ApiErrorCode.INCORRECT_PASSWORD;
@@ -129,7 +151,7 @@ public class SignUpRequestService {
      */
     public void deleteSignUpRequest(String id, String password) {
         SignUpForm signUpForm = signUpRequestRepository.findById(id);
-        if (passwordEncoder.matches(signUpForm.getPassword(), password)) {
+        if (passwordEncoder.matches(password, signUpForm.getPassword())) {
             signUpRequestRepository.deleteSignUpRequest(id, password);
         } else {
             ApiErrorCode errorCode = ApiErrorCode.INCORRECT_PASSWORD;
@@ -137,7 +159,7 @@ public class SignUpRequestService {
         }
     }
 
-    private BorrowerDto transition(SignUpForm signUpForm) {
+    protected BorrowerDto transition(SignUpForm signUpForm) {
         return new BorrowerDto(
                 signUpForm.getId(),
                 signUpForm.getPassword(),

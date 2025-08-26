@@ -2,12 +2,12 @@ package com.inha.borrow.backend.controller;
 
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.dto.user.PatchPasswordDto;
+import com.inha.borrow.backend.model.dto.user.borrower.PatchEmailDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -74,14 +74,14 @@ public class BorrowerController {
     /**
      * email을 수정하는 메서드
      * 
-     * @param email
+     * @param emailDto
      * @return 200 요청 성공
      * @author 형민재
      */
     @PatchMapping("/info/email")
     public ResponseEntity<Void> patchEmail(@AuthenticationPrincipal String id,
-            @Valid @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$") @RequestBody String email) {
-        borrowerService.patchEmail(id, email);
+            @Valid @RequestBody PatchEmailDto emailDto) {
+        borrowerService.patchEmail(id, emailDto.getEmail());
         return ResponseEntity.ok().build();
     }
 
@@ -93,7 +93,7 @@ public class BorrowerController {
      * @author 형민재
      */
     @PatchMapping("/info/phonenum")
-    public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal String id,
+    public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal(expression = "username") String id,
             @RequestBody String phoneNumber) {
         // 핸드폰 재인증 로직 구현해야함(서비스)
         borrowerService.patchPhoneNumber(phoneNumber, id);

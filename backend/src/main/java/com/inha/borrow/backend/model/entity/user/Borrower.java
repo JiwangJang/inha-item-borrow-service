@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -16,12 +16,13 @@ import org.springframework.security.core.GrantedAuthority;
  */
 @Getter
 @Setter
+@SuperBuilder
 public class Borrower extends User {
     /**
      * 대여 정지 사용자인지 표시
      */
     boolean ban;
-
+    boolean withDrawal;
     /**
      * 학번
      */
@@ -48,9 +49,10 @@ public class Borrower extends User {
      */
     public Borrower(String id, String password, String email, String name, String phonenumber,
             List<GrantedAuthority> authorities, boolean ban, String studentNumber, String accountNumber,
-            String refreshToken) {
+            String refreshToken, boolean withDrawal) {
         super(id, password, email, name, phonenumber, refreshToken, authorities);
         this.ban = ban;
+        this.withDrawal = withDrawal;
         this.studentNumber = studentNumber;
         this.accountNumber = accountNumber;
     }

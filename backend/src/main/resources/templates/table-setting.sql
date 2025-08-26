@@ -43,7 +43,7 @@ CREATE TABLE borrower(
     account_number varchar(20) NOT NULL,
     withdrawal boolean default false,
     ban boolean default false,
-    refresh_token varchar(50) NOT NULL
+    refresh_token varchar(256) NOT NULL
 );
 
 create table item (

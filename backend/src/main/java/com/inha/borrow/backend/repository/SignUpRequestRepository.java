@@ -1,6 +1,7 @@
 package com.inha.borrow.backend.repository;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.enums.SignUpRequestState;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
@@ -86,6 +87,14 @@ public class SignUpRequestRepository {
         }
     }
 
+    /**
+     * password검증을 하는 메서드
+     *
+     * @param id
+     * @return SignUpForm
+     * @author 형민재
+     */
+
     public String findPasswordById(String id){
         try {
             String sql = "SELECT password FROM signup_request WHERE id = ?";
@@ -107,7 +116,7 @@ public class SignUpRequestRepository {
 
     public void patchEvaluation(EvaluationRequestDto evaluationRequest, String id) {
         String sql = "UPDATE signup_request SET state = ?, rejectReason = ? WHERE id = ?";
-        jdbcTemplate.update(sql, evaluationRequest.getState(), evaluationRequest.getRejectReason(), id);
+        jdbcTemplate.update(sql, evaluationRequest.getState().name(), evaluationRequest.getRejectReason(), id);
     }
 
     /**
@@ -153,5 +162,24 @@ public class SignUpRequestRepository {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
+    }
+
+    /**
+     * test 코드에 사용하기 위한 메서드
+     */
+    public void deleteALL(){
+        String sql = "DELETE FROM signup_request";
+        jdbcTemplate.update(sql);
+    }
+    /**
+     * test 코드에 사용하기 위한 메서드
+     */
+    public EvaluationRequestDto findStateAndReject(String id){
+        String sql = "SELECT state,rejectReason FROM signup_request WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql,(rs, rowNum) ->{
+            SignUpRequestState state = SignUpRequestState.valueOf(rs.getString("state"));
+            String rejectReason = rs.getString("rejectReason");
+            return new EvaluationRequestDto(state,rejectReason);
+        },id );
     }
 }

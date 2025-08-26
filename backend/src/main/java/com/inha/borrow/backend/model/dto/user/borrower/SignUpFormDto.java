@@ -5,12 +5,14 @@ import com.inha.borrow.backend.model.entity.SignUpForm;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class SignUpFormDto {
     @Pattern(regexp = "^[a-zA-Z0-9]{4,10}$", message = "아이디는 영어대소문자와 숫자로 4~10자여야 합니다.")
     private String id;
@@ -25,7 +27,7 @@ public class SignUpFormDto {
     @NotBlank(message = "환불계좌번호를 기입해주세요.")
     private String accountNumber;
 
-    public SignUpForm getSignUpForm(String studentIdentification, String studentCouncilFee) {
+    public SignUpForm getSignUpFormDto(String studentIdentification, String studentCouncilFee) {
         return new SignUpForm(id, password, email, name, phoneNumber, studentIdentification, studentCouncilFee,
                 accountNumber);
     }

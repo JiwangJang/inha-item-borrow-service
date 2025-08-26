@@ -146,13 +146,12 @@ public class BorrowerService implements UserDetailsService {
      * @author 형민재
      */
     public void patchPassword(PatchPasswordDto patchPasswordDto, String id) {
-        String newPassword = patchPasswordDto.getNewPassword();
-        // 세션에서 조회하는거로 수정
         Borrower borrower = borrowerRepository.findById(id);
         if (!passwordEncoder.matches(patchPasswordDto.getOriginPassword(), borrower.getPassword())) {
-            ApiErrorCode errorCode = ApiErrorCode.INVALID_PASSWORD;
+            ApiErrorCode errorCode = ApiErrorCode.INCORRECT_PASSWORD;
             throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
         }
+        String newPassword = passwordEncoder.encode(patchPasswordDto.getNewPassword());
         borrowerRepository.patchPassword(newPassword, id);
     }
 

@@ -8,10 +8,8 @@ import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-
 import com.inha.borrow.backend.service.S3Service;
 import com.inha.borrow.backend.service.SignUpRequestService;
-
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +38,6 @@ public class SignUpRequestController {
     private final S3Service s3Service;
     private final SignUpRequestService signUpRequestService;
     private final IdCache idCache;
-
-    @Value("${app.cloud.aws.s3.dir.student-council-fee}")
-    private String STUDENT_COUNCIL_FEE_PATH;
-    @Value("${app.cloud.aws.s3.dir.student-identification}")
-    private String STUDENT_IDENTIFICATION_PATH;
 
     /// 회원가입 신청을 확인하는 메서드 제작하기(개별)
 
@@ -136,22 +129,8 @@ public class SignUpRequestController {
             @RequestPart SignUpForm signUpForm,
             @RequestPart(value = "student-identification", required = false) MultipartFile studentIdentification,
             @RequestPart(value = "student-council-fee", required = false) MultipartFile studentCouncilFee) {
-        if (!idCache.contains(id)) {
-            ApiErrorCode errorCode = ApiErrorCode.SIGN_UP_REQUEST_NOT_FOUND;
-            throw new ResourceNotFoundException(errorCode.name(),
-                    errorCode.getMessage());
-        }
-        if (studentCouncilFee != null && !studentCouncilFee.isEmpty()) {
-            String councilFee = s3Service.uploadFile(studentCouncilFee,
-                    "student-council-fee", id);
-            signUpForm.setStudentCouncilFeePhoto(councilFee);
-        }
-        if (studentIdentification != null && !studentIdentification.isEmpty()) {
-            String idCard = s3Service.uploadFile(studentIdentification,
-                    "student-identification", id);
-            signUpForm.setIdentityPhoto(idCard);
-        }
-        signUpRequestService.patchSignUpRequest(signUpForm, id, originPassword);
+        signUpRequestService.patchSignUpRequest(signUpForm, studentIdentification, studentCouncilFee, id,
+                originPassword);
         return ResponseEntity.ok().build();
     }
 
