@@ -17,7 +17,8 @@ public enum ApiErrorCode {
     NOT_FOUND("요청하신 자원을 찾을수 없습니다."),
     JSON_PARSING_ERROR("JSON파싱중 에러가 발생했습니다."),
     FILE_SIZE_TOO_LARGE("사진의 크기가 너무 큽니다."),
-    SIGN_UP_REQUEST_NOT_FOUND("기존 가입 요청을 찾을 수 없습니다");
+    SIGN_UP_REQUEST_NOT_FOUND("기존 가입 요청을 찾을 수 없습니다"),
+    REQUIRED_FILE_MISSING("필수 사진이 누락되었습니다.");
 
     private final String message;
 

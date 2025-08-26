@@ -4,11 +4,13 @@ import com.inha.borrow.backend.enums.SignUpRequestState;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
+@Builder
 public class EvaluationRequestDto {
     @NotNull(message = "회원가입 요청 상태는 null일수 없습니다.")
     private SignUpRequestState state;

@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 public class BorrowerRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final PasswordEncoder passwordEncoder;
 
     private RowMapper<Borrower> borrowerRowMapper = (rs, rowNum) -> {
         String id = rs.getString("id");
@@ -73,16 +72,20 @@ public class BorrowerRepository {
      */
     public List<Borrower> findAll() {
         String sql = "SELECT * FROM borrower";
-        return jdbcTemplate.query(sql, borrowerRowMapper);
+        List<Borrower> result = jdbcTemplate.query(sql, borrowerRowMapper);
+        if(result.isEmpty()){
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+        return result;
     }
 
     public void save(BorrowerDto borrower) {
-        String encodedPassword = passwordEncoder.encode(borrower.getPassword());
         String sql = "INSERT INTO borrower(id, password, email, name, phonenumber, " +
                 "student_number, account_number, refresh_Token) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 borrower.getId(),
-                encodedPassword,
+                borrower.getPassword(),
                 borrower.getEmail(),
                 borrower.getName(),
                 borrower.getPhonenumber(),
@@ -100,44 +103,76 @@ public class BorrowerRepository {
      * @author 형민재
      */
     public void patchPassword(String password, String id) {
-        String encodedPassword = passwordEncoder.encode(password);
         String sql = "UPDATE borrower SET password = ? WHERE id = ?";
-        jdbcTemplate.update(sql, encodedPassword, id);
+        int result = jdbcTemplate.update(sql, password, id);
+        if (result == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 
     public void patchEmail(String email, String id) {
         String sql = " UPDATE borrower SET email = ? WHERE id = ?";
-        jdbcTemplate.update(sql, email, id);
+        int result =jdbcTemplate.update(sql, email, id);
+        if(result == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 
     public void patchName(String name, String id) {
         String sql = " UPDATE borrower SET name = ? WHERE id = ?";
-        jdbcTemplate.update(sql, name, id);
+        int result = jdbcTemplate.update(sql, name, id);
+        if(result == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 
     public void patchPhoneNumber(String phoneNumber, String id) {
         String sql = " UPDATE borrower SET phonenumber = ? WHERE id = ?";
-        jdbcTemplate.update(sql, phoneNumber, id);
+        int result = jdbcTemplate.update(sql, phoneNumber, id);
+        if(result == 0){
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+            }
+
     }
 
     public void patchStudentNumber(String studentNumber, String id) {
         String sql = " UPDATE borrower SET student_number = ? WHERE id = ?";
-        jdbcTemplate.update(sql, studentNumber, id);
+        int result = jdbcTemplate.update(sql, studentNumber, id);
+        if (result == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 
     public void patchAccountNumber(String accountNumber, String id) {
         String sql = " UPDATE borrower SET account_number = ? WHERE id = ?";
-        jdbcTemplate.update(sql, accountNumber, id);
+        int result = jdbcTemplate.update(sql, accountNumber, id);
+        if (result == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 
     public void patchWithDrawal(Boolean withDrawal, String id) {
         String sql = " UPDATE borrower SET withdrawal = ? WHERE id = ?";
-        jdbcTemplate.update(sql, withDrawal, id);
+        int result = jdbcTemplate.update(sql, withDrawal, id);
+        if (result == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 
     public void patchBan(Boolean ban, String id) {
         String sql = " UPDATE borrower SET ban = ? WHERE id = ?";
-        jdbcTemplate.update(sql, ban, id);
+        int result = jdbcTemplate.update(sql, ban, id);
+        if (result == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 
     /**

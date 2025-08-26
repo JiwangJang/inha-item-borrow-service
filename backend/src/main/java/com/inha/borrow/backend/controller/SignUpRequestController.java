@@ -84,21 +84,7 @@ public class SignUpRequestController {
             @RequestPart SignUpForm signUpForm,
             @RequestPart(value = "student-identification", required = false) MultipartFile studentIdentification,
             @RequestPart(value = "student-council-fee", required = false) MultipartFile studentCouncilFee) {
-        if(!idCache.contains(id)){
-            ApiErrorCode errorCode = ApiErrorCode.SIGN_UP_REQUEST_NOT_FOUND;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
-        if(studentCouncilFee!=null && !studentCouncilFee.isEmpty()) {
-            String councilFee = s3Service.uploadFile(studentCouncilFee,
-                    "student-council-fee", id);
-            signUpForm.setStudentCouncilFeePhoto(councilFee);
-        }
-        if(studentIdentification!=null && !studentIdentification.isEmpty()) {
-            String idCard = s3Service.uploadFile(studentIdentification,
-                    "student-identification", id);
-            signUpForm.setIdentityPhoto(idCard);
-        }
-        signUpRequestService.patchSignUpRequest(signUpForm,id,originPassword);
+        signUpRequestService.patchSignUpRequest(signUpForm,studentIdentification,studentCouncilFee,id,originPassword);
         return ResponseEntity.ok().build();
     }
 

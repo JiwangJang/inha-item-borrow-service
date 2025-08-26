@@ -17,7 +17,7 @@ import javax.crypto.SecretKey;
 
 @Service
 public class JwtTokenService {
-    @Value("${app.jwt.secret-key")
+    @Value("${app.jwt.secret-key}")
     private String JWT_SECRET_KEY;
     // 리프레시 토큰의 만료일은 10일로 준다, 리프레시 토큰이 만로됐을경우 기기에 저장된 아이디 비번 활용해서 재로그인후 다시 발급
     private final long EXPIRE_TIME = 864_000_000;

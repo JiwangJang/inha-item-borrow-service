@@ -27,7 +27,7 @@ public class SignUpFormDto {
     @NotBlank
     private String accountNumber;
 
-    public SignUpForm getSignUpForm(String studentIdentification, String studentCouncilFee) {
+    public SignUpForm getSignUpFormDto(String studentIdentification, String studentCouncilFee) {
         return new SignUpForm(id, password, email, name, phoneNumber, studentIdentification, studentCouncilFee,
                 accountNumber);
     }
