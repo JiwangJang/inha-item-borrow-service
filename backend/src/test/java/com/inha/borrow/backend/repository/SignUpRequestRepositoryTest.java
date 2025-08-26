@@ -5,6 +5,7 @@ import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +37,7 @@ class SignUpRequestRepositoryTest {
     }
 
     @Test
+    @DisplayName("저장 성공")
     void save() {
         signUpRequestRepository.deleteALL();
         SignUpForm result = signUpRequestRepository.save(signUpForm);
@@ -45,30 +47,35 @@ class SignUpRequestRepositoryTest {
     }
 
     @Test
+    @DisplayName("전체 조회 성공")
     void findAll() {
         List<SignUpForm> result = signUpRequestRepository.findAll();
         assertThat(result.size()).isEqualTo(1);
     }
 
     @Test
+    @DisplayName("단일 조회 성공")
     void findById() {
         SignUpForm result = signUpRequestRepository.findById("123");
         assertThat(result.getName()).isEqualTo("123");
     }
     @Test
-    void failedFindById(){
+    @DisplayName("단일 조회 (실패 ID 미존재)")
+    void FindByIdFailNotFoundId(){
         assertThatThrownBy(() -> signUpRequestRepository.findById("456"))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining(ApiErrorCode.NOT_FOUND.getMessage());
     }
 
     @Test
+    @DisplayName("비밀번호로 단일 조회 성공")
     void findPasswordById() {
         String result = signUpRequestRepository.findPasswordById("123");
         assertThat(result).isEqualTo("123");
     }
     @Test
-    void failedPasswordById(){
+    @DisplayName("비밀번호로 단일 조회 (실패 ID 미존재)")
+    void PasswordByIdFailNotFoundId(){
         assertThatThrownBy(() -> signUpRequestRepository.findPasswordById("456"))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining(ApiErrorCode.NOT_FOUND.getMessage());
@@ -76,6 +83,7 @@ class SignUpRequestRepositoryTest {
 
 
     @Test
+    @DisplayName("평가 저장 성공")
     void patchEvaluation() {
         signUpRequestRepository.deleteALL();
         signUpRequestRepository.save(signUpForm);
@@ -89,6 +97,7 @@ class SignUpRequestRepositoryTest {
     }
 
     @Test
+    @DisplayName("리퀘스트 수정 성공")
     void patchSignUpRequest() {
         signUpRequestRepository.deleteALL();
         signUpRequestRepository.save(signUpForm);
@@ -103,7 +112,8 @@ class SignUpRequestRepositoryTest {
     }
 
     @Test
-    void failedPatchSignUpRequest(){
+    @DisplayName("리퀘스트 수정 (실패 ID 미존재")
+    void PatchSignUpRequestFailNotFoundId(){
         signUpRequestRepository.deleteALL();
         assertThatThrownBy(() -> signUpRequestRepository.patchSignUpRequest(signUpForm,"123"))
                 .isInstanceOf(ResourceNotFoundException.class)
@@ -112,8 +122,17 @@ class SignUpRequestRepositoryTest {
 
 
     @Test
+    @DisplayName("리퀘스트 삭제 성공")
     void deleteSignUpRequest() {
         signUpRequestRepository.deleteSignUpRequest("123","123");
         assertThat(signUpRequestRepository.findAll()).isEmpty();
+    }
+    @Test
+    @DisplayName("리퀘스트 삭제 (실패 ID 미존재")
+    void deleteSignUpRequestFailNotFoundId(){
+       assertThatThrownBy(()-> signUpRequestRepository.deleteSignUpRequest("321","123"))
+               .isInstanceOf(ResourceNotFoundException.class)
+               .hasMessageContaining("요청하신 자원을 찾을수 없습니다.");
+
     }
 }
