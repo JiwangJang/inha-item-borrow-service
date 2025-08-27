@@ -31,7 +31,7 @@ public class AdminRepository {
      * @author 장지왕
      */
     public Admin findById(String id) {
-        String sql = "SELECT * FROM admin WHERE id=?;";
+        String sql = "SELECT * FROM admin INNER JOIN division ON division.code = admin.division WHERE admin.id = ?;";
         try {
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
                 String adminId = rs.getString("id");
@@ -41,9 +41,21 @@ public class AdminRepository {
                 String phonenumber = rs.getString("phonenumber");
                 String position = rs.getString("position");
                 String refreshToken = rs.getString("refresh_token");
+                String divisionCode = rs.getString("code");
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(position);
                 List<GrantedAuthority> authorities = List.of(authority);
-                return new Admin(adminId, password, email, name, phonenumber, authorities, refreshToken);
+                Admin admin = Admin
+                        .builder()
+                        .id(adminId)
+                        .password(password)
+                        .email(email)
+                        .name(name)
+                        .phonenumber(phonenumber)
+                        .authorities(authorities)
+                        .refreshToken(refreshToken)
+                        .divisionCode(divisionCode)
+                        .build();
+                return admin;
             }, id);
         } catch (IncorrectResultSizeDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;

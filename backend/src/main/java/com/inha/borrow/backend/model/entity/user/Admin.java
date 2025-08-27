@@ -8,6 +8,7 @@ import com.inha.borrow.backend.enums.Role;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 관리자(Admin) 유저를 나타내는 클래스
@@ -16,6 +17,7 @@ import lombok.Setter;
  * 
  * @author 장지왕
  */
+@SuperBuilder
 @Getter
 @Setter
 public class Admin extends User {
@@ -28,7 +30,8 @@ public class Admin extends User {
      * <li>DIVISION_MEMBER : 사업국원
      * </ul>
      */
-    String position;
+    private String position;
+    private String divisionCode;
 
     /**
      * 관리자 객체를 생성
@@ -41,10 +44,11 @@ public class Admin extends User {
      * @param authorities 관리자 권한 목록(무조건 한개 담겨있음)
      */
     public Admin(String id, String password, String email, String name, String phonenumber,
-            List<GrantedAuthority> authorities, String refreshToken) {
+            List<GrantedAuthority> authorities, String refreshToken, String divisionCode) {
         super(id, password, email, name, phonenumber, refreshToken, authorities);
 
         Role role = Role.valueOf(authorities.get(0).getAuthority());
+        this.divisionCode = divisionCode;
 
         switch (role) {
             case PRESIDENT:

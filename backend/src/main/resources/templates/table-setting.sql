@@ -28,7 +28,9 @@ CREATE TABLE admin(
     name varchar(10) NOT NULL,
     phonenumber char(13) NOT NULL,
     position varchar(15) NOT NULL,
+    division varchar(20) NOT NULL,
     foreign key (position) references admin_role(role),
+    foreign key (division) references division(code),
     refresh_token varchar(50) NOT NULL
 );
 
