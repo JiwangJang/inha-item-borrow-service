@@ -5,6 +5,7 @@ use inha_item_borrow_service;
 
 CREATE TABLE admin_role(
     role varchar(15) primary key,
+    level int NOT NULL
 );
 
 CREATE TABLE division(
@@ -13,10 +14,10 @@ CREATE TABLE division(
     is_delete boolean default false
 );
 
-INSERT INTO admin_role(role) VALUE("PRESIDENT");
-INSERT INTO admin_role(role) VALUE("VICE_PRESIDENT");
-INSERT INTO admin_role(role) VALUE("DIVISION_HEAD");
-INSERT INTO admin_role(role) VALUE("DIVISION_MEMBER");
+INSERT INTO admin_role(role, level) VALUE("PRESIDENT", 4);
+INSERT INTO admin_role(role, level) VALUE("VICE_PRESIDENT", 3);
+INSERT INTO admin_role(role, level) VALUE("DIVISION_HEAD", 2);
+INSERT INTO admin_role(role, level) VALUE("DIVISION_MEMBER", 1);
 
 INSERT INTO division(code, name) VALUE("TEST", "테스트 부서")
 

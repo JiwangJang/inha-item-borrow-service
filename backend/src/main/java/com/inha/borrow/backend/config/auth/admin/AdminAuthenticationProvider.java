@@ -33,7 +33,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         if (!passwordEncoder.matches(rawPassword, admin.getPassword())) {
             throw new BadCredentialsException("비밀번호 다름");
         }
-        return new AdminAuthenticationToken(id, null, admin.getAuthorities());
+        return new AdminAuthenticationToken(admin, null, admin.getAuthorities());
     }
 
     @Override

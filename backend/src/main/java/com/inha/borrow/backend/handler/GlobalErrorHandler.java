@@ -3,6 +3,7 @@ package com.inha.borrow.backend.handler;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -119,11 +120,43 @@ public class GlobalErrorHandler {
                 ErrorResponse errorResponse = new ErrorResponse(ApiErrorCode.FILE_SIZE_TOO_LARGE.name(),
                                 ApiErrorCode.FILE_SIZE_TOO_LARGE.getMessage());
                 ApiResponse<ErrorResponse> apiResponse = new ApiResponse<ErrorResponse>(false, errorResponse);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                                 .body(apiResponse);
         }
 
         /**
+         * 권한이 부족할때 발생하는 예외 처리
+         * 
+         * @param e
+         * @return
+         * @author 장지왕
+         */
+        @ExceptionHandler(AccessDeniedException.class)
+        public ResponseEntity<ApiResponse<ErrorResponse>> accessDeniedExceptionHandler(AccessDeniedException e) {
+                log.warn("[ERROR] 권한 없음 : {}", e.getMessage());
+                ErrorResponse errorResponse = new ErrorResponse(ApiErrorCode.NOT_ALLOWED.name(),
+                                e.getMessage());
+                ApiResponse<ErrorResponse> apiResponse = new ApiResponse<>(false, errorResponse);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiResponse);
+        }
+
+        /**
+         * 동시성 충돌 등 비정상 상태(409) 처리
+         * 
+         * @author 장지왕
+         */
+        @ExceptionHandler(IllegalStateException.class)
+        public ResponseEntity<ApiResponse<ErrorResponse>> illegalStateExceptionHandler(IllegalStateException e) {
+                log.warn("[ERROR] 충돌/비정상 상태 : {}", e.getMessage());
+                ErrorResponse errorResponse = new ErrorResponse("CONFLICT",
+                                e.getMessage() != null ? e.getMessage() : "요청이 현재 리소스 상태와 충돌합니다.");
+                ApiResponse<ErrorResponse> apiResponse = new ApiResponse<>(false, errorResponse);
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
+        }
+
+        /**
+         * 
+         * /**
          * DB작업하다 발생한 예외를 처리하는 핸들러
          * 
          * @param e

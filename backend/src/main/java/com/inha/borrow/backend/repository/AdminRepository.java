@@ -1,18 +1,23 @@
 package com.inha.borrow.backend.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.Role;
-import com.inha.borrow.backend.model.dto.user.admin.DeleteAdminDto;
 import com.inha.borrow.backend.model.dto.user.admin.SaveAdminDto;
 import com.inha.borrow.backend.model.dto.user.admin.UpdateAdminInfoDto;
+import com.inha.borrow.backend.model.dto.user.admin.UpdateDivisionDto;
+import com.inha.borrow.backend.model.dto.user.admin.UpdatePositionDto;
 import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
@@ -26,6 +31,8 @@ import lombok.RequiredArgsConstructor;
 public class AdminRepository {
     private final JdbcTemplate jdbcTemplate;
     private final String NOT_FOUND_MESSAGE = "존재하지 않는 관리자계정입니다.";
+    private final PasswordEncoder passwordEncoder;
+    private final String RAW_DEFAULT_PASSWORD = "a12345";
 
     /**
      * 아이디로 관리자 정보를 가져오는 메서드
@@ -36,7 +43,7 @@ public class AdminRepository {
      * @author 장지왕
      */
     public Admin findById(String id) {
-        String sql = "SELECT * FROM admin INNER JOIN division ON division.code = admin.division WHERE admin.id = ? AND admin.is_delete != false;";
+        String sql = "SELECT * FROM admin INNER JOIN division ON division.code = admin.division WHERE admin.id = ? AND admin.is_delete = false;";
         try {
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
                 String adminId = rs.getString("id");
@@ -109,7 +116,8 @@ public class AdminRepository {
      */
     public void saveAdmin(SaveAdminDto saveAdminDto) {
         String sql = "INSERT INTO admin(id, password, email, name, phonenumber, position, division) VALUES(?, ?, ?, ?, ?, ?, ?);";
-        jdbcTemplate.update(sql, saveAdminDto.getId(), saveAdminDto.getPassword(), saveAdminDto.getEmail(),
+        String defaultPassword = passwordEncoder.encode(RAW_DEFAULT_PASSWORD);
+        jdbcTemplate.update(sql, saveAdminDto.getId(), defaultPassword, saveAdminDto.getEmail(),
                 saveAdminDto.getName(), saveAdminDto.getPhonenumber(), saveAdminDto.getPosition(),
                 saveAdminDto.getDivision());
     }
@@ -160,13 +168,44 @@ public class AdminRepository {
      * @param position
      * @author 장지왕
      */
-    public void updatePosition(String id, Role position) {
-        String sql = "UPDATE admin SET position = ? WHERE id = ?;";
-        int affectedRow = jdbcTemplate.update(sql, position, id);
-        if (affectedRow == 0) {
+    @Transactional
+    public void updatePosition(Admin admin, String targetAdminId, UpdatePositionDto updatePositionDto) {
+        String selectSql = "SELECT position, division, is_delete FROM admin WHERE id = ?;";
+        String updateSql = "UPDATE admin SET position = ? WHERE id = ?;";
+
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectSql, targetAdminId);
+        if (rows.isEmpty()) {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
             apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
+        }
+        Map<String, Object> result = rows.get(0);
+        if (Boolean.TRUE.equals(result.get("is_delete"))) {
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
+            apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
+            throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
+        }
+
+        String targetPosition = (String) result.get("position");
+        String targetDivision = (String) result.get("division");
+
+        // actor(admin) vs target 권한/부서 검사
+        String actorRoleName = admin.getAuthorities().stream().findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("ROLE_USER");
+        int actorLevel = Role.valueOf(actorRoleName).getLevel();
+        int targetLevel = Role.valueOf(targetPosition).getLevel();
+
+        if (actorLevel <= targetLevel) {
+            throw new AccessDeniedException("자신보다 아래 등급만 수정할 수 있습니다.");
+        }
+        if (!admin.getDivisionCode().equals(targetDivision)) {
+            throw new AccessDeniedException("같은 부서만 수정 가능합니다.");
+        }
+
+        int affectedRow = jdbcTemplate.update(updateSql, updatePositionDto.getPosition(), targetAdminId);
+        if (affectedRow == 0) {
+            throw new IllegalStateException("동시 수정 충돌로 인해 업데이트되지 않았습니다. 잠시 후 다시 시도해 주세요");
         }
     }
 
@@ -174,17 +213,48 @@ public class AdminRepository {
      * 부서를 변경하는 메서드
      * 한 단계위의 권한을 가져야만 호출 가능
      * 
-     * @param id
-     * @param division
+     * @param admin             요청자(수행자)
+     * @param targetAdminId     변경 대상 관리자 아이디
+     * @param updateDivisionDto 변경할 부서 코드
      * @author 장지왕
      */
-    public void updateDivision(String id, String division) {
-        String sql = "UPDATE admin SET division = ? WHERE id = ?;";
-        int affectedRow = jdbcTemplate.update(sql, division, id);
-        if (affectedRow == 0) {
+    @Transactional
+    public void updateDivision(Admin admin, String targetAdminId, UpdateDivisionDto updateDivisionDto) {
+        String selectSql = "SELECT position, division, is_delete FROM admin WHERE id = ?;";
+        String updateSql = "UPDATE admin SET division = ? WHERE id = ?;";
+
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectSql, targetAdminId);
+        if (rows.isEmpty()) {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
             apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
+        }
+        Map<String, Object> result = rows.get(0);
+        if (Boolean.TRUE.equals(result.get("is_delete"))) {
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
+            apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
+            throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
+        }
+
+        String targetPosition = (String) result.get("position");
+        String targetDivision = (String) result.get("division");
+
+        String actorRoleName = admin.getAuthorities().stream().findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("ROLE_USER");
+        int actorLevel = Role.valueOf(actorRoleName).getLevel();
+        int targetLevel = Role.valueOf(targetPosition).getLevel();
+
+        if (actorLevel <= targetLevel) {
+            throw new AccessDeniedException("자신보다 아래 등급만 수정할 수 있습니다.");
+        }
+        if (!admin.getDivisionCode().equals(targetDivision)) {
+            throw new AccessDeniedException("같은 부서만 수정 가능합니다.");
+        }
+
+        int affectedRow = jdbcTemplate.update(updateSql, updateDivisionDto.getDivision(), targetAdminId);
+        if (affectedRow == 0) {
+            throw new IllegalStateException("동시 수정 충돌로 인해 업데이트되지 않았습니다. 잠시 후 다시 시도해 주세요");
         }
     }
 
@@ -192,16 +262,28 @@ public class AdminRepository {
      * 관리자를 삭제하는 메서드
      * 학생회장만 이 메서드 호출가능
      * 
-     * @param deleteAdminDto
+     * @param id
      * @author 장지왕
      */
-    public void deleteAdmin(DeleteAdminDto deleteAdminDto) {
+    public void deleteAdmin(String id) {
         String sql = "UPDATE admin SET is_delete = true WHERE id = ?;";
-        int affectedRow = jdbcTemplate.update(sql, deleteAdminDto.getId());
+        int affectedRow = jdbcTemplate.update(sql, id);
         if (affectedRow == 0) {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
             apiErrorCode.setMessage("존재하지 않는 관리자 계정입니다.");
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
+    }
+
+    /**
+     * 비밀번호 변경시 기존 비밀번호를 찾는 메서드
+     * 
+     * @param id
+     * @return
+     * @author 장지왕
+     */
+    public String findPasswordById(String id) {
+        String sql = "SELECT password FROM admin WHERE id = ?;";
+        return jdbcTemplate.queryForObject(sql, String.class, id);
     }
 }

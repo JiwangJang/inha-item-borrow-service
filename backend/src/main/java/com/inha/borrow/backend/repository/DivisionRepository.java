@@ -39,7 +39,7 @@ public class DivisionRepository {
     /**
      * Division객체를 DB에 저장하는 메서드
      */
-    public Division saveDivision(DivisionDto divisionDto) {
+    public void saveDivision(DivisionDto divisionDto) {
         String sql = "INSERT INTO division(code, name) VALUE(?, ?);";
         try {
             jdbcTemplate.update(sql,
@@ -50,7 +50,6 @@ public class DivisionRepository {
             apiErrorCode.setMessage("이미 존재하는 부서 코드입니다.");
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
-        return divisionDto.getDivision();
     }
 
     /**
