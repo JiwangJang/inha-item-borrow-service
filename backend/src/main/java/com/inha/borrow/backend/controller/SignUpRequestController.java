@@ -97,7 +97,7 @@ public class SignUpRequestController {
      */
 
     @DeleteMapping("/signup-request/{signup-request-id}")
-    public ResponseEntity<Void> deleteRequest(@PathVariable("signup-request-id") String id,
+    public ResponseEntity<ApiResponse<Void>> deleteRequest(@PathVariable("signup-request-id") String id,
             @RequestBody String password) {
         signUpRequestService.deleteSignUpRequest(id, password);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
