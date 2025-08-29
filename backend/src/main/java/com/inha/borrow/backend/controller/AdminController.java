@@ -41,9 +41,9 @@ public class AdminController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity<ApiResponse<Admin>> findById(@AuthenticationPrincipal String id) {
-        Admin admin = (Admin) adminService.findById(id);
-        ApiResponse<Admin> apiResponse = new ApiResponse<>(true, admin);
+    public ResponseEntity<ApiResponse<Admin>> findById(@AuthenticationPrincipal Admin admin) {
+        Admin foundedAdmin = adminService.findById(admin.getId());
+        ApiResponse<Admin> apiResponse = new ApiResponse<>(true, foundedAdmin);
         return ResponseEntity.ok(apiResponse);
     }
 
@@ -54,21 +54,21 @@ public class AdminController {
     }
 
     @PatchMapping("/info")
-    public ResponseEntity<Void> updateAdminInfo(@AuthenticationPrincipal String id,
+    public ResponseEntity<Void> updateAdminInfo(@AuthenticationPrincipal Admin admin,
             @Valid @RequestBody UpdateAdminInfoDto updateAdminInfoDto) {
-        adminService.updateAdminInfo(id, updateAdminInfoDto);
+        adminService.updateAdminInfo(admin.getId(), updateAdminInfoDto);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/info/password")
-    public ResponseEntity<Void> updatePassword(@AuthenticationPrincipal String id,
+    public ResponseEntity<Void> updatePassword(@AuthenticationPrincipal Admin admin,
             @Valid @RequestBody UpdatePasswordDto updatePasswordDto) {
-        adminService.updatePassword(id, updatePasswordDto);
+        adminService.updatePassword(admin.getId(), updatePasswordDto);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/info/{id}/position")
-    public ResponseEntity<Void> updatePosition(@PathVariable String targetAdminId,
+    public ResponseEntity<Void> updatePosition(@PathVariable("id") String targetAdminId,
             @AuthenticationPrincipal Admin admin,
             @Valid @RequestBody UpdatePositionDto updatePositionDto) {
         adminService.updatePosition(admin, targetAdminId, updatePositionDto);
@@ -76,7 +76,7 @@ public class AdminController {
     }
 
     @PatchMapping("/info/{id}/division")
-    public ResponseEntity<Void> updateDivision(@PathVariable String targetAdminId,
+    public ResponseEntity<Void> updateDivision(@PathVariable("id") String targetAdminId,
             @AuthenticationPrincipal Admin admin,
             @Valid @RequestBody UpdateDivisionDto updateDivisionDto) {
         adminService.updateDivision(admin, targetAdminId, updateDivisionDto);

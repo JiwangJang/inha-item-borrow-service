@@ -130,7 +130,7 @@ public class AuthConfig {
 							.requestMatchers("/admins", "/admins/info", "/admins/info/password")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							// 보조관리자를 생성하고 삭제하는 경로는 학생회장(PRESIDENT)만 접근 가능하다
-							.requestMatchers("/sub-admin", "/sub-admin/*")
+							.requestMatchers("/admins/sub-admin", "/admins/sub-admin/*")
 							.hasAuthority(Role.PRESIDENT.name())
 							// 관리자의 부서나 직급을 수정하는건 국장권한(DIVISION_HEAD)부터 가능하다
 							.requestMatchers("/admins/info/*/division", "/admins/info/*/position")
@@ -161,7 +161,7 @@ public class AuthConfig {
 
 	@Bean
 	static RoleHierarchy roleHierarchy() {
-		return RoleHierarchyImpl.withDefaultRolePrefix()
+		return RoleHierarchyImpl.withRolePrefix("")
 				.role(Role.PRESIDENT.name()).implies(Role.VICE_PRESIDENT.name())
 				.role(Role.VICE_PRESIDENT.name()).implies(Role.DIVISION_HEAD.name())
 				.role(Role.DIVISION_HEAD.name()).implies(Role.DIVISION_MEMBER.name())

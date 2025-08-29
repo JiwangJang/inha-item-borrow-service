@@ -49,7 +49,9 @@ public class AdminService implements UserDetailsService {
     }
 
     public Admin findById(String id) {
-        return adminRepository.findById(id);
+        Admin result = adminRepository.findById(id);
+        result.setPassword(null);
+        return result;
     }
 
     public List<Admin> findAllAdmins() {
