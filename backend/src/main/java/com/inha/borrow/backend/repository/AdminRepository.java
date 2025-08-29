@@ -3,6 +3,7 @@ package com.inha.borrow.backend.repository;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.AccessDeniedException;
@@ -19,7 +20,9 @@ import com.inha.borrow.backend.model.dto.user.admin.UpdateAdminInfoDto;
 import com.inha.borrow.backend.model.dto.user.admin.UpdateDivisionDto;
 import com.inha.borrow.backend.model.dto.user.admin.UpdatePositionDto;
 import com.inha.borrow.backend.model.entity.user.Admin;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+import com.inha.borrow.backend.service.JwtTokenService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +36,7 @@ public class AdminRepository {
     private final String NOT_FOUND_MESSAGE = "존재하지 않는 관리자계정입니다.";
     private final PasswordEncoder passwordEncoder;
     private final String RAW_DEFAULT_PASSWORD = "a12345";
+    private final JwtTokenService jwtTokenService;
 
     /**
      * 아이디로 관리자 정보를 가져오는 메서드
@@ -82,14 +86,13 @@ public class AdminRepository {
      * @return
      */
     public List<Admin> findAllAdmins() {
-        String sql = "SELECT * FROM admin INNER JOIN division ON division.code = admin.division WHERE is_delete = false;";
+        String sql = "SELECT * FROM admin INNER JOIN division ON division.code = admin.division WHERE admin.is_delete = false;";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             String adminId = rs.getString("id");
             String email = rs.getString("email");
             String name = rs.getString("name");
             String phonenumber = rs.getString("phonenumber");
             String position = rs.getString("position");
-            String refreshToken = rs.getString("refresh_token");
             String divisionCode = rs.getString("code");
             SimpleGrantedAuthority authority = new SimpleGrantedAuthority(position);
             List<GrantedAuthority> authorities = List.of(authority);
@@ -101,7 +104,6 @@ public class AdminRepository {
                     .name(name)
                     .phonenumber(phonenumber)
                     .authorities(authorities)
-                    .refreshToken(refreshToken)
                     .divisionCode(divisionCode)
                     .build();
             return admin;
@@ -115,11 +117,17 @@ public class AdminRepository {
      * @author 장지왕
      */
     public void saveAdmin(SaveAdminDto saveAdminDto) {
-        String sql = "INSERT INTO admin(id, password, email, name, phonenumber, position, division) VALUES(?, ?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO admin(id, password, email, name, phonenumber, position, division, refresh_token) VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
         String defaultPassword = passwordEncoder.encode(RAW_DEFAULT_PASSWORD);
-        jdbcTemplate.update(sql, saveAdminDto.getId(), defaultPassword, saveAdminDto.getEmail(),
-                saveAdminDto.getName(), saveAdminDto.getPhonenumber(), saveAdminDto.getPosition(),
-                saveAdminDto.getDivision());
+        String refreshToken = jwtTokenService.createToken(saveAdminDto.getId());
+        try {
+            jdbcTemplate.update(sql, saveAdminDto.getId(), defaultPassword, saveAdminDto.getEmail(),
+                    saveAdminDto.getName(), saveAdminDto.getPhonenumber(), saveAdminDto.getPosition().name(),
+                    saveAdminDto.getDivision(), refreshToken);
+        } catch (DataAccessException e) {
+            throw new InvalidValueException(ApiErrorCode.INVALID_VALUE.name(), "아이디 중복입니다.");
+        }
+
     }
 
     /**
@@ -203,7 +211,7 @@ public class AdminRepository {
             throw new AccessDeniedException("같은 부서만 수정 가능합니다.");
         }
 
-        int affectedRow = jdbcTemplate.update(updateSql, updatePositionDto.getPosition(), targetAdminId);
+        int affectedRow = jdbcTemplate.update(updateSql, updatePositionDto.getPosition().name(), targetAdminId);
         if (affectedRow == 0) {
             throw new IllegalStateException("동시 수정 충돌로 인해 업데이트되지 않았습니다. 잠시 후 다시 시도해 주세요");
         }

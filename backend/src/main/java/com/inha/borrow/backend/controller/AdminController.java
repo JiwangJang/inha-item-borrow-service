@@ -42,7 +42,7 @@ public class AdminController {
 
     @GetMapping("/info")
     public ResponseEntity<ApiResponse<Admin>> findById(@AuthenticationPrincipal String id) {
-        Admin admin = (Admin) adminService.loadUserByUsername(id);
+        Admin admin = (Admin) adminService.findById(id);
         ApiResponse<Admin> apiResponse = new ApiResponse<>(true, admin);
         return ResponseEntity.ok(apiResponse);
     }

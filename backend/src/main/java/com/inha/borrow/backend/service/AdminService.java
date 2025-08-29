@@ -48,6 +48,10 @@ public class AdminService implements UserDetailsService {
         }
     }
 
+    public Admin findById(String id) {
+        return adminRepository.findById(id);
+    }
+
     public List<Admin> findAllAdmins() {
         return adminRepository.findAllAdmins();
     }

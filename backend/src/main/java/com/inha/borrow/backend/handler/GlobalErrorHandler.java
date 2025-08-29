@@ -134,6 +134,7 @@ public class GlobalErrorHandler {
         @ExceptionHandler(AccessDeniedException.class)
         public ResponseEntity<ApiResponse<ErrorResponse>> accessDeniedExceptionHandler(AccessDeniedException e) {
                 log.warn("[ERROR] 권한 없음 : {}", e.getMessage());
+
                 ErrorResponse errorResponse = new ErrorResponse(ApiErrorCode.NOT_ALLOWED.name(),
                                 e.getMessage());
                 ApiResponse<ErrorResponse> apiResponse = new ApiResponse<>(false, errorResponse);
