@@ -1,8 +1,8 @@
 package com.inha.borrow.backend.controller;
 
+import java.net.URI;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,20 +35,19 @@ public class DivisionController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Division>> saveDivision(@RequestBody @Valid DivisionDto divisionDto) {
-        Division savedDivision = divisionService.saveDivision(divisionDto);
-        ApiResponse<Division> response = new ApiResponse<Division>(true, savedDivision);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<Void> saveDivision(@RequestBody @Valid DivisionDto divisionDto) {
+        divisionService.saveDivision(divisionDto);
+        return ResponseEntity.created(URI.create("/divisions")).build();
     }
 
     @PatchMapping
-    public ResponseEntity<ApiResponse<Void>> updateDivision(@RequestBody @Valid DivisionDto divisionDto) {
+    public ResponseEntity<Void> updateDivision(@RequestBody @Valid DivisionDto divisionDto) {
         divisionService.updateDivision(divisionDto);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<ApiResponse<Void>> deleteDivision(@RequestBody @Valid DivisionDto divisionDto) {
+    public ResponseEntity<Void> deleteDivision(@RequestBody @Valid DivisionDto divisionDto) {
         divisionService.deleteDivision(divisionDto);
         return ResponseEntity.noContent().build();
     }

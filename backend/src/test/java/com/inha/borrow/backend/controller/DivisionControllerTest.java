@@ -100,9 +100,8 @@ public class DivisionControllerTest {
     void saveDivisionSuccessTest() throws Exception {
         // given
         DivisionDto divisionDto = new DivisionDto("TEST", "테스트");
-        Division expectedResult = new Division("TEST", "테스트");
-        ApiResponse<Division> expectedResponse = new ApiResponse<Division>(true, expectedResult);
-        when(divisionService.saveDivision(divisionDto)).thenReturn(expectedResult);
+        ApiResponse<Division> expectedResponse = new ApiResponse<Division>(true, null);
+        doNothing().when(divisionService).saveDivision(divisionDto);
         // when
         // then
         mockMvc.perform(post("/divisions")
@@ -118,8 +117,7 @@ public class DivisionControllerTest {
     void saveDivisionFailForAuthorityTest() throws Exception {
         // given
         DivisionDto divisionDto = new DivisionDto("TEST", "테스트");
-        Division expectedResult = new Division("TEST", "테스트");
-        when(divisionService.saveDivision(divisionDto)).thenReturn(expectedResult);
+        doNothing().when(divisionService).saveDivision(divisionDto);
         // when
         // then
         mockMvc.perform(post("/divisions")
@@ -134,8 +132,7 @@ public class DivisionControllerTest {
     void saveDivisionFailForNotLoginTest() throws Exception {
         // given
         DivisionDto divisionDto = new DivisionDto("TEST", "테스트");
-        Division expectedResult = new Division("TEST", "테스트");
-        when(divisionService.saveDivision(divisionDto)).thenReturn(expectedResult);
+        doNothing().when(divisionService).saveDivision(divisionDto);
         // when
         // then
         mockMvc.perform(post("/divisions")
@@ -155,7 +152,7 @@ public class DivisionControllerTest {
     void saveDivisionFailForInvalidValueTest(String code, String name, String errorMsg) throws Exception {
         // given
         DivisionDto divisionDto = new DivisionDto(code, name);
-        when(divisionService.saveDivision(any())).thenReturn(divisionDto.getDivision());
+        doNothing().when(divisionService).saveDivision(any());
         ErrorResponse expectedErrorResponse = new ErrorResponse(ApiErrorCode.INVALID_VALUE.name(), errorMsg);
         ApiResponse<ErrorResponse> exepectedApiResponse = new ApiResponse<ErrorResponse>(false, expectedErrorResponse);
         // when

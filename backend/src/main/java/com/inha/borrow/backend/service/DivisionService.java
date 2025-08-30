@@ -19,8 +19,8 @@ public class DivisionService {
         return divisionRepository.findAllDivisions();
     }
 
-    public Division saveDivision(DivisionDto divisionDto) {
-        return divisionRepository.saveDivision(divisionDto);
+    public void saveDivision(DivisionDto divisionDto) {
+        divisionRepository.saveDivision(divisionDto);
     }
 
     public void updateDivision(DivisionDto divisionDto) {

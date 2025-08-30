@@ -123,6 +123,18 @@ public class AuthConfig {
 							// 부서 정보와 관련된 등로그 수정, 삭제 관련 경로는 학생회장만 접근가능하다
 							.requestMatchers("/divisions")
 							.hasAuthority(Role.PRESIDENT.name())
+							//
+							// /admins 관련 인증설정
+							// 관리자의 목록을 가져오는 경로, 관리자 본인의 개인정보나 비밀번호를 수정하는 경로, 관리자 본인의 정보를 조회하는 경로는
+							// 국원권한(DIVISION_MEMBER) 이상만 접근 가능하다
+							.requestMatchers("/admins", "/admins/info", "/admins/info/password")
+							.hasAuthority(Role.DIVISION_MEMBER.name())
+							// 보조관리자를 생성하고 삭제하는 경로는 학생회장(PRESIDENT)만 접근 가능하다
+							.requestMatchers("/admins/sub-admin", "/admins/sub-admin/*")
+							.hasAuthority(Role.PRESIDENT.name())
+							// 관리자의 부서나 직급을 수정하는건 국장권한(DIVISION_HEAD)부터 가능하다
+							.requestMatchers("/admins/info/*/division", "/admins/info/*/position")
+							.hasAnyAuthority(Role.DIVISION_HEAD.name())
 							// 이외의 경로는 무조건 인증 필요함
 							.anyRequest().authenticated();
 
@@ -149,7 +161,7 @@ public class AuthConfig {
 
 	@Bean
 	static RoleHierarchy roleHierarchy() {
-		return RoleHierarchyImpl.withDefaultRolePrefix()
+		return RoleHierarchyImpl.withRolePrefix("")
 				.role(Role.PRESIDENT.name()).implies(Role.VICE_PRESIDENT.name())
 				.role(Role.VICE_PRESIDENT.name()).implies(Role.DIVISION_HEAD.name())
 				.role(Role.DIVISION_HEAD.name()).implies(Role.DIVISION_MEMBER.name())

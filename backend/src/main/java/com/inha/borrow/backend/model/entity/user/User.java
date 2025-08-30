@@ -18,13 +18,13 @@ import lombok.Data;
 @AllArgsConstructor
 @SuperBuilder
 public abstract class User implements UserDetails {
-    String id;
-    String password;
-    String email;
-    String name;
-    String phonenumber;
-    String refreshToken;
-    List<GrantedAuthority> authorities;
+    private String id;
+    private String password;
+    private String email;
+    private String name;
+    private String phonenumber;
+    private String refreshToken;
+    private List<GrantedAuthority> authorities;
 
     public String getUsername() {
         return this.id;
