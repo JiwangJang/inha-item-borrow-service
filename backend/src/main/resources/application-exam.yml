@@ -2,30 +2,38 @@ spring:
     application:
         name: backend
     datasource:
-        url: jdbc:Mysql://localhost:3306/inha_item_borrow_service
-        username: root
-        password: 1234
+        url: jdbc:mysql://localhost:3306/
+        username: asdf
+        password: dd
         driver-class-name: com.mysql.cj.jdbc.Driver
     servlet:
         multipart:
             max-file-size: 5MB
             max-request-size: 5MB
+
 logging:
     level:
-        root:
+        root: debug
 app:
     jwt:
-        secret-key: 8B73D9C4956669F1C6EC3FECD6CC18B73D9C4956669F1C6EC3FECD6CC1
+        secret-key: secret-key
     cloud:
         aws:
             s3:
                 credentials:
-                    accessKey: accessKey
-                    secretKey: secretKey
-                bucket: bucket
+                    accessKey: ket0
+                    secretKey: key1
+                bucket: bbb
                 dir:
-                    name: path
+                    student-council-fee: dir
+                    student-identification: dir
                 region: region
     sms-service:
         api-key: ${API-KEY}
         secret-api-key: ${SECRET-API-KEY}
+server:
+    servlet:
+        encoding:
+            charset: UTF-8
+            enabled: true
+            force: true
