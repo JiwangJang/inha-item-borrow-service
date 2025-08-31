@@ -125,7 +125,7 @@ public class AdminRepository {
                     saveAdminDto.getName(), saveAdminDto.getPhonenumber(), saveAdminDto.getPosition().name(),
                     saveAdminDto.getDivision(), refreshToken);
         } catch (DataAccessException e) {
-            throw new InvalidValueException(ApiErrorCode.INVALID_VALUE.name(), "아이디 중복입니다.");
+            throw new InvalidValueException(ApiErrorCode.INVALID_VALUE.name(), "이미 존재하는 아이디입니다.");
         }
 
     }
@@ -178,7 +178,7 @@ public class AdminRepository {
      */
     @Transactional
     public void updatePosition(Admin admin, String targetAdminId, UpdatePositionDto updatePositionDto) {
-        String selectSql = "SELECT position, division, is_delete FROM admin WHERE id = ?;";
+        String selectSql = "SELECT position, division FROM admin WHERE id = ? AND is_delete = false;";
         String updateSql = "UPDATE admin SET position = ? WHERE id = ?;";
 
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectSql, targetAdminId);
@@ -188,11 +188,6 @@ public class AdminRepository {
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
         Map<String, Object> result = rows.get(0);
-        if (Boolean.TRUE.equals(result.get("is_delete"))) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
-            apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
-            throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
-        }
 
         String targetPosition = (String) result.get("position");
         String targetDivision = (String) result.get("division");
@@ -228,7 +223,7 @@ public class AdminRepository {
      */
     @Transactional
     public void updateDivision(Admin admin, String targetAdminId, UpdateDivisionDto updateDivisionDto) {
-        String selectSql = "SELECT position, division, is_delete FROM admin WHERE id = ?;";
+        String selectSql = "SELECT position, division FROM admin WHERE id = ? AND is_delete = false;";
         String updateSql = "UPDATE admin SET division = ? WHERE id = ?;";
 
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectSql, targetAdminId);
@@ -238,11 +233,6 @@ public class AdminRepository {
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
         Map<String, Object> result = rows.get(0);
-        if (Boolean.TRUE.equals(result.get("is_delete"))) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
-            apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
-            throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
-        }
 
         String targetPosition = (String) result.get("position");
         String targetDivision = (String) result.get("division");
@@ -278,7 +268,7 @@ public class AdminRepository {
         int affectedRow = jdbcTemplate.update(sql, id);
         if (affectedRow == 0) {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
-            apiErrorCode.setMessage("존재하지 않는 관리자 계정입니다.");
+            apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
     }

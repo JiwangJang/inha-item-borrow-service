@@ -113,7 +113,8 @@ public class SignUpRequestService {
     public void patchSignUpRequest(SignUpForm signUpForm, MultipartFile studentIdentification,
             MultipartFile studentCouncilFee, String id, String originPassword) {
         if (!idCache.contains(id)) {
-            ApiErrorCode errorCode = ApiErrorCode.SIGN_UP_REQUEST_NOT_FOUND;
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("기존 회원가입 요청을 찾을 수 없습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
         String password = signUpRequestRepository.findPasswordById(id);
