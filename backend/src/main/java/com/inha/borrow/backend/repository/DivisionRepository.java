@@ -61,7 +61,7 @@ public class DivisionRepository {
         int affected = jdbcTemplate.update(sql, divisionDto.getName(), divisionDto.getCode());
         if (affected == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("수정하려는 부서가 존재하지 않습니다.");
+            errorCode.setMessage("존재하지 않는 부서입니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -75,7 +75,7 @@ public class DivisionRepository {
         int affected = jdbcTemplate.update(sql, divisionDto.getCode());
         if (affected == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("삭제하려는 부서가 존재하지 않습니다.");
+            errorCode.setMessage("존재하지 않는 부서입니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }

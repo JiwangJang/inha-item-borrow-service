@@ -20,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SignUpRequestRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final String NOT_FOUND_MESSAGE = "회원가입 신청내역이 존재하지 않습니다.";
 
     private RowMapper<SignUpForm> rowMapper = (rs, rowNum) -> {
         String id = rs.getString("id");
@@ -83,7 +84,7 @@ public class SignUpRequestRepository {
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("회원가입 신청내역이 존재하지 않습니다.");
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -102,7 +103,7 @@ public class SignUpRequestRepository {
             return jdbcTemplate.queryForObject(sql, String.class, id);
         } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("회원가입 신청내역이 존재하지 않습니다.");
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -145,7 +146,7 @@ public class SignUpRequestRepository {
                 id);
         if (affectedRow == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("회원가입 신청내역이 존재하지 않습니다.");
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }

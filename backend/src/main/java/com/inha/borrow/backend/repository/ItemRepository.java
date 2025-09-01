@@ -30,6 +30,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ItemRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final String NOT_FOUND_MESSAGE = "존재하지 않는 물품입니다.";
 
     private final RowMapper<Item> itemRowMapper = (ResultSet resultSet, int index) -> {
         Item item = new Item();
@@ -96,7 +97,7 @@ public class ItemRepository {
             return jdbcTemplate.queryForObject(sql, itemRowMapper, id);
         } catch (IncorrectResultSizeDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("존재하지 않는 대여물품입니다.");
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -113,7 +114,7 @@ public class ItemRepository {
         int affectedRow = jdbcTemplate.update(sql, deleteRequestDto.getDeleteReason(), id);
         if (affectedRow == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("존재하지 않는 대여물품입니다.");
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -132,7 +133,7 @@ public class ItemRepository {
                 item.getPrice(), item.getState().name(), id);
         if (affectedRow == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("존재하지 않는 대여물품입니다.");
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
