@@ -121,20 +121,15 @@ public class SignUpRequestService {
         if (passwordEncoder.matches(originPassword, password)) {
             String encodedPassword = passwordEncoder.encode(signUpForm.getPassword());
             signUpForm.setPassword(encodedPassword);
-            ApiErrorCode errorCodeFileMissing = ApiErrorCode.REQUIRED_FILE_MISSING;
-            if (studentCouncilFee != null && !studentCouncilFee.isEmpty()) {
+            if(studentCouncilFee!=null && !studentCouncilFee.isEmpty()) {
                 String councilFee = s3Service.uploadFile(studentCouncilFee,
                         "student-council-fee", id);
                 signUpForm.setStudentCouncilFeePhoto(councilFee);
-            } else {
-                throw new InvalidValueException(errorCodeFileMissing.name(), errorCodeFileMissing.getMessage());
             }
-            if (studentIdentification != null && !studentIdentification.isEmpty()) {
+            if(studentIdentification!=null && !studentIdentification.isEmpty()) {
                 String idCard = s3Service.uploadFile(studentIdentification,
                         "student-identification", id);
                 signUpForm.setIdentityPhoto(idCard);
-            } else {
-                throw new InvalidValueException(errorCodeFileMissing.name(), errorCodeFileMissing.getMessage());
             }
             signUpRequestRepository.patchSignUpRequest(signUpForm, id);
         } else {

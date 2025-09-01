@@ -3,14 +3,12 @@ package com.inha.borrow.backend.repository;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
-
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
@@ -136,5 +134,27 @@ public class ItemRepository {
             errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
+    }
+
+    /**
+     * item state를 변경하는 메서드
+     *
+     * @param state
+     * @param id
+     * @throws ResourceNotFoundException 없는 자원에 대해 변경 요청을 보낸 경우
+     * @author 형민재
+     */
+    public void updateState(ItemState state, int id){
+        String sql = "UPDATE item SET state = ? WHERE id =?";
+        int result = jdbcTemplate.update(sql,state.name(),id);
+        if(result==0){
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+    }
+
+    public void deleteAll(){
+        String sql = "DELETE FROM item";
+        jdbcTemplate.update(sql);
     }
 }

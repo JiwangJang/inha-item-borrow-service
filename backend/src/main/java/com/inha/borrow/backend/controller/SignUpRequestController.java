@@ -132,7 +132,6 @@ public class SignUpRequestController {
      * @return 204 요청성공
      * @author 형민재
      */
-
     @DeleteMapping("/{signup-request-id}")
     public ResponseEntity<Void> deleteRequest(@PathVariable("signup-request-id") String id,
             @RequestBody String password) {

@@ -1,5 +1,6 @@
 package com.inha.borrow.backend.service;
 
+import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
 import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
@@ -72,5 +73,13 @@ public class ItemService {
      */
     public void updateItemDetail(int id, ItemReviseRequestDto itemReviseRequestDto) {
         itemRepository.updateItem(itemReviseRequestDto, id);
+    }
+
+    /**
+     * Item의 state를 변경하는 메서드
+     * @author 형민재
+     */
+    public void updateState(ItemState state, int id){
+        itemRepository.updateState(state,id);
     }
 }
