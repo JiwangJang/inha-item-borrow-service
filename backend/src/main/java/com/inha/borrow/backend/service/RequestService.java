@@ -1,18 +1,13 @@
 package com.inha.borrow.backend.service;
 
-
-import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.enums.RequestState;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.entity.request.FindRequest;
 import com.inha.borrow.backend.model.entity.request.SaveRequest;
-import com.inha.borrow.backend.repository.ItemRepository;
 import com.inha.borrow.backend.repository.RequestRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Field;
 import java.util.List;
 
 
@@ -25,14 +20,15 @@ import java.util.List;
 public class RequestService {
 
     private final RequestRepository requestRepository;
-    private final ItemRepository itemRepository;
+    private final ItemService itemService;
 
     /**
      * 리퀘스트를 저장하는 메서드
      * @param saveRequest
      * @author 형민재
      */
-    public SaveRequest saveRequest(SaveRequest saveRequest){
+    public SaveRequest saveRequest(SaveRequest saveRequest, int itemId){
+        itemService.updateState(ItemState.REVIEWING,itemId);
        return requestRepository.save(saveRequest);
     }
 
@@ -53,40 +49,54 @@ public class RequestService {
         return requestRepository.findById(requestId);
     }
 
+    /**
+     * 리퀘스트를 여러 조건으로 가져오는 메서드
+     * @param borrowerId
+     * @param state
+     * @param type
+     * @author 형민재
+     */
     public List<FindRequest> findByCondition(String borrowerId, String type, String state){
         return requestRepository.findByCondition(borrowerId,type,state);
     }
 
     /**
-     * ID로 리퀘스트를 수정하는 메서드
-     * @param saveRequest
-     * @param requestId
+     * 사용자가 자신이 요청한 리퀘스트를 가져오는 메서드
+     * @param borrowerId
      * @author 형민재
      */
-    public void patchRequest(SaveRequest saveRequest, int requestId, String borrowerId){
-        requestRepository.patchRequest(saveRequest,requestId);
+    public List<FindRequest> findRequestUser(String borrowerId){
+        return requestRepository.findRequestUser(borrowerId);
+    }
+
+    /**
+     * ID로 리퀘스트를 수정하는 메서드
+     * @param saveRequestDto
+     * @param requestId
+     * @param borrowerId
+     * @author 형민재
+     */
+    public void patchRequest(SaveRequestDto saveRequestDto, int requestId, String borrowerId){
+        requestRepository.patchRequest(saveRequestDto,requestId,borrowerId);
     }
 
     /**
      * ID로 리퀘스트를 취소하는 메서드
-     * @param cancel
      * @param requestId
+     * @param borrowerId
      * @author 형민재
      */
-    public void cancelRequest(boolean cancel, int requestId, String borrowerId){
-        requestRepository.cancelRequest(cancel,requestId);
+    public void cancelRequest(int requestId, String borrowerId){
+        requestRepository.cancelRequest(requestId, borrowerId);
     }
 
     /**
-     * ID로 리퀘스트를 state를 변경하는 메서드
+     * ID로 리퀘스트의 state를 변경하는 메서드
      * @param state
      * @param requestId
      * @author 형민재
      */
-    public void evaluationRequest(RequestState state, int requestId, int itemId){
+    public void evaluationRequest(RequestState state, int requestId){
         requestRepository.evaluationRequest(state,requestId);
-        if(RequestState.PERMIT == state){
-            itemRepository.updateState(ItemState.BORROWED,itemId);
-        }
     }
 }

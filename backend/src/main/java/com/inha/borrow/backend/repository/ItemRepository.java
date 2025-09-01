@@ -141,8 +141,8 @@ public class ItemRepository {
      * @author 형민재
      */
     public void updateState(ItemState state, int id){
-        String sql = "UPDATE item SET state = ?";
-        int result = jdbcTemplate.update(sql,state,id);
+        String sql = "UPDATE item SET state = ? WHERE id =?";
+        int result = jdbcTemplate.update(sql,state.name(),id);
         if(result==0){
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());

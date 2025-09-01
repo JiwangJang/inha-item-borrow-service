@@ -1,21 +1,20 @@
-package com.inha.borrow.backend.model.entity.request;
+package com.inha.borrow.backend.model.dto.request;
 
 import com.inha.borrow.backend.enums.RequestType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SaveRequest {
-    private int itemId;
-    private String borrowerId;
+public class SaveRequestDto {
     private Timestamp returnAt;
     private Timestamp borrowerAt;
     private RequestType type;
 }
-

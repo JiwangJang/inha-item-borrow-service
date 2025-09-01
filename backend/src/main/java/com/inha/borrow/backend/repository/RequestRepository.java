@@ -4,6 +4,7 @@ package com.inha.borrow.backend.repository;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.entity.request.FindRequest;
 import com.inha.borrow.backend.model.entity.request.SaveRequest;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
@@ -11,10 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,22 +34,9 @@ public class RequestRepository {
         int id = rs.getInt("id");
         int itemId = rs.getInt("item_id");
         String borrowerId = rs.getString("borrower_id");
-        Timestamp timestampCreateAt = rs.getTimestamp("created_at");
-        Timestamp timestampReturnAt = rs.getTimestamp("return_at");
-        Timestamp timestampBorrowerAt = rs.getTimestamp("borrower_at");
-        LocalDateTime createAt = null;
-        LocalDateTime returnAt = null;
-        LocalDateTime borrowerAt = null;
-
-        if (timestampCreateAt != null) {
-            createAt = timestampCreateAt.toLocalDateTime();
-        }
-        if (timestampReturnAt != null) {
-            returnAt = timestampReturnAt.toLocalDateTime();
-        }
-        if (timestampBorrowerAt != null) {
-            borrowerAt = timestampBorrowerAt.toLocalDateTime();
-        }
+        Timestamp createAt = rs.getTimestamp("created_at");
+        Timestamp returnAt = rs.getTimestamp("return_at");
+        Timestamp borrowerAt = rs.getTimestamp("borrower_at");
         RequestType type = RequestType.valueOf(rs.getString("type"));
         RequestState state = RequestState.valueOf(rs.getString("state"));
         Boolean cancel = rs.getBoolean("cancel");
@@ -114,6 +105,21 @@ public class RequestRepository {
     }
 
     /**
+     * 사용자가 자신이 요청한 리퀘스트르 조회하는 메서드
+     * @param borrowerId
+     * @author 형민재
+     */
+    public List<FindRequest> findRequestUser(String borrowerId){
+        String sql = "SELECT * FROM request WHERE borrower_id = ?";
+        List<FindRequest> result =  jdbcTemplate.query(sql,requestRowMapper,borrowerId);
+        if(result.isEmpty()){
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+        return result;
+    }
+
+    /**
      * 사용자 요청을 전체 조회 하는 메서드
      * @author 형민재
      */
@@ -128,20 +134,19 @@ public class RequestRepository {
 
     /**
      * 리퀘스트를 수정하는 메서드
-     * @param saveRequest
+     * @param saveRequestDto
      * @param requestId
+     * @param borrowerId
      * @author 형민재
      */
-    public void patchRequest(SaveRequest saveRequest, int requestId){
-        String sql = "UPDATE request SET item_id=?, borrower_id=?, return_at=?, " +
-                "borrower_at=?,type=? WHERE ID =?";
+    public void patchRequest(SaveRequestDto saveRequestDto, int requestId, String borrowerId){
+        String sql = "UPDATE request SET return_at=?, " +
+                "borrower_at=?,type=? WHERE ID =? AND borrower_id=?";
         int result = jdbcTemplate.update(sql,
-                saveRequest.getItemId(),
-                saveRequest.getBorrowerId(),
-                saveRequest.getReturnAt(),
-                saveRequest.getBorrowerAt(),
-                saveRequest.getType(),
-                requestId);
+                saveRequestDto.getReturnAt(),
+                saveRequestDto.getBorrowerAt(),
+                saveRequestDto.getType().name(),
+                requestId,borrowerId);
         if(result==0){
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
@@ -150,13 +155,14 @@ public class RequestRepository {
 
     /**
      * 리퀘스트를 취소하는 메서드
-     * @param cancel
      * @param requestId
+     * @param borrowerId
      * @author 형민재
      */
-    public void cancelRequest(boolean cancel,int requestId){
-        String sql = "UPDATE request SET cancel=? WHERE ID=?";
-        int result = jdbcTemplate.update(sql,cancel,requestId);
+    public void cancelRequest(int requestId, String borrowerId){
+        String sql = "UPDATE request SET cancel=? WHERE ID=? AND borrower_id=?";
+        boolean cancel = true;
+        int result = jdbcTemplate.update(sql,cancel,requestId,borrowerId);
         if(result==0){
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
@@ -171,7 +177,7 @@ public class RequestRepository {
      */
     public void evaluationRequest(RequestState state, int requestId){
         String sql = "UPDATE request SET state=? WHERE ID=?";
-        int result = jdbcTemplate.update(sql,state,requestId);
+        int result = jdbcTemplate.update(sql,state.name(),requestId);
         if(result==0){
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
@@ -198,6 +204,26 @@ public class RequestRepository {
     public void deleteAll(){
         String sql = "DELETE FROM request";
         jdbcTemplate.update(sql);
+    }
+
+
+    public int saveAndReturnId(SaveRequest request) {
+        String sql = "INSERT INTO request(item_id, borrower_id, return_at, borrower_at, type) " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, request.getItemId());
+            ps.setString(2, request.getBorrowerId());
+            ps.setTimestamp(3, request.getReturnAt());
+            ps.setTimestamp(4, request.getBorrowerAt());
+            ps.setString(5, request.getType().name());
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().intValue();
     }
 
 }

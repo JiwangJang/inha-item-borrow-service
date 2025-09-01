@@ -5,8 +5,7 @@ import com.inha.borrow.backend.enums.RequestType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
@@ -15,9 +14,9 @@ public class FindRequest {
     private int id;
     private int itemId;
     private String borrowerId;
-    private LocalDateTime createdAt;
-    private LocalDateTime returnAt;
-    private LocalDateTime borrowerAt;
+    private Timestamp createdAt;
+    private Timestamp returnAt;
+    private Timestamp borrowerAt;
     private RequestType type;
     private RequestState state;
     private Boolean cancel;
