@@ -28,6 +28,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ItemRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final String NOT_FOUND_MESSAGE = "존재하지 않는 물품입니다.";
 
     private final RowMapper<Item> itemRowMapper = (ResultSet resultSet, int index) -> {
         Item item = new Item();
@@ -76,7 +77,7 @@ public class ItemRepository {
      * @author 장지왕
      */
     public List<Item> findAll() {
-        String sql = "SELECT * FROM item ORDER BY id DESC;";
+        String sql = "SELECT * FROM item WHERE state != 'DELETED' ORDER BY id DESC;";
         return jdbcTemplate.query(sql, itemRowMapper);
     }
 
@@ -94,6 +95,7 @@ public class ItemRepository {
             return jdbcTemplate.queryForObject(sql, itemRowMapper, id);
         } catch (IncorrectResultSizeDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -110,6 +112,7 @@ public class ItemRepository {
         int affectedRow = jdbcTemplate.update(sql, deleteRequestDto.getDeleteReason(), id);
         if (affectedRow == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -125,9 +128,10 @@ public class ItemRepository {
         String sql = "UPDATE item SET name = ?, location = ?, password = ?, delete_reason = ?, price = ?, state = ? WHERE id = ?;";
         int affectedRow = jdbcTemplate.update(sql, item.getName(), item.getLocation(), item.getPassword(),
                 item.getDeleteReason(),
-                item.getPrice(), item.getState(), id);
+                item.getPrice(), item.getState().name(), id);
         if (affectedRow == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }

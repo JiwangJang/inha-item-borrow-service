@@ -10,6 +10,7 @@ import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.service.AdminService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 관리자 인증을 처리하는 클래스
@@ -20,6 +21,7 @@ import lombok.AllArgsConstructor;
  */
 @Component
 @AllArgsConstructor
+@Slf4j
 public class AdminAuthenticationProvider implements AuthenticationProvider {
     private AdminService adminService;
     private PasswordEncoder passwordEncoder;
@@ -33,7 +35,8 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
         if (!passwordEncoder.matches(rawPassword, admin.getPassword())) {
             throw new BadCredentialsException("비밀번호 다름");
         }
-        return new AdminAuthenticationToken(id, null, admin.getAuthorities());
+        admin.setPassword(null);
+        return new AdminAuthenticationToken(admin, null, admin.getAuthorities());
     }
 
     @Override

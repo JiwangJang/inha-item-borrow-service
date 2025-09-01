@@ -4,7 +4,7 @@ public enum ApiErrorCode {
     EXIST_ID("이미 사용중인 아이디입니다. 다른 아이디를 사용해주세요."),
     INVALID_ID("아이디 형식에 맞지 않습니다. 다른 아이디를 사용해주세요."),
     INVALID_PASSWORD("비밀번호 형식에 맞지 않습니다. 다른 비밀번호를 사용해주세요"),
-    INVALID_VALUE(""),
+    INVALID_VALUE("잘못된 값입니다."),
     INCORRECT_PASSWORD("비밀번호가 다릅니다."),
     INCORRECT_CODE("일치하지 않는 인증코드입니다. 인증코드를 다시 확인해주세요."),
     SIGN_UP_SESSION_EXPIRED("회원가입세션이 만료됐습니다. 다시 처음부터 진행해주세요."),
@@ -17,10 +17,11 @@ public enum ApiErrorCode {
     NOT_FOUND("요청하신 자원을 찾을수 없습니다."),
     JSON_PARSING_ERROR("JSON파싱중 에러가 발생했습니다."),
     FILE_SIZE_TOO_LARGE("사진의 크기가 너무 큽니다."),
-    SIGN_UP_REQUEST_NOT_FOUND("기존 가입 요청을 찾을 수 없습니다"),
-    REQUIRED_FILE_MISSING("필수 사진이 누락되었습니다.");
+    REQUIRED_FILE_MISSING("필수 사진이 누락되었습니다."),
+    NOT_ALLOWED("요청하신 작업을 할 권한이 없습니다."),
+    NOT_LOGINED("로그인 후 이용가능합니다.");
 
-    private final String message;
+    private String message;
 
     ApiErrorCode(String message) {
         this.message = message;
@@ -28,5 +29,9 @@ public enum ApiErrorCode {
 
     public String getMessage() {
         return this.message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

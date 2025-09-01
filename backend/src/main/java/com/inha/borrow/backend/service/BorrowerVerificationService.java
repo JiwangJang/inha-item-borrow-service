@@ -1,7 +1,7 @@
 package com.inha.borrow.backend.service;
 
-import java.security.SecureRandom;
-import net.nurigo.sdk.message.service.DefaultMessageService;
+// import java.security.SecureRandom;
+// import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.stereotype.Service;
 
 import com.inha.borrow.backend.cache.IdCache;
@@ -10,13 +10,13 @@ import com.inha.borrow.backend.cache.SignUpSessionCache;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.entity.SMSCode;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
-import com.inha.borrow.backend.model.exception.MessageServiceException;
-import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+// import com.inha.borrow.backend.model.exception.MessageServiceException;
+// import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
 import lombok.AllArgsConstructor;
-import net.nurigo.sdk.message.exception.NurigoEmptyResponseException;
-import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
-import net.nurigo.sdk.message.model.Message;
+// import net.nurigo.sdk.message.exception.NurigoEmptyResponseException;
+// import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
+// import net.nurigo.sdk.message.model.Message;
 
 @Service
 @AllArgsConstructor
@@ -26,16 +26,16 @@ public class BorrowerVerificationService {
     private final SMSCodeCache smsCodeCache;
     private final SignUpSessionCache signUpSessionCache;
 
-    private static final SecureRandom secureRandom = new SecureRandom();
-    private static final int VERIFICATION_CODE_LENGTH = 6;
+    // private static final SecureRandom secureRandom = new SecureRandom();
+    // private static final int VERIFICATION_CODE_LENGTH = 6;
 
-    private String getSMSCode() {
-        StringBuilder code = new StringBuilder();
-        for (int i = 0; i < VERIFICATION_CODE_LENGTH; i++) {
-            code.append(secureRandom.nextInt(10));
-        }
-        return code.toString();
-    }
+    // private String getSMSCode() {
+    // StringBuilder code = new StringBuilder();
+    // for (int i = 0; i < VERIFICATION_CODE_LENGTH; i++) {
+    // code.append(secureRandom.nextInt(10));
+    // }
+    // return code.toString();
+    // }
 
     public void verifyId(String id) {
         if (idCache.contains(id)) {

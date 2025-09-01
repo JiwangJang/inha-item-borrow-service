@@ -4,14 +4,25 @@ use inha_item_borrow_service;
 
 
 CREATE TABLE admin_role(
-    id int auto_increment primary key,
-    role varchar(15) unique
+    role varchar(15) primary key,
+    level int NOT NULL
 );
 
-INSERT INTO admin_role(role) VALUE("PRESIDENT");
-INSERT INTO admin_role(role) VALUE("VICE_PRESIDENT");
-INSERT INTO admin_role(role) VALUE("DIVISION_HEADER");
-INSERT INTO admin_role(role) VALUE("DIVISION_MEMBER");
+CREATE TABLE division(
+    code varchar(20) primary key,
+    name varchar(20) NOT NULL,
+    is_delete boolean default false
+);
+
+INSERT INTO admin_role(role, level) VALUE("PRESIDENT", 4);
+INSERT INTO admin_role(role, level) VALUE("VICE_PRESIDENT", 3);
+INSERT INTO admin_role(role, level) VALUE("DIVISION_HEAD", 2);
+INSERT INTO admin_role(role, level) VALUE("DIVISION_MEMBER", 1);
+
+INSERT INTO division(code, name) VALUE("TEST", "테스트 부서")
+
+INSERT INTO admin(id, password, email, name, phonenumber, position, division, refresh_token)
+    VALUE("test", "$2a$10$SFzLKBUxk9wZ0Tbolo6pUuCi026zyM5L5vtGeiPJXuM21vDTdfrwS", "dd", "테스터", "999", "PRESIDENT", "TEST", "dd");
 
 -- admin table 생성
 CREATE TABLE admin(
@@ -21,8 +32,11 @@ CREATE TABLE admin(
     name varchar(10) NOT NULL,
     phonenumber char(13) NOT NULL,
     position varchar(15) NOT NULL,
+    division varchar(20) NOT NULL,
     foreign key (position) references admin_role(role),
-    refresh_token varchar(50) NOT NULL
+    foreign key (division) references division(code),
+    refresh_token varchar(50) NOT NULL,
+    is_delete boolean default false
 );
 
 -- borrower table 생성
@@ -36,7 +50,7 @@ CREATE TABLE borrower(
     account_number varchar(20) NOT NULL,
     withdrawal boolean default false,
     ban boolean default false,
-    refresh_token varchar(50) NOT NULL
+    refresh_token varchar(256) NOT NULL
 );
 
 create table item (
