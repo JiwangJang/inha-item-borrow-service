@@ -2,7 +2,7 @@ package com.inha.borrow.backend.controller;
 
 
 import com.inha.borrow.backend.enums.RequestState;
-import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.entity.request.FindRequest;
 import com.inha.borrow.backend.model.entity.request.SaveRequest;
@@ -38,12 +38,12 @@ public class RequestController {
      * 리퀘스트를 수정하는 메서드
      * @param borrowerId
      * @param requestId
-     * @param saveRequestDto
+     * @param patchRequestDto
      * @author 형민재
      */
     @PatchMapping("/{request-id}/patch")
-    public ResponseEntity<ApiResponse<SaveRequest>> patchRequest(@AuthenticationPrincipal String borrowerId, @PathVariable("request-id") int requestId , @Valid @RequestBody SaveRequestDto saveRequestDto){
-        requestService.patchRequest(saveRequestDto,requestId,borrowerId);
+    public ResponseEntity<ApiResponse<SaveRequest>> patchRequest(@AuthenticationPrincipal String borrowerId, @PathVariable("request-id") int requestId , @Valid @RequestBody PatchRequestDto patchRequestDto){
+        requestService.patchRequest(patchRequestDto,requestId,borrowerId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

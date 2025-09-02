@@ -3,7 +3,7 @@ package com.inha.borrow.backend.repository;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
-import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.request.FindRequest;
 import com.inha.borrow.backend.model.entity.request.SaveRequest;
@@ -79,12 +79,12 @@ class RequestRepositoryTest {
         LocalDateTime fixedTime = LocalDateTime.of(2025, 8, 31, 17, 22, 0);
         Timestamp borrowerAt = Timestamp.valueOf(fixedTime);
         Timestamp returnAt = Timestamp.valueOf(fixedTime.plusDays(3));
-        SaveRequestDto saveRequestDto = SaveRequestDto.builder()
+        PatchRequestDto patchRequestDto = PatchRequestDto.builder()
                 .borrowerAt(borrowerAt)
                 .returnAt(returnAt)
                 .type(RequestType.BORROW)
                 .build();
-        requestRepository.patchRequest(saveRequestDto,results,"123");
+        requestRepository.patchRequest(patchRequestDto,results,"123");
         FindRequest result = requestRepository.findById(results);
         assertThat(result.getBorrowerAt()).isEqualTo(borrowerAt);
     }

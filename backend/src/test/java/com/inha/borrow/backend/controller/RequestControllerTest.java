@@ -3,7 +3,7 @@ package com.inha.borrow.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
-import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.FindRequest;
 import com.inha.borrow.backend.model.entity.request.SaveRequest;
 import com.inha.borrow.backend.service.RequestService;
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -49,7 +48,7 @@ class RequestControllerTest {
 
     private SaveRequest saveRequest;
     private FindRequest findRequest;
-    private SaveRequestDto saveRequestDto;
+    private PatchRequestDto patchRequestDto;
 
     @BeforeEach
     void setUp() {
@@ -74,7 +73,7 @@ class RequestControllerTest {
                 RequestState.PENDING,
                 false);
 
-        saveRequestDto = new SaveRequestDto(
+        patchRequestDto = new PatchRequestDto(
                 Timestamp.valueOf(LocalDateTime.now().plusDays(14)),
                 Timestamp.valueOf(LocalDateTime.now()),
                 RequestType.BORROW
@@ -103,13 +102,13 @@ class RequestControllerTest {
         String borrowerId = "borrower1";
         int requestId = 1;
 
-        doNothing().when(requestService).patchRequest(any(SaveRequestDto.class), eq(requestId), eq(borrowerId));
+        doNothing().when(requestService).patchRequest(any(PatchRequestDto.class), eq(requestId), eq(borrowerId));
 
         mockMvc.perform(patch("/requests/{request-id}/patch", requestId)
                         .with(csrf())
                         .with(user(borrowerId))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(saveRequestDto)))
+                        .content(objectMapper.writeValueAsString(patchRequestDto)))
                 .andExpect(status().isOk());
     }
 

@@ -2,7 +2,7 @@ package com.inha.borrow.backend.service;
 
 import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.enums.RequestState;
-import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.FindRequest;
 import com.inha.borrow.backend.model.entity.request.SaveRequest;
 import com.inha.borrow.backend.repository.RequestRepository;
@@ -71,13 +71,13 @@ public class RequestService {
 
     /**
      * ID로 리퀘스트를 수정하는 메서드
-     * @param saveRequestDto
+     * @param patchRequestDto
      * @param requestId
      * @param borrowerId
      * @author 형민재
      */
-    public void patchRequest(SaveRequestDto saveRequestDto, int requestId, String borrowerId){
-        requestRepository.patchRequest(saveRequestDto,requestId,borrowerId);
+    public void patchRequest(PatchRequestDto patchRequestDto, int requestId, String borrowerId){
+        requestRepository.patchRequest(patchRequestDto,requestId,borrowerId);
     }
 
     /**

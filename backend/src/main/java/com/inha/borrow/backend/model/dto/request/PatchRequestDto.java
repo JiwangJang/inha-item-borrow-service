@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SaveRequestDto {
+public class PatchRequestDto {
     private Timestamp returnAt;
     private Timestamp borrowerAt;
     private RequestType type;

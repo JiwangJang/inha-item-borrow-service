@@ -4,7 +4,7 @@ package com.inha.borrow.backend.repository;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
-import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.FindRequest;
 import com.inha.borrow.backend.model.entity.request.SaveRequest;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
@@ -134,18 +134,18 @@ public class RequestRepository {
 
     /**
      * 리퀘스트를 수정하는 메서드
-     * @param saveRequestDto
+     * @param patchRequestDto
      * @param requestId
      * @param borrowerId
      * @author 형민재
      */
-    public void patchRequest(SaveRequestDto saveRequestDto, int requestId, String borrowerId){
+    public void patchRequest(PatchRequestDto patchRequestDto, int requestId, String borrowerId){
         String sql = "UPDATE request SET return_at=?, " +
                 "borrower_at=?,type=? WHERE ID =? AND borrower_id=?";
         int result = jdbcTemplate.update(sql,
-                saveRequestDto.getReturnAt(),
-                saveRequestDto.getBorrowerAt(),
-                saveRequestDto.getType().name(),
+                patchRequestDto.getReturnAt(),
+                patchRequestDto.getBorrowerAt(),
+                patchRequestDto.getType().name(),
                 requestId,borrowerId);
         if(result==0){
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
