@@ -21,16 +21,16 @@ public class Borrower extends User {
     /**
      * 대여 정지 사용자인지 표시
      */
-    boolean ban;
-    boolean withDrawal;
+    private boolean ban;
+    private boolean withDrawal;
     /**
      * 학번
      */
-    String studentNumber;
+    private String studentNumber;
     /**
      * 보증금 반환계좌
      */
-    String accountNumber;
+    private String accountNumber;
 
     /**
      * 대여자 객체를 생성

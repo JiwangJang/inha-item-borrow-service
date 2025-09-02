@@ -15,11 +15,23 @@ import com.inha.borrow.backend.model.entity.user.Admin;
  * @author 장지왕
  */
 public class AdminAuthenticationToken extends UsernamePasswordAuthenticationToken {
+    /**
+     * 인증되기 전의 UsernamePasswordAuthenticationToken을 만들때 사용하는 생성자
+     * 
+     * @param id
+     * @param password
+     */
     public AdminAuthenticationToken(String id, String password) {
         super(id, password);
     }
 
-    public AdminAuthenticationToken(Admin admin, String password, List<GrantedAuthority> authorities) {
+    /**
+     * 인증된 UsernamePasswordAuthenticationToken을 만들때 사용하는 생성자
+     * 
+     * @param admin
+     * @param authorities
+     */
+    public AdminAuthenticationToken(Admin admin, List<GrantedAuthority> authorities) {
         super(admin, null, authorities);
     }
 
