@@ -28,7 +28,7 @@ public class WithMockAdminSecurityContextFactory implements WithSecurityContextF
                 .divisionCode(customUser.division())
                 .build();
 
-        context.setAuthentication(new AdminAuthenticationToken(admin, null, authorities));
+        context.setAuthentication(new AdminAuthenticationToken(admin, authorities));
         return context;
     }
 }
