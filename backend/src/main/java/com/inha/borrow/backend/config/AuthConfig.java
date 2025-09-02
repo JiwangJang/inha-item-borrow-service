@@ -21,6 +21,7 @@ import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationFilter;
 import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
 import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationFilter;
 import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
+import com.inha.borrow.backend.config.auth.handler.LogoutSuccessHandler;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
@@ -74,6 +75,12 @@ public class AuthConfig {
 				})
 				.anonymous((anonymous) -> {
 					anonymous.disable();
+				})
+				.logout(logout -> {
+					logout.logoutUrl("/logout")
+							.invalidateHttpSession(true)
+							.deleteCookies("JSESSIONID")
+							.logoutSuccessHandler(new LogoutSuccessHandler());
 				})
 				.authorizeHttpRequests((authorize) -> {
 					authorize
