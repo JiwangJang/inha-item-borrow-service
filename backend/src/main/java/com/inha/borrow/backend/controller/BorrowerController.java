@@ -51,7 +51,7 @@ public class BorrowerController {
      */
     @GetMapping("/info")
     public ResponseEntity<ApiResponse<Borrower>> findById(
-            @AuthenticationPrincipal String id) {
+            @AuthenticationPrincipal(expression = "id") String id) {
         Borrower foundedBorrower = borrowerService.findById(id);
         return ResponseEntity.ok(new ApiResponse<>(true, foundedBorrower));
     }
@@ -65,7 +65,7 @@ public class BorrowerController {
      */
     @PatchMapping("/info/password")
     public ResponseEntity<ApiResponse<Void>> patchPassword(@Valid @RequestBody PatchPasswordDto patchPasswordDto,
-            @AuthenticationPrincipal String id) {
+            @AuthenticationPrincipal(expression = "id") String id) {
         borrowerService.patchPassword(patchPasswordDto, id);
         return ResponseEntity.ok().build();
 
@@ -79,7 +79,7 @@ public class BorrowerController {
      * @author 형민재
      */
     @PatchMapping("/info/email")
-    public ResponseEntity<Void> patchEmail(@AuthenticationPrincipal String id,
+    public ResponseEntity<Void> patchEmail(@AuthenticationPrincipal(expression = "id") String id,
             @Valid @RequestBody PatchEmailDto emailDto) {
         borrowerService.patchEmail(id, emailDto.getEmail());
         return ResponseEntity.ok().build();
@@ -93,7 +93,7 @@ public class BorrowerController {
      * @author 형민재
      */
     @PatchMapping("/info/phonenum")
-    public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal String id,
+    public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal(expression = "id") String id,
             @RequestBody String phoneNumber) {
         // 핸드폰 재인증 로직 구현해야함(서비스)
         borrowerService.patchPhoneNumber(phoneNumber, id);

@@ -2,6 +2,7 @@ package com.inha.borrow.backend.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -75,7 +76,7 @@ public class BorrowerControllerTest {
                                 .id("test_borrower")
                                 .name("홍길동")
                                 .build();
-                given(borrowerService.findById("test_borrower")).willReturn(borrower);
+                when(borrowerService.findById("test_borrower")).thenReturn(borrower);
 
                 mockMvc.perform(get("/borrowers/info"))
                                 .andExpect(status().isOk())
