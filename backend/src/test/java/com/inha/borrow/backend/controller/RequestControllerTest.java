@@ -1,6 +1,9 @@
 package com.inha.borrow.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inha.borrow.backend.config.AuthConfig;
+import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
+import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
@@ -13,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -32,11 +34,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @WebMvcTest(RequestController.class)
-@WithMockUser
+@Import(AuthConfig.class)
 class RequestControllerTest {
-
+  
     @Autowired
     private MockMvc mockMvc;
 

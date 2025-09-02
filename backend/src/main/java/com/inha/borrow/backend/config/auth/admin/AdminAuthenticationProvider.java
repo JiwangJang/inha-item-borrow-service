@@ -36,7 +36,7 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("비밀번호 다름");
         }
         admin.setPassword(null);
-        return new AdminAuthenticationToken(admin, null, admin.getAuthorities());
+        return new AdminAuthenticationToken(admin, admin.getAuthorities());
     }
 
     @Override
