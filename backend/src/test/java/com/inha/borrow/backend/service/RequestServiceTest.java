@@ -1,15 +1,13 @@
 package com.inha.borrow.backend.service;
 
-import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
-import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.request.FindRequest;
 import com.inha.borrow.backend.model.entity.request.SaveRequest;
-import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.ItemRepository;
 import com.inha.borrow.backend.repository.RequestRepository;
@@ -18,7 +16,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.Timestamp;
@@ -122,7 +119,7 @@ class RequestServiceTest {
     @Test
     @DisplayName("리퀘스트 수정 성공")
     void patchRequest() {
-        SaveRequestDto dto = SaveRequestDto.builder()
+        PatchRequestDto dto = PatchRequestDto.builder()
                 .borrowerAt(Timestamp.valueOf(LocalDateTime.of(2025, 9, 1, 10, 0)))
                 .returnAt(Timestamp.valueOf(LocalDateTime.of(2025, 9, 4, 10, 0)))
                 .type(RequestType.BORROW)
