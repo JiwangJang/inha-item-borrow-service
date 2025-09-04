@@ -23,12 +23,20 @@ public class SignUpFormDto {
     @NotBlank(message = "이름을 작성해주세요.")
     private String name;
     @NotBlank(message = "핸드폰 번호를 기입해주세요.")
-    private String phoneNumber;
+    private String phonenumber;
     @NotBlank(message = "환불계좌번호를 기입해주세요.")
     private String accountNumber;
 
-    public SignUpForm getSignUpForm(String studentIdentification, String studentCouncilFee) {
-        return new SignUpForm(id, password, email, name, phoneNumber, studentIdentification, studentCouncilFee,
-                accountNumber);
+    public SignUpForm getSignUpForm(String identityPhoto, String studentCouncilFee) {
+        return SignUpForm.builder()
+                .id(id)
+                .password(password)
+                .email(email)
+                .name(name)
+                .phonenumber(phonenumber)
+                .accountNumber(accountNumber)
+                .studentCouncilFeePhoto(studentCouncilFee)
+                .identityPhoto(identityPhoto)
+                .build();
     }
 }
