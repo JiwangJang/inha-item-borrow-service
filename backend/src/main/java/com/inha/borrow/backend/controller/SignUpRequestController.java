@@ -2,8 +2,10 @@ package com.inha.borrow.backend.controller;
 
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
+import com.inha.borrow.backend.model.dto.signUpRequest.SignUpRequestPasswordDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
+import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.service.SignUpRequestService;
 
 import jakarta.validation.Valid;
@@ -14,6 +16,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,8 +34,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class SignUpRequestController {
     private final SignUpRequestService signUpRequestService;
 
-    /// 회원가입 신청을 확인하는 메서드 제작하기(개별)
-
     /**
      * 회원가입 신청서 전체를 조회하는 메서드
      * 
@@ -46,26 +47,20 @@ public class SignUpRequestController {
     }
 
     /**
-     * 회원가입 신청 정보를 조회하는 메서드(일단 권한접근 테스트용으로 만듦)
-     * <p>
-     * 본인만 조회 가능하도록 서비스단에서 검증 필요
+     * 회원가입 신청 정보를 조회하는 메서드
      * 
      * @param param
      * @return
      */
     @GetMapping("/{signup-request-id}")
     public ResponseEntity<ApiResponse<SignUpForm>> findBySignUpRequestId(
-            @PathVariable("signup-request-id") String param) {
-        SignUpForm signUpForm = new SignUpForm(
-                "test",
-                "1234",
-                "ddd",
-                "ddd",
-                "ddd",
-                "ddd",
-                "ddd",
-                "ddd");
-        ApiResponse<SignUpForm> apiResponse = new ApiResponse<SignUpForm>(false, signUpForm);
+            @AuthenticationPrincipal Admin admin,
+            @PathVariable("signup-request-id") String signUpRequestId,
+            @RequestBody SignUpRequestPasswordDto signUpRequestPasswordDto) {
+        SignUpForm signUpForm = signUpRequestService.findById(admin,
+                signUpRequestId,
+                signUpRequestPasswordDto.getPassword());
+        ApiResponse<SignUpForm> apiResponse = new ApiResponse<SignUpForm>(true, signUpForm);
         return ResponseEntity.ok(apiResponse);
     }
 

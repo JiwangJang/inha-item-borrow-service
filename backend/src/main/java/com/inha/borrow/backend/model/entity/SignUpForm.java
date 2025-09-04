@@ -1,5 +1,9 @@
 package com.inha.borrow.backend.model.entity;
 
+import java.sql.Timestamp;
+
+import com.inha.borrow.backend.enums.SignUpRequestState;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +18,11 @@ public class SignUpForm {
     private String password;
     private String email;
     private String name;
-    private String phoneNumber;
+    private String phonenumber;
     private String identityPhoto;
     private String studentCouncilFeePhoto;
     private String accountNumber;
+    private Timestamp created_at;
+    private SignUpRequestState state;
+    private String rejectReason;
 }
