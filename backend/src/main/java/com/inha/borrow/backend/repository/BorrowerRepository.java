@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
@@ -27,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class BorrowerRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final String NOT_FOUND_MESSAGE = "존재하지 않는 계정입니다.";
 
     private RowMapper<Borrower> borrowerRowMapper = (rs, rowNum) -> {
         String id = rs.getString("id");
@@ -43,7 +43,7 @@ public class BorrowerRepository {
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("BORROWER"));
 
         return new Borrower(id, password, email, name, phonenumber, authorities, ban, studentNumber, accountNumber,
-                refreshToken,withDrawal);
+                refreshToken, withDrawal);
     };
 
     /**
@@ -56,10 +56,11 @@ public class BorrowerRepository {
      */
     public Borrower findById(String id) {
         try {
-            String sql = "SELECT * FROM borrower WHERE id=?;";
+            String sql = "SELECT * FROM borrower WHERE id=? AND withdrawal = false;";
             return jdbcTemplate.queryForObject(sql, borrowerRowMapper, id);
         } catch (IncorrectResultSizeDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -71,10 +72,11 @@ public class BorrowerRepository {
      * @author 형민재
      */
     public List<Borrower> findAll() {
-        String sql = "SELECT * FROM borrower";
+        String sql = "SELECT * FROM borrower WHERE withdrawal = false;";
         List<Borrower> result = jdbcTemplate.query(sql, borrowerRowMapper);
-        if(result.isEmpty()){
+        if (result.isEmpty()) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("등록된 대여자가 없습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
         return result;
@@ -107,15 +109,17 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, password, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
 
     public void patchEmail(String email, String id) {
         String sql = " UPDATE borrower SET email = ? WHERE id = ?";
-        int result =jdbcTemplate.update(sql, email, id);
-        if(result == 0) {
+        int result = jdbcTemplate.update(sql, email, id);
+        if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -123,8 +127,9 @@ public class BorrowerRepository {
     public void patchName(String name, String id) {
         String sql = " UPDATE borrower SET name = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, name, id);
-        if(result == 0) {
+        if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -132,10 +137,11 @@ public class BorrowerRepository {
     public void patchPhoneNumber(String phoneNumber, String id) {
         String sql = " UPDATE borrower SET phonenumber = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, phoneNumber, id);
-        if(result == 0){
+        if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-            }
+        }
 
     }
 
@@ -144,6 +150,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, studentNumber, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -153,6 +160,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, accountNumber, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -162,6 +170,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, withDrawal, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -171,6 +180,7 @@ public class BorrowerRepository {
         int result = jdbcTemplate.update(sql, ban, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage(NOT_FOUND_MESSAGE);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }

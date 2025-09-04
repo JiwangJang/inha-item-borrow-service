@@ -36,7 +36,7 @@ public class BorrowerAuthController {
      */
     @GetMapping("/id-check")
     public ResponseEntity<Void> verifyId(
-            @Valid @RequestParam("id") @Pattern(regexp = "^[a-zA-Z0-9]{4,10}$", message = "아이디는 영어대소문자와 숫자를 조합해 4~10자여야 합니다.") String id) {
+            @Valid @RequestParam("id") @Pattern(regexp = "^[a-zA-Z0-9]{4,10}$", message = "아이디는 영어대소문자와 숫자로 4~10자여야 합니다.") String id) {
         borrowerVerificationService.verifyId(id);
         return ResponseEntity.ok().build();
     }

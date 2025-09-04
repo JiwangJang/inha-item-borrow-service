@@ -1,23 +1,35 @@
 package com.inha.borrow.backend.service;
 
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.model.dto.user.admin.SaveAdminDto;
+import com.inha.borrow.backend.model.dto.user.admin.UpdateAdminInfoDto;
+import com.inha.borrow.backend.model.dto.user.admin.UpdateDivisionDto;
+import com.inha.borrow.backend.model.dto.user.admin.UpdatePasswordDto;
+import com.inha.borrow.backend.model.dto.user.admin.UpdatePositionDto;
+import com.inha.borrow.backend.model.entity.user.Admin;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.repository.AdminRepository;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 관리자와 관련된 작업을 하는 클래스
  * 
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AdminService implements UserDetailsService {
-    private AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AdminRepository adminRepository;
 
     /**
      * 관리자 계정 정보를 가져오는 메서드
@@ -34,5 +46,45 @@ public class AdminService implements UserDetailsService {
         } catch (ResourceNotFoundException e) {
             throw new UsernameNotFoundException(id);
         }
+    }
+
+    public Admin findById(String id) {
+        Admin result = adminRepository.findById(id);
+        result.setPassword(null);
+        return result;
+    }
+
+    public List<Admin> findAllAdmins() {
+        return adminRepository.findAllAdmins();
+    }
+
+    public void saveAdmin(SaveAdminDto saveAdminDto) {
+        adminRepository.saveAdmin(saveAdminDto);
+    }
+
+    public void updateAdminInfo(String id, UpdateAdminInfoDto updateAdminInfoDto) {
+        adminRepository.updateAdminInfo(id, updateAdminInfoDto);
+    }
+
+    public void updatePassword(String id, UpdatePasswordDto updatePasswordDto) {
+        String originPassword = adminRepository.findPasswordById(id);
+        if (!passwordEncoder.matches(updatePasswordDto.getOriginPassword(), originPassword)) {
+            ApiErrorCode errorCode = ApiErrorCode.INCORRECT_PASSWORD;
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
+        }
+        String encodedPassword = passwordEncoder.encode(updatePasswordDto.getNewPassword());
+        adminRepository.updatePassword(id, encodedPassword);
+    }
+
+    public void updatePosition(Admin admin, String targetAdminId, UpdatePositionDto updatePositionDto) {
+        adminRepository.updatePosition(admin, targetAdminId, updatePositionDto);
+    }
+
+    public void updateDivision(Admin admin, String targetAdminId, UpdateDivisionDto updateDivisionDto) {
+        adminRepository.updateDivision(admin, targetAdminId, updateDivisionDto);
+    }
+
+    public void deleteAdmin(String id) {
+        adminRepository.deleteAdmin(id);
     }
 }

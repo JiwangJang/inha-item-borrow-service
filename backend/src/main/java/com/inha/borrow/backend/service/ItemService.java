@@ -71,7 +71,7 @@ public class ItemService {
      * @param item 변경 내용이 담긴 Item
      * @param id   변경할 Item객체의 아이디
      */
-    public void updateItemDetail(ItemReviseRequestDto itemReviseRequestDto, int id) {
+    public void updateItemDetail(int id, ItemReviseRequestDto itemReviseRequestDto) {
         itemRepository.updateItem(itemReviseRequestDto, id);
     }
 
