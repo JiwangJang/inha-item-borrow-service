@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @Builder
-public class FindRequest {
+public class Request {
     private int id;
     private int itemId;
     private String borrowerId;

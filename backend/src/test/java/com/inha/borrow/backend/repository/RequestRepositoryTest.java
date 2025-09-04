@@ -5,8 +5,8 @@ import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.Item;
-import com.inha.borrow.backend.model.entity.request.FindRequest;
-import com.inha.borrow.backend.model.entity.request.SaveRequest;
+import com.inha.borrow.backend.model.entity.request.Request;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ class RequestRepositoryTest {
     private RequestRepository requestRepository;
     @Autowired
     private ItemRepository itemRepository;
-    private SaveRequest saveRequest;
+    private SaveRequestDto saveRequestDto;
 
     private int results;
 
@@ -38,39 +38,39 @@ class RequestRepositoryTest {
                 "우산","3층","123",123
         );
         Item savedItem = itemRepository.save(itemDto);
-        saveRequest = SaveRequest.builder()
+        saveRequestDto = SaveRequestDto.builder()
                 .itemId(savedItem.getId())
                 .borrowerId("123")
                 .returnAt(Timestamp.valueOf(LocalDateTime.of(2025, 9, 5, 15, 0)))
                 .borrowerAt(Timestamp.valueOf(LocalDateTime.of(2025, 9, 4, 15, 0)))
                 .type(RequestType.BORROW)
                 .build();
-        results = requestRepository.saveAndReturnId(saveRequest);
+        results = requestRepository.saveAndReturnId(saveRequestDto);
     }
 
     @Test
     @DisplayName("저장 성공")
     void save() {
         requestRepository.deleteAll();
-        SaveRequest result = requestRepository.save(saveRequest);
-        assertThat(result.getBorrowerAt()).isEqualTo(saveRequest.getBorrowerAt());
+        SaveRequestDto result = requestRepository.save(saveRequestDto);
+        assertThat(result.getBorrowerAt()).isEqualTo(saveRequestDto.getBorrowerAt());
     }
 
     @Test
     void findById() {
-        FindRequest result = requestRepository.findById(results);
-        assertThat(result.getBorrowerId()).isEqualTo(saveRequest.getBorrowerId());
+        Request result = requestRepository.findById(results);
+        assertThat(result.getBorrowerId()).isEqualTo(saveRequestDto.getBorrowerId());
     }
 
     @Test
     void findByCondition() {
-        List<FindRequest> result = requestRepository.findByCondition("123",RequestType.BORROW.name(), RequestState.PENDING.name());
+        List<Request> result = requestRepository.findByCondition("123",RequestType.BORROW.name(), RequestState.PENDING.name());
         assertThat(result.size()).isEqualTo(1);
     }
 
     @Test
     void findAll() {
-        List<FindRequest> result = requestRepository.findAll();
+        List<Request> result = requestRepository.findAll();
         assertThat(result.size()).isEqualTo(1);
     }
 
@@ -85,21 +85,21 @@ class RequestRepositoryTest {
                 .type(RequestType.BORROW)
                 .build();
         requestRepository.patchRequest(patchRequestDto,results,"123");
-        FindRequest result = requestRepository.findById(results);
+        Request result = requestRepository.findById(results);
         assertThat(result.getBorrowerAt()).isEqualTo(borrowerAt);
     }
 
     @Test
     void cancelRequest() {
         requestRepository.cancelRequest(results,"123");
-        FindRequest result = requestRepository.findById(results);
+        Request result = requestRepository.findById(results);
         assertThat(result.getCancel()).isTrue();
     }
 
     @Test
     void evaluationRequest() {
         requestRepository.evaluationRequest(RequestState.ASSIGNED,results);
-        FindRequest result = requestRepository.findById(results);
+        Request result = requestRepository.findById(results);
         assertThat(result.getState()).isEqualTo(RequestState.ASSIGNED);
     }
 }

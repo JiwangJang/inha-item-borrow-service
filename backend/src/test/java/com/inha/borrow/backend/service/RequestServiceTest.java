@@ -6,8 +6,8 @@ import com.inha.borrow.backend.model.dto.item.ItemDto;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.entity.Item;
-import com.inha.borrow.backend.model.entity.request.FindRequest;
-import com.inha.borrow.backend.model.entity.request.SaveRequest;
+import com.inha.borrow.backend.model.entity.request.Request;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.ItemRepository;
 import com.inha.borrow.backend.repository.RequestRepository;
@@ -45,7 +45,7 @@ class RequestServiceTest {
     private int requestId;
     private Item savedItem;
     private BorrowerDto borrowerDto;
-    private SaveRequest saveRequest;
+    private SaveRequestDto saveRequestDto;
 
     @BeforeEach
     void setUp() {
@@ -67,7 +67,7 @@ class RequestServiceTest {
         ItemDto itemDto = new ItemDto("우산", "3층", "123", 123);
         savedItem = itemRepository.save(itemDto);
 
-        saveRequest = SaveRequest.builder()
+        saveRequestDto = SaveRequestDto.builder()
                 .itemId(savedItem.getId())
                 .borrowerId("123")
                 .borrowerAt(Timestamp.valueOf(LocalDateTime.of(2025, 8, 31, 17, 22, 0)))
@@ -75,13 +75,13 @@ class RequestServiceTest {
                 .type(RequestType.BORROW)
                 .build();
 
-        requestId = requestRepository.saveAndReturnId(saveRequest);
+        requestId = requestRepository.saveAndReturnId(saveRequestDto);
     }
 
     @Test
     @DisplayName("리퀘스트 저장 성공")
     void saveRequest() {
-        SaveRequest result = requestService.saveRequest(saveRequest, savedItem.getId());
+        SaveRequestDto result = requestService.saveRequest(saveRequestDto, savedItem.getId());
 
         // 🔽 5. 검증
         assertThat(result).isNotNull();
@@ -91,28 +91,28 @@ class RequestServiceTest {
     @Test
     @DisplayName("리퀘스트 조회 성공")
     void findById() {
-        FindRequest result = requestService.findById(requestId);
+        Request result = requestService.findById(requestId);
         assertThat(result.getBorrowerId()).isEqualTo("123");
     }
 
     @Test
     @DisplayName("조건 조회 성공")
     void findByCondition() {
-        List<FindRequest> result = requestService.findByCondition("123", "BORROW", "PENDING");
+        List<Request> result = requestService.findByCondition("123", "BORROW", "PENDING");
         assertThat(result).hasSize(1);
     }
 
     @Test
     @DisplayName("전체 조회 성공")
     void findAll() {
-        List<FindRequest> result = requestService.findAll();
+        List<Request> result = requestService.findAll();
         assertThat(result).isNotEmpty();
     }
 
     @Test
     @DisplayName("사용자 리퀘스트 조회 성공")
     void findRequestUser() {
-        List<FindRequest> result = requestService.findRequestUser("123");
+        List<Request> result = requestService.findRequestUser("123");
         assertThat(result).isNotEmpty();
     }
 
@@ -127,7 +127,7 @@ class RequestServiceTest {
 
         requestService.patchRequest(dto, requestId, "123");
 
-        FindRequest result = requestService.findById(requestId);
+        Request result = requestService.findById(requestId);
         assertThat(result.getBorrowerAt().toLocalDateTime().withNano(0)).isEqualTo(dto.getBorrowerAt().toLocalDateTime().withNano(0));
     }
 
@@ -135,7 +135,7 @@ class RequestServiceTest {
     @DisplayName("리퀘스트 취소 성공")
     void cancelRequest() {
         requestService.cancelRequest(requestId, "123");
-        FindRequest result = requestService.findById(requestId);
+        Request result = requestService.findById(requestId);
         assertThat(result.getCancel()).isTrue();
     }
 
@@ -143,7 +143,7 @@ class RequestServiceTest {
     @DisplayName("리퀘스트 상태 평가 성공")
     void evaluationRequest() {
         requestService.evaluationRequest(RequestState.ASSIGNED, requestId);
-        FindRequest result = requestService.findById(requestId);
+        Request result = requestService.findById(requestId);
         assertThat(result.getState()).isEqualTo(RequestState.ASSIGNED);
     }
 }

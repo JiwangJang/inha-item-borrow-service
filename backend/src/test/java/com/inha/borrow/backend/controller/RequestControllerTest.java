@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
-import com.inha.borrow.backend.model.entity.request.FindRequest;
-import com.inha.borrow.backend.model.entity.request.SaveRequest;
+import com.inha.borrow.backend.model.entity.request.Request;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.service.RequestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,14 +46,14 @@ class RequestControllerTest {
     @MockitoBean
     private RequestService requestService;
 
-    private SaveRequest saveRequest;
-    private FindRequest findRequest;
+    private SaveRequestDto saveRequestDto;
+    private Request request;
     private PatchRequestDto patchRequestDto;
 
     @BeforeEach
     void setUp() {
         // DB에 저장될 때 ID가 자동 생성되므로, SaveRequest 객체에는 ID를 포함하지 않습니다.
-        saveRequest = SaveRequest.builder()
+        saveRequestDto = SaveRequestDto.builder()
                 .itemId(1)
                 .borrowerId("borrower1")
                 .returnAt(Timestamp.valueOf(LocalDateTime.now().plusDays(7)))
@@ -62,7 +62,7 @@ class RequestControllerTest {
                 .build();
 
         // DB에서 조회될 FindRequest 객체는 ID를 포함합니다.
-        findRequest = new FindRequest(
+        request = new Request(
                 1,
                 1,
                 "borrower1",
@@ -83,17 +83,17 @@ class RequestControllerTest {
     @Test
     @DisplayName("리퀘스트 저장 성공")
     void saveRequestSuccess() throws Exception {
-        given(requestService.saveRequest(any(SaveRequest.class), eq(saveRequest.getItemId())))
-                .willReturn(saveRequest);
+        given(requestService.saveRequest(any(SaveRequestDto.class), eq(saveRequestDto.getItemId())))
+                .willReturn(saveRequestDto);
 
         mockMvc.perform(post("/requests")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(saveRequest)))
+                        .content(objectMapper.writeValueAsString(saveRequestDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.itemId").value(saveRequest.getItemId()))
-                .andExpect(jsonPath("$.data.borrowerId").value(saveRequest.getBorrowerId()));
+                .andExpect(jsonPath("$.data.itemId").value(saveRequestDto.getItemId()))
+                .andExpect(jsonPath("$.data.borrowerId").value(saveRequestDto.getBorrowerId()));
     }
 
     @Test
@@ -145,13 +145,13 @@ class RequestControllerTest {
     @DisplayName("ID로 리퀘스트 조회 성공")
     void findRequestByIdSuccess() throws Exception {
         int requestId = 1;
-        given(requestService.findById(eq(requestId))).willReturn(findRequest);
+        given(requestService.findById(eq(requestId))).willReturn(request);
 
         mockMvc.perform(get("/requests/{request-id}", requestId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.id").value(requestId))
-                .andExpect(jsonPath("$.data.borrowerId").value(findRequest.getBorrowerId()));
+                .andExpect(jsonPath("$.data.borrowerId").value(request.getBorrowerId()));
     }
 
     @Test
@@ -161,7 +161,7 @@ class RequestControllerTest {
         String type = "BORROW";
         String state = "PENDING";
 
-        List<FindRequest> expectedRequests = Collections.singletonList(findRequest);
+        List<Request> expectedRequests = Collections.singletonList(request);
         given(requestService.findByCondition(eq(borrowerId), eq(type), eq(state)))
                 .willReturn(expectedRequests);
 
@@ -172,7 +172,7 @@ class RequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.size()").value(1))
-                .andExpect(jsonPath("$.data[0].id").value(findRequest.getId()));
+                .andExpect(jsonPath("$.data[0].id").value(request.getId()));
     }
 
     // findRequestUserSuccess 메서드 수정
@@ -184,7 +184,7 @@ class RequestControllerTest {
         String borrowerId = "borrower1";
 
         // Mocking: 서비스가 한 개의 객체를 포함한 리스트를 반환하도록 설정
-        when(requestService.findRequestUser(anyString())).thenReturn(Collections.singletonList(findRequest));
+        when(requestService.findRequestUser(anyString())).thenReturn(Collections.singletonList(request));
 
         // 요청 URI를 컨트롤러의 @GetMapping 경로인 "/requests"로 수정
         mockMvc.perform(get("/requests/requestuser")

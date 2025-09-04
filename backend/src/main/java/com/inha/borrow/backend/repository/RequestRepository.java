@@ -5,8 +5,8 @@ import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
-import com.inha.borrow.backend.model.entity.request.FindRequest;
-import com.inha.borrow.backend.model.entity.request.SaveRequest;
+import com.inha.borrow.backend.model.entity.request.Request;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -30,7 +30,7 @@ public class RequestRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public RowMapper<FindRequest> requestRowMapper = (rs, rowNum) -> {
+    public RowMapper<Request> requestRowMapper = (rs, rowNum) -> {
         int id = rs.getInt("id");
         int itemId = rs.getInt("item_id");
         String borrowerId = rs.getString("borrower_id");
@@ -40,7 +40,7 @@ public class RequestRepository {
         RequestType type = RequestType.valueOf(rs.getString("type"));
         RequestState state = RequestState.valueOf(rs.getString("state"));
         Boolean cancel = rs.getBoolean("cancel");
-        return new FindRequest(id, itemId, borrowerId, createAt, returnAt, borrowerAt, type, state, cancel);
+        return new Request(id, itemId, borrowerId, createAt, returnAt, borrowerAt, type, state, cancel);
     };
 
     /**
@@ -48,7 +48,7 @@ public class RequestRepository {
      * @param request
      * @author 형민재
      */
-    public SaveRequest save(SaveRequest request) {
+    public SaveRequestDto save(SaveRequestDto request) {
         String sql = "INSERT INTO request(item_id, borrower_id, return_at, borrower_at, type) " +
                 "VALUES (?, ?, ?, ?, ?)";
           jdbcTemplate.update(sql,
@@ -65,7 +65,7 @@ public class RequestRepository {
      * @param requestId
      * @author 형민재
      */
-    public FindRequest findById(int requestId) {
+    public Request findById(int requestId) {
         try {
             String sql = "SELECT * FROM request WHERE id =?";
             return jdbcTemplate.queryForObject(sql, requestRowMapper, requestId);
@@ -75,7 +75,7 @@ public class RequestRepository {
         }
     }
 
-    public List<FindRequest> findByCondition(String borrowerId, String type, String state) {
+    public List<Request> findByCondition(String borrowerId, String type, String state) {
         StringBuilder sql = new StringBuilder("SELECT * FROM request WHERE 1=1 ");
         List<Object> params = new ArrayList<>();
 
@@ -94,7 +94,7 @@ public class RequestRepository {
             params.add(state);
         }
 
-        List<FindRequest> result = jdbcTemplate.query(sql.toString(), requestRowMapper, params.toArray());
+        List<Request> result = jdbcTemplate.query(sql.toString(), requestRowMapper, params.toArray());
 
         if (result.isEmpty()) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
@@ -109,9 +109,9 @@ public class RequestRepository {
      * @param borrowerId
      * @author 형민재
      */
-    public List<FindRequest> findRequestUser(String borrowerId){
+    public List<Request> findRequestUser(String borrowerId){
         String sql = "SELECT * FROM request WHERE borrower_id = ?";
-        List<FindRequest> result =  jdbcTemplate.query(sql,requestRowMapper,borrowerId);
+        List<Request> result =  jdbcTemplate.query(sql,requestRowMapper,borrowerId);
         if(result.isEmpty()){
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
@@ -123,9 +123,9 @@ public class RequestRepository {
      * 사용자 요청을 전체 조회 하는 메서드
      * @author 형민재
      */
-    public List<FindRequest> findAll(){
+    public List<Request> findAll(){
         String sql = "SELECT * FROM request";
-        List<FindRequest> result = jdbcTemplate.query(sql,requestRowMapper);
+        List<Request> result = jdbcTemplate.query(sql,requestRowMapper);
         if(result.isEmpty()){
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
@@ -207,7 +207,7 @@ public class RequestRepository {
     }
 
 
-    public int saveAndReturnId(SaveRequest request) {
+    public int saveAndReturnId(SaveRequestDto request) {
         String sql = "INSERT INTO request(item_id, borrower_id, return_at, borrower_at, type) " +
                 "VALUES (?, ?, ?, ?, ?)";
 
