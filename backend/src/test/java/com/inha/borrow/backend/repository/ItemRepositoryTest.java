@@ -1,10 +1,16 @@
 package com.inha.borrow.backend.repository;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.ItemState;
+import com.inha.borrow.backend.enums.RequestState;
+import com.inha.borrow.backend.enums.RequestType;
+import com.inha.borrow.backend.model.dto.item.BorrowedItemDto;
 import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
 import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
+import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.entity.Item;
+import com.inha.borrow.backend.model.entity.request.SaveRequest;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
 import jakarta.validation.ConstraintViolation;
@@ -12,6 +18,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,32 +26,60 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.context.annotation.Import;
-import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @JdbcTest
-@Import(ItemRepository.class)
+@Import({ ItemRepository.class, RequestRepository.class, BorrowerRepository.class })
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 class ItemRepositoryTest {
     @Autowired
-    private ItemRepository repository;
+    private ItemRepository itemRepository;
 
     @Autowired
-    public ItemRepositoryTest(ItemRepository repository, JdbcTemplate jdbcTemplate) {
-        this.repository = repository;
-    }
+    private RequestRepository requestRepository;
 
-    Item setUp() {
+    @Autowired
+    private BorrowerRepository borrowerRepository;
+
+    Item savedItem;
+
+    String requester = "test_borrower";
+
+    @BeforeEach
+    void setUp() {
+        BorrowerDto borrowerDto = new BorrowerDto(
+                requester,
+                "1234",
+                "test@naver.com",
+                "name",
+                "010-0000-0000",
+                "123124",
+                "123124214",
+                "null");
+        borrowerRepository.save(borrowerDto);
         ItemDto item = new ItemDto();
         item.setName("우산");
         item.setLocation("어딘가");
         item.setPassword("1111");
         item.setPrice(1000);
-        return repository.save(item);
+        savedItem = itemRepository.save(item);
+
+        SaveRequest saveRequest = SaveRequest.builder()
+                .itemId(savedItem.getId())
+                .borrowerId(requester)
+                .returnAt(Timestamp.from(Instant.now()))
+                .borrowerAt(Timestamp.from(Instant.now()))
+                .type(RequestType.BORROW)
+                .build();
+        int requestId = requestRepository.saveAndReturnId(saveRequest);
+        requestRepository.evaluationRequest(RequestState.PERMIT, requestId);
     }
 
     @Test
@@ -105,31 +140,110 @@ class ItemRepositoryTest {
     @DisplayName("아이템 저장")
     public void itemSaveSuccessTest() {
         // given
+        ItemDto given = new ItemDto("name", "location", "password", 1233);
         // when
-        Item newId = setUp();
+        Item savedItem = itemRepository.save(given);
+        BorrowedItemDto borrowed = itemRepository.findById(savedItem.getId());
         // then
-        assertThat(newId).isInstanceOf(Item.class);
+        assertThat(borrowed.getItemId()).isEqualTo(savedItem.getId());
     }
 
     @Test
-    @DisplayName("전체 조회")
-    public void getAllItemTest() {
+    @DisplayName("전체 조회(관리자용)")
+    public void findAllForAdminTest() {
         // given
         // when
-        List<Item> result = repository.findAll();
+        List<Item> result = itemRepository.findAllForAdmin();
+        Item item = result.get(0);
         // then
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(item.getId()).isEqualTo(savedItem.getId());
+        assertThat(item.getPassword()).isEqualTo(savedItem.getPassword());
+        assertThat(item.getLocation()).isEqualTo(savedItem.getLocation());
+    }
+
+    @Test
+    @DisplayName("전체 조회(비 관리자용)")
+    public void findAllForNotAdminTest() {
+        // given
+        // when
+        List<Item> result = itemRepository.findAllForNotAdmin();
+        Item item = result.get(0);
+        // then
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(item.getId()).isEqualTo(savedItem.getId());
+        assertThat(item.getPassword()).isEqualTo(null);
+        assertThat(item.getLocation()).isEqualTo(null);
     }
 
     @Test
     @DisplayName("아이디로 찾기(성공)")
     public void findByIdSuccessTest() {
         // given
-        Item item = setUp();
         // when
-        Item founded = repository.findById(item.getId());
+        BorrowedItemDto borrowedItemDto = itemRepository.findById(savedItem.getId());
         // then
-        assertThat(item.getId()).isEqualTo(founded.getId());
+        assertThat(borrowedItemDto.getItemId()).isEqualTo(savedItem.getId());
+    }
+
+    @Test
+    @DisplayName("여러 요청들이 한 아이템에 중복으로 돼있는 상황에서 아이디로 찾기테스트(PERMIT은 하나)")
+    public void findByIdSuccessTestInSeveralRequests() {
+        // given
+        // 두명의 대여자준비
+        BorrowerDto borrower1 = new BorrowerDto(
+                "test_borrower1",
+                "1234",
+                "test@naver.com",
+                "name",
+                "010-0000-0000",
+                "123124",
+                "123124214",
+                "null");
+        BorrowerDto borrower2 = new BorrowerDto(
+                "test_borrower2",
+                "1234",
+                "test@naver.com",
+                "name",
+                "010-0000-0000",
+                "123124",
+                "123124214",
+                "null");
+
+        // 두개의 요청 준비
+        SaveRequest saveRequest1 = SaveRequest.builder()
+                .itemId(savedItem.getId())
+                .borrowerId("test_borrower1")
+                .returnAt(Timestamp.from(Instant.now()))
+                .borrowerAt(Timestamp.from(Instant.now()))
+                .type(RequestType.BORROW)
+                .build();
+
+        SaveRequest saveRequest2 = SaveRequest.builder()
+                .itemId(savedItem.getId())
+                .borrowerId("test_borrower2")
+                .returnAt(Timestamp.from(Instant.now()))
+                .borrowerAt(Timestamp.from(Instant.now()))
+                .type(RequestType.BORROW)
+                .build();
+
+        // when
+        borrowerRepository.save(borrower1);
+        borrowerRepository.save(borrower2);
+
+        int id1 = requestRepository.saveAndReturnId(saveRequest1);
+        int id2 = requestRepository.saveAndReturnId(saveRequest2);
+
+        // 동일한 아이템에 여러 요청이 있을 경우 테스트
+        // 첫번째 요청은 빌리고 반납까지 완료됐다고 가정
+        requestRepository.evaluationRequest(RequestState.DONE, id1);
+        // 두번쨰 요청은 대여신청을 취소했다고 가정
+        requestRepository.cancelRequest(id2, borrower2.getId());
+
+        BorrowedItemDto borrowedItemDto = itemRepository.findById(savedItem.getId());
+        // then
+        assertThat(borrowedItemDto.getItemId()).isEqualTo(savedItem.getId());
+        assertThat(borrowedItemDto.getBorrowerId()).isEqualTo(requester);
     }
 
     @Test
@@ -138,45 +252,47 @@ class ItemRepositoryTest {
         // given
         // when
         // then
-        assertThatThrownBy(() -> repository.findById(1123)).isInstanceOf(ResourceNotFoundException.class);
+        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+                () -> itemRepository.findById(192));
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
+        assertThat(ex.getErrorMessage()).isEqualTo("존재하지 않는 물품입니다.");
     }
 
     @Test
     @DisplayName("아이디로 삭제")
     public void deleteSuccessTest() {
         // given
-        Item item = setUp();
         ItemDeleteRequestDto itemDeleteRequestDto = new ItemDeleteRequestDto();
         itemDeleteRequestDto.setDeleteReason("그냥");
         // when
-        repository.deleteItem(item.getId(), itemDeleteRequestDto);
+        itemRepository.deleteItem(savedItem.getId(), itemDeleteRequestDto);
         // then
-        Item deletedItem = repository.findById(item.getId());
-        assertThat(deletedItem.getState()).isEqualTo(ItemState.DELETED);
+        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+                () -> itemRepository.findById(savedItem.getId()));
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
+        assertThat(ex.getErrorMessage()).isEqualTo("존재하지 않는 물품입니다.");
     }
 
     @Test
     @DisplayName("아이템업데이트 테스트")
     public void itemUpdateSuccessTest() {
         // given
-        Item item = setUp();
         // when
         ItemReviseRequestDto dto = new ItemReviseRequestDto();
         dto.setName("새로운 이름");
-        dto.setLocation(item.getLocation());
-        dto.setPassword(item.getPassword());
-        dto.setPrice(item.getPrice());
+        dto.setLocation(savedItem.getLocation());
+        dto.setPassword(savedItem.getPassword());
+        dto.setPrice(savedItem.getPrice());
         dto.setDeleteReason(null);
         dto.setState(ItemState.BORROWED);
 
-        repository.updateItem(dto, item.getId());
-        Item revisedItem = repository.findById(item.getId());
+        itemRepository.updateItem(dto, savedItem.getId());
+        BorrowedItemDto revisedItem = itemRepository.findById(savedItem.getId());
         // then
-        assertThat(revisedItem.getLocation()).isEqualTo(item.getLocation());
-        assertThat(revisedItem.getPassword()).isEqualTo(item.getPassword());
-        assertThat(revisedItem.getPrice()).isEqualTo(item.getPrice());
+        assertThat(revisedItem.getLocation()).isEqualTo(savedItem.getLocation());
+        assertThat(revisedItem.getPassword()).isEqualTo(savedItem.getPassword());
+        assertThat(revisedItem.getPrice()).isEqualTo(savedItem.getPrice());
         assertThat(revisedItem.getState()).isEqualTo(ItemState.BORROWED);
         assertThat(revisedItem.getName()).isEqualTo("새로운 이름");
-        assertThat(revisedItem.getDeleteReason()).isEqualTo(item.getDeleteReason());
     }
 }

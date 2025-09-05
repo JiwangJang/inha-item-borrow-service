@@ -5,6 +5,7 @@ import com.inha.borrow.backend.model.dto.item.ItemDto;
 import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.entity.Item;
+import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.service.ItemService;
 
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,18 +31,16 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
-    /// 아이템 조회의 경우 모든 유저가 볼 수 있지만 관리자 권한이 있거나 대여자만
-    /// 해당물품의 비밀번호 정보를 조회할 수 있어야 한다.
-
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Item>>> getAllItems() {
-        List<Item> result = itemService.getAllItem();
+    public ResponseEntity<ApiResponse<List<Item>>> getAllItems(@AuthenticationPrincipal User user) {
+        List<Item> result = itemService.getAllItem(user);
         return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Item>> getItemById(@PathVariable("id") int id) {
-        Item result = itemService.getItemById(id);
+    public ResponseEntity<ApiResponse<Item>> getItemById(@AuthenticationPrincipal User user,
+            @PathVariable("id") int id) {
+        Item result = itemService.getItemById(user, id);
         return ResponseEntity.ok(new ApiResponse<Item>(true, result));
     }
 

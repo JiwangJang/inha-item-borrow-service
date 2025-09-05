@@ -92,9 +92,8 @@ public class SignUpRequestControllerTest {
         @DisplayName("회원가입 신청서 단건 조회(성공-관리자)")
         @WithMockAdmin
         void findBySignUpRequestIdSuccessForAdmin() throws Exception {
-                SignUpRequestPasswordDto dto = new SignUpRequestPasswordDto("Password1!");
                 SignUpForm expected = SignUpForm.builder().build();
-                when(signUpRequestService.findById(null, "1", dto)).thenReturn(expected);
+                when(signUpRequestService.findById(null, "1", null)).thenReturn(expected);
                 mockMvc.perform(
                                 get("/borrowers/signup-requests/1"))
                                 .andExpect(status().isOk());

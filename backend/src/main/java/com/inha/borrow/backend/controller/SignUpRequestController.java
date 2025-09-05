@@ -10,6 +10,7 @@ import com.inha.borrow.backend.service.SignUpRequestService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/borrowers/signup-requests")
+@Slf4j
 public class SignUpRequestController {
     private final SignUpRequestService signUpRequestService;
 
@@ -57,9 +59,7 @@ public class SignUpRequestController {
             @AuthenticationPrincipal Admin admin,
             @PathVariable("signup-request-id") String signUpRequestId,
             @RequestBody(required = false) SignUpRequestPasswordDto signUpRequestPasswordDto) {
-        SignUpForm signUpForm = signUpRequestService.findById(admin,
-                signUpRequestId,
-                signUpRequestPasswordDto);
+        SignUpForm signUpForm = signUpRequestService.findById(admin, signUpRequestId, signUpRequestPasswordDto);
         ApiResponse<SignUpForm> apiResponse = new ApiResponse<SignUpForm>(true, signUpForm);
         return ResponseEntity.ok(apiResponse);
     }

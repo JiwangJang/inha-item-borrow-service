@@ -101,7 +101,7 @@ public class AuthConfig {
 							//
 							// /items 관련 인증설정
 							// /items 이하 경로에 대한 GET요청은 모든유저가 가능하다. 단, 사용자의 권한에 따라 볼 수 있는 정보가 제한된다.
-							.requestMatchers(HttpMethod.GET, "/items")
+							.requestMatchers(HttpMethod.GET, "/items", "/items/**")
 							.permitAll()
 							// /items 이하 경로에 대한 GET을 제외한 요청들은 국원이상만 접근가능하며, 모든정보를 볼 수 있다.
 							.requestMatchers(HttpMethod.POST, "/items")

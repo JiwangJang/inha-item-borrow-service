@@ -84,13 +84,12 @@ public class SignUpRequestService {
 
     /**
      * singUpRequest 단건조회
-     * 
+     *
      * @param id
      * @return
      */
     public SignUpForm findById(Admin admin, String signUpRequestId, SignUpRequestPasswordDto passwordDto) {
         if (admin != null) {
-            // 관리자일 경우 모든 회원가입 신청 조회 가능
             return signUpRequestRepository.findById(signUpRequestId);
         } else {
             // 관리자가 아닐경우 비밀번호 확인 후 자신의 회원가입 신청만 조회 가능
@@ -103,6 +102,7 @@ public class SignUpRequestService {
                 throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
             }
         }
+
     }
 
     /**

@@ -5,6 +5,7 @@ import com.inha.borrow.backend.cache.SignUpSessionCache;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.SignUpRequestState;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
+import com.inha.borrow.backend.model.dto.signUpRequest.SignUpRequestPasswordDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
 import com.inha.borrow.backend.model.entity.user.Admin;
@@ -20,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -149,14 +149,14 @@ class SignUpRequestServiceTest {
                 String password = "123";
                 signUpRequestRepository.save(signUpForm);
                 Admin admin = Admin.builder()
-                                .id("admin")
-                                .authorities(List.of(new SimpleGrantedAuthority("DIVISION_MEMBER")))
+                                .id("teste")
                                 .build();
                 // when
                 // 관리자 권한으로 요청한 경우
                 SignUpForm admin_result = signUpRequestService.findById(admin, "123", null);
                 // 사용자 권한으로 요청한 경우
-                SignUpForm requester_result = signUpRequestService.findById(null, "123", password);
+                SignUpForm requester_result = signUpRequestService.findById(null, "123",
+                                new SignUpRequestPasswordDto(password));
                 // then
                 // 관리자 권한 요청 테스트
                 assertThat(admin_result.getId()).isEqualTo("123");
@@ -174,7 +174,7 @@ class SignUpRequestServiceTest {
                 // then
                 // 관리자 권한 요청 테스트
                 assertThrows(InvalidValueException.class, () -> {
-                        signUpRequestService.findById(null, "123", password);
+                        signUpRequestService.findById(null, "123", new SignUpRequestPasswordDto(password));
                 });
         }
 
