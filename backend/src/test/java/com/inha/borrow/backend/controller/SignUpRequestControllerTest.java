@@ -93,7 +93,7 @@ public class SignUpRequestControllerTest {
         @WithMockAdmin
         void findBySignUpRequestIdSuccessForAdmin() throws Exception {
                 SignUpForm expected = SignUpForm.builder().build();
-                when(signUpRequestService.findById("1")).thenReturn(expected);
+                when(signUpRequestService.findById(null, "1", null)).thenReturn(expected);
                 mockMvc.perform(
                                 get("/borrowers/signup-requests/1"))
                                 .andExpect(status().isOk());
@@ -106,7 +106,7 @@ public class SignUpRequestControllerTest {
                 // given
                 SignUpRequestPasswordDto dto = new SignUpRequestPasswordDto("Password1!");
                 SignUpForm expected = SignUpForm.builder().build();
-                when(signUpRequestService.findById("1", dto)).thenReturn(expected);
+                when(signUpRequestService.findById(null, "1", dto)).thenReturn(expected);
                 // when
                 // then
                 mockMvc.perform(
@@ -122,7 +122,7 @@ public class SignUpRequestControllerTest {
         void findBySignUpRequestIdFailForPassword() throws Exception {
                 // given
                 SignUpRequestPasswordDto dto = new SignUpRequestPasswordDto("Password1!");
-                when(signUpRequestService.findById("1", dto))
+                when(signUpRequestService.findById(null, "1", dto))
                                 .thenThrow(InvalidValueException.class);
                 // when
                 // then

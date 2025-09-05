@@ -9,6 +9,7 @@ import com.inha.borrow.backend.model.dto.signUpRequest.SignUpRequestPasswordDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
+import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.repository.BorrowerRepository;
@@ -82,32 +83,26 @@ public class SignUpRequestService {
     }
 
     /**
-     * singUpRequest 단건조회(관리자용)
-     * 
+     * singUpRequest 단건조회
+     *
      * @param id
      * @return
      */
-    public SignUpForm findById(String signUpRequestId) {
-        // 관리자일 경우 모든 회원가입 신청 조회 가능
-        return signUpRequestRepository.findById(signUpRequestId);
-    }
-
-    /**
-     * singUpRequest 단건조회(일반사용자용)
-     * 
-     * @param id
-     * @return
-     */
-    public SignUpForm findById(String signUpRequestId, SignUpRequestPasswordDto passwordDto) {
-        // 관리자가 아닐경우 비밀번호 확인 후 자신의 회원가입 신청만 조회 가능
-        String encodedPassword = signUpRequestRepository.findPasswordById(signUpRequestId);
-        if (passwordEncoder.matches(passwordDto.getPassword(), encodedPassword)) {
+    public SignUpForm findById(Admin admin, String signUpRequestId, SignUpRequestPasswordDto passwordDto) {
+        if (admin != null) {
             return signUpRequestRepository.findById(signUpRequestId);
         } else {
-            ApiErrorCode errorCode = ApiErrorCode.INVALID_PASSWORD;
-            errorCode.setMessage("비밀번호가 다릅니다.");
-            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
+            // 관리자가 아닐경우 비밀번호 확인 후 자신의 회원가입 신청만 조회 가능
+            String encodedPassword = signUpRequestRepository.findPasswordById(signUpRequestId);
+            if (passwordEncoder.matches(passwordDto.getPassword(), encodedPassword)) {
+                return signUpRequestRepository.findById(signUpRequestId);
+            } else {
+                ApiErrorCode errorCode = ApiErrorCode.INVALID_PASSWORD;
+                errorCode.setMessage("비밀번호가 다릅니다.");
+                throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
+            }
         }
+
     }
 
     /**

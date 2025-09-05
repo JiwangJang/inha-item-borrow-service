@@ -59,12 +59,7 @@ public class SignUpRequestController {
             @AuthenticationPrincipal Admin admin,
             @PathVariable("signup-request-id") String signUpRequestId,
             @RequestBody(required = false) SignUpRequestPasswordDto signUpRequestPasswordDto) {
-        SignUpForm signUpForm;
-        if (admin != null) {
-            signUpForm = signUpRequestService.findById(signUpRequestId);
-        } else {
-            signUpForm = signUpRequestService.findById(signUpRequestId, signUpRequestPasswordDto);
-        }
+        SignUpForm signUpForm = signUpRequestService.findById(admin, signUpRequestId, signUpRequestPasswordDto);
         ApiResponse<SignUpForm> apiResponse = new ApiResponse<SignUpForm>(true, signUpForm);
         return ResponseEntity.ok(apiResponse);
     }

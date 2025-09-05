@@ -8,6 +8,7 @@ import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.dto.signUpRequest.SignUpRequestPasswordDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
+import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
@@ -147,11 +148,14 @@ class SignUpRequestServiceTest {
                 // given
                 String password = "123";
                 signUpRequestRepository.save(signUpForm);
+                Admin admin = Admin.builder()
+                                .id("teste")
+                                .build();
                 // when
                 // 관리자 권한으로 요청한 경우
-                SignUpForm admin_result = signUpRequestService.findById("123");
+                SignUpForm admin_result = signUpRequestService.findById(admin, "123", null);
                 // 사용자 권한으로 요청한 경우
-                SignUpForm requester_result = signUpRequestService.findById("123",
+                SignUpForm requester_result = signUpRequestService.findById(null, "123",
                                 new SignUpRequestPasswordDto(password));
                 // then
                 // 관리자 권한 요청 테스트
@@ -170,7 +174,7 @@ class SignUpRequestServiceTest {
                 // then
                 // 관리자 권한 요청 테스트
                 assertThrows(InvalidValueException.class, () -> {
-                        signUpRequestService.findById("123", new SignUpRequestPasswordDto(password));
+                        signUpRequestService.findById(null, "123", new SignUpRequestPasswordDto(password));
                 });
         }
 
