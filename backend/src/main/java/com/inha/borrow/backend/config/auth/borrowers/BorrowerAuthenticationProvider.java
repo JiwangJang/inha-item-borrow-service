@@ -3,8 +3,6 @@ package com.inha.borrow.backend.config.auth.borrowers;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +23,6 @@ import lombok.AllArgsConstructor;
 public class BorrowerAuthenticationProvider implements AuthenticationProvider {
     private BorrowerService borrowerService;
     private PasswordEncoder passwordEncoder;
-    private GrantedAuthoritiesMapper authoritiesMapper;
 
     @Override
     public Authentication authenticate(Authentication authentication) {
@@ -36,9 +33,7 @@ public class BorrowerAuthenticationProvider implements AuthenticationProvider {
         if (!passwordEncoder.matches(rawPassword, borrower.getPassword())) {
             throw new BadCredentialsException("");
         }
-        var mapped = authoritiesMapper == null ? borrower.getAuthorities()
-                : authoritiesMapper.mapAuthorities(borrower.getAuthorities());
-        return new BorrowerAuthenticationToken(borrower, new java.util.ArrayList<GrantedAuthority>(mapped));
+        return new BorrowerAuthenticationToken(borrower, borrower.getAuthorities());
     }
 
     @Override
