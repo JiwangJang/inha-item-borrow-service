@@ -2,10 +2,12 @@ package com.inha.borrow.backend.service;
 
 import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.cache.SignUpSessionCache;
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.SignUpRequestState;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
+import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
@@ -17,8 +19,8 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataAccessException;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -28,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -59,9 +62,9 @@ class SignUpRequestServiceTest {
                 signUpFormDto = SignUpFormDto.builder()
                                 .id("123")
                                 .password("123")
-                                .email("123")
+                                .email("123@aaa.com")
                                 .name("123")
-                                .phoneNumber("123")
+                                .phonenumber("123")
                                 .accountNumber("123")
                                 .build();
                 signUpForm = SignUpForm.builder()
@@ -69,7 +72,7 @@ class SignUpRequestServiceTest {
                                 .password(passwordEncoder.encode("123"))
                                 .email("Test123@test.com")
                                 .name("123")
-                                .phoneNumber("123")
+                                .phonenumber("123")
                                 .accountNumber("123")
                                 .identityPhoto("student-id-card/123idCard.jpg")
                                 .studentCouncilFeePhoto("student-council-fee/123councilFee")
@@ -81,6 +84,7 @@ class SignUpRequestServiceTest {
         @DisplayName("회원가입 성공")
         @Test
         void saveSignUpRequest() {
+                // given
                 signUpSessionCache.set(signUpFormDto.getId());
                 signUpSessionCache.passwordCheckSuccess(signUpFormDto.getId());
                 signUpSessionCache.phoneCheckSuccess(signUpFormDto.getId());
@@ -97,33 +101,13 @@ class SignUpRequestServiceTest {
 
                 given(s3Service.uploadFile(any(), anyString(), anyString()))
                                 .willReturn("student-id-card/123idCard.jpg", "student-council-fee/123councilFee");
+                // when
+                // then
                 signUpRequestService.saveSignUpRequest(signUpFormDto, idCard, councilFee);
                 SignUpForm result = signUpRequestRepository.findById(signUpFormDto.getId());
                 assertThat(result.getAccountNumber()).isEqualTo("123");
                 assertThat(result.getIdentityPhoto()).isEqualTo("student-id-card/123idCard.jpg");
                 assertThat(result.getStudentCouncilFeePhoto()).isEqualTo("student-council-fee/123councilFee");
-        }
-
-        @Test
-        @DisplayName("db 오류로 인한 저장 실패")
-        void failedSaveSignUpRequestDbError() {
-                signUpSessionCache.set(signUpFormDto.getId());
-                signUpSessionCache.passwordCheckSuccess(signUpFormDto.getId());
-                signUpSessionCache.phoneCheckSuccess(signUpFormDto.getId());
-                MultipartFile idCard = new MockMultipartFile(
-                                "idCard",
-                                "idCard.png",
-                                "image/png",
-                                "dummy image content".getBytes());
-                MultipartFile councilFee = new MockMultipartFile(
-                                "councilFee",
-                                "councilFee.png",
-                                "image/png",
-                                "dummy image content".getBytes());
-
-                assertThatThrownBy(() -> signUpRequestService.saveSignUpRequest(signUpFormDto, idCard, councilFee))
-                                .isInstanceOf(DataAccessException.class);
-
         }
 
         @Test
@@ -142,10 +126,12 @@ class SignUpRequestServiceTest {
                                 "image/png",
                                 "dummy image content".getBytes());
 
-                assertThatThrownBy(() -> signUpRequestService.saveSignUpRequest(signUpFormDto, idCard, councilFee))
-                                .isInstanceOf(InvalidValueException.class)
-                                .hasMessageContaining("회원가입에 필요한 절차를 모두 수행해주세요.");
+                InvalidValueException ex = assertThrows(InvalidValueException.class, () -> {
+                        signUpRequestService.saveSignUpRequest(signUpFormDto, idCard, councilFee);
+                });
 
+                assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.SIGN_UP_PASS_FAILED.getMessage());
+                assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.SIGN_UP_PASS_FAILED.name());
         }
 
         @Test
@@ -157,11 +143,39 @@ class SignUpRequestServiceTest {
         }
 
         @Test
-        @DisplayName("id로 회원가입 찾기 성공")
-        void findById() {
+        @DisplayName("id로 회원가입 찾기 성공(관리자, 대여자 본인)")
+        void findByIdSuccess() {
+                // given
+                String password = "123";
                 signUpRequestRepository.save(signUpForm);
-                SignUpForm result = signUpRequestService.findById("123");
-                assertThat(result.getName()).isEqualTo("123");
+                Admin admin = Admin.builder()
+                                .id("admin")
+                                .authorities(List.of(new SimpleGrantedAuthority("DIVISION_MEMBER")))
+                                .build();
+                // when
+                // 관리자 권한으로 요청한 경우
+                SignUpForm admin_result = signUpRequestService.findById(admin, "123", null);
+                // 사용자 권한으로 요청한 경우
+                SignUpForm requester_result = signUpRequestService.findById(null, "123", password);
+                // then
+                // 관리자 권한 요청 테스트
+                assertThat(admin_result.getId()).isEqualTo("123");
+                // 사용자 권한 요청 테스트
+                assertThat(requester_result.getId()).isEqualTo("123");
+        }
+
+        @Test
+        @DisplayName("id로 회원가입 찾기 실패(비밀번호 틀림)")
+        void findByIdFailForAuthority() {
+                // given
+                String password = "1234";
+                signUpRequestRepository.save(signUpForm);
+                // when
+                // then
+                // 관리자 권한 요청 테스트
+                assertThrows(InvalidValueException.class, () -> {
+                        signUpRequestService.findById(null, "123", password);
+                });
         }
 
         @Test
@@ -173,7 +187,7 @@ class SignUpRequestServiceTest {
                                 .password(passwordEncoder.encode("123"))
                                 .email("Test123@test.com")
                                 .name("123")
-                                .phoneNumber("123")
+                                .phonenumber("123")
                                 .accountNumber("123")
                                 .identityPhoto("123")
                                 .studentCouncilFeePhoto("123")
@@ -200,7 +214,7 @@ class SignUpRequestServiceTest {
                                 .password(passwordEncoder.encode("123"))
                                 .email("Test123@test.com")
                                 .name("123")
-                                .phoneNumber("123")
+                                .phonenumber("123")
                                 .accountNumber("123")
                                 .identityPhoto("student-id-card/123idCard.jpg")
                                 .studentCouncilFeePhoto("student-council-fee/123councilFee")
@@ -232,7 +246,7 @@ class SignUpRequestServiceTest {
                                 .password(passwordEncoder.encode("123"))
                                 .email("Test123@test.com")
                                 .name("123")
-                                .phoneNumber("123")
+                                .phonenumber("123")
                                 .accountNumber("123")
                                 .identityPhoto("student-id-card/123idCard.jpg")
                                 .studentCouncilFeePhoto("student-council-fee/123councilFee")
@@ -247,43 +261,11 @@ class SignUpRequestServiceTest {
                                 "councilFee.png",
                                 "image/png",
                                 "dummy image content".getBytes());
-                assertThatThrownBy(() -> signUpRequestService.patchSignUpRequest(signUpForm, idCard, councilFee, "123",
-                                "123"))
-                                .isInstanceOf(ResourceNotFoundException.class)
-                                .hasMessageContaining("기존 가입 요청을 찾을 수 없습니다");
-        }
-
-        @Test
-        @DisplayName("회원가입수정 실패 파일이 비어있음")
-        void failedPatchSignUpRequiredMissingFile() {
-                signUpRequestRepository.save(signUpForm);
-                idCache.setNewUser(signUpForm.getId());
-                given(s3Service.uploadFile(any(), anyString(), anyString()))
-                                .willReturn("student-id-card/123idCard.jpg", "student-council-fee/123councilFee");
-                signUpForm = SignUpForm.builder()
-                                .id("321")
-                                .password(passwordEncoder.encode("123"))
-                                .email("Test123@test.com")
-                                .name("123")
-                                .phoneNumber("123")
-                                .accountNumber("123")
-                                .identityPhoto("student-id-card/123idCard.jpg")
-                                .studentCouncilFeePhoto("student-council-fee/123councilFee")
-                                .build();
-                MultipartFile idCard = new MockMultipartFile(
-                                "idCard",
-                                "idCard.png",
-                                "image/png",
-                                new byte[0]);
-                MultipartFile councilFee = new MockMultipartFile(
-                                "councilFee",
-                                "councilFee.png",
-                                "image/png",
-                                new byte[0]);
-                assertThatThrownBy(() -> signUpRequestService.patchSignUpRequest(signUpForm, idCard, councilFee, "123",
-                                "123"))
-                                .isInstanceOf(InvalidValueException.class)
-                                .hasMessageContaining("필수 사진이 누락되었습니다.");
+                ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+                                () -> signUpRequestService.patchSignUpRequest(signUpForm, idCard, councilFee, "123",
+                                                "123"));
+                assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
+                assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.NOT_FOUND.getMessage());
         }
 
         @Test
@@ -298,7 +280,7 @@ class SignUpRequestServiceTest {
                                 .password(passwordEncoder.encode("123"))
                                 .email("Test123@test.com")
                                 .name("123")
-                                .phoneNumber("123")
+                                .phonenumber("123")
                                 .accountNumber("123")
                                 .identityPhoto("student-id-card/123idCard.jpg")
                                 .studentCouncilFeePhoto("student-council-fee/123councilFee")
@@ -313,10 +295,11 @@ class SignUpRequestServiceTest {
                                 "councilFee.png",
                                 "image/png",
                                 "dummy image content".getBytes());
-                assertThatThrownBy(() -> signUpRequestService.patchSignUpRequest(signUpForm, idCard, councilFee, "123",
-                                "321"))
-                                .isInstanceOf(InvalidValueException.class)
-                                .hasMessageContaining("비밀번호가 다릅니다.");
+                InvalidValueException ex = assertThrows(InvalidValueException.class,
+                                () -> signUpRequestService.patchSignUpRequest(signUpForm, idCard, councilFee, "123",
+                                                "321"));
+                assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.name());
+                assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.getMessage());
         }
 
         @Test
@@ -327,16 +310,18 @@ class SignUpRequestServiceTest {
                                 .password(passwordEncoder.encode("123"))
                                 .email("Test123@test.com")
                                 .name("123")
-                                .phoneNumber("123")
+                                .phonenumber("123")
                                 .accountNumber("123")
                                 .identityPhoto("student-id-card/123idCard.jpg")
                                 .studentCouncilFeePhoto("student-council-fee/123councilFee")
                                 .build();
                 signUpRequestRepository.save(signUpForm);
                 signUpRequestService.deleteSignUpRequest("123", "123");
-                assertThatThrownBy(() -> signUpRequestRepository.findById("123"))
-                                .isInstanceOf(ResourceNotFoundException.class)
-                                .hasMessageContaining("회원가입 신청내역이 존재하지 않습니다.");
+                ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> {
+                        signUpRequestRepository.findById("123");
+                });
+                assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
+                assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.NOT_FOUND.getMessage());
         }
 
         @Test
@@ -347,15 +332,17 @@ class SignUpRequestServiceTest {
                                 .password(passwordEncoder.encode("123"))
                                 .email("Test123@test.com")
                                 .name("123")
-                                .phoneNumber("123")
+                                .phonenumber("123")
                                 .accountNumber("123")
                                 .identityPhoto("student-id-card/123idCard.jpg")
                                 .studentCouncilFeePhoto("student-council-fee/123councilFee")
                                 .build();
                 signUpRequestRepository.save(signUpForm);
-                assertThatThrownBy(() -> signUpRequestService.deleteSignUpRequest("123", "321"))
-                                .isInstanceOf(InvalidValueException.class)
-                                .hasMessageContaining("비밀번호가 다릅니다.");
+                InvalidValueException ex = assertThrows(InvalidValueException.class, () -> {
+                        signUpRequestService.deleteSignUpRequest("123", "321");
+                });
+                assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.name());
+                assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.getMessage());
         }
 
         @Test

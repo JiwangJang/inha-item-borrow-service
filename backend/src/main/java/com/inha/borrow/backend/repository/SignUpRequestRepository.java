@@ -6,11 +6,14 @@ import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -18,6 +21,7 @@ import java.util.List;
  */
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class SignUpRequestRepository {
     private final JdbcTemplate jdbcTemplate;
     private final String NOT_FOUND_MESSAGE = "회원가입 신청내역이 존재하지 않습니다.";
@@ -27,12 +31,27 @@ public class SignUpRequestRepository {
         String password = rs.getString("password");
         String email = rs.getString("email");
         String name = rs.getString("name");
-        String phoneNumber = rs.getString("phonenumber");
+        String phonenumber = rs.getString("phonenumber");
         String identityPhoto = rs.getString("identity_photo");
-        String StudentCouncilFeePhoto = rs.getString("student_council_fee_photo");
+        String studentCouncilFeePhoto = rs.getString("student_council_fee_photo");
         String accountNumber = rs.getString("account_number");
-        return new SignUpForm(id, password, email, name, phoneNumber, identityPhoto, StudentCouncilFeePhoto,
-                accountNumber);
+        Timestamp created_at = rs.getTimestamp("created_at");
+        SignUpRequestState signUpRequestState = SignUpRequestState.valueOf(rs.getString("state"));
+        String rejectReason = rs.getString("reject_reason");
+
+        return SignUpForm.builder()
+                .id(id)
+                .password(password)
+                .email(email)
+                .name(name)
+                .phonenumber(phonenumber)
+                .identityPhoto(identityPhoto)
+                .studentCouncilFeePhoto(studentCouncilFeePhoto)
+                .accountNumber(accountNumber)
+                .created_at(created_at)
+                .state(signUpRequestState)
+                .rejectReason(rejectReason)
+                .build();
     };
 
     /**
@@ -45,13 +64,14 @@ public class SignUpRequestRepository {
     public SignUpForm save(SignUpForm signupform) {
         String sql = "INSERT INTO signup_request(id, password, email, name, phonenumber, " +
                 "identity_photo, student_council_fee_photo, account_number) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        log.info(signupform.getEmail());
         jdbcTemplate.update(
                 sql,
                 signupform.getId(),
                 signupform.getPassword(),
                 signupform.getEmail(),
                 signupform.getName(),
-                signupform.getPhoneNumber(),
+                signupform.getPhonenumber(),
                 signupform.getIdentityPhoto(),
                 signupform.getStudentCouncilFeePhoto(),
                 signupform.getAccountNumber());
@@ -118,7 +138,7 @@ public class SignUpRequestRepository {
      */
 
     public void patchEvaluation(EvaluationRequestDto evaluationRequest, String id) {
-        String sql = "UPDATE signup_request SET state = ?, rejectReason = ? WHERE id = ?";
+        String sql = "UPDATE signup_request SET state = ?, reject_reason = ? WHERE id = ?";
         jdbcTemplate.update(sql, evaluationRequest.getState().name(), evaluationRequest.getRejectReason(), id);
     }
 
@@ -139,7 +159,7 @@ public class SignUpRequestRepository {
                 signUpForm.getPassword(),
                 signUpForm.getEmail(),
                 signUpForm.getName(),
-                signUpForm.getPhoneNumber(),
+                signUpForm.getPhonenumber(),
                 signUpForm.getIdentityPhoto(),
                 signUpForm.getStudentCouncilFeePhoto(),
                 signUpForm.getAccountNumber(),
@@ -180,10 +200,10 @@ public class SignUpRequestRepository {
      * test 코드에 사용하기 위한 메서드
      */
     public EvaluationRequestDto findStateAndReject(String id) {
-        String sql = "SELECT state,rejectReason FROM signup_request WHERE id = ?";
+        String sql = "SELECT state,reject_reason FROM signup_request WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             SignUpRequestState state = SignUpRequestState.valueOf(rs.getString("state"));
-            String rejectReason = rs.getString("rejectReason");
+            String rejectReason = rs.getString("reject_reason");
             return new EvaluationRequestDto(state, rejectReason);
         }, id);
     }
