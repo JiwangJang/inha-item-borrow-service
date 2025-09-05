@@ -3,6 +3,8 @@ package com.inha.borrow.backend.config.auth.admin;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AdminAuthenticationProvider implements AuthenticationProvider {
     private AdminService adminService;
     private PasswordEncoder passwordEncoder;
+    private GrantedAuthoritiesMapper authoritiesMapper;
 
     @Override
     public Authentication authenticate(Authentication authentication) {
@@ -36,7 +39,10 @@ public class AdminAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("비밀번호 다름");
         }
         admin.setPassword(null);
-        return new AdminAuthenticationToken(admin, admin.getAuthorities());
+        // Apply role hierarchy to expand authorities (e.g., PRESIDENT ⇒ DIVISION_HEAD ⇒ DIVISION_MEMBER)
+        var mapped = authoritiesMapper == null ? admin.getAuthorities()
+                : authoritiesMapper.mapAuthorities(admin.getAuthorities());
+        return new AdminAuthenticationToken(admin, new java.util.ArrayList<GrantedAuthority>(mapped));
     }
 
     @Override
