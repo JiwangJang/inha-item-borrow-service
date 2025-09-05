@@ -200,10 +200,10 @@ public class SignUpRequestRepository {
      * test 코드에 사용하기 위한 메서드
      */
     public EvaluationRequestDto findStateAndReject(String id) {
-        String sql = "SELECT state,rejectReason FROM signup_request WHERE id = ?";
+        String sql = "SELECT state,reject_reason FROM signup_request WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             SignUpRequestState state = SignUpRequestState.valueOf(rs.getString("state"));
-            String rejectReason = rs.getString("rejectReason");
+            String rejectReason = rs.getString("reject_reason");
             return new EvaluationRequestDto(state, rejectReason);
         }, id);
     }

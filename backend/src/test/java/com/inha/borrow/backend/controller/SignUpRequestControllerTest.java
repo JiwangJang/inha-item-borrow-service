@@ -37,9 +37,11 @@ import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
 import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.SignUpRequestState;
+import com.inha.borrow.backend.forAuthTest.admin.WithMockAdmin;
 import com.inha.borrow.backend.handler.GlobalErrorHandler;
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
+import com.inha.borrow.backend.model.dto.signUpRequest.SignUpRequestPasswordDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;
 import com.inha.borrow.backend.model.entity.SignUpForm;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
@@ -87,7 +89,53 @@ public class SignUpRequestControllerTest {
         }
 
         @Test
-        @DisplayName("회원가입 신청서 단건 조회(성공-단건 조회 경로는 누구나 접근가능하다)")
+        @DisplayName("회원가입 신청서 단건 조회(성공-관리자)")
+        @WithMockAdmin
+        void findBySignUpRequestIdSuccessForAdmin() throws Exception {
+                SignUpRequestPasswordDto dto = new SignUpRequestPasswordDto("Password1!");
+                SignUpForm expected = SignUpForm.builder().build();
+                when(signUpRequestService.findById(null, "1", dto)).thenReturn(expected);
+                mockMvc.perform(
+                                get("/borrowers/signup-requests/1"))
+                                .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("회원가입 신청서 단건 조회(성공-신청자)")
+        @WithAnonymousUser
+        void findBySignUpRequestIdSuccessForRequester() throws Exception {
+                // given
+                SignUpRequestPasswordDto dto = new SignUpRequestPasswordDto("Password1!");
+                SignUpForm expected = SignUpForm.builder().build();
+                when(signUpRequestService.findById(null, "1", dto)).thenReturn(expected);
+                // when
+                // then
+                mockMvc.perform(
+                                get("/borrowers/signup-requests/1")
+                                                .content(objectMapper.writeValueAsString(dto))
+                                                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
+                                .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("회원가입 신청서 단건 조회(실패-비밀번호 틀림)")
+        @WithAnonymousUser
+        void findBySignUpRequestIdFailForPassword() throws Exception {
+                // given
+                SignUpRequestPasswordDto dto = new SignUpRequestPasswordDto("Password1!");
+                when(signUpRequestService.findById(null, "1", dto))
+                                .thenThrow(InvalidValueException.class);
+                // when
+                // then
+                mockMvc.perform(
+                                get("/borrowers/signup-requests/1")
+                                                .content(objectMapper.writeValueAsString(dto))
+                                                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
+                                .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("회원가입 신청서 단건 조회(성공-관리자)")
         @WithAnonymousUser
         void findBySignUpRequestId() throws Exception {
                 mockMvc.perform(
@@ -99,7 +147,8 @@ public class SignUpRequestControllerTest {
         @DisplayName("전체 회원가입 신청서 조회(성공-국원 이상만 접근가능)")
         @WithMockUser(authorities = "DIVISION_MEMBER")
         void findAllSignUpRequestSuccessTest() throws Exception {
-                SignUpForm form = new SignUpForm("null", "null", "null", "null", "null", "null", "null", " ");
+                SignUpForm form = SignUpForm.builder()
+                                .build();
                 when(signUpRequestService.findSignUpRequest()).thenReturn(List.of(form));
                 mockMvc.perform(get("/borrowers/signup-requests"))
                                 .andExpect(status().isOk());
@@ -109,7 +158,8 @@ public class SignUpRequestControllerTest {
         @DisplayName("대여자 권한으로 전체 회원가입 신청서 조회(실패-국원 이상만 접근가능)")
         @WithMockUser(authorities = "BORROWER")
         void findAllSignUpRequestFailForAuthroityTest() throws Exception {
-                SignUpForm form = new SignUpForm("null", "null", "null", "null", "null", "null", "null", " ");
+                SignUpForm form = SignUpForm.builder()
+                                .build();
                 when(signUpRequestService.findSignUpRequest()).thenReturn(List.of(form));
                 mockMvc.perform(get("/borrowers/signup-requests"))
                                 .andExpect(status().isForbidden());
@@ -119,7 +169,8 @@ public class SignUpRequestControllerTest {
         @DisplayName("로그인하지 않고 전체 회원가입 신청서 조회(실패-국원 이상만 접근가능)")
         @WithAnonymousUser
         void findAllSignUpRequestFailForNotLoginedTest() throws Exception {
-                SignUpForm form = new SignUpForm("null", "null", "null", "null", "null", "null", "null", " ");
+                SignUpForm form = SignUpForm.builder()
+                                .build();
                 when(signUpRequestService.findSignUpRequest()).thenReturn(List.of(form));
                 mockMvc.perform(get("/borrowers/signup-requests"))
                                 .andExpect(status().isUnauthorized());
