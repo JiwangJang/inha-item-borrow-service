@@ -18,6 +18,7 @@ import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Item객체와 관련된 DB작업을 하는 클래스
@@ -26,6 +27,7 @@ import lombok.AllArgsConstructor;
  */
 @Repository
 @AllArgsConstructor
+@Slf4j
 public class ItemRepository {
     private final JdbcTemplate jdbcTemplate;
     private final String NOT_FOUND_MESSAGE = "존재하지 않는 물품입니다.";
@@ -108,9 +110,14 @@ public class ItemRepository {
     public BorrowedItemDto findById(int id) {
         try {
             String sql = """
-                        SELECT request.borrower_id, itme.id, item.name, item.location, item.password, item.delete_reason, item.state
-                        FROM item LEFT JOIN request ON item.id = request.item_id
-                        WHERE item.id = ? AND request.state = 'PERMIT' AND request.cancel = false AND item.state != DELETED;
+                        SELECT request.borrower_id,
+                            item.id, item.name, item.location, item.password, item.delete_reason, item.state, item.price
+                        FROM item LEFT JOIN request
+                            ON item.id = request.item_id
+                            AND request.type = 'BORROW'
+                            AND request.state = 'PERMIT'
+                            AND request.cancel = false
+                        WHERE item.id = ? AND item.state != 'DELETED';
                     """;
             return jdbcTemplate.queryForObject(sql, (ResultSet resultSet, int index) -> {
                 return BorrowedItemDto.builder()

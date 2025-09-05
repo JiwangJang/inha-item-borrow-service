@@ -1,7 +1,6 @@
 package com.inha.borrow.backend.service;
 
 import com.inha.borrow.backend.enums.ItemState;
-import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.item.BorrowedItemDto;
 import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
@@ -47,7 +46,7 @@ public class ItemService {
      * @author 장지왕
      */
     public List<Item> getAllItem(User user) {
-        if (user.getAuthorities().get(0).getAuthority().equals(Role.DIVISION_MEMBER.name())) {
+        if (user instanceof Admin) {
             // 관리자인 경우
             return itemRepository.findAllForAdmin();
         } else {
@@ -65,7 +64,7 @@ public class ItemService {
     public Item getItemById(User user, int itemId) {
         BorrowedItemDto foundItem = itemRepository.findById(itemId);
         if (user instanceof Admin
-                || foundItem.getBorrowerId().equals(user.getId())) {
+                || (foundItem.getBorrowerId() != null && foundItem.getBorrowerId().equals(user.getId()))) {
             // 관리자이거나 대여한 사람이면 모든 정보를 볼 수 있음
             return foundItem.getAllInfoItem();
         } else {
