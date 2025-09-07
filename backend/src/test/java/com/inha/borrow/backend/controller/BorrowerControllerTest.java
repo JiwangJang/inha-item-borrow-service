@@ -127,7 +127,7 @@ public class BorrowerControllerTest {
         @DisplayName("전화번호 수정")
         @WithMockBorrower
         void patchPhoneNumber() throws Exception {
-                doNothing().when(borrowerService).patchPhoneNumber("01012345678", "123");
+                doNothing().when(borrowerService).patchPhoneNumber(null, null);
 
                 mockMvc.perform(patch("/borrowers/info/phonenum")
                                 .contentType(MediaType.APPLICATION_JSON)

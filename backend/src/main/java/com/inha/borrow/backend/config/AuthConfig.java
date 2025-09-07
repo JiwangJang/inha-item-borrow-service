@@ -93,7 +93,7 @@ public class AuthConfig {
 							.requestMatchers("/borrowers")
 							.hasAuthority(Role.DIVISION_HEAD.name())
 							// /borrower/info와 그 아래 경로는 대여자만 접근가능하다.
-							.requestMatchers("/borrowers/info", "/borrowers/info/**")
+							.requestMatchers("/borrowers/sms-verify-code", "/borrowers/info", "/borrowers/info/**")
 							.hasAuthority(Role.BORROWER.name())
 							// /borrowers/{borrower-id} 아래경로는 국원 이상만 접근 가능하다
 							.requestMatchers("/borrowers/*/info/**")

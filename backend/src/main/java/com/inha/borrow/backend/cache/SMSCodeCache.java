@@ -28,8 +28,8 @@ public class SMSCodeCache {
         SMSCode smsCode = cache.get(id);
         if (smsCode == null) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            errorCode.setMessage("해당 아이디로 발급된 인증코드가 존재하지 않습니다.");
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-
         }
         if (smsCode.getTtl() <= System.currentTimeMillis()) {
             ApiErrorCode errorCode = ApiErrorCode.SMS_CODE_EXPIRED;

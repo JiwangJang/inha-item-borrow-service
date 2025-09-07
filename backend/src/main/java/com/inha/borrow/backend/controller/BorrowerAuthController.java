@@ -61,7 +61,7 @@ public class BorrowerAuthController {
      * @return
      * @author 장지왕
      */
-    @PatchMapping("/verify-sms-code")
+    @PatchMapping("/sms-verify-code")
     public ResponseEntity<Void> verifySMSCode(@RequestBody SMSCodeVerifyDto dto) {
         borrowerVerificationService.verifySMSCode(dto.getId(), dto.getCode());
         return ResponseEntity.ok().build();
@@ -74,7 +74,7 @@ public class BorrowerAuthController {
      * @return
      * @author 장지왕
      */
-    @PostMapping("/send-sms-code")
+    @PostMapping("/sms-verify-code")
     public ResponseEntity<Void> sendSMSCode(@RequestBody SMSCodeRequestDto dto) {
         borrowerVerificationService.sendSMSCode(dto.getId(), dto.getPhoneNumber());
         return ResponseEntity.ok().build();
