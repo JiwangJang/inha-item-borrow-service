@@ -1,7 +1,10 @@
 package com.inha.borrow.backend.service;
 
+import com.inha.borrow.backend.cache.SMSCodeCache;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.user.PatchPasswordDto;
+import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
+import com.inha.borrow.backend.model.entity.SMSCode;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 
@@ -24,6 +27,7 @@ import java.util.List;
 public class BorrowerService implements UserDetailsService {
     private final BorrowerRepository borrowerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SMSCodeCache smsCodeCache;
 
     /**
      * 대여자 계정 정보를 가져오는 메서드
@@ -90,8 +94,18 @@ public class BorrowerService implements UserDetailsService {
      * @param id
      * @author 형민재
      */
-    public void patchPhoneNumber(String phoneNumber, String id) {
-        borrowerRepository.patchPhoneNumber(phoneNumber, id);
+    public void patchPhoneNumber(String borrowerId, PatchPhonenumberDto dto) {
+        SMSCode smsCode = smsCodeCache.get(borrowerId);
+        String sentCode = smsCode.getCode();
+        String userCode = dto.getSmsVerifyCode();
+        String newPhonenumber = dto.getNewPhonenumber();
+        if (!sentCode.equals(userCode)) {
+            ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
+            apiErrorCode.setMessage("인증코드를 다시 확인해주세요.");
+            throw new InvalidValueException(userCode, userCode);
+        }
+
+        borrowerRepository.patchPhoneNumber(newPhonenumber, borrowerId);
     }
 
     /**
@@ -153,6 +167,19 @@ public class BorrowerService implements UserDetailsService {
         }
         String newPassword = passwordEncoder.encode(patchPasswordDto.getNewPassword());
         borrowerRepository.patchPassword(newPassword, id);
+    }
+
+    /**
+     * 대여자 휴대전화번호 변경전 인증번호를 발급해주는 메서드
+     * 
+     * @param borrowerId
+     * @author 장지왕
+     */
+    public void createSmsCode(String borrowerId, String newPhonenumber) {
+        // 나중에는 실제로 무작위 6자리 번호를 번호로 보내기
+        String code = "123456";
+        SMSCode smsCode = new SMSCode(code);
+        smsCodeCache.set(borrowerId, smsCode);
     }
 
 }

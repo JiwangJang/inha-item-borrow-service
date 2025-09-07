@@ -190,7 +190,7 @@ public class BorrowerAuthControllerTest {
                 doNothing().when(borrowerVerificationService).sendSMSCode(dto.getId(), dto.getPhoneNumber());
                 // when
                 // then
-                mockMvc.perform(post("/borrowers/auth/send-sms-code")
+                mockMvc.perform(post("/borrowers/auth/sms-verify-code")
                                 .content(objectMapper.writeValueAsString(dto))
                                 .contentType(ContentType.APPLICATION_JSON.getMimeType())
                                 .with(SecurityMockMvcRequestPostProcessors.csrf()))
@@ -211,7 +211,7 @@ public class BorrowerAuthControllerTest {
                                                 ApiErrorCode.NOT_FOUND.getMessage()));
                 // when
                 // then
-                mockMvc.perform(post("/borrowers/auth/send-sms-code")
+                mockMvc.perform(post("/borrowers/auth/sms-verify-code")
                                 .content(objectMapper.writeValueAsString(dto))
                                 .contentType(ContentType.APPLICATION_JSON.getMimeType())
                                 .with(SecurityMockMvcRequestPostProcessors.csrf()))
@@ -227,7 +227,7 @@ public class BorrowerAuthControllerTest {
                 doNothing().when(borrowerVerificationService).verifySMSCode(dto.getId(), dto.getCode());
                 // when
                 // then
-                mockMvc.perform(patch("/borrowers/auth/verify-sms-code")
+                mockMvc.perform(patch("/borrowers/auth/sms-verify-code")
                                 .content(objectMapper.writeValueAsString(dto))
                                 .contentType(ContentType.APPLICATION_JSON.getMimeType())
                                 .with(SecurityMockMvcRequestPostProcessors.csrf()))
@@ -248,7 +248,7 @@ public class BorrowerAuthControllerTest {
                                                 ApiErrorCode.INCORRECT_CODE.getMessage()));
                 // when
                 // then
-                mockMvc.perform(patch("/borrowers/auth/verify-sms-code")
+                mockMvc.perform(patch("/borrowers/auth/sms-verify-code")
                                 .content(objectMapper.writeValueAsString(dto))
                                 .contentType(ContentType.APPLICATION_JSON.getMimeType())
                                 .with(SecurityMockMvcRequestPostProcessors.csrf()))
@@ -269,7 +269,7 @@ public class BorrowerAuthControllerTest {
                                 new ErrorResponse(ApiErrorCode.NOT_FOUND.name(), ApiErrorCode.NOT_FOUND.getMessage()));
                 // when
                 // then
-                mockMvc.perform(patch("/borrowers/auth/verify-sms-code")
+                mockMvc.perform(patch("/borrowers/auth/sms-verify-code")
                                 .content(objectMapper.writeValueAsString(dto))
                                 .contentType(ContentType.APPLICATION_JSON.getMimeType())
                                 .with(SecurityMockMvcRequestPostProcessors.csrf()))
