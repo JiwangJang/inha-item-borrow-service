@@ -3,6 +3,8 @@ package com.inha.borrow.backend.controller;
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.dto.user.PatchPasswordDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchEmailDto;
+import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
+import com.inha.borrow.backend.model.dto.user.borrower.PhonenumberPatchCodeDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerService;
 
@@ -57,6 +59,19 @@ public class BorrowerController {
     }
 
     /**
+     * 휴대전화 번호 정보 변경 전 휴대전화 인증을 요청하는 메서드
+     * 
+     * @return 200 발급완료
+     * @author 장지왕
+     */
+    @PostMapping("/sms-verify-code")
+    public ResponseEntity<Void> createSmsCode(@AuthenticationPrincipal Borrower borrower,
+            @RequestBody PhonenumberPatchCodeDto dto) {
+        borrowerService.createSmsCode(borrower.getId(), dto.getNewPhonenumber());
+        return ResponseEntity.ok().build();
+    }
+
+    /**
      * password를 수정하는 메서드
      * 
      * @param patchPasswordDto
@@ -94,9 +109,8 @@ public class BorrowerController {
      */
     @PatchMapping("/info/phonenum")
     public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal(expression = "id") String id,
-            @RequestBody String phoneNumber) {
-        // 핸드폰 재인증 로직 구현해야함(서비스)
-        borrowerService.patchPhoneNumber(phoneNumber, id);
+            @RequestBody PatchPhonenumberDto dto) {
+        borrowerService.patchPhoneNumber(id, dto);
         return ResponseEntity.ok().build();
     }
 
