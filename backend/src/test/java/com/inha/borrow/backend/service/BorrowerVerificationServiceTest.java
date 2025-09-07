@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inha.borrow.backend.cache.IdCache;
 import com.inha.borrow.backend.cache.SMSCodeCache;
@@ -21,6 +22,7 @@ import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
 @SpringBootTest
+@Transactional
 public class BorrowerVerificationServiceTest {
     private BorrowerVerificationService service;
     private IdCache idCache;
