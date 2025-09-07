@@ -5,6 +5,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,12 +30,11 @@ import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvi
 import com.inha.borrow.backend.forAuthTest.borrower.WithMockBorrower;
 import com.inha.borrow.backend.model.dto.user.PatchPasswordDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchEmailDto;
+import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
+import com.inha.borrow.backend.model.dto.user.borrower.PhonenumberPatchCodeDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerService;
 
-/**
- * 인자테스트 진행 필요(ParamaterizedTest)
- */
 @WebMvcTest(BorrowerController.class)
 @Import(AuthConfig.class)
 public class BorrowerControllerTest {
@@ -127,11 +127,12 @@ public class BorrowerControllerTest {
         @DisplayName("전화번호 수정")
         @WithMockBorrower
         void patchPhoneNumber() throws Exception {
-                doNothing().when(borrowerService).patchPhoneNumber(null, null);
+                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-1111-2222", "000");
+                doNothing().when(borrowerService).patchPhoneNumber("testId", dto);
 
                 mockMvc.perform(patch("/borrowers/info/phonenum")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("01012345678"))
+                                .content(objectMapper.writeValueAsString(dto)))
                                 .andExpect(status().isOk());
         }
 
@@ -287,42 +288,73 @@ public class BorrowerControllerTest {
         @DisplayName("/borrowers/info/phonenum 경로접근 테스트(성공)")
         @WithMockBorrower
         void patchPhoneNumberSuccessTest() throws Exception {
-                // given
-                String phoneNumber = "010-0000-0000";
-                // when
-                // then
+                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-0000-0000", "123456");
+                doNothing().when(borrowerService).patchPhoneNumber("test_borrower", dto);
+
                 mockMvc.perform(
                                 patch("/borrowers/info/phonenum")
-                                                .content(phoneNumber)
+                                                .content(objectMapper.writeValueAsString(dto))
                                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isOk());
         }
 
         @Test
-        @DisplayName("/borrowers/info/phoneNumber 경로접근 테스트(실패-인증없음)")
+        @DisplayName("/borrowers/info/phonenum 경로접근 테스트(실패-인증없음)")
         @WithAnonymousUser
         void patchPhoneNumberFailForAnonymousUserTest() throws Exception {
-                // given
-                String phoneNumber = "010-0000-0000";
-                // when
-                // then
+                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-0000-0000", "123456");
                 mockMvc.perform(
-                                patch("/borrowers/info/email")
-                                                .content(phoneNumber))
+                                patch("/borrowers/info/phonenum")
+                                                .content(objectMapper.writeValueAsString(dto))
+                                                .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isUnauthorized());
         }
 
         @Test
-        @DisplayName("/borrowers/info/phoneNumber 경로접근 테스트(실패-권한문제)")
+        @DisplayName("/borrowers/info/phonenum 경로접근 테스트(실패-권한문제)")
         @WithMockUser(authorities = "PRESIDENT")
         void patchPhoneNumberFailForAdminTest() throws Exception {
-                // given
-                String phoneNumber = "010-0000-0000";
-                // when
-                // then
+                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-0000-0000", "123456");
                 mockMvc.perform(
-                                patch("/borrowers/info/email")
-                                                .content(phoneNumber))
+                                patch("/borrowers/info/phonenum")
+                                                .content(objectMapper.writeValueAsString(dto))
+                                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isForbidden());
+        }
+
+        // New endpoint: /borrowers/sms-verify-code (POST)
+        @Test
+        @DisplayName("/borrowers/sms-verify-code 경로접근 테스트(성공 - BORROWER)")
+        @WithMockBorrower
+        void createSmsCodeSuccessTest() throws Exception {
+                PhonenumberPatchCodeDto dto = new PhonenumberPatchCodeDto("010-1111-2222");
+                doNothing().when(borrowerService).createSmsCode("test_borrower", dto.getNewPhonenumber());
+
+                mockMvc.perform(post("/borrowers/sms-verify-code")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto)))
+                                .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("/borrowers/sms-verify-code 경로접근 테스트(실패 - 인증없음)")
+        @WithAnonymousUser
+        void createSmsCodeFailForAnonymousTest() throws Exception {
+                PhonenumberPatchCodeDto dto = new PhonenumberPatchCodeDto("010-1111-2222");
+                mockMvc.perform(post("/borrowers/sms-verify-code")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto)))
+                                .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("/borrowers/sms-verify-code 경로접근 테스트(실패 - ADMIN 403)")
+        @WithMockUser(authorities = "DIVISION_MEMBER")
+        void createSmsCodeFailForAdminTest() throws Exception {
+                PhonenumberPatchCodeDto dto = new PhonenumberPatchCodeDto("010-1111-2222");
+                mockMvc.perform(post("/borrowers/sms-verify-code")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto)))
                                 .andExpect(status().isForbidden());
         }
 
