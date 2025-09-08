@@ -33,7 +33,7 @@ public class BorrowerAuthenticationProvider implements AuthenticationProvider {
         if (!passwordEncoder.matches(rawPassword, borrower.getPassword())) {
             throw new BadCredentialsException("");
         }
-        return new BorrowerAuthenticationToken(id, null, borrower.getAuthorities());
+        return new BorrowerAuthenticationToken(borrower, borrower.getAuthorities());
     }
 
     @Override
