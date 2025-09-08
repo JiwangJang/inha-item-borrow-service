@@ -1,9 +1,9 @@
 package com.inha.borrow.backend.controller;
 
+import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
 import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
-import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.service.ItemService;

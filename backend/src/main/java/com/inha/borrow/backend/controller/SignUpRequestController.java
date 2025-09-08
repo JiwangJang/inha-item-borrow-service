@@ -1,6 +1,6 @@
 package com.inha.borrow.backend.controller;
 
-import com.inha.borrow.backend.model.dto.response.ApiResponse;
+import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.signUpRequest.EvaluationRequestDto;
 import com.inha.borrow.backend.model.dto.signUpRequest.SignUpRequestPasswordDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SignUpFormDto;

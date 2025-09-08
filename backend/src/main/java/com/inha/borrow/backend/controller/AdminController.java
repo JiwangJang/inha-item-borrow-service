@@ -3,7 +3,7 @@ package com.inha.borrow.backend.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inha.borrow.backend.model.dto.response.ApiResponse;
+import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.user.admin.SaveAdminDto;
 import com.inha.borrow.backend.model.dto.user.admin.UpdateAdminInfoDto;
 import com.inha.borrow.backend.model.dto.user.admin.UpdateDivisionDto;

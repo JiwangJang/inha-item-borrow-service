@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.division.DivisionDto;
-import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.entity.Division;
 import com.inha.borrow.backend.service.DivisionService;
 
