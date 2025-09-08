@@ -22,11 +22,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
+import com.inha.borrow.backend.model.dto.apiResponse.ErrorResponse;
 import com.inha.borrow.backend.model.dto.auth.PasswordVerifyRequestDto;
 import com.inha.borrow.backend.model.dto.auth.SMSCodeRequestDto;
 import com.inha.borrow.backend.model.dto.auth.SMSCodeVerifyDto;
-import com.inha.borrow.backend.model.dto.response.ApiResponse;
-import com.inha.borrow.backend.model.dto.response.ErrorResponse;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.service.BorrowerVerificationService;

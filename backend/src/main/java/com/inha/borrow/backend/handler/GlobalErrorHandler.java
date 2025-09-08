@@ -16,8 +16,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.ServiceLog;
-import com.inha.borrow.backend.model.dto.response.ApiResponse;
-import com.inha.borrow.backend.model.dto.response.ErrorResponse;
+import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
+import com.inha.borrow.backend.model.dto.apiResponse.ErrorResponse;
 import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;

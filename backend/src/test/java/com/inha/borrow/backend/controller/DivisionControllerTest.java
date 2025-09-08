@@ -29,9 +29,9 @@ import com.inha.borrow.backend.config.AuthConfig;
 import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
 import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
 import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
+import com.inha.borrow.backend.model.dto.apiResponse.ErrorResponse;
 import com.inha.borrow.backend.model.dto.division.DivisionDto;
-import com.inha.borrow.backend.model.dto.response.ApiResponse;
-import com.inha.borrow.backend.model.dto.response.ErrorResponse;
 import com.inha.borrow.backend.model.entity.Division;
 import com.inha.borrow.backend.service.DivisionService;
 

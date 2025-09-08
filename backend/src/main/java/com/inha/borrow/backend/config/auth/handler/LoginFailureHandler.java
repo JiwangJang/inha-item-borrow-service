@@ -8,8 +8,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.enums.ApiErrorCode;
-import com.inha.borrow.backend.model.dto.response.ApiResponse;
-import com.inha.borrow.backend.model.dto.response.ErrorResponse;
+import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
+import com.inha.borrow.backend.model.dto.apiResponse.ErrorResponse;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

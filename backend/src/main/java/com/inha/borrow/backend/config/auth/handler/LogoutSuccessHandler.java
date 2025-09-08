@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inha.borrow.backend.model.dto.response.ApiResponse;
+import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.entity.user.User;
 
 import jakarta.servlet.ServletException;

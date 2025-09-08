@@ -24,8 +24,8 @@ import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvi
 import com.inha.borrow.backend.config.auth.handler.LogoutSuccessHandler;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.Role;
-import com.inha.borrow.backend.model.dto.response.ApiResponse;
-import com.inha.borrow.backend.model.dto.response.ErrorResponse;
+import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
+import com.inha.borrow.backend.model.dto.apiResponse.ErrorResponse;
 
 @Configuration
 @EnableWebSecurity(debug = true)

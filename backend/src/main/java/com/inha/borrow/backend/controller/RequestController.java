@@ -1,6 +1,7 @@
 package com.inha.borrow.backend.controller;
 
 import com.inha.borrow.backend.enums.RequestState;
+import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.entity.request.Request;
