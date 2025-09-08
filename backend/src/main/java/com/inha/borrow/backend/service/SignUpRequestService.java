@@ -102,7 +102,6 @@ public class SignUpRequestService {
                 throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
             }
         }
-
     }
 
     /**

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -155,6 +156,7 @@ class SignUpRequestServiceTest {
                 // 관리자 권한으로 요청한 경우
                 SignUpForm admin_result = signUpRequestService.findById(admin, "123", null);
                 // 사용자 권한으로 요청한 경우
+
                 SignUpForm requester_result = signUpRequestService.findById(null, "123",
                                 new SignUpRequestPasswordDto(password));
                 // then

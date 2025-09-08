@@ -1,6 +1,1 @@
-# 각 IDE 기본 파일 제외
 .idea/
-.vscode/
-# 로그파일 git 제외
-**.log
-logging

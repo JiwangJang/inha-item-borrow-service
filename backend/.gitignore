@@ -38,3 +38,5 @@ out/
 
 # Ignore Spring Boot config files
 src/main/resources/application.yml
+.idea
+README.md
