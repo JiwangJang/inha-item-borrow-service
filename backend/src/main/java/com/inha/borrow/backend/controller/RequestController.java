@@ -32,7 +32,6 @@ public class RequestController {
     @PostMapping()
     public ResponseEntity<ApiResponse<Integer>> saveRequest(@AuthenticationPrincipal User user,
             @Valid @RequestBody SaveRequestDto saveRequestDto) {
-        saveRequestDto.setBorrowerId(user.getId());
         int result = requestService.saveRequest(user, saveRequestDto, saveRequestDto.getItemId());
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, result));
     }
