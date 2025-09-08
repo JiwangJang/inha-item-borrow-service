@@ -9,11 +9,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
+
 import java.util.List;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+@JdbcTest
+@Import(SignUpRequestRepository.class)
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 class SignUpRequestRepositoryTest {
 
     @Autowired
@@ -29,7 +36,7 @@ class SignUpRequestRepositoryTest {
                 .password("123")
                 .name("123")
                 .email("123")
-                .phoneNumber("123")
+                .phonenumber("123")
                 .identityPhoto("123")
                 .studentCouncilFeePhoto("123")
                 .accountNumber("123")
@@ -43,7 +50,7 @@ class SignUpRequestRepositoryTest {
         signUpRequestRepository.deleteALL();
         SignUpForm result = signUpRequestRepository.save(signUpForm);
         assertThat(result.getEmail()).isEqualTo("123");
-        assertThat(result.getPhoneNumber()).isEqualTo("123");
+        assertThat(result.getPhonenumber()).isEqualTo("123");
 
     }
 
@@ -64,9 +71,10 @@ class SignUpRequestRepositoryTest {
     @Test
     @DisplayName("단일 조회 (실패 ID 미존재)")
     void FindByIdFailNotFoundId() {
-        assertThatThrownBy(() -> signUpRequestRepository.findById("456"))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining(ApiErrorCode.NOT_FOUND.getMessage());
+        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+                () -> signUpRequestRepository.findById("456"));
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
+        assertThat(ex.getErrorMessage()).isEqualTo("회원가입 신청내역이 존재하지 않습니다.");
     }
 
     @Test
@@ -79,9 +87,10 @@ class SignUpRequestRepositoryTest {
     @Test
     @DisplayName("비밀번호로 단일 조회 (실패 ID 미존재)")
     void PasswordByIdFailNotFoundId() {
-        assertThatThrownBy(() -> signUpRequestRepository.findPasswordById("456"))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining(ApiErrorCode.NOT_FOUND.getMessage());
+        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+                () -> signUpRequestRepository.findPasswordById("456"));
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
+        assertThat(ex.getErrorMessage()).isEqualTo("회원가입 신청내역이 존재하지 않습니다.");
     }
 
     @Test
@@ -117,9 +126,10 @@ class SignUpRequestRepositoryTest {
     @DisplayName("리퀘스트 수정 (실패 ID 미존재")
     void PatchSignUpRequestFailNotFoundId() {
         signUpRequestRepository.deleteALL();
-        assertThatThrownBy(() -> signUpRequestRepository.patchSignUpRequest(signUpForm, "123"))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining(ApiErrorCode.NOT_FOUND.getMessage());
+        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+                () -> signUpRequestRepository.patchSignUpRequest(signUpForm, "123"));
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
+        assertThat(ex.getErrorMessage()).isEqualTo("회원가입 신청내역이 존재하지 않습니다.");
     }
 
     @Test
@@ -132,9 +142,9 @@ class SignUpRequestRepositoryTest {
     @Test
     @DisplayName("리퀘스트 삭제 (실패 ID 미존재")
     void deleteSignUpRequestFailNotFoundId() {
-        assertThatThrownBy(() -> signUpRequestRepository.deleteSignUpRequest("321", "123"))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("요청하신 자원을 찾을수 없습니다.");
-
+        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
+                () -> signUpRequestRepository.deleteSignUpRequest("321", "123"));
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
+        assertThat(ex.getErrorMessage()).isEqualTo("회원가입 신청내역이 존재하지 않습니다.");
     }
 }

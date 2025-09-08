@@ -2,6 +2,7 @@ package com.inha.borrow.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.config.AuthConfig;
+
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.enums.Role;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -48,6 +50,7 @@ class RequestControllerTest {
 
         @MockitoBean
         private RequestService requestService;
+
 
         private SaveRequestDto saveRequestDto;
         private PatchRequestDto patchRequestDto;
@@ -110,6 +113,7 @@ class RequestControllerTest {
                                 RequestType.BORROW,
                                 RequestState.PENDING,
                                 false);
+
         }
 
         @Test

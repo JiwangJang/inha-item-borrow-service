@@ -2,6 +2,8 @@ package com.inha.borrow.backend.controller;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -58,7 +60,7 @@ public class ItemControllerTest {
         // given
         List<Item> expect = List.of(
                 new Item(0, "아이템1", "null", "null", "null", 1000, ItemState.AFFORD));
-        when(itemService.getAllItem()).thenReturn(expect);
+        when(itemService.getAllItem(any())).thenReturn(expect);
         // when
         // then
         mockMvc.perform(get("/items"))
@@ -71,11 +73,11 @@ public class ItemControllerTest {
     void getItemTest() throws Exception {
         // given
         Item expect = new Item(0, null, null, null, null, 0, null);
-        when(itemService.getItemById(0)).thenReturn(expect);
+        when(itemService.getItemById(any(), anyInt())).thenReturn(expect);
         // when
         // then
         mockMvc.perform(get("/items/0"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -84,7 +86,7 @@ public class ItemControllerTest {
     void createItemSuccessTest() throws Exception {
         // given
         Item expect = new Item(0, "새로운거", "인하대 어딘가", "비밀임", "delete", 100, ItemState.AFFORD);
-        when(itemService.createItem(null)).thenReturn(expect);
+        when(itemService.createItem(any(ItemDto.class))).thenReturn(expect);
         ItemDto itemDto = new ItemDto("새로운거", "인하대 어딘가", "비밀임", 1000);
         // when
         // then
@@ -100,7 +102,7 @@ public class ItemControllerTest {
     void createItemFailForAuthorityTest() throws Exception {
         // given
         Item expect = new Item(0, "새로운거", "인하대 어딘가", "비밀임", "delete", 100, ItemState.AFFORD);
-        when(itemService.createItem(null)).thenReturn(expect);
+        when(itemService.createItem(any(ItemDto.class))).thenReturn(expect);
         ItemDto itemDto = new ItemDto("새로운거", "인하대 어딘가", "비밀임", 1000);
         // when
         // then
@@ -116,7 +118,7 @@ public class ItemControllerTest {
     void createItemFailForNotAuthenticationTest() throws Exception {
         // given
         Item expect = new Item(0, "새로운거", "인하대 어딘가", "비밀임", "delete", 100, ItemState.AFFORD);
-        when(itemService.createItem(null)).thenReturn(expect);
+        when(itemService.createItem(any(ItemDto.class))).thenReturn(expect);
         ItemDto itemDto = new ItemDto("새로운거", "인하대 어딘가", "비밀임", 1000);
         // when
         // then
