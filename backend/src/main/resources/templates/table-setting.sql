@@ -81,6 +81,8 @@ create table request (
     id int NOT NULL primary key auto_increment,
     item_id int NOT NULL,
     borrower_id varchar(50) NOT NULL,
+    manager varchar(20) NOT NULL,
+    foreign key(manager) references admin(id),
     foreign key(item_id) references item(id),
     foreign key(borrower_id) references borrower(id),
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -94,9 +96,7 @@ create table request (
 create table response(
     id int NOT NULL primary key auto_increment,
     request_id int NOT NULL,
-    admin_id varchar(20) NOT NULL,
     foreign key(request_id) references request(id),
-    foreign key(admin_id) references admin(id),
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     reject_reason varchar(100) NOT NULL,
     type char(6) NOT NULL
