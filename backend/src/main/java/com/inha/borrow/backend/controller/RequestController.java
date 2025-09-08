@@ -45,7 +45,8 @@ public class RequestController {
      * @author 형민재
      */
     @PatchMapping("/{request-id}/patch")
-    public ResponseEntity<ApiResponse<SaveRequestDto>> patchRequest(@AuthenticationPrincipal String borrowerId,
+    public ResponseEntity<ApiResponse<SaveRequestDto>> patchRequest(
+            @AuthenticationPrincipal(expression = "id") String borrowerId,
             @PathVariable("request-id") int requestId, @Valid @RequestBody PatchRequestDto patchRequestDto) {
         requestService.patchRequest(patchRequestDto, requestId, borrowerId);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -59,7 +60,8 @@ public class RequestController {
      * @author 형민재
      */
     @PatchMapping("/{request-id}/cancel")
-    public ResponseEntity<ApiResponse<Void>> cancelRequest(@AuthenticationPrincipal String borrowerId,
+    public ResponseEntity<ApiResponse<Void>> cancelRequest(
+            @AuthenticationPrincipal(expression = "id") String borrowerId,
             @PathVariable("request-id") int requestId) {
         requestService.cancelRequest(requestId, borrowerId);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -96,7 +98,7 @@ public class RequestController {
     }
 
     /**
-     * 사용자가 자신이 요청을 리퀘스트 목록을 가져오는 메서드
+     * 사용자가 자신이 요청을 리퀘스트를 가져오는 메서드
      * 
      * @param user
      * @param requestId

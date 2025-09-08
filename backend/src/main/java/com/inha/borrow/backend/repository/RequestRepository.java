@@ -1,6 +1,5 @@
 package com.inha.borrow.backend.repository;
 
-
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
@@ -46,6 +45,7 @@ public class RequestRepository {
 
     /**
      * 리퀘스트를 저장하는 메서드
+     * 
      * @param request
      * @author 형민재
      */
@@ -69,6 +69,7 @@ public class RequestRepository {
 
     /**
      * ID로 리퀘스트를 가져오는 메서드
+     * 
      * @param requestId
      * @author 형민재
      */
@@ -76,19 +77,18 @@ public class RequestRepository {
         StringBuilder sql = new StringBuilder("SELECT * FROM request WHERE id =? ");
         List<Object> params = new ArrayList<>();
         params.add(requestId);
-        if(borrowerId != null && !borrowerId.isEmpty()){
+        if (borrowerId != null && !borrowerId.isEmpty()) {
             sql.append("AND borrower_id =?");
             params.add(borrowerId);
         }
         try {
             Request result = jdbcTemplate.queryForObject(sql.toString(), requestRowMapper, params.toArray());
             return result;
-        }catch(EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), REQUEST_NOT_FOUND);
         }
     }
-
 
     public List<Request> findByCondition(String borrowerId, String type, String state) {
         StringBuilder sql = new StringBuilder("SELECT * FROM request WHERE 1=1 ");
@@ -122,33 +122,35 @@ public class RequestRepository {
 
     /**
      * 사용자 요청을 전체 조회 하는 메서드
+     * 
      * @author 형민재
      */
-    public List<Request> findAll(){
+    public List<Request> findAll() {
         String sql = "SELECT * FROM request";
-        List<Request> result = jdbcTemplate.query(sql,requestRowMapper);
-        if(result.isEmpty()){
+        List<Request> result = jdbcTemplate.query(sql, requestRowMapper);
+        if (result.isEmpty()) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }return result;
+        }
+        return result;
     }
 
     /**
      * 리퀘스트를 수정하는 메서드
+     * 
      * @param patchRequestDto
      * @param requestId
      * @param borrowerId
      * @author 형민재
      */
-    public void patchRequest(PatchRequestDto patchRequestDto, int requestId, String borrowerId){
+    public void patchRequest(PatchRequestDto patchRequestDto, int requestId, String borrowerId) {
         String sql = "UPDATE request SET return_at=?, " +
-                "borrower_at=?,type=? WHERE ID =? AND borrower_id=?";
+                "borrower_at=? WHERE id =? AND borrower_id=?";
         int result = jdbcTemplate.update(sql,
                 patchRequestDto.getReturnAt(),
                 patchRequestDto.getBorrowerAt(),
-                patchRequestDto.getType().name(),
-                requestId,borrowerId);
-        if(result==0){
+                requestId, borrowerId);
+        if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             errorCode.setMessage(REQUEST_NOT_FOUND);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
@@ -157,15 +159,16 @@ public class RequestRepository {
 
     /**
      * 리퀘스트를 취소하는 메서드
+     * 
      * @param requestId
      * @param borrowerId
      * @author 형민재
      */
-    public void cancelRequest(int requestId, String borrowerId){
-        String sql = "UPDATE request SET cancel=? WHERE ID=? AND borrower_id=?";
+    public void cancelRequest(int requestId, String borrowerId) {
+        String sql = "UPDATE request SET cancel=? WHERE id=? AND borrower_id=?";
         boolean cancel = true;
-        int result = jdbcTemplate.update(sql,cancel,requestId,borrowerId);
-        if(result==0){
+        int result = jdbcTemplate.update(sql, cancel, requestId, borrowerId);
+        if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
@@ -173,14 +176,15 @@ public class RequestRepository {
 
     /**
      * 리퀘스트 상태를 설정하는 메서드
+     * 
      * @param state
      * @param requestId
      * @author 형민재
      */
-    public void evaluationRequest(RequestState state, int requestId){
+    public void evaluationRequest(RequestState state, int requestId) {
         String sql = "UPDATE request SET state=? WHERE ID=?";
-        int result = jdbcTemplate.update(sql,state.name(),requestId);
-        if(result==0){
+        int result = jdbcTemplate.update(sql, state.name(), requestId);
+        if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             errorCode.setMessage(REQUEST_NOT_FOUND);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
@@ -189,13 +193,14 @@ public class RequestRepository {
 
     /**
      * 리퀘스트 삭제하는 메서드
+     * 
      * @param requestId
      * @author 형민재
      */
-    public void deleteRequest(int requestId){
+    public void deleteRequest(int requestId) {
         String sql = "DELETE FROM request WHERE id = ?";
-        int result = jdbcTemplate.update(sql,requestId);
-        if(result==0){
+        int result = jdbcTemplate.update(sql, requestId);
+        if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
             errorCode.setMessage(REQUEST_NOT_FOUND);
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
@@ -205,7 +210,7 @@ public class RequestRepository {
     /**
      * 테스트용 메서드
      */
-    public void deleteAll(){
+    public void deleteAll() {
         String sql = "DELETE FROM request";
         jdbcTemplate.update(sql);
     }
