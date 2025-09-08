@@ -3,8 +3,10 @@ package com.inha.borrow.backend.controller;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
-import com.inha.borrow.backend.model.entity.request.FindRequest;
-import com.inha.borrow.backend.model.entity.request.SaveRequest;
+import com.inha.borrow.backend.model.dto.response.ApiResponse;
+import com.inha.borrow.backend.model.entity.request.Request;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.service.RequestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +27,13 @@ public class RequestController {
     /**
      * 리퀘스트를 저장하는 메서드
      * 
-     * @param saveRequest
+     * @param saveRequestDto
      * @author 형민재
      */
     @PostMapping()
-    public ResponseEntity<ApiResponse<SaveRequest>> saveRequest(@Valid @RequestBody SaveRequest saveRequest) {
-        SaveRequest result = requestService.saveRequest(saveRequest, saveRequest.getItemId());
+    public ResponseEntity<ApiResponse<Integer>> saveRequest(@AuthenticationPrincipal User user,
+            @Valid @RequestBody SaveRequestDto saveRequestDto) {
+        int result = requestService.saveRequest(user, saveRequestDto, saveRequestDto.getItemId());
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, result));
     }
 
@@ -43,7 +46,8 @@ public class RequestController {
      * @author 형민재
      */
     @PatchMapping("/{request-id}/patch")
-    public ResponseEntity<ApiResponse<SaveRequest>> patchRequest(@AuthenticationPrincipal String borrowerId,
+    public ResponseEntity<ApiResponse<SaveRequestDto>> patchRequest(
+            @AuthenticationPrincipal(expression = "id") String borrowerId,
             @PathVariable("request-id") int requestId, @Valid @RequestBody PatchRequestDto patchRequestDto) {
         requestService.patchRequest(patchRequestDto, requestId, borrowerId);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -57,7 +61,8 @@ public class RequestController {
      * @author 형민재
      */
     @PatchMapping("/{request-id}/cancel")
-    public ResponseEntity<ApiResponse<Void>> cancelRequest(@AuthenticationPrincipal String borrowerId,
+    public ResponseEntity<ApiResponse<Void>> cancelRequest(
+            @AuthenticationPrincipal(expression = "id") String borrowerId,
             @PathVariable("request-id") int requestId) {
         requestService.cancelRequest(requestId, borrowerId);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -78,41 +83,32 @@ public class RequestController {
     }
 
     /**
-     * 리퀘스트를 id로 가져오는 메서드
-     * 
-     * @param id
-     * @author 형민재
-     */
-    @GetMapping("/{request-id}")
-    public ResponseEntity<ApiResponse<FindRequest>> findRequest(@PathVariable("request-id") int id) {
-        FindRequest result = requestService.findById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, result));
-    }
-
-    /**
      * 리퀘스트를 여러 조건으로 가져오는 메서드
      * 
+     * @param user
      * @param borrowerId
      * @param state
      * @param type
      * @author 형민재
      */
-    @GetMapping("/detailrequest")
-    public ResponseEntity<ApiResponse<List<FindRequest>>> findDetailRequest(@RequestParam String borrowerId,
-            @RequestParam String type, @RequestParam String state) {
-        List<FindRequest> result = requestService.findByCondition(borrowerId, type, state);
+    @GetMapping()
+    public ResponseEntity<ApiResponse<List<Request>>> findDetailRequest(@AuthenticationPrincipal User user,
+            @RequestParam String borrowerId, @RequestParam String type, @RequestParam String state) {
+        List<Request> result = requestService.findByCondition(user, borrowerId, type, state);
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, result));
     }
 
     /**
-     * 사용자가 자신이 요청을 리퀘스트 목록을 가져오는 메서드
+     * 사용자가 자신이 요청을 리퀘스트를 가져오는 메서드
      * 
-     * @param borrowerId
+     * @param user
+     * @param requestId
      * @author 형민재
      */
-    @GetMapping("/requestuser")
-    public ResponseEntity<ApiResponse<List<FindRequest>>> findRequestUser(@AuthenticationPrincipal String borrowerId) {
-        List<FindRequest> result = requestService.findRequestUser(borrowerId);
+    @GetMapping("/{request-id}")
+    public ResponseEntity<ApiResponse<Request>> findRequest(@AuthenticationPrincipal User user,
+            @PathVariable("request-id") int requestId) {
+        Request result = requestService.findById(user, requestId);
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, result));
     }
 

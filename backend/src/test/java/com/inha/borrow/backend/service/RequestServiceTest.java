@@ -2,12 +2,14 @@ package com.inha.borrow.backend.service;
 
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
+import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.entity.Item;
-import com.inha.borrow.backend.model.entity.request.FindRequest;
-import com.inha.borrow.backend.model.entity.request.SaveRequest;
+import com.inha.borrow.backend.model.entity.request.Request;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.ItemRepository;
 import com.inha.borrow.backend.repository.RequestRepository;
@@ -16,15 +18,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
+@Transactional
 class RequestServiceTest {
 
     @Autowired
@@ -45,7 +54,8 @@ class RequestServiceTest {
     private int requestId;
     private Item savedItem;
     private BorrowerDto borrowerDto;
-    private SaveRequest saveRequest;
+    private SaveRequestDto saveRequestDto;
+    private Borrower borrower;
 
     @BeforeEach
     void setUp() {
@@ -67,54 +77,81 @@ class RequestServiceTest {
         ItemDto itemDto = new ItemDto("우산", "3층", "123", 123);
         savedItem = itemRepository.save(itemDto);
 
-        saveRequest = SaveRequest.builder()
+        saveRequestDto = SaveRequestDto.builder()
                 .itemId(savedItem.getId())
                 .borrowerId("123")
                 .borrowerAt(Timestamp.valueOf(LocalDateTime.of(2025, 8, 31, 17, 22, 0)))
                 .returnAt(Timestamp.valueOf(LocalDateTime.of(2025, 9, 3, 17, 22, 0)))
                 .type(RequestType.BORROW)
                 .build();
-
-        requestId = requestRepository.saveAndReturnId(saveRequest);
+        List<GrantedAuthority> authorities = List.of(
+                new SimpleGrantedAuthority(Role.BORROWER.name())
+        );
+        borrower = Borrower.builder()
+                .id("123")
+                .password(passwordEncoder.encode("Absssf1@2"))
+                .email("123")
+                .name("123")
+                .phonenumber("123")
+                .studentNumber("123")
+                .accountNumber("123")
+                .refreshToken("123")
+                .authorities(authorities)
+                .build();
+        requestId = requestRepository.save(saveRequestDto);
     }
 
     @Test
     @DisplayName("리퀘스트 저장 성공")
     void saveRequest() {
-        SaveRequest result = requestService.saveRequest(saveRequest, savedItem.getId());
-
-        // 🔽 5. 검증
-        assertThat(result).isNotNull();
-        assertThat(result.getBorrowerId()).isEqualTo(borrowerDto.getId());
+        requestRepository.deleteAll();
+        int requestId = requestService.saveRequest(borrower, saveRequestDto, savedItem.getId());
+        Request result = requestRepository.findById(borrowerDto.getId(), requestId);
+        assertThat(result.getBorrowerAt()).isEqualTo(Timestamp.valueOf(LocalDateTime.of(2025, 8, 31, 17, 22, 0)));
     }
+
 
     @Test
     @DisplayName("리퀘스트 조회 성공")
     void findById() {
-        FindRequest result = requestService.findById(requestId);
+        Request result = requestService.findById(borrower, requestId);
         assertThat(result.getBorrowerId()).isEqualTo("123");
     }
+    @Test
+    @DisplayName("리퀘스트 조회 (실패 권한 없음)")
+    void findByIdFailNotAllowed() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        borrower.setAuthorities(authorities);
+        assertThatThrownBy(()->requestService.findById(borrower,requestId))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
 
     @Test
     @DisplayName("조건 조회 성공")
     void findByCondition() {
-        List<FindRequest> result = requestService.findByCondition("123", "BORROW", "PENDING");
+        List<Request> result = requestService.findByCondition(borrower,borrowerDto.getId() ,"BORROW", "PENDING");
         assertThat(result).hasSize(1);
     }
 
     @Test
+    @DisplayName("조건 조회 (실패 권한 없음)")
+    void findByConditionFailNotAllowed() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        borrower.setAuthorities(authorities);
+        assertThatThrownBy(()->requestService.findByCondition(borrower,borrowerDto.getId() ,"BORROW", "PENDING"))
+                .isInstanceOf(AccessDeniedException.class);
+
+    }
+
+
+    @Test
     @DisplayName("전체 조회 성공")
     void findAll() {
-        List<FindRequest> result = requestService.findAll();
+        List<Request> result = requestService.findAll();
         assertThat(result).isNotEmpty();
     }
 
-    @Test
-    @DisplayName("사용자 리퀘스트 조회 성공")
-    void findRequestUser() {
-        List<FindRequest> result = requestService.findRequestUser("123");
-        assertThat(result).isNotEmpty();
-    }
 
     @Test
     @DisplayName("리퀘스트 수정 성공")
@@ -127,7 +164,7 @@ class RequestServiceTest {
 
         requestService.patchRequest(dto, requestId, "123");
 
-        FindRequest result = requestService.findById(requestId);
+        Request result = requestService.findById(borrower,requestId);
         assertThat(result.getBorrowerAt().toLocalDateTime().withNano(0)).isEqualTo(dto.getBorrowerAt().toLocalDateTime().withNano(0));
     }
 
@@ -135,7 +172,7 @@ class RequestServiceTest {
     @DisplayName("리퀘스트 취소 성공")
     void cancelRequest() {
         requestService.cancelRequest(requestId, "123");
-        FindRequest result = requestService.findById(requestId);
+        Request result = requestService.findById(borrower,requestId);
         assertThat(result.getCancel()).isTrue();
     }
 
@@ -143,7 +180,7 @@ class RequestServiceTest {
     @DisplayName("리퀘스트 상태 평가 성공")
     void evaluationRequest() {
         requestService.evaluationRequest(RequestState.ASSIGNED, requestId);
-        FindRequest result = requestService.findById(requestId);
+        Request result = requestService.findById(borrower, requestId);
         assertThat(result.getState()).isEqualTo(RequestState.ASSIGNED);
     }
 }

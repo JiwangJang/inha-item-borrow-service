@@ -53,12 +53,13 @@ public class SignUpRequestController {
      * 
      * @param param
      * @return
+     * @author 장지왕
      */
     @GetMapping("/{signup-request-id}")
     public ResponseEntity<ApiResponse<SignUpForm>> findBySignUpRequestId(
             @AuthenticationPrincipal Admin admin,
             @PathVariable("signup-request-id") String signUpRequestId,
-            @RequestBody(required = false) SignUpRequestPasswordDto signUpRequestPasswordDto) {
+            @RequestBody SignUpRequestPasswordDto signUpRequestPasswordDto) {
         SignUpForm signUpForm = signUpRequestService.findById(admin, signUpRequestId, signUpRequestPasswordDto);
         ApiResponse<SignUpForm> apiResponse = new ApiResponse<SignUpForm>(true, signUpForm);
         return ResponseEntity.ok(apiResponse);
