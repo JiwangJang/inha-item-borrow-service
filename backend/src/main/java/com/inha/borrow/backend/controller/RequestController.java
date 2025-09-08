@@ -6,6 +6,7 @@ import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.dto.response.ApiResponse;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.service.RequestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,9 @@ public class RequestController {
      * @author 형민재
      */
     @PostMapping()
-    public ResponseEntity<ApiResponse<SaveRequestDto>> saveRequest(@Valid @RequestBody SaveRequestDto saveRequestDto){
-        SaveRequestDto result = requestService.saveRequest(saveRequestDto, saveRequestDto.getItemId());
+    public ResponseEntity<ApiResponse<Integer>> saveRequest(@AuthenticationPrincipal User user, @Valid @RequestBody SaveRequestDto saveRequestDto){
+        saveRequestDto.setBorrowerId(user.getId());
+        int result = requestService.saveRequest(user,saveRequestDto, saveRequestDto.getItemId());
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true,result));
     }
 
@@ -73,25 +75,27 @@ public class RequestController {
 
     /**
      * 리퀘스트를 여러 조건으로 가져오는 메서드
+     * @param user
      * @param borrowerId
      * @param state
      * @param type
      * @author 형민재
      */
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<Request>>> findDetailRequest(@RequestParam String borrowerId, @RequestParam String type, @RequestParam String state) {
-        List<Request> result = requestService.findByCondition(borrowerId, type, state);
+    public ResponseEntity<ApiResponse<List<Request>>> findDetailRequest(@AuthenticationPrincipal User user, @RequestParam String borrowerId, @RequestParam String type, @RequestParam String state) {
+        List<Request> result = requestService.findByCondition(user,borrowerId, type, state);
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, result));
     }
 
     /**
      * 사용자가 자신이 요청을 리퀘스트 목록을 가져오는 메서드
-     * @param borrowerId
+     * @param user
+     * @param requestId
      * @author 형민재
      */
     @GetMapping("/{request-id}")
-    public ResponseEntity<ApiResponse<List<Request>>> findRequestUser(@AuthenticationPrincipal String borrowerId){
-        List<Request> result = requestService.findRequestUser(borrowerId);
+    public ResponseEntity<ApiResponse<Request>> findRequest(@AuthenticationPrincipal User user, @PathVariable("request-id")int requestId){
+        Request result = requestService.findById(user,requestId);
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true,result));
     }
 

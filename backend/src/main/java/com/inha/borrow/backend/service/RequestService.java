@@ -1,13 +1,18 @@
 package com.inha.borrow.backend.service;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.enums.RequestState;
+import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 
 
@@ -27,7 +32,8 @@ public class RequestService {
      * @param saveRequestDto
      * @author 형민재
      */
-    public SaveRequestDto saveRequest(SaveRequestDto saveRequestDto, int itemId){
+    public int saveRequest(User user,SaveRequestDto saveRequestDto, int itemId){
+        saveRequestDto.setBorrowerId(user.getId());
         itemService.updateState(ItemState.REVIEWING,itemId);
        return requestRepository.save(saveRequestDto);
     }
@@ -45,8 +51,23 @@ public class RequestService {
      * @param requestId
      * @author 형민재
      */
-    public Request findById(int requestId){
-        return requestRepository.findById(requestId);
+    public Request findById(User user,int requestId){
+        boolean isBorrower = user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals(Role.BORROWER.name()));
+        boolean isAdmin = user.getAuthorities().stream()
+                .anyMatch(auth ->
+                        auth.getAuthority().equals(Role.DIVISION_MEMBER.name()) ||
+                        auth.getAuthority().equals(Role.DIVISION_HEAD.name()) ||
+                        auth.getAuthority().equals(Role.VICE_PRESIDENT.name()) ||
+                        auth.getAuthority().equals(Role.PRESIDENT.name()));
+        if(isBorrower){
+            return requestRepository.findById(user.getId(),requestId);
+        }
+        if(isAdmin){
+            return requestRepository.findById(null,requestId);
+        }
+        ApiErrorCode errorCode = ApiErrorCode.NOT_ALLOWED;
+        throw new AccessDeniedException(errorCode.getMessage());
     }
 
     /**
@@ -56,18 +77,24 @@ public class RequestService {
      * @param type
      * @author 형민재
      */
-    public List<Request> findByCondition(String borrowerId, String type, String state){
-        return requestRepository.findByCondition(borrowerId,type,state);
+    public List<Request> findByCondition(User user, String borrowerId, String type, String state) {
+        boolean isBorrower = user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals(Role.BORROWER.name()));
+        boolean isAdmin = user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals(Role.DIVISION_MEMBER.name()) ||
+                        auth.getAuthority().equals(Role.DIVISION_HEAD.name()) ||
+                        auth.getAuthority().equals(Role.VICE_PRESIDENT.name()) ||
+                        auth.getAuthority().equals(Role.PRESIDENT.name()));
+        if (isBorrower) {
+            return requestRepository.findByCondition(user.getId(), type, state);
+        }
+        if (isAdmin) {
+            return requestRepository.findByCondition(borrowerId, type, state);
+        }
+        ApiErrorCode errorCode = ApiErrorCode.NOT_ALLOWED;
+        throw new AccessDeniedException(errorCode.getMessage());
     }
 
-    /**
-     * 사용자가 자신이 요청한 리퀘스트를 가져오는 메서드
-     * @param borrowerId
-     * @author 형민재
-     */
-    public List<Request> findRequestUser(String borrowerId){
-        return requestRepository.findRequestUser(borrowerId);
-    }
 
     /**
      * ID로 리퀘스트를 수정하는 메서드
