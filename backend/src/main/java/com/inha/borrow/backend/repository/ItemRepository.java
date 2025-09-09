@@ -117,7 +117,8 @@ public class ItemRepository {
                             AND request.type = 'BORROW'
                             AND request.state = 'PERMIT'
                             AND request.cancel = false
-                        WHERE item.id = ? AND item.state != 'DELETED';
+                        WHERE item.id = ? AND item.state != 'DELETED'
+                        ORDER BY request.created_at DESC LIMIT 1;
                     """;
             return jdbcTemplate.queryForObject(sql, (ResultSet resultSet, int index) -> {
                 return BorrowedItemDto.builder()

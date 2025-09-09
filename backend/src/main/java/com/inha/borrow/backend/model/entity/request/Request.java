@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 public class Request {
     private int id;
     private int itemId;
+    private String manager;
     private String borrowerId;
     private Timestamp createdAt;
     private Timestamp returnAt;

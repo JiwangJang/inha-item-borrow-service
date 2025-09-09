@@ -85,8 +85,7 @@ class RequestServiceTest {
                 .type(RequestType.BORROW)
                 .build();
         List<GrantedAuthority> authorities = List.of(
-                new SimpleGrantedAuthority(Role.BORROWER.name())
-        );
+                new SimpleGrantedAuthority(Role.BORROWER.name()));
         borrower = Borrower.builder()
                 .id("123")
                 .password(passwordEncoder.encode("Absssf1@2"))
@@ -110,27 +109,26 @@ class RequestServiceTest {
         assertThat(result.getBorrowerAt()).isEqualTo(Timestamp.valueOf(LocalDateTime.of(2025, 8, 31, 17, 22, 0)));
     }
 
-
     @Test
     @DisplayName("리퀘스트 조회 성공")
     void findById() {
         Request result = requestService.findById(borrower, requestId);
         assertThat(result.getBorrowerId()).isEqualTo("123");
     }
+
     @Test
     @DisplayName("리퀘스트 조회 (실패 권한 없음)")
     void findByIdFailNotAllowed() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         borrower.setAuthorities(authorities);
-        assertThatThrownBy(()->requestService.findById(borrower,requestId))
+        assertThatThrownBy(() -> requestService.findById(borrower, requestId))
                 .isInstanceOf(AccessDeniedException.class);
     }
-
 
     @Test
     @DisplayName("조건 조회 성공")
     void findByCondition() {
-        List<Request> result = requestService.findByCondition(borrower,borrowerDto.getId() ,"BORROW", "PENDING");
+        List<Request> result = requestService.findByCondition(borrower, borrowerDto.getId(), "BORROW", "PENDING");
         assertThat(result).hasSize(1);
     }
 
@@ -139,11 +137,10 @@ class RequestServiceTest {
     void findByConditionFailNotAllowed() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         borrower.setAuthorities(authorities);
-        assertThatThrownBy(()->requestService.findByCondition(borrower,borrowerDto.getId() ,"BORROW", "PENDING"))
+        assertThatThrownBy(() -> requestService.findByCondition(borrower, borrowerDto.getId(), "BORROW", "PENDING"))
                 .isInstanceOf(AccessDeniedException.class);
 
     }
-
 
     @Test
     @DisplayName("전체 조회 성공")
@@ -152,27 +149,26 @@ class RequestServiceTest {
         assertThat(result).isNotEmpty();
     }
 
-
     @Test
     @DisplayName("리퀘스트 수정 성공")
     void patchRequest() {
         PatchRequestDto dto = PatchRequestDto.builder()
                 .borrowerAt(Timestamp.valueOf(LocalDateTime.of(2025, 9, 1, 10, 0)))
                 .returnAt(Timestamp.valueOf(LocalDateTime.of(2025, 9, 4, 10, 0)))
-                .type(RequestType.BORROW)
                 .build();
 
         requestService.patchRequest(dto, requestId, "123");
 
-        Request result = requestService.findById(borrower,requestId);
-        assertThat(result.getBorrowerAt().toLocalDateTime().withNano(0)).isEqualTo(dto.getBorrowerAt().toLocalDateTime().withNano(0));
+        Request result = requestService.findById(borrower, requestId);
+        assertThat(result.getBorrowerAt().toLocalDateTime().withNano(0))
+                .isEqualTo(dto.getBorrowerAt().toLocalDateTime().withNano(0));
     }
 
     @Test
     @DisplayName("리퀘스트 취소 성공")
     void cancelRequest() {
         requestService.cancelRequest(requestId, "123");
-        Request result = requestService.findById(borrower,requestId);
+        Request result = requestService.findById(borrower, requestId);
         assertThat(result.getCancel()).isTrue();
     }
 
