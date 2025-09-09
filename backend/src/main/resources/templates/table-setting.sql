@@ -98,6 +98,6 @@ create table response(
     request_id int NOT NULL,
     foreign key(request_id) references request(id),
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    reject_reason varchar(100) NOT NULL,
+    reject_reason varchar(100),
     type char(6) NOT NULL
 );

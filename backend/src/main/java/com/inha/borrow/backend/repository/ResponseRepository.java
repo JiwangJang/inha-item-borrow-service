@@ -31,7 +31,7 @@ public class ResponseRepository {
             ps.setString(2, dto.getRejectReason());
             ps.setString(3, dto.getType().name());
             return ps;
-        });
+        }, keyHolder);
 
         int id = keyHolder.getKey().intValue();
         return dto.getResponse(id);

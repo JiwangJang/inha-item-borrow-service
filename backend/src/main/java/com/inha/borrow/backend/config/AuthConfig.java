@@ -156,6 +156,9 @@ public class AuthConfig {
 							.requestMatchers("/requests/*/evaluate", "/requests/detailrequest", "/requests/*")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							//
+							// /responses 관련 인증설정
+							.requestMatchers("/responses", "/responses/*")
+							.hasAuthority(Role.DIVISION_MEMBER.name())
 							// 이외의 경로는 무조건 인증 필요함
 							.anyRequest().authenticated();
 
