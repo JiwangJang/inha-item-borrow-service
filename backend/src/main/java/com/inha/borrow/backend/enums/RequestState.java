@@ -4,7 +4,5 @@ public enum RequestState {
     PENDING,
     ASSIGNED,
     REJECT,
-    PERMIT,
-    DONE
-
+    PERMIT
 }

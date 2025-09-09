@@ -1,8 +1,79 @@
-2025-09-08T19:51:44.129+09:00  INFO 57759 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 57759 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-08T19:51:44.130+09:00  INFO 57759 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
-2025-09-08T19:51:44.357+09:00  INFO 57759 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.384 seconds (process running for 0.823)
-2025-09-08T19:51:44.367+09:00  INFO 57759 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-08T19:51:44.579+09:00  INFO 57759 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1de0641b
-2025-09-08T19:51:44.580+09:00  INFO 57759 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-08T19:51:45.071+09:00  INFO 57759 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-08T19:51:45.079+09:00  INFO 57759 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-09T19:33:33.195+09:00  INFO 48868 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Starting RequestServiceTest using Java 21.0.8 with PID 48868 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-09T19:33:33.197+09:00  INFO 48868 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : No active profile set, falling back to 1 default profile: "default"
+2025-09-09T19:33:33.613+09:00  INFO 48868 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-09T19:33:33.820+09:00  INFO 48868 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2726a511
+2025-09-09T19:33:33.821+09:00  INFO 48868 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-09T19:33:34.166+09:00  INFO 48868 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2025-09-09T19:33:34.167+09:00  WARN 48868 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
+2025-09-09T19:33:34.198+09:00  WARN 48868 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests, /request/requestuser, /requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
+2025-09-09T19:33:34.210+09:00  WARN 48868 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
+
+********************************************************************
+**********        Security debugging is enabled.       *************
+**********    This may include sensitive information.  *************
+**********      Do not use in a production system!     *************
+********************************************************************
+
+
+2025-09-09T19:33:34.342+09:00  INFO 48868 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Started RequestServiceTest in 1.288 seconds (process running for 1.701)
+2025-09-09T19:33:34.342+09:00  INFO 48868 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
+2025-09-09T19:33:36.128+09:00  INFO 48868 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-09T19:33:36.130+09:00  INFO 48868 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-09T19:36:15.598+09:00  INFO 49416 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Starting RequestServiceTest using Java 21.0.8 with PID 49416 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-09T19:36:15.599+09:00  INFO 49416 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : No active profile set, falling back to 1 default profile: "default"
+2025-09-09T19:36:15.970+09:00  INFO 49416 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-09T19:36:16.126+09:00  INFO 49416 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@72c9ebfa
+2025-09-09T19:36:16.127+09:00  INFO 49416 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-09T19:36:16.429+09:00  INFO 49416 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2025-09-09T19:36:16.430+09:00  WARN 49416 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
+2025-09-09T19:36:16.460+09:00  WARN 49416 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests, /request/requestuser, /requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
+2025-09-09T19:36:16.471+09:00  WARN 49416 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
+
+********************************************************************
+**********        Security debugging is enabled.       *************
+**********    This may include sensitive information.  *************
+**********      Do not use in a production system!     *************
+********************************************************************
+
+
+2025-09-09T19:36:16.573+09:00  INFO 49416 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Started RequestServiceTest in 1.108 seconds (process running for 1.503)
+2025-09-09T19:36:16.574+09:00  INFO 49416 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
+2025-09-09T19:36:18.181+09:00  INFO 49416 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-09T19:36:18.183+09:00  INFO 49416 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-09T19:38:05.567+09:00  INFO 49822 --- [backend] [main] c.i.b.backend.service.ItemServiceTest    : Starting ItemServiceTest using Java 21.0.8 with PID 49822 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-09T19:38:05.568+09:00  INFO 49822 --- [backend] [main] c.i.b.backend.service.ItemServiceTest    : No active profile set, falling back to 1 default profile: "default"
+2025-09-09T19:38:05.934+09:00  INFO 49822 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-09T19:38:06.094+09:00  INFO 49822 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@62f9c790
+2025-09-09T19:38:06.094+09:00  INFO 49822 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-09T19:38:06.384+09:00  INFO 49822 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2025-09-09T19:38:06.385+09:00  WARN 49822 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
+2025-09-09T19:38:06.415+09:00  WARN 49822 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests, /request/requestuser, /requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
+2025-09-09T19:38:06.426+09:00  WARN 49822 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
+
+********************************************************************
+**********        Security debugging is enabled.       *************
+**********    This may include sensitive information.  *************
+**********      Do not use in a production system!     *************
+********************************************************************
+
+
+2025-09-09T19:38:06.533+09:00  INFO 49822 --- [backend] [main] c.i.b.backend.service.ItemServiceTest    : Started ItemServiceTest in 1.099 seconds (process running for 1.491)
+2025-09-09T19:38:06.533+09:00  INFO 49822 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
+2025-09-09T19:38:06.955+09:00  INFO 49822 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-09T19:38:06.957+09:00  INFO 49822 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-09T19:38:58.473+09:00  INFO 49978 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : Starting ItemRepositoryTest using Java 21.0.8 with PID 49978 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-09T19:38:58.474+09:00  INFO 49978 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : No active profile set, falling back to 1 default profile: "default"
+2025-09-09T19:38:58.727+09:00  INFO 49978 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : Started ItemRepositoryTest in 0.397 seconds (process running for 0.75)
+2025-09-09T19:38:58.734+09:00  INFO 49978 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-09T19:38:58.888+09:00  INFO 49978 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@49f3ff41
+2025-09-09T19:38:58.889+09:00  INFO 49978 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-09T19:38:59.344+09:00  INFO 49978 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-09T19:38:59.386+09:00  INFO 49978 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-09T19:43:35.281+09:00  INFO 50787 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : Starting ItemRepositoryTest using Java 21.0.8 with PID 50787 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-09T19:43:35.282+09:00  INFO 50787 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : No active profile set, falling back to 1 default profile: "default"
+2025-09-09T19:43:35.492+09:00  INFO 50787 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : Started ItemRepositoryTest in 0.357 seconds (process running for 0.706)
+2025-09-09T19:43:35.499+09:00  INFO 50787 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-09T19:43:35.655+09:00  INFO 50787 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6f5e16cf
+2025-09-09T19:43:35.656+09:00  INFO 50787 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-09T19:43:36.012+09:00  INFO 50787 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-09T19:43:36.025+09:00  INFO 50787 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
