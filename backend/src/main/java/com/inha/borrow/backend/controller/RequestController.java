@@ -5,6 +5,7 @@ import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.service.RequestService;
 import jakarta.validation.Valid;
@@ -79,6 +80,13 @@ public class RequestController {
             @RequestBody RequestState state) {
         requestService.evaluationRequest(state, requestId);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PatchMapping("/{request-id}/manage")
+    public ResponseEntity<Void> manageRequest(@AuthenticationPrincipal Admin admin,
+            @PathVariable("request-id") String requestId) {
+        requestService.manageRequest(admin.getId(), requestId);
+        return ResponseEntity.noContent().build();
     }
 
     /**

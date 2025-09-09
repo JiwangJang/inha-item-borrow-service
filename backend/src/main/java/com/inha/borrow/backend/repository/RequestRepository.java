@@ -190,6 +190,15 @@ public class RequestRepository {
         }
     }
 
+    public void manageRequest(String adminId, String requestId) {
+        String sql = "UPDATE request SET state = ASSIGNED, manager = ? WHERE id = ?;";
+        int result = jdbcTemplate.update(sql, adminId, requestId);
+        if (result == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+    }
+
     public Request findManagerAndItemIdById(int requestId) {
         String sql = "SELECT manager, item_id, type, state FROM request WHERE id = ?;";
         try {

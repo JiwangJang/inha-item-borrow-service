@@ -110,4 +110,8 @@ public class RequestService {
     public void evaluationRequest(RequestState state, int requestId) {
         requestRepository.evaluationRequest(state, requestId);
     }
+
+    public void manageRequest(String adminId, String requestId) {
+        requestRepository.manageRequest(adminId, requestId);
+    }
 }
