@@ -2,13 +2,17 @@ package com.inha.borrow.backend.repository;
 
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
+import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.user.admin.SaveAdminDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+import com.inha.borrow.backend.service.JwtTokenService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,37 +20,57 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @JdbcTest
-@Import({ RequestRepository.class, ItemRepository.class, BorrowerRepository.class })
+@Import({ RequestRepository.class, ItemRepository.class, BorrowerRepository.class, AdminRepository.class })
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@Transactional
 class RequestRepositoryTest {
-
-    private RequestRepository requestRepository;
-    private ItemRepository itemRepository;
-    private BorrowerRepository borrowerRepository;
+    @Autowired
+    private AdminRepository adminRepository;
 
     @Autowired
-    public RequestRepositoryTest(RequestRepository requestRepository, ItemRepository itemRepository,
-            BorrowerRepository borrowerRepository, JdbcTemplate jdbcTemplate) {
-        this.requestRepository = requestRepository;
-        this.itemRepository = itemRepository;
-        this.borrowerRepository = borrowerRepository;
+    private RequestRepository requestRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
+
+    @Autowired
+    private BorrowerRepository borrowerRepository;
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        JwtTokenService jwtTokenService() {
+            return new JwtTokenService() {
+                @Override
+                public String createToken(String id) {
+                    return "test-token-" + id;
+                }
+            };
+        }
     }
 
     private SaveRequestDto saveRequestDto;
     private ItemDto itemDto;
     private BorrowerDto borrowerDto;
+    private int requestId;
 
     @BeforeEach
     void setUp() {
@@ -71,6 +95,16 @@ class RequestRepositoryTest {
                 .refreshToken("123")
                 .build();
 
+        SaveAdminDto saveAdminDto = SaveAdminDto.builder()
+                .id("testAdmin")
+                .name("adminName")
+                .position(Role.DIVISION_MEMBER)
+                .phonenumber("010-0000-0000")
+                .email("asd@naver.com")
+                .division("TEST")
+                .build();
+        adminRepository.saveAdmin(saveAdminDto);
+
         Item itemId = itemRepository.save(itemDto);
         borrowerRepository.save(borrowerDto);
         saveRequestDto = new SaveRequestDto(
@@ -79,7 +113,7 @@ class RequestRepositoryTest {
                 Timestamp.valueOf(LocalDateTime.now().plusDays(7)),
                 Timestamp.valueOf(LocalDateTime.now().plusDays(7)),
                 RequestType.BORROW);
-        requestRepository.save(saveRequestDto);
+        requestId = requestRepository.save(saveRequestDto);
     }
 
     @Test
@@ -191,7 +225,6 @@ class RequestRepositoryTest {
     void evaluationRequestFailNotFoundBorrowerId() {
         assertThatThrownBy(() -> requestRepository.evaluationRequest(RequestState.ASSIGNED, 3))
                 .isInstanceOf(ResourceNotFoundException.class);
-
     }
 
     @Test
@@ -202,7 +235,6 @@ class RequestRepositoryTest {
         requestRepository.deleteRequest(requestId);
         assertThatThrownBy(() -> requestRepository.findAll())
                 .isInstanceOf(ResourceNotFoundException.class);
-
     }
 
     @Test
@@ -210,6 +242,30 @@ class RequestRepositoryTest {
     void deleteRequestFailNotFoundBorrowerId() {
         assertThatThrownBy(() -> requestRepository.deleteRequest(3))
                 .isInstanceOf(ResourceNotFoundException.class);
+    }
 
+    @Test
+    @DisplayName("대여요청에 대한 담당자 지정 메서드 테스트(성공)")
+    void manageRequestSuccessTest() {
+        // given
+        String adminId = "testAdmin";
+        // when
+        requestRepository.manageRequest(adminId, String.valueOf(requestId));
+        Request request = requestRepository.findById(null, requestId);
+        // then
+        assertThat(request.getManager()).isEqualTo(adminId);
+        assertThat(request.getState()).isEqualTo(RequestState.ASSIGNED);
+    }
+
+    @Test
+    @DisplayName("대여요청에 대한 담당자 지정 메서드 테스트(실패)")
+    void manageRequestFailTest() {
+        // given
+        String adminId = "testAdmin";
+        // when
+        // then
+        assertThrows(ResourceNotFoundException.class, () -> {
+            requestRepository.manageRequest(adminId, String.valueOf(123));
+        });
     }
 }

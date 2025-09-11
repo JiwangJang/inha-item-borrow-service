@@ -5,11 +5,13 @@ import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
+import com.inha.borrow.backend.model.dto.user.admin.SaveAdminDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
+import com.inha.borrow.backend.repository.AdminRepository;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.ItemRepository;
 import com.inha.borrow.backend.repository.RequestRepository;
@@ -46,10 +48,13 @@ class RequestServiceTest {
     private ItemRepository itemRepository;
 
     @Autowired
-    BorrowerRepository borrowerRepository;
+    private BorrowerRepository borrowerRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AdminRepository adminRepository;
 
     private int requestId;
     private Item savedItem;
@@ -59,9 +64,12 @@ class RequestServiceTest {
 
     @BeforeEach
     void setUp() {
+        // 전체초기화
         requestRepository.deleteAll();
         borrowerRepository.deleteAll();
         itemRepository.deleteAll();
+
+        // 대여자 생성
         borrowerDto = BorrowerDto.builder()
                 .id("123")
                 .password(passwordEncoder.encode("Absssf1@2"))
@@ -74,9 +82,11 @@ class RequestServiceTest {
                 .build();
         borrowerRepository.save(borrowerDto);
 
+        // 아이템 생성
         ItemDto itemDto = new ItemDto("우산", "3층", "123", 123);
         savedItem = itemRepository.save(itemDto);
 
+        // 요청생성
         saveRequestDto = SaveRequestDto.builder()
                 .itemId(savedItem.getId())
                 .borrowerId("123")
@@ -84,6 +94,8 @@ class RequestServiceTest {
                 .returnAt(Timestamp.valueOf(LocalDateTime.of(2025, 9, 3, 17, 22, 0)))
                 .type(RequestType.BORROW)
                 .build();
+
+        // 전역 borrower 변수 설정
         List<GrantedAuthority> authorities = List.of(
                 new SimpleGrantedAuthority(Role.BORROWER.name()));
         borrower = Borrower.builder()
@@ -98,6 +110,17 @@ class RequestServiceTest {
                 .authorities(authorities)
                 .build();
         requestId = requestRepository.save(saveRequestDto);
+
+        // 관리자 설정
+        SaveAdminDto saveAdminDto = SaveAdminDto.builder()
+                .id("testAdmin")
+                .name("test")
+                .position(Role.DIVISION_MEMBER)
+                .phonenumber("010-0000-0000")
+                .email("test@test")
+                .division("TEST")
+                .build();
+        adminRepository.saveAdmin(saveAdminDto);
     }
 
     @Test
@@ -178,5 +201,18 @@ class RequestServiceTest {
         requestService.evaluationRequest(RequestState.ASSIGNED, requestId);
         Request result = requestService.findById(borrower, requestId);
         assertThat(result.getState()).isEqualTo(RequestState.ASSIGNED);
+    }
+
+    @Test
+    @DisplayName("요청 담당자 지정 테스트")
+    void manageRequestTest() {
+        // given
+        String adminId = "testAdmin";
+        // when
+        requestService.manageRequest(adminId, String.valueOf(requestId));
+        Request request = requestService.findById(borrower, requestId);
+        // then
+        assertThat(request.getManager()).isEqualTo(adminId);
+        assertThat(request.getState()).isEqualTo(RequestState.ASSIGNED);
     }
 }

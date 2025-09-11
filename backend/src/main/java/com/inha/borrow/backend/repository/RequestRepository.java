@@ -190,8 +190,15 @@ public class RequestRepository {
         }
     }
 
+    /**
+     * 담당자를 지정하는 메서드
+     * 
+     * @param adminId
+     * @param requestId
+     * @author 장지왕
+     */
     public void manageRequest(String adminId, String requestId) {
-        String sql = "UPDATE request SET state = ASSIGNED, manager = ? WHERE id = ?;";
+        String sql = "UPDATE request SET state = 'ASSIGNED', manager = ? WHERE id = ?;";
         int result = jdbcTemplate.update(sql, adminId, requestId);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;

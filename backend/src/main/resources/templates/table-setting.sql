@@ -35,7 +35,7 @@ CREATE TABLE admin(
     division varchar(20) NOT NULL,
     foreign key (position) references admin_role(role),
     foreign key (division) references division(code),
-    refresh_token varchar(50) NOT NULL,
+    refresh_token varchar(255) NOT NULL,
     is_delete boolean default false
 );
 

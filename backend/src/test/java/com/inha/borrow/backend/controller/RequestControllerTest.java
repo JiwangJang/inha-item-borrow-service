@@ -2,10 +2,14 @@ package com.inha.borrow.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.config.AuthConfig;
-
+import com.inha.borrow.backend.handler.GlobalErrorHandler;
+import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
+import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.enums.Role;
+import com.inha.borrow.backend.forAuthTest.admin.WithMockAdmin;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
@@ -25,6 +29,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Collections;
@@ -39,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RequestController.class)
-@Import(AuthConfig.class)
+@Import({ AuthConfig.class, GlobalErrorHandler.class })
 class RequestControllerTest {
 
         @Autowired
@@ -51,10 +56,15 @@ class RequestControllerTest {
         @MockitoBean
         private RequestService requestService;
 
+        @MockitoBean
+        private AdminAuthenticationProvider adminAuthenticationProvider;
+
+        @MockitoBean
+        private BorrowerAuthenticationProvider borrowerAuthenticationProvider;
 
         private SaveRequestDto saveRequestDto;
         private PatchRequestDto patchRequestDto;
-        private Request findRequest;
+        private Request request;
         private User testUser;
 
         private static final String TEST_USER_ID = "borrower1";
@@ -100,20 +110,18 @@ class RequestControllerTest {
                 patchRequestDto = PatchRequestDto.builder()
                                 .returnAt(Timestamp.valueOf(LocalDateTime.now().plusDays(14)))
                                 .borrowerAt(Timestamp.valueOf(LocalDateTime.now()))
-                                .type(RequestType.BORROW)
                                 .build();
-
-                findRequest = new Request(
-                                1,
-                                1,
-                                TEST_USER_ID,
-                                Timestamp.valueOf(LocalDateTime.now()),
-                                Timestamp.valueOf(LocalDateTime.now().plusDays(7)),
-                                Timestamp.valueOf(LocalDateTime.now()),
-                                RequestType.BORROW,
-                                RequestState.PENDING,
-                                false);
-
+                request = Request.builder()
+                                .id(1)
+                                .itemId(1)
+                                .manager("test")
+                                .borrowerId("test")
+                                .createdAt(Timestamp.from(Instant.now()))
+                                .returnAt(Timestamp.valueOf(LocalDateTime.now().plusDays(14)))
+                                .borrowerAt(Timestamp.from(Instant.now()))
+                                .type(RequestType.BORROW)
+                                .state(RequestState.PENDING)
+                                .build();
         }
 
         @Test
@@ -176,17 +184,17 @@ class RequestControllerTest {
 
         @Test
         @DisplayName("ID로 리퀘스트 조회 성공")
-        void findRequestByIdSuccess() throws Exception {
+        void requestByIdSuccess() throws Exception {
                 // given: 서비스 메서드가 Request 객체를 반환하도록 Mocking
-                given(requestService.findById(any(User.class), anyInt())).willReturn(findRequest);
+                given(requestService.findById(any(User.class), anyInt())).willReturn(request);
 
                 // when & then: GET 요청을 보내고 응답 검증
                 mockMvc.perform(get("/requests/{request-id}", 1)
                                 .with(user(testUser)))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.success").value(true))
-                                .andExpect(jsonPath("$.data.id").value(findRequest.getId()))
-                                .andExpect(jsonPath("$.data.borrowerId").value(findRequest.getBorrowerId()));
+                                .andExpect(jsonPath("$.data.id").value(request.getId()))
+                                .andExpect(jsonPath("$.data.borrowerId").value(request.getBorrowerId()));
         }
 
         @Test
@@ -194,7 +202,7 @@ class RequestControllerTest {
         void findDetailRequestSuccess() throws Exception {
                 // given: 서비스 메서드가 리스트를 반환하도록 Mocking
                 given(requestService.findByCondition(any(User.class), anyString(), anyString(), anyString()))
-                                .willReturn(List.of(findRequest));
+                                .willReturn(List.of(request));
 
                 // when & then: GET 요청을 쿼리 파라미터와 함께 보내고 응답 검증
                 mockMvc.perform(get("/requests")
@@ -206,5 +214,47 @@ class RequestControllerTest {
                                 .andExpect(jsonPath("$.success").value(true))
                                 .andExpect(jsonPath("$.data.size()").value(1))
                                 .andExpect(jsonPath("$.data[0].borrowerId").value(TEST_USER_ID));
+        }
+
+        @Test
+        @DisplayName("대여요청 담당자 지정 성공")
+        @WithMockAdmin
+        void manageRequestSuccess() throws Exception {
+                // given
+                doNothing().when(requestService).manageRequest(anyString(), anyString());
+
+                // when & then
+                mockMvc.perform(patch("/requests/{request-id}/manage", "1"))
+                                .andExpect(status().isNoContent());
+        }
+
+        @Test
+        @DisplayName("대여자 또는 일반사용자는 담당자 지정을 시도하면 403")
+        void manageRequestForbiddenForBorrower() throws Exception {
+                mockMvc.perform(patch("/requests/{request-id}/manage", "1")
+                                .with(csrf())
+                                .with(user(TEST_USER_ID).authorities(new SimpleGrantedAuthority("ROLE_BORROWER"))))
+                                .andExpect(status().isForbidden());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 요청에 대해 담당자 지정시 400 반환")
+        @WithMockAdmin
+        void manageRequestNotFound() throws Exception {
+                org.mockito.Mockito.doThrow(new com.inha.borrow.backend.model.exception.ResourceNotFoundException(
+                                ApiErrorCode.REQUEST_NOT_FOUND.name(),
+                                ApiErrorCode.REQUEST_NOT_FOUND.getMessage()))
+                                .when(requestService)
+                                .manageRequest(anyString(), org.mockito.ArgumentMatchers.eq("999"));
+
+                mockMvc.perform(patch("/requests/{request-id}/manage", "999"))
+                                .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("비인증 사용자는 담당자 지정을 시도하면 401")
+        void manageRequestUnauthorizedForAnonymous() throws Exception {
+                mockMvc.perform(patch("/requests/{request-id}/manage", "1"))
+                                .andExpect(status().isUnauthorized());
         }
 }

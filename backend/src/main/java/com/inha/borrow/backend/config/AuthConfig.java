@@ -150,11 +150,11 @@ public class AuthConfig {
 							.requestMatchers("/requests", "/request/requestuser", "/requests/*/patch",
 									"requests/*/cancel")
 							.hasAnyRole(Role.BORROWER.name())
-							// 대여요청의 상태를 수정하는 경로는 학생회 임원만 가능하다
-							// 대여요청의 목록을 여러 조건을 걸어서 가져오는 경로는 학생회 임원만 가능하다
-							// 다른 사람의 대여요청 단건조회는 학생회 임원만 가능하다
-							.requestMatchers("/requests/*/evaluate", "/requests/detailrequest", "/requests/*")
-							.hasAuthority(Role.DIVISION_MEMBER.name())
+                        // 대여요청의 상태를 수정하는 경로는 학생회 임원만 가능하다
+                        // 대여요청의 목록을 여러 조건을 걸어서 가져오는 경로는 학생회 임원만 가능하다
+                        // 다른 사람의 대여요청 단건조회는 학생회 임원만 가능하다
+                        .requestMatchers("/requests/*/evaluate", "/requests/*/manage", "/requests/detailrequest", "/requests/*")
+                        .hasAuthority(Role.DIVISION_MEMBER.name())
 							//
 							// /responses 관련 인증설정
 							.requestMatchers("/responses", "/responses/*")
