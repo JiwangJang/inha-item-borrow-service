@@ -5,7 +5,7 @@ import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
-import com.inha.borrow.backend.model.entity.user.Admin;
+import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
 import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.service.RequestService;
 import jakarta.validation.Valid;
@@ -30,9 +30,11 @@ public class RequestController {
      * @author 형민재
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<Integer>> saveRequest(@AuthenticationPrincipal User user,
+    public ResponseEntity<ApiResponse<SaveRequestResultDto>> saveRequest(
+            @AuthenticationPrincipal(expression = "id") String borrowerId,
             @Valid @RequestBody SaveRequestDto saveRequestDto) {
-        int result = requestService.saveRequest(user, saveRequestDto, saveRequestDto.getItemId());
+        saveRequestDto.setBorrowerId(borrowerId);
+        SaveRequestResultDto result = requestService.saveRequest(saveRequestDto);
         return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
@@ -81,10 +83,17 @@ public class RequestController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * 담당자 지정하는 메서드
+     * 
+     * @param admin
+     * @param requestId
+     * @return
+     */
     @PatchMapping("/{request-id}/manage")
-    public ResponseEntity<Void> manageRequest(@AuthenticationPrincipal Admin admin,
+    public ResponseEntity<Void> manageRequest(@AuthenticationPrincipal(expression = "id") String adminId,
             @PathVariable("request-id") String requestId) {
-        requestService.manageRequest(admin.getId(), requestId);
+        requestService.manageRequest(adminId, requestId);
         return ResponseEntity.noContent().build();
     }
 
@@ -105,7 +114,7 @@ public class RequestController {
     }
 
     /**
-     * 사용자가 자신의 요청을 가져오는 메서드
+     * 대여요청 단건조회 메서드
      * 
      * @param user
      * @param requestId

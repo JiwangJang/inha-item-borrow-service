@@ -8,6 +8,7 @@ import com.inha.borrow.backend.model.entity.Response;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.entity.request.RequestManager;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +90,7 @@ public class RequestRepository {
      * @author 형민재
      */
     @SuppressWarnings("null")
-    public int save(SaveRequestDto request) {
+    public SaveRequestResultDto save(SaveRequestDto request) {
         String sql = "INSERT INTO request(item_id, borrower_id, return_at, borrow_at, type) " +
                 "VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -103,7 +105,10 @@ public class RequestRepository {
             return ps;
         }, keyHolder);
 
-        return keyHolder.getKey().intValue();
+        int requestId = keyHolder.getKey().intValue();
+        Timestamp createdAt = Timestamp.from(Instant.now());
+
+        return new SaveRequestResultDto(requestId, createdAt);
     }
 
     /**
@@ -161,7 +166,7 @@ public class RequestRepository {
      * @return
      * @author 형민재(수정 : 장지왕)
      */
-    public List<Request> findByCondition(String borrowerId, String type, String state) {
+    public List<Request> findRequestsByCondition(String borrowerId, String type, String state) {
         StringBuilder sql = new StringBuilder("""
                     SELECT
                         rq.id AS request_id,
@@ -337,6 +342,12 @@ public class RequestRepository {
             ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
+    }
+
+    public RequestState findRequestStateById(int id) {
+        String sql = "SELECT state FROM request WHERE id = ? AND type = 'BORROW';";
+        return jdbcTemplate.queryForObject(sql, RequestState.class);
+
     }
 
     /**

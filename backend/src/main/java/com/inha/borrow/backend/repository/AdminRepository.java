@@ -25,7 +25,6 @@ import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.service.JwtTokenService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * admin table을 다루는 클래스

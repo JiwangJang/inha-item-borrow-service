@@ -1,12 +1,16 @@
 package com.inha.borrow.backend.service;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.enums.RequestState;
+import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.entity.user.User;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +26,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RequestService {
-
     private final RequestRepository requestRepository;
     private final ItemService itemService;
 
@@ -30,12 +33,30 @@ public class RequestService {
      * 리퀘스트를 저장하는 메서드
      * 
      * @param saveRequestDto
-     * @author 형민재
+     * @author 형민재(수정 : 장지왕)
      */
     @Transactional
-    public int saveRequest(User user, SaveRequestDto saveRequestDto, int itemId) {
-        saveRequestDto.setBorrowerId(user.getId());
-        itemService.updateState(ItemState.REVIEWING, itemId);
+    public SaveRequestResultDto saveRequest(SaveRequestDto saveRequestDto) {
+        // 변수 선언
+        RequestType type = saveRequestDto.getType();
+        int itemId = saveRequestDto.getItemId();
+        int prevRequestId = saveRequestDto.getPrevRequestId();
+        if (type == RequestType.BORROW) {
+            // 대여신청일 경우 대여물품이 실제로 빌릴 수 있는 상태인지 확인
+            ItemState itemState = itemService.findItemStateById(itemId);
+            if (itemState != ItemState.AFFORD) {
+                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_ITEM_ID;
+                throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
+            }
+            itemService.updateState(ItemState.REVIEWING, itemId);
+        } else {
+            // 반납일 경우 이전에 보냈던 요청이 있는지 확인
+            RequestState prevRequestState = requestRepository.findRequestStateById(prevRequestId);
+            if (prevRequestState != RequestState.PERMIT) {
+                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_REQUEST_ID;
+                throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
+            }
+        }
         return requestRepository.save(saveRequestDto);
     }
 
@@ -73,9 +94,9 @@ public class RequestService {
      */
     public List<Request> findByCondition(User user, String borrowerId, String type, String state) {
         if (user instanceof Borrower) {
-            return requestRepository.findByCondition(user.getId(), type, state);
+            return requestRepository.findRequestsByCondition(user.getId(), type, state);
         } else {
-            return requestRepository.findByCondition(borrowerId, type, state);
+            return requestRepository.findRequestsByCondition(borrowerId, type, state);
         }
     }
 
