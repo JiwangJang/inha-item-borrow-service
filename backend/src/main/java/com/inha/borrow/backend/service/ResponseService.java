@@ -34,7 +34,7 @@ public class ResponseService {
         Request request = requestRepository.findManagerAndItemIdById(dto.getRequestId());
         String rejectReason = dto.getRejectReason();
         int requestId = dto.getRequestId();
-        String manager = request.getManager();
+        String manager = request.getManager().getId();
         int itemId = request.getItemId();
         RequestType requestType = request.getType();
         ResponseType responseType = dto.getType();
@@ -83,7 +83,7 @@ public class ResponseService {
         Request request = requestRepository.findManagerAndItemIdById(dto.getRequestId());
         String rejectReason = dto.getRejectReason();
         int requestId = dto.getRequestId();
-        String manager = request.getManager();
+        String manager = request.getManager().getId();
         int itemId = request.getItemId();
         RequestType requestType = request.getType();
         RequestState requestState = request.getState();

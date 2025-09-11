@@ -10,6 +10,7 @@ import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class RequestService {
      * @param saveRequestDto
      * @author 형민재
      */
+    @Transactional
     public int saveRequest(User user, SaveRequestDto saveRequestDto, int itemId) {
         saveRequestDto.setBorrowerId(user.getId());
         itemService.updateState(ItemState.REVIEWING, itemId);

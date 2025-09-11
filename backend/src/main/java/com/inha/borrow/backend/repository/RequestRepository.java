@@ -4,7 +4,9 @@ import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
+import com.inha.borrow.backend.model.entity.Response;
 import com.inha.borrow.backend.model.entity.request.Request;
+import com.inha.borrow.backend.model.entity.request.RequestManager;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +33,52 @@ public class RequestRepository {
     private JdbcTemplate jdbcTemplate;
 
     public RowMapper<Request> requestRowMapper = (rs, rowNum) -> {
-        int id = rs.getInt("id");
+        // Response 관련 값
+        int responseId = rs.getInt("response_id");
+        String rejectReason = rs.getString("reject_reason");
+        Timestamp responseCreatedAt = rs.getTimestamp("response_created_at");
+
+        // manager 관련 값
+        String managerId = rs.getString("manager");
+        String managerName = rs.getString("name");
+        String managerPosition = rs.getString("position");
+
+        // Request 관련 값
+        int requestId = rs.getInt("request_id");
         int itemId = rs.getInt("item_id");
-        String manager = rs.getString("manager");
         String borrowerId = rs.getString("borrower_id");
-        Timestamp createAt = rs.getTimestamp("created_at");
+        Timestamp requestCreatedAt = rs.getTimestamp("request_created_at");
         Timestamp returnAt = rs.getTimestamp("return_at");
-        Timestamp borrowerAt = rs.getTimestamp("borrower_at");
+        Timestamp borrowAt = rs.getTimestamp("borrow_at");
         RequestType type = RequestType.valueOf(rs.getString("type"));
         RequestState state = RequestState.valueOf(rs.getString("state"));
         Boolean cancel = rs.getBoolean("cancel");
-        return new Request(id, itemId, manager, borrowerId, createAt, returnAt, borrowerAt, type, state, cancel);
+
+        Response response = Response.builder()
+                .id(responseId)
+                .rejectReason(rejectReason)
+                .createdAt(responseCreatedAt)
+                .build();
+
+        RequestManager manager = RequestManager.builder()
+                .id(managerId)
+                .name(managerName)
+                .position(managerPosition)
+                .build();
+
+        return Request.builder()
+                .id(requestId)
+                .itemId(itemId)
+                .borrowerId(borrowerId)
+                .createdAt(requestCreatedAt)
+                .returnAt(returnAt)
+                .borrowAt(borrowAt)
+                .type(type)
+                .state(state)
+                .cancel(cancel)
+                .manager(manager)
+                .response(response)
+                .build();
     };
 
     /**
@@ -52,7 +89,7 @@ public class RequestRepository {
      */
     @SuppressWarnings("null")
     public int save(SaveRequestDto request) {
-        String sql = "INSERT INTO request(item_id, borrower_id, return_at, borrower_at, type) " +
+        String sql = "INSERT INTO request(item_id, borrower_id, return_at, borrow_at, type) " +
                 "VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -70,13 +107,36 @@ public class RequestRepository {
     }
 
     /**
-     * ID로 리퀘스트를 가져오는 메서드
+     * 요청 단건조회 메서드
      * 
      * @param requestId
-     * @author 형민재
+     * @author 형민재(수정 : 장지왕)
      */
     public Request findById(String borrowerId, int requestId) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM request WHERE id =? ");
+        StringBuilder sql = new StringBuilder("""
+                SELECT
+                        rq.id AS request_id,
+                        rq.item_id,
+                        rq.manager,
+                        rq.created_at AS request_created_at,
+                        rq.borrower_id,
+                        rq.return_at,
+                        rq.borrow_at,
+                        rq.type,
+                        rq.state,
+                        rq.cancel,
+                        rp.id AS response_id,
+                        rp.create_at AS response_created_at,
+                        rp.reject_reason,
+                        admin.name,
+                        admin.position
+                    FROM request AS rq
+                        LEFT JOIN response AS rp
+                            ON rp.request_id = rq.id
+                        LEFT JOIN admin
+                            ON admin.id = rq.manager
+                    WHERE request_id = ?;
+                """);
         List<Object> params = new ArrayList<>();
         params.add(requestId);
         if (borrowerId != null && !borrowerId.isEmpty()) {
@@ -92,8 +152,40 @@ public class RequestRepository {
         }
     }
 
+    /**
+     * 조건에 따라 요청의 목록을 가져오는 메서드
+     * 
+     * @param borrowerId
+     * @param type
+     * @param state
+     * @return
+     * @author 형민재(수정 : 장지왕)
+     */
     public List<Request> findByCondition(String borrowerId, String type, String state) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM request WHERE 1=1 ");
+        StringBuilder sql = new StringBuilder("""
+                    SELECT
+                        rq.id AS request_id,
+                        rq.item_id,
+                        rq.manager,
+                        rq.created_at AS request_created_at,
+                        rq.borrower_id,
+                        rq.return_at,
+                        rq.borrow_at,
+                        rq.type,
+                        rq.state,
+                        rq.cancel,
+                        rp.id AS response_id,
+                        rp.create_at AS response_created_at,
+                        rp.reject_reason,
+                        admin.name,
+                        admin.position
+                    FROM request AS rq
+                        LEFT JOIN response AS rp
+                            ON rp.request_id = rq.id
+                        LEFT JOIN admin
+                            ON admin.id = rq.manager
+                    WHERE 1=1
+                """);
         List<Object> params = new ArrayList<>();
 
         if (borrowerId != null && !borrowerId.isEmpty()) {
@@ -210,11 +302,19 @@ public class RequestRepository {
         String sql = "SELECT manager, item_id, type, state FROM request WHERE id = ?;";
         try {
             Request request = jdbcTemplate.queryForObject(sql, (rs, index) -> {
+                int itemId = rs.getInt("item_id");
+                String managerId = rs.getString("manager");
+                RequestState state = RequestState.valueOf(rs.getString("state"));
+                RequestType type = RequestType.valueOf(rs.getString("type"));
+
+                RequestManager manager = RequestManager.builder()
+                        .id(managerId).build();
+
                 return Request.builder()
-                        .state(RequestState.valueOf(rs.getString("state")))
-                        .manager(rs.getString("manager"))
-                        .itemId(rs.getInt("item_id"))
-                        .type(RequestType.valueOf(rs.getString("type")))
+                        .state(state)
+                        .manager(manager)
+                        .itemId(itemId)
+                        .type(type)
                         .build();
             }, requestId);
             return request;

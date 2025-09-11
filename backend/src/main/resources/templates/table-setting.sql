@@ -87,7 +87,7 @@ create table request (
     foreign key(borrower_id) references borrower(id),
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     return_at datetime NOT NULL,
-    borrower_at datetime NOT NULL,
+    borrow_at datetime NOT NULL,
     type varchar(6) NOT NULL,
     state varchar(10) default 'PENDING',
     cancel boolean default false
