@@ -10,7 +10,10 @@ import com.inha.borrow.backend.model.entity.request.RequestManager;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,9 +33,10 @@ import java.util.List;
  * 리퀘스트 관련 리포지토리
  */
 @Repository
+@RequiredArgsConstructor
+@Slf4j
 public class RequestRepository {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public RowMapper<Request> requestRowMapper = (rs, rowNum) -> {
         // Response 관련 값
@@ -131,7 +135,7 @@ public class RequestRepository {
                         rq.state,
                         rq.cancel,
                         rp.id AS response_id,
-                        rp.create_at AS response_created_at,
+                        rp.created_at AS response_created_at,
                         rp.reject_reason,
                         admin.name,
                         admin.position
@@ -140,15 +144,16 @@ public class RequestRepository {
                             ON rp.request_id = rq.id
                         LEFT JOIN admin
                             ON admin.id = rq.manager
-                    WHERE request_id = ?;
+                    WHERE rq.id = ?
                 """);
         List<Object> params = new ArrayList<>();
         params.add(requestId);
         if (borrowerId != null && !borrowerId.isEmpty()) {
-            sql.append("AND borrower_id =?");
+            sql.append("AND rq.borrower_id = ?");
             params.add(borrowerId);
         }
         try {
+            log.info("test {}", sql.toString());
             Request result = jdbcTemplate.queryForObject(sql.toString(), requestRowMapper, params.toArray());
             return result;
         } catch (EmptyResultDataAccessException e) {
@@ -180,7 +185,7 @@ public class RequestRepository {
                         rq.state,
                         rq.cancel,
                         rp.id AS response_id,
-                        rp.create_at AS response_created_at,
+                        rp.created_at AS response_created_at,
                         rp.reject_reason,
                         admin.name,
                         admin.position
@@ -194,17 +199,17 @@ public class RequestRepository {
         List<Object> params = new ArrayList<>();
 
         if (borrowerId != null && !borrowerId.isEmpty()) {
-            sql.append("AND borrower_id = ? ");
+            sql.append("AND rq.borrower_id = ? ");
             params.add(borrowerId);
         }
 
         if (type != null && !type.isEmpty()) {
-            sql.append("AND type = ? ");
+            sql.append("AND rq.type = ? ");
             params.add(type);
         }
 
         if (state != null && !state.isEmpty()) {
-            sql.append("AND state = ? ");
+            sql.append("AND rq.state = ? ");
             params.add(state);
         }
 
@@ -224,7 +229,29 @@ public class RequestRepository {
      * @author 형민재
      */
     public List<Request> findAll() {
-        String sql = "SELECT * FROM request";
+        String sql = """
+                SELECT
+                        rq.id AS request_id,
+                        rq.item_id,
+                        rq.manager,
+                        rq.created_at AS request_created_at,
+                        rq.borrower_id,
+                        rq.return_at,
+                        rq.borrow_at,
+                        rq.type,
+                        rq.state,
+                        rq.cancel,
+                        rp.id AS response_id,
+                        rp.created_at AS response_created_at,
+                        rp.reject_reason,
+                        admin.name,
+                        admin.position
+                    FROM request AS rq
+                        LEFT JOIN response AS rp
+                            ON rp.request_id = rq.id
+                        LEFT JOIN admin
+                            ON admin.id = rq.manager;
+                """;
         List<Request> result = jdbcTemplate.query(sql, requestRowMapper);
         if (result.isEmpty()) {
             ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;
@@ -243,7 +270,7 @@ public class RequestRepository {
      */
     public void patchRequest(PatchRequestDto patchRequestDto, int requestId, String borrowerId) {
         String sql = "UPDATE request SET return_at=?, " +
-                "borrower_at=? WHERE id =? AND borrower_id=?";
+                "borrow_at=? WHERE id =? AND borrower_id=?";
         int result = jdbcTemplate.update(sql,
                 patchRequestDto.getReturnAt(),
                 patchRequestDto.getBorrowerAt(),
@@ -330,6 +357,18 @@ public class RequestRepository {
     }
 
     /**
+     * 요청의 상태를 조회하는 메서드
+     * 
+     * @param id
+     * @return
+     * @author 장지왕
+     */
+    public RequestState findRequestStateById(int id) {
+        String sql = "SELECT state FROM request WHERE id = ? AND type = 'BORROW';";
+        return jdbcTemplate.queryForObject(sql, RequestState.class);
+    }
+
+    /**
      * 리퀘스트 삭제하는 메서드
      * 
      * @param requestId
@@ -340,14 +379,9 @@ public class RequestRepository {
         int result = jdbcTemplate.update(sql, requestId);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+            throw new ResourceNotFoundException(errorCode.name(),
+                    errorCode.getMessage());
         }
-    }
-
-    public RequestState findRequestStateById(int id) {
-        String sql = "SELECT state FROM request WHERE id = ? AND type = 'BORROW';";
-        return jdbcTemplate.queryForObject(sql, RequestState.class);
-
     }
 
     /**
