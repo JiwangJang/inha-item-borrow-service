@@ -150,7 +150,7 @@ public class AuthConfig {
 							// 대여요청 또는 반납요청을 하는 경로는 대여자 권한으로 로그인 한 사람만 가능하다
 							// 대여요청을 수정하거나 취소하는 경로는 대여자 권한으로 로그인 한 사람만 가능하다
 							// 자신의 대여요청을 가져오는 경로는 대여자 권한으로 로그인 한 사람만 가능하다
-							.requestMatchers(HttpMethod.POST, "/reqeusts")
+							.requestMatchers(HttpMethod.POST, "/requests")
 							.hasAuthority(Role.BORROWER.name())
 							.requestMatchers("/requests/*/patch",
 									"requests/*/cancel")
@@ -158,8 +158,7 @@ public class AuthConfig {
 							// 대여요청의 상태를 수정하는 경로는 학생회 임원만 가능하다
 							// 대여요청의 목록을 여러 조건을 걸어서 가져오는 경로는 학생회 임원만 가능하다
 							// 다른 사람의 대여요청 단건조회는 학생회 임원만 가능하다
-							.requestMatchers("/requests/*/evaluate", "/requests/*/manage", "/requests/detailrequest",
-									"/requests/*")
+							.requestMatchers("/requests/*/manage")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							//
 							// /responses 관련 인증설정

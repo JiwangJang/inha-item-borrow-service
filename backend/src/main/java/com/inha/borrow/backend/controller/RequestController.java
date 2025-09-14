@@ -14,6 +14,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @Controller
@@ -34,6 +36,8 @@ public class RequestController {
             @Valid @RequestBody SaveRequestDto saveRequestDto) {
         saveRequestDto.setBorrowerId(borrowerId);
         SaveRequestResultDto result = requestService.saveRequest(saveRequestDto);
+        // DB의 정확한 시간을 가져올수 없어 이렇게 생성시간 표시
+        result.setCreatedAt(Timestamp.from(Instant.now()));
         return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
@@ -77,7 +81,7 @@ public class RequestController {
      */
     @PatchMapping("/{request-id}/manage")
     public ResponseEntity<Void> manageRequest(@AuthenticationPrincipal(expression = "id") String adminId,
-            @PathVariable("request-id") String requestId) {
+            @PathVariable("request-id") int requestId) {
         requestService.manageRequest(adminId, requestId);
         return ResponseEntity.noContent().build();
     }
@@ -93,7 +97,9 @@ public class RequestController {
      */
     @GetMapping
     public ResponseEntity<ApiResponse<List<Request>>> findDetailRequest(@AuthenticationPrincipal User user,
-            @RequestParam String borrowerId, @RequestParam String type, @RequestParam String state) {
+            @RequestParam(value = "borrowerId") String borrowerId,
+            @RequestParam(value = "type") String type,
+            @RequestParam(value = "state") String state) {
         List<Request> result = requestService.findByCondition(user, borrowerId, type, state);
         return ResponseEntity.ok().body(new ApiResponse<>(true, result));
     }
