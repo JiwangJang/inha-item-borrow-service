@@ -59,19 +59,19 @@ public class ResponseService {
         if (requestType == RequestType.BORROW) {
             // 대여요청인 경우
             if (isPermit) {
-                requestRepository.evaluationRequest(RequestState.PERMIT, requestId);
+                requestRepository.updateRequestState(RequestState.PERMIT, requestId);
                 itemRepository.updateState(ItemState.BORROWED, itemId);
             } else {
-                requestRepository.evaluationRequest(RequestState.REJECT, requestId);
+                requestRepository.updateRequestState(RequestState.REJECT, requestId);
                 itemRepository.updateState(ItemState.AFFORD, itemId);
             }
         } else {
             // 반납요청인 경우
             if (isPermit) {
-                requestRepository.evaluationRequest(RequestState.PERMIT, requestId);
+                requestRepository.updateRequestState(RequestState.PERMIT, requestId);
                 itemRepository.updateState(ItemState.AFFORD, itemId);
             } else {
-                requestRepository.evaluationRequest(RequestState.REJECT, requestId);
+                requestRepository.updateRequestState(RequestState.REJECT, requestId);
                 itemRepository.updateState(ItemState.REVIEWING, itemId);
             }
         }
@@ -104,7 +104,7 @@ public class ResponseService {
         }
 
         if (isPermit) {
-            requestRepository.evaluationRequest(RequestState.PERMIT, requestId);
+            requestRepository.updateRequestState(RequestState.PERMIT, requestId);
             itemRepository.updateState(ItemState.AFFORD, itemId);
             responseRepository.update(responseId, rejectReason);
         }

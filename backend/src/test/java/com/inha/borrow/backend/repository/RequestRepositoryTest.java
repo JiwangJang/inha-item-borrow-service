@@ -258,8 +258,9 @@ class RequestRepositoryTest {
     void cancelRequestSuccessTest() {
         int requestId = requestRepository.save(saveRequestDto).getRequestId();
         requestRepository.cancelRequest(requestId, borrowerId);
-        Request result = requestRepository.findById(borrowerId, requestId);
-        assertThat(result.getCancel()).isTrue();
+        assertThrows(ResourceNotFoundException.class, () -> {
+            requestRepository.findById(borrowerId, requestId);
+        });
     }
 
     @Test
@@ -272,17 +273,17 @@ class RequestRepositoryTest {
 
     @Test
     @DisplayName("리퀘스트 평가 성공")
-    void evaluationRequest() {
+    void updateRequestState() {
         int requestId = requestRepository.save(saveRequestDto).getRequestId();
-        requestRepository.evaluationRequest(RequestState.ASSIGNED, requestId);
+        requestRepository.updateRequestState(RequestState.ASSIGNED, requestId);
         Request result = requestRepository.findById(borrowerId, requestId);
         assertThat(result.getState()).isEqualTo(RequestState.ASSIGNED);
     }
 
     @Test
     @DisplayName("리퀘스트 평가 (실패 존재하지 않는 요청")
-    void evaluationRequestFailNotFoundBorrowerId() {
-        assertThatThrownBy(() -> requestRepository.evaluationRequest(RequestState.ASSIGNED, 3))
+    void updateRequestStateFailNotFoundBorrowerId() {
+        assertThatThrownBy(() -> requestRepository.updateRequestState(RequestState.ASSIGNED, 3))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -292,7 +293,7 @@ class RequestRepositoryTest {
         // given
         int requestId = requestRepository.save(saveRequestDto).getRequestId();
         // when
-        requestRepository.manageRequest(adminId, String.valueOf(requestId));
+        requestRepository.manageRequest(adminId, requestId);
         Request request = requestRepository.findById(null, requestId);
         // then
         assertThat(request.getManager().getId()).isEqualTo(adminId);
@@ -306,7 +307,59 @@ class RequestRepositoryTest {
         // when
         // then
         assertThrows(ResourceNotFoundException.class, () -> {
-            requestRepository.manageRequest("mockAdmin", String.valueOf(123));
+            requestRepository.manageRequest("mockAdmin", 123);
         });
     }
+
+    @Test
+    @DisplayName("요청ID로 담당자/아이템/타입/상태 조회 성공")
+    void findManagerAndItemIdById_success() {
+        // given
+        int requestId = requestRepository.save(saveRequestDto).getRequestId();
+        // when: 담당자 지정하여 상태 ASSIGNED로 변경
+        requestRepository.manageRequest(adminId, requestId);
+        Request result = requestRepository.findManagerAndItemIdById(requestId);
+        // then
+        assertThat(result.getItemId()).isEqualTo(saveRequestDto.getItemId());
+        assertThat(result.getType()).isEqualTo(RequestType.BORROW);
+        assertThat(result.getState()).isEqualTo(RequestState.ASSIGNED);
+        assertThat(result.getManager().getId()).isEqualTo(adminId);
+    }
+
+    @Test
+    @DisplayName("요청ID로 담당자/아이템/타입/상태 조회 실패 - 요청 미존재")
+    void findManagerAndItemIdById_fail_notFound() {
+        // given
+        int notExistsId = 9999999;
+        // when & then
+        assertThrows(ResourceNotFoundException.class, () -> {
+            requestRepository.findManagerAndItemIdById(notExistsId);
+        });
+    }
+
+    @Test
+    @DisplayName("요청ID로 상태 조회 성공")
+    void findRequestStateById_success() {
+        // given
+        int requestId = requestRepository.save(saveRequestDto).getRequestId();
+        // then: 초기 상태는 PENDING
+        assertThat(requestRepository.findRequestStateById(requestId))
+                .isEqualTo(RequestState.PENDING);
+        // when: 상태를 ASSIGNED로 변경 후 재조회
+        requestRepository.manageRequest(adminId, requestId);
+        assertThat(requestRepository.findRequestStateById(requestId))
+                .isEqualTo(RequestState.ASSIGNED);
+    }
+
+    @Test
+    @DisplayName("요청ID로 상태 조회 실패 - 요청 미존재")
+    void findRequestStateById_fail_notFound() {
+        // given
+        int notExistsId = 8888888;
+        // when & then
+        assertThrows(ResourceNotFoundException.class, () -> {
+            requestRepository.findRequestStateById(notExistsId);
+        });
+    }
+
 }

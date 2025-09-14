@@ -199,7 +199,10 @@ public class ItemRepository {
      */
     public ItemState findItemStateById(int id) {
         String sql = "SELECT state FROM item WHERE id = ?;";
-        return jdbcTemplate.queryForObject(sql, ItemState.class);
+        return jdbcTemplate.queryForObject(sql, (rs, index) -> {
+            String state = rs.getString("state");
+            return ItemState.valueOf(state);
+        }, id);
     }
 
     // 테스트용

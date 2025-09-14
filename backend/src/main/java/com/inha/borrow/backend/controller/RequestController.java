@@ -1,6 +1,5 @@
 package com.inha.borrow.backend.controller;
 
-import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.Request;
@@ -66,20 +65,6 @@ public class RequestController {
             @AuthenticationPrincipal(expression = "id") String borrowerId,
             @PathVariable("request-id") int requestId) {
         requestService.cancelRequest(requestId, borrowerId);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * 요청의 상태를 수정하는 메서드
-     * 
-     * @param requestId
-     * @param state
-     * @author 형민재
-     */
-    @PatchMapping("/{request-id}/evaluate")
-    public ResponseEntity<ApiResponse<Void>> evaluateRequest(@PathVariable("request-id") int requestId,
-            @RequestBody RequestState state) {
-        requestService.evaluationRequest(state, requestId);
         return ResponseEntity.ok().build();
     }
 

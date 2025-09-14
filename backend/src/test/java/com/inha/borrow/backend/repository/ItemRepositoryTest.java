@@ -79,7 +79,7 @@ class ItemRepositoryTest {
                 .type(RequestType.BORROW)
                 .build();
         int requestId = requestRepository.save(saveRequest).getRequestId();
-        requestRepository.evaluationRequest(RequestState.PERMIT, requestId);
+        requestRepository.updateRequestState(RequestState.PERMIT, requestId);
     }
 
     @Test
@@ -236,7 +236,7 @@ class ItemRepositoryTest {
 
         // 동일한 아이템에 여러 요청이 있을 경우 테스트
         // 첫번째 요청은 빌리고 반납까지 완료됐다고 가정
-        requestRepository.evaluationRequest(RequestState.PERMIT, id1);
+        requestRepository.updateRequestState(RequestState.PERMIT, id1);
         // 두번쨰 요청은 대여신청을 취소했다고 가정
         requestRepository.cancelRequest(id2, borrower2.getId());
 

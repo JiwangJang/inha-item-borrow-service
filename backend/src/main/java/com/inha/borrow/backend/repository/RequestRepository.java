@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -144,7 +143,7 @@ public class RequestRepository {
                             ON rp.request_id = rq.id
                         LEFT JOIN admin
                             ON admin.id = rq.manager
-                    WHERE rq.id = ?
+                    WHERE rq.id = ? AND rq.cancel != true
                 """);
         List<Object> params = new ArrayList<>();
         params.add(requestId);
@@ -194,7 +193,7 @@ public class RequestRepository {
                             ON rp.request_id = rq.id
                         LEFT JOIN admin
                             ON admin.id = rq.manager
-                    WHERE 1=1
+                    WHERE rq.cancel != true
                 """);
         List<Object> params = new ArrayList<>();
 
@@ -250,7 +249,8 @@ public class RequestRepository {
                         LEFT JOIN response AS rp
                             ON rp.request_id = rq.id
                         LEFT JOIN admin
-                            ON admin.id = rq.manager;
+                            ON admin.id = rq.manager
+                    WHERE rq.cancel != true;
                 """;
         List<Request> result = jdbcTemplate.query(sql, requestRowMapper);
         if (result.isEmpty()) {
@@ -269,8 +269,9 @@ public class RequestRepository {
      * @author 형민재
      */
     public void patchRequest(PatchRequestDto patchRequestDto, int requestId, String borrowerId) {
-        String sql = "UPDATE request SET return_at=?, " +
-                "borrow_at=? WHERE id =? AND borrower_id=?";
+        String sql = """
+                    UPDATE request SET return_at = ?, borrow_at = ? WHERE id = ? AND borrower_id = ?;
+                """;
         int result = jdbcTemplate.update(sql,
                 patchRequestDto.getReturnAt(),
                 patchRequestDto.getBorrowerAt(),
@@ -289,25 +290,9 @@ public class RequestRepository {
      * @author 형민재
      */
     public void cancelRequest(int requestId, String borrowerId) {
-        String sql = "UPDATE request SET cancel=? WHERE id=? AND borrower_id=?";
+        String sql = "UPDATE request SET cancel = ? WHERE id = ? AND borrower_id = ?;";
         boolean cancel = true;
         int result = jdbcTemplate.update(sql, cancel, requestId, borrowerId);
-        if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
-    }
-
-    /**
-     * 리퀘스트 상태를 설정하는 메서드
-     * 
-     * @param state
-     * @param requestId
-     * @author 형민재
-     */
-    public void evaluationRequest(RequestState state, int requestId) {
-        String sql = "UPDATE request SET state=? WHERE id=?";
-        int result = jdbcTemplate.update(sql, state.name(), requestId);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
@@ -321,7 +306,7 @@ public class RequestRepository {
      * @param requestId
      * @author 장지왕
      */
-    public void manageRequest(String adminId, String requestId) {
+    public void manageRequest(String adminId, int requestId) {
         String sql = "UPDATE request SET state = 'ASSIGNED', manager = ? WHERE id = ?;";
         int result = jdbcTemplate.update(sql, adminId, requestId);
         if (result == 0) {
@@ -330,6 +315,13 @@ public class RequestRepository {
         }
     }
 
+    /**
+     * 요청의 담당자와 물품아이디를 찾는 메서드
+     * 
+     * @param requestId
+     * @return
+     * @author 장지왕
+     */
     public Request findManagerAndItemIdById(int requestId) {
         String sql = "SELECT manager, item_id, type, state FROM request WHERE id = ?;";
         try {
@@ -350,37 +342,67 @@ public class RequestRepository {
                         .build();
             }, requestId);
             return request;
-        } catch (IncorrectResultSetColumnCountException e) {
+        } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
 
     /**
-     * 요청의 상태를 조회하는 메서드
+     * 대여요청의 상태를 조회하는 메서드
      * 
      * @param id
      * @return
      * @author 장지왕
      */
     public RequestState findRequestStateById(int id) {
-        String sql = "SELECT state FROM request WHERE id = ? AND type = 'BORROW';";
-        return jdbcTemplate.queryForObject(sql, RequestState.class);
+        try {
+            String sql = "SELECT state FROM request WHERE id = ?;";
+            return jdbcTemplate.queryForObject(sql, (rs, i) -> {
+                return RequestState.valueOf(rs.getString("state"));
+            }, id);
+        } catch (EmptyResultDataAccessException e) {
+            ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 
     /**
-     * 리퀘스트 삭제하는 메서드
+     * 대여 및 반납요청의 상태를 조회하는 메서드
      * 
-     * @param requestId
-     * @author 형민재
+     * @param id
+     * @param type
+     * @return
+     * @author 장지왕
      */
-    public void deleteRequest(int requestId) {
-        String sql = "DELETE FROM request WHERE id = ?";
-        int result = jdbcTemplate.update(sql, requestId);
-        if (result == 0) {
+    public RequestState findRequestStateById(int id, RequestType type) {
+        try {
+            String sql = "SELECT state FROM request WHERE id = ? AND type = ?;";
+            return jdbcTemplate.queryForObject(sql, (rs, i) -> {
+                return RequestState.valueOf(rs.getString("state"));
+            }, id, type.name());
+        } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;
-            throw new ResourceNotFoundException(errorCode.name(),
-                    errorCode.getMessage());
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+    }
+
+    /**
+     * 대여요청인지 반납요청인지 확인하는 메서드
+     * 
+     * @param id
+     * @return
+     * @author 장지왕
+     */
+    public RequestType findRequestTypeById(int id) {
+        try {
+            String sql = "SELECT type FROM request WHERE id = ?;";
+            return jdbcTemplate.queryForObject(sql, (rs, i) -> {
+                return RequestType.valueOf(rs.getString("type"));
+            }, id);
+        } catch (EmptyResultDataAccessException e) {
+            ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
 
@@ -390,5 +412,21 @@ public class RequestRepository {
     public void deleteAll() {
         String sql = "DELETE FROM request";
         jdbcTemplate.update(sql);
+    }
+
+    /**
+     * 대여 및 반납요청의 상태를 수정하는 메서드
+     * 
+     * @param state
+     * @param requestId
+     * @author 장지왕
+     */
+    public void updateRequestState(RequestState state, int requestId) {
+        String sql = "UPDATE request SET state=? WHERE id=?";
+        int result = jdbcTemplate.update(sql, state.name(), requestId);
+        if (result == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.REQUEST_NOT_FOUND;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 }

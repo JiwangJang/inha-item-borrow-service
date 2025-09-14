@@ -1,0 +1,952 @@
+2025-09-12T08:43:43.961+09:00  INFO 12347 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 12347 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T08:43:43.963+09:00  INFO 12347 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T08:43:44.232+09:00  INFO 12347 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.439 seconds (process running for 0.777)
+2025-09-12T08:43:44.239+09:00  INFO 12347 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T08:43:44.470+09:00  INFO 12347 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5d878b25
+2025-09-12T08:43:44.471+09:00  INFO 12347 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T08:43:45.154+09:00  INFO 12347 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T08:43:45.157+09:00  INFO 12347 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T08:45:02.493+09:00  INFO 12546 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 12546 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T08:45:02.494+09:00  INFO 12546 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T08:45:02.756+09:00  INFO 12546 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.414 seconds (process running for 0.816)
+2025-09-12T08:45:02.762+09:00  INFO 12546 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T08:45:02.922+09:00  INFO 12546 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@28279a49
+2025-09-12T08:45:02.923+09:00  INFO 12546 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T08:45:03.593+09:00  INFO 12546 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T08:45:03.595+09:00  INFO 12546 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T08:45:30.179+09:00  INFO 12619 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 12619 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T08:45:30.180+09:00  INFO 12619 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T08:45:30.430+09:00  INFO 12619 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.394 seconds (process running for 0.723)
+2025-09-12T08:45:30.437+09:00  INFO 12619 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T08:45:30.604+09:00  INFO 12619 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@750ed637
+2025-09-12T08:45:30.605+09:00  INFO 12619 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T08:45:31.041+09:00  INFO 12619 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T08:45:31.065+09:00  INFO 12619 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T08:49:25.171+09:00  INFO 13303 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 13303 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T08:49:25.172+09:00  INFO 13303 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T08:49:25.435+09:00  INFO 13303 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.412 seconds (process running for 0.794)
+2025-09-12T08:49:25.442+09:00  INFO 13303 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T08:49:25.600+09:00  INFO 13303 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@157d3a45
+2025-09-12T08:49:25.601+09:00  INFO 13303 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T08:49:26.025+09:00  INFO 13303 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T08:49:26.064+09:00  INFO 13303 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T08:49:59.687+09:00  INFO 13434 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 13434 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T08:49:59.688+09:00  INFO 13434 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T08:49:59.941+09:00  INFO 13434 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.402 seconds (process running for 0.83)
+2025-09-12T08:49:59.948+09:00  INFO 13434 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T08:50:00.109+09:00  INFO 13434 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@157d3a45
+2025-09-12T08:50:00.110+09:00  INFO 13434 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T08:50:00.503+09:00  INFO 13434 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE request_id = ?
+AND borrower_id = ?
+2025-09-12T08:50:00.520+09:00  INFO 13434 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T08:50:00.526+09:00  INFO 13434 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T08:52:47.534+09:00  INFO 13889 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 13889 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T08:52:47.535+09:00  INFO 13889 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T08:52:47.785+09:00  INFO 13889 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.395 seconds (process running for 0.75)
+2025-09-12T08:52:47.791+09:00  INFO 13889 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T08:52:47.944+09:00  INFO 13889 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@157d3a45
+2025-09-12T08:52:47.944+09:00  INFO 13889 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T08:52:48.345+09:00  INFO 13889 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE request_id = ?
+AND borrower_id = ?
+2025-09-12T08:52:48.362+09:00  INFO 13889 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T08:52:48.404+09:00  INFO 13889 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T08:53:38.733+09:00  INFO 14048 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 14048 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T08:53:38.734+09:00  INFO 14048 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T08:53:39.004+09:00  INFO 14048 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.419 seconds (process running for 0.784)
+2025-09-12T08:53:39.012+09:00  INFO 14048 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T08:53:39.169+09:00  INFO 14048 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@157d3a45
+2025-09-12T08:53:39.170+09:00  INFO 14048 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T08:53:39.631+09:00  INFO 14048 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : test 96
+2025-09-12T08:53:39.631+09:00  INFO 14048 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE request_id = ?
+AND borrower_id = ?
+2025-09-12T08:53:39.648+09:00  INFO 14048 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T08:53:39.651+09:00  INFO 14048 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T08:54:37.720+09:00  INFO 14200 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 14200 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T08:54:37.721+09:00  INFO 14200 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T08:54:37.987+09:00  INFO 14200 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.414 seconds (process running for 0.805)
+2025-09-12T08:54:37.994+09:00  INFO 14200 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T08:54:38.156+09:00  INFO 14200 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@157d3a45
+2025-09-12T08:54:38.157+09:00  INFO 14200 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T08:54:38.564+09:00  INFO 14200 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : test 97
+2025-09-12T08:54:38.564+09:00  INFO 14200 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE request_id = ?
+AND rq.borrower_id = ?
+2025-09-12T08:54:38.581+09:00  INFO 14200 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T08:54:38.615+09:00  INFO 14200 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T08:54:56.407+09:00  INFO 14258 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 14258 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T08:54:56.408+09:00  INFO 14258 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T08:54:56.660+09:00  INFO 14258 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.396 seconds (process running for 0.796)
+2025-09-12T08:54:56.667+09:00  INFO 14258 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T08:54:56.828+09:00  INFO 14258 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@384fda47
+2025-09-12T08:54:56.829+09:00  INFO 14258 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T08:54:57.221+09:00  INFO 14258 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : test 98
+2025-09-12T08:54:57.221+09:00  INFO 14258 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rp.request_id = ?
+AND rq.borrower_id = ?
+2025-09-12T08:54:57.239+09:00  INFO 14258 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T08:54:57.242+09:00  INFO 14258 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T08:55:14.304+09:00  INFO 14310 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 14310 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T08:55:14.305+09:00  INFO 14310 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T08:55:14.570+09:00  INFO 14310 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.417 seconds (process running for 0.762)
+2025-09-12T08:55:14.577+09:00  INFO 14310 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T08:55:14.742+09:00  INFO 14310 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@157d3a45
+2025-09-12T08:55:14.743+09:00  INFO 14310 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T08:55:15.153+09:00  INFO 14310 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : test 99
+2025-09-12T08:55:15.153+09:00  INFO 14310 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rp.id = ?
+AND rq.borrower_id = ?
+2025-09-12T08:55:15.170+09:00  INFO 14310 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T08:55:15.198+09:00  INFO 14310 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T08:55:19.078+09:00  INFO 14330 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 14330 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T08:55:19.078+09:00  INFO 14330 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T08:55:19.306+09:00  INFO 14330 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.368 seconds (process running for 0.694)
+2025-09-12T08:55:19.314+09:00  INFO 14330 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T08:55:19.470+09:00  INFO 14330 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@157d3a45
+2025-09-12T08:55:19.471+09:00  INFO 14330 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T08:55:19.861+09:00  INFO 14330 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : test 100
+2025-09-12T08:55:19.861+09:00  INFO 14330 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T08:55:19.895+09:00  INFO 14330 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T08:55:19.940+09:00  INFO 14330 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:22:31.182+09:00  INFO 18800 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 18800 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:22:31.183+09:00  INFO 18800 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:22:31.435+09:00  INFO 18800 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.397 seconds (process running for 0.773)
+2025-09-12T09:22:31.442+09:00  INFO 18800 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:22:31.602+09:00  INFO 18800 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@157d3a45
+2025-09-12T09:22:31.603+09:00  INFO 18800 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:22:31.995+09:00  INFO 18800 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : test 101
+2025-09-12T09:22:31.995+09:00  INFO 18800 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE request_id = ?
+AND rq.borrower_id = ?
+2025-09-12T09:22:32.012+09:00  INFO 18800 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:22:32.029+09:00  INFO 18800 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:22:39.271+09:00  INFO 18827 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 18827 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:22:39.272+09:00  INFO 18827 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:22:39.529+09:00  INFO 18827 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.406 seconds (process running for 0.74)
+2025-09-12T09:22:39.536+09:00  INFO 18827 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:22:39.692+09:00  INFO 18827 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@157d3a45
+2025-09-12T09:22:39.693+09:00  INFO 18827 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:22:40.103+09:00  INFO 18827 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : test 102
+2025-09-12T09:22:40.103+09:00  INFO 18827 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T09:22:40.138+09:00  INFO 18827 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:22:40.159+09:00  INFO 18827 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:25:15.158+09:00  INFO 19301 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 19301 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:25:15.159+09:00  INFO 19301 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:25:15.462+09:00  INFO 19301 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.458 seconds (process running for 0.848)
+2025-09-12T09:25:15.470+09:00  INFO 19301 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:25:15.627+09:00  INFO 19301 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2da81754
+2025-09-12T09:25:15.628+09:00  INFO 19301 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:25:16.034+09:00  INFO 19301 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T09:25:16.076+09:00  INFO 19301 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:25:16.088+09:00  INFO 19301 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:25:26.992+09:00  INFO 19341 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 19341 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:25:26.992+09:00  INFO 19341 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:25:27.249+09:00  INFO 19341 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.404 seconds (process running for 0.756)
+2025-09-12T09:25:27.257+09:00  INFO 19341 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:25:27.416+09:00  INFO 19341 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@157d3a45
+2025-09-12T09:25:27.417+09:00  INFO 19341 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:25:27.817+09:00  INFO 19341 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T09:25:27.853+09:00  INFO 19341 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:25:27.877+09:00  INFO 19341 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:25:47.340+09:00  INFO 19439 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 19439 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:25:47.342+09:00  INFO 19439 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:25:47.594+09:00  INFO 19439 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.398 seconds (process running for 0.797)
+2025-09-12T09:25:47.600+09:00  INFO 19439 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:25:47.761+09:00  INFO 19439 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@384fda47
+2025-09-12T09:25:47.762+09:00  INFO 19439 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:25:48.154+09:00  INFO 19439 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T09:25:48.189+09:00  INFO 19439 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:25:48.225+09:00  INFO 19439 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:36:16.178+09:00  INFO 21237 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 21237 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:36:16.178+09:00  INFO 21237 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:36:16.429+09:00  INFO 21237 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.393 seconds (process running for 0.794)
+2025-09-12T09:36:16.436+09:00  INFO 21237 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:36:16.596+09:00  INFO 21237 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@420a8042
+2025-09-12T09:36:16.597+09:00  INFO 21237 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:36:17.720+09:00  INFO 21237 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:36:17.722+09:00  INFO 21237 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:36:28.013+09:00  INFO 21277 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 21277 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:36:28.014+09:00  INFO 21277 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:36:28.271+09:00  INFO 21277 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.407 seconds (process running for 0.777)
+2025-09-12T09:36:28.278+09:00  INFO 21277 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:36:28.432+09:00  INFO 21277 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@420a8042
+2025-09-12T09:36:28.433+09:00  INFO 21277 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:36:29.530+09:00  INFO 21277 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:36:29.532+09:00  INFO 21277 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:37:00.594+09:00  INFO 21364 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 21364 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:37:00.595+09:00  INFO 21364 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:37:00.842+09:00  INFO 21364 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.387 seconds (process running for 0.851)
+2025-09-12T09:37:00.849+09:00  INFO 21364 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:37:01.007+09:00  INFO 21364 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3dce6dd8
+2025-09-12T09:37:01.008+09:00  INFO 21364 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:37:01.879+09:00  INFO 21364 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:37:01.883+09:00  INFO 21364 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:38:01.028+09:00  INFO 21555 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 21555 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:38:01.029+09:00  INFO 21555 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:38:01.252+09:00  INFO 21555 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.36 seconds (process running for 0.694)
+2025-09-12T09:38:01.260+09:00  INFO 21555 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:38:01.415+09:00  INFO 21555 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@420a8042
+2025-09-12T09:38:01.416+09:00  INFO 21555 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:38:02.248+09:00  INFO 21555 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:38:02.251+09:00  INFO 21555 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:38:18.042+09:00  INFO 21609 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 21609 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:38:18.043+09:00  INFO 21609 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:38:18.309+09:00  INFO 21609 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.409 seconds (process running for 0.779)
+2025-09-12T09:38:18.316+09:00  INFO 21609 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:38:18.467+09:00  INFO 21609 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@420a8042
+2025-09-12T09:38:18.468+09:00  INFO 21609 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:38:19.036+09:00  INFO 21609 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:38:19.038+09:00  INFO 21609 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:40:58.997+09:00  INFO 22076 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 22076 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:40:58.998+09:00  INFO 22076 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:40:59.253+09:00  INFO 22076 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.397 seconds (process running for 0.778)
+2025-09-12T09:40:59.260+09:00  INFO 22076 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:40:59.416+09:00  INFO 22076 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T09:40:59.417+09:00  INFO 22076 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:40:59.842+09:00  INFO 22076 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:40:59.864+09:00  INFO 22076 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:41:49.840+09:00  INFO 22248 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 22248 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:41:49.841+09:00  INFO 22248 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:41:50.091+09:00  INFO 22248 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.397 seconds (process running for 0.782)
+2025-09-12T09:41:50.097+09:00  INFO 22248 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:41:50.262+09:00  INFO 22248 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T09:41:50.262+09:00  INFO 22248 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:41:50.681+09:00  INFO 22248 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:41:50.715+09:00  INFO 22248 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:42:30.594+09:00  INFO 22359 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 22359 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:42:30.596+09:00  INFO 22359 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:42:30.841+09:00  INFO 22359 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.391 seconds (process running for 0.786)
+2025-09-12T09:42:30.848+09:00  INFO 22359 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:42:31.001+09:00  INFO 22359 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T09:42:31.002+09:00  INFO 22359 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:42:31.429+09:00  INFO 22359 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:42:31.461+09:00  INFO 22359 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:42:43.525+09:00  INFO 22406 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 22406 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:42:43.526+09:00  INFO 22406 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:42:43.796+09:00  INFO 22406 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.431 seconds (process running for 0.764)
+2025-09-12T09:42:43.804+09:00  INFO 22406 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:42:43.962+09:00  INFO 22406 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@704067c6
+2025-09-12T09:42:43.963+09:00  INFO 22406 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:42:44.394+09:00  INFO 22406 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:42:44.410+09:00  INFO 22406 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:42:59.277+09:00  INFO 22460 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 22460 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:42:59.278+09:00  INFO 22460 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:42:59.532+09:00  INFO 22460 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.416 seconds (process running for 0.748)
+2025-09-12T09:42:59.540+09:00  INFO 22460 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:42:59.697+09:00  INFO 22460 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T09:42:59.698+09:00  INFO 22460 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:43:00.153+09:00  INFO 22460 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:43:00.157+09:00  INFO 22460 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:43:00.504+09:00  INFO 22464 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 22464 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:43:00.504+09:00  INFO 22464 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:43:00.733+09:00  INFO 22464 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.368 seconds (process running for 0.716)
+2025-09-12T09:43:00.739+09:00  INFO 22464 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:43:00.891+09:00  INFO 22464 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T09:43:00.892+09:00  INFO 22464 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:43:01.293+09:00  INFO 22464 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:43:01.308+09:00  INFO 22464 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:54:09.939+09:00  INFO 24326 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 24326 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:54:09.940+09:00  INFO 24326 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:54:10.196+09:00  INFO 24326 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.403 seconds (process running for 0.814)
+2025-09-12T09:54:10.202+09:00  INFO 24326 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:54:10.366+09:00  INFO 24326 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1c34365c
+2025-09-12T09:54:10.366+09:00  INFO 24326 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:54:11.026+09:00  INFO 24326 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:54:11.028+09:00  INFO 24326 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T09:54:22.526+09:00  INFO 24364 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 24364 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T09:54:22.526+09:00  INFO 24364 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T09:54:22.776+09:00  INFO 24364 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.392 seconds (process running for 0.717)
+2025-09-12T09:54:22.783+09:00  INFO 24364 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T09:54:22.945+09:00  INFO 24364 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T09:54:22.946+09:00  INFO 24364 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T09:54:23.349+09:00  INFO 24364 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T09:54:23.389+09:00  INFO 24364 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T09:54:23.404+09:00  INFO 24364 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:00:45.422+09:00  INFO 25428 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 25428 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:00:45.423+09:00  INFO 25428 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:00:45.709+09:00  INFO 25428 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.444 seconds (process running for 0.824)
+2025-09-12T10:00:45.717+09:00  INFO 25428 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:00:45.878+09:00  INFO 25428 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T10:00:45.879+09:00  INFO 25428 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:00:46.314+09:00  INFO 25428 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:00:46.335+09:00  INFO 25428 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:04:16.093+09:00  INFO 26012 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 26012 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:04:16.094+09:00  INFO 26012 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:04:16.357+09:00  INFO 26012 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.406 seconds (process running for 0.814)
+2025-09-12T10:04:16.365+09:00  INFO 26012 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:04:16.523+09:00  INFO 26012 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T10:04:16.524+09:00  INFO 26012 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:04:16.937+09:00  INFO 26012 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T10:04:16.980+09:00  INFO 26012 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:04:16.986+09:00  INFO 26012 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:04:32.790+09:00  INFO 26063 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 26063 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:04:32.791+09:00  INFO 26063 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:04:33.047+09:00  INFO 26063 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.401 seconds (process running for 0.782)
+2025-09-12T10:04:33.054+09:00  INFO 26063 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:04:33.207+09:00  INFO 26063 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T10:04:33.208+09:00  INFO 26063 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:04:33.604+09:00  INFO 26063 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T10:04:33.638+09:00  INFO 26063 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:04:33.670+09:00  INFO 26063 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:07:02.753+09:00  INFO 26482 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 26482 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:07:02.754+09:00  INFO 26482 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:07:03.001+09:00  INFO 26482 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.389 seconds (process running for 0.769)
+2025-09-12T10:07:03.008+09:00  INFO 26482 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:07:03.163+09:00  INFO 26482 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7f4596d0
+2025-09-12T10:07:03.164+09:00  INFO 26482 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:07:03.574+09:00  INFO 26482 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:07:03.584+09:00  INFO 26482 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:07:21.768+09:00  INFO 26541 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 26541 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:07:21.769+09:00  INFO 26541 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:07:22.041+09:00  INFO 26541 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.423 seconds (process running for 0.809)
+2025-09-12T10:07:22.049+09:00  INFO 26541 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:07:22.202+09:00  INFO 26541 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T10:07:22.203+09:00  INFO 26541 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:07:22.645+09:00  INFO 26541 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:07:22.653+09:00  INFO 26541 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:08:28.339+09:00  INFO 26753 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 26753 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:08:28.340+09:00  INFO 26753 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:08:28.620+09:00  INFO 26753 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.432 seconds (process running for 0.812)
+2025-09-12T10:08:28.627+09:00  INFO 26753 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:08:28.783+09:00  INFO 26753 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@420a8042
+2025-09-12T10:08:28.784+09:00  INFO 26753 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:08:29.660+09:00  INFO 26753 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:08:29.662+09:00  INFO 26753 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:08:48.528+09:00  INFO 26808 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 26808 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:08:48.529+09:00  INFO 26808 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:08:48.759+09:00  INFO 26808 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.371 seconds (process running for 0.713)
+2025-09-12T10:08:48.766+09:00  INFO 26808 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:08:48.924+09:00  INFO 26808 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@420a8042
+2025-09-12T10:08:48.924+09:00  INFO 26808 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:08:49.516+09:00  INFO 26808 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:08:49.518+09:00  INFO 26808 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:09:35.501+09:00  INFO 26964 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 26964 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:09:35.502+09:00  INFO 26964 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:09:35.747+09:00  INFO 26964 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.389 seconds (process running for 0.788)
+2025-09-12T10:09:35.754+09:00  INFO 26964 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:09:35.910+09:00  INFO 26964 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T10:09:35.911+09:00  INFO 26964 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:09:36.314+09:00  INFO 26964 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T10:09:36.348+09:00  INFO 26964 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:09:36.367+09:00  INFO 26964 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:11:03.895+09:00  INFO 27213 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 27213 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:11:03.896+09:00  INFO 27213 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:11:04.142+09:00  INFO 27213 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.387 seconds (process running for 0.764)
+2025-09-12T10:11:04.148+09:00  INFO 27213 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:11:04.312+09:00  INFO 27213 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@704067c6
+2025-09-12T10:11:04.313+09:00  INFO 27213 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:11:04.711+09:00  INFO 27213 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T10:11:04.743+09:00  INFO 27213 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:11:04.767+09:00  INFO 27213 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:11:20.921+09:00  INFO 27271 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 27271 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:11:20.922+09:00  INFO 27271 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:11:21.187+09:00  INFO 27271 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.428 seconds (process running for 0.859)
+2025-09-12T10:11:21.195+09:00  INFO 27271 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:11:21.347+09:00  INFO 27271 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T10:11:21.348+09:00  INFO 27271 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:11:21.772+09:00  INFO 27271 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:11:21.804+09:00  INFO 27271 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:13:01.668+09:00  INFO 27604 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 27604 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:13:01.668+09:00  INFO 27604 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:13:01.922+09:00  INFO 27604 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.397 seconds (process running for 0.846)
+2025-09-12T10:13:01.929+09:00  INFO 27604 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:13:02.083+09:00  INFO 27604 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7f4596d0
+2025-09-12T10:13:02.084+09:00  INFO 27604 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:13:02.481+09:00  INFO 27604 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : test 146
+2025-09-12T10:13:02.481+09:00  INFO 27604 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T10:13:02.484+09:00  INFO 27604 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+
+2025-09-12T10:13:02.515+09:00  INFO 27604 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:13:02.545+09:00  INFO 27604 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:13:11.786+09:00  INFO 27634 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 27634 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:13:11.787+09:00  INFO 27634 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:13:12.006+09:00  INFO 27634 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.357 seconds (process running for 0.69)
+2025-09-12T10:13:12.013+09:00  INFO 27634 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:13:12.284+09:00  INFO 27634 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T10:13:12.285+09:00  INFO 27634 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:13:12.691+09:00  INFO 27634 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+AND rq.borrower_id = ?
+2025-09-12T10:13:12.725+09:00  INFO 27634 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:13:12.745+09:00  INFO 27634 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:13:22.703+09:00  INFO 27666 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 27666 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:13:22.704+09:00  INFO 27666 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:13:22.947+09:00  INFO 27666 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.385 seconds (process running for 0.779)
+2025-09-12T10:13:22.955+09:00  INFO 27666 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:13:23.110+09:00  INFO 27666 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7f4596d0
+2025-09-12T10:13:23.111+09:00  INFO 27666 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:13:23.540+09:00  INFO 27666 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:13:23.571+09:00  INFO 27666 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:19:38.332+09:00  INFO 28765 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 28765 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:19:38.333+09:00  INFO 28765 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:19:38.600+09:00  INFO 28765 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.417 seconds (process running for 0.796)
+2025-09-12T10:19:38.607+09:00  INFO 28765 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:19:38.763+09:00  INFO 28765 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T10:19:38.764+09:00  INFO 28765 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:19:39.173+09:00  INFO 28765 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+
+2025-09-12T10:19:39.209+09:00  INFO 28765 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:19:39.217+09:00  INFO 28765 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:19:53.093+09:00  INFO 28806 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 28806 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:19:53.093+09:00  INFO 28806 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:19:53.330+09:00  INFO 28806 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.374 seconds (process running for 0.698)
+2025-09-12T10:19:53.336+09:00  INFO 28806 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:19:53.500+09:00  INFO 28806 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@159424e2
+2025-09-12T10:19:53.501+09:00  INFO 28806 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:19:53.906+09:00  INFO 28806 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+
+2025-09-12T10:19:53.943+09:00  INFO 28806 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:19:53.955+09:00  INFO 28806 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:49:05.997+09:00  INFO 34021 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Starting RequestServiceTest using Java 21.0.8 with PID 34021 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:49:05.998+09:00  INFO 34021 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:49:06.420+09:00  INFO 34021 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:49:06.595+09:00  INFO 34021 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@682e422c
+2025-09-12T10:49:06.595+09:00  INFO 34021 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:49:06.914+09:00  INFO 34021 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2025-09-12T10:49:06.914+09:00  WARN 34021 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
+2025-09-12T10:49:06.947+09:00  WARN 34021 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
+2025-09-12T10:49:06.958+09:00  WARN 34021 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
+
+********************************************************************
+**********        Security debugging is enabled.       *************
+**********    This may include sensitive information.  *************
+**********      Do not use in a production system!     *************
+********************************************************************
+
+
+2025-09-12T10:49:07.067+09:00  INFO 34021 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Started RequestServiceTest in 1.217 seconds (process running for 1.604)
+2025-09-12T10:49:07.068+09:00  INFO 34021 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
+2025-09-12T10:49:07.822+09:00  INFO 34021 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:49:07.825+09:00  INFO 34021 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:51:56.848+09:00  INFO 34536 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Starting RequestServiceTest using Java 21.0.8 with PID 34536 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:51:56.849+09:00  INFO 34536 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:51:57.236+09:00  INFO 34536 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:51:57.403+09:00  INFO 34536 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@747f6c5a
+2025-09-12T10:51:57.404+09:00  INFO 34536 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:51:57.713+09:00  INFO 34536 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2025-09-12T10:51:57.714+09:00  WARN 34536 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
+2025-09-12T10:51:57.746+09:00  WARN 34536 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
+2025-09-12T10:51:57.757+09:00  WARN 34536 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
+
+********************************************************************
+**********        Security debugging is enabled.       *************
+**********    This may include sensitive information.  *************
+**********      Do not use in a production system!     *************
+********************************************************************
+
+
+2025-09-12T10:51:57.867+09:00  INFO 34536 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Started RequestServiceTest in 1.146 seconds (process running for 1.516)
+2025-09-12T10:51:57.867+09:00  INFO 34536 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
+2025-09-12T10:51:58.641+09:00  INFO 34536 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:51:58.643+09:00  INFO 34536 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-12T10:53:21.046+09:00  INFO 34741 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Starting RequestServiceTest using Java 21.0.8 with PID 34741 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-12T10:53:21.047+09:00  INFO 34741 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : No active profile set, falling back to 1 default profile: "default"
+2025-09-12T10:53:21.438+09:00  INFO 34741 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-12T10:53:21.601+09:00  INFO 34741 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@682e422c
+2025-09-12T10:53:21.601+09:00  INFO 34741 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-12T10:53:21.896+09:00  INFO 34741 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2025-09-12T10:53:21.896+09:00  WARN 34741 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
+2025-09-12T10:53:21.927+09:00  WARN 34741 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
+2025-09-12T10:53:21.938+09:00  WARN 34741 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
+
+********************************************************************
+**********        Security debugging is enabled.       *************
+**********    This may include sensitive information.  *************
+**********      Do not use in a production system!     *************
+********************************************************************
+
+
+2025-09-12T10:53:22.041+09:00  INFO 34741 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Started RequestServiceTest in 1.121 seconds (process running for 1.508)
+2025-09-12T10:53:22.042+09:00  INFO 34741 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
+2025-09-12T10:53:22.532+09:00  INFO 34741 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        rq.manager,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        admin.name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+    WHERE rq.id = ?
+
+2025-09-12T10:53:22.568+09:00  INFO 34741 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-12T10:53:22.571+09:00  INFO 34741 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
