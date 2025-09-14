@@ -201,24 +201,6 @@ class RequestRepositoryTest {
     }
 
     @Test
-    @DisplayName("리퀘스트 전체 조회 성공")
-    void findAll() {
-        // given
-        // when
-        requestRepository.save(saveRequestDto);
-        // then
-        List<Request> result = requestRepository.findAll();
-        assertThat(result.size()).isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("리퀘스트 전체 조회 (실패 조회값 없음)")
-    void findAllFail() {
-        assertThatThrownBy(() -> requestRepository.findAll())
-                .isInstanceOf(ResourceNotFoundException.class);
-    }
-
-    @Test
     @DisplayName("리퀘스트 수정 성공")
     void patchRequest() {
         // given
@@ -320,7 +302,7 @@ class RequestRepositoryTest {
         requestRepository.manageRequest(adminId, requestId);
         Request result = requestRepository.findManagerAndItemIdById(requestId);
         // then
-        assertThat(result.getItemId()).isEqualTo(saveRequestDto.getItemId());
+        assertThat(result.getItem().getId()).isEqualTo(saveRequestDto.getItemId());
         assertThat(result.getType()).isEqualTo(RequestType.BORROW);
         assertThat(result.getState()).isEqualTo(RequestState.ASSIGNED);
         assertThat(result.getManager().getId()).isEqualTo(adminId);

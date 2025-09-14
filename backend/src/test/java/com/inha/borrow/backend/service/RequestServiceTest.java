@@ -1,5 +1,6 @@
 package com.inha.borrow.backend.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
@@ -60,6 +61,8 @@ class RequestServiceTest {
 
         @Autowired
         private PasswordEncoder passwordEncoder;
+
+        private ObjectMapper objectMapper = new ObjectMapper();
 
         private int requestId;
         private Item savedItem;
@@ -195,13 +198,6 @@ class RequestServiceTest {
         }
 
         @Test
-        @DisplayName("전체 조회 성공")
-        void findAll() {
-                List<Request> result = requestService.findAll();
-                assertThat(result.size()).isEqualTo(1);
-        }
-
-        @Test
         @DisplayName("리퀘스트 조회 성공(대여자)")
         void findByIdForBorrowerSuccessTest() {
                 // given
@@ -215,12 +211,13 @@ class RequestServiceTest {
 
         @Test
         @DisplayName("리퀘스트 조회 성공(관리자)")
-        void findByIdForAdminSuccessTest() {
+        void findByIdForAdminSuccessTest() throws Exception {
                 // given
                 int expectedId = requestId;
                 // when
                 // then
                 Request result = requestService.findById(admin, expectedId);
+                System.out.println(objectMapper.writeValueAsString(result));
                 assertThat(result.getId()).isEqualTo(expectedId);
                 assertThat(result.getBorrowerId()).isEqualTo(borrower.getId());
         }
@@ -246,11 +243,12 @@ class RequestServiceTest {
         })
         @DisplayName("리퀘스트 조건 조회 파라미터 - 대여자 경로 성공")
         void findByCondition_borrower_param_success(String borrowerIdParam, String type, String state,
-                        int expectedSize) {
+                        int expectedSize) throws Exception {
                 // given
                 // when
                 List<Request> result = requestService.findByCondition(borrower, borrowerIdParam, type, state);
                 // then
+                System.out.println(objectMapper.writeValueAsString(result));
                 assertThat(result.size()).isEqualTo(expectedSize);
         }
 

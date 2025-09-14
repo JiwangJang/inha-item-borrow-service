@@ -35,7 +35,7 @@ public class ResponseService {
         String rejectReason = dto.getRejectReason();
         int requestId = dto.getRequestId();
         String manager = request.getManager().getId();
-        int itemId = request.getItemId();
+        int itemId = request.getItem().getId();
         RequestType requestType = request.getType();
         ResponseType responseType = dto.getType();
         RequestState requestState = request.getState();
@@ -84,7 +84,7 @@ public class ResponseService {
         String rejectReason = dto.getRejectReason();
         int requestId = dto.getRequestId();
         String manager = request.getManager().getId();
-        int itemId = request.getItemId();
+        int itemId = request.getItem().getId();
         RequestType requestType = request.getType();
         RequestState requestState = request.getState();
         boolean isPermit = !StringUtils.hasText(rejectReason);

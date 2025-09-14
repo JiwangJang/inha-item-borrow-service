@@ -10,6 +10,7 @@ import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvi
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.forAuthTest.admin.WithMockAdmin;
 import com.inha.borrow.backend.forAuthTest.borrower.WithMockBorrower;
+import com.inha.borrow.backend.model.dto.item.RequestItem;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.entity.request.RequestManager;
@@ -84,9 +85,10 @@ class RequestControllerTest {
                                 .returnAt(Timestamp.valueOf(LocalDateTime.now().plusDays(14)))
                                 .borrowerAt(Timestamp.valueOf(LocalDateTime.now()))
                                 .build();
+
                 request = Request.builder()
                                 .id(1)
-                                .itemId(1)
+                                .item(new RequestItem(1, "item", 1000))
                                 .manager(RequestManager.builder().id("test").build())
                                 .borrowerId(TEST_USER_ID)
                                 .createdAt(Timestamp.from(Instant.now()))

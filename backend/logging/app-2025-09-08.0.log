@@ -1,8 +1,0 @@
-2025-09-08T19:51:44.129+09:00  INFO 57759 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 57759 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-08T19:51:44.130+09:00  INFO 57759 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
-2025-09-08T19:51:44.357+09:00  INFO 57759 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.384 seconds (process running for 0.823)
-2025-09-08T19:51:44.367+09:00  INFO 57759 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-08T19:51:44.579+09:00  INFO 57759 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1de0641b
-2025-09-08T19:51:44.580+09:00  INFO 57759 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-08T19:51:45.071+09:00  INFO 57759 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-08T19:51:45.079+09:00  INFO 57759 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

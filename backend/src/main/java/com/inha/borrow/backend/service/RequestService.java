@@ -61,15 +61,6 @@ public class RequestService {
     }
 
     /**
-     * 리퀘스트 전체 조회하는 메서드
-     * 
-     * @author 형민재
-     */
-    public List<Request> findAll() {
-        return requestRepository.findAll();
-    }
-
-    /**
      * ID로 리퀘스트를 가져오는 메서드
      * 
      * @param requestId
