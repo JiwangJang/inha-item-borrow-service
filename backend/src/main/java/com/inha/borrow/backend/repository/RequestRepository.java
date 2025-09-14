@@ -28,7 +28,6 @@ import java.util.List;
 public class RequestRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private final String REQUEST_NOT_FOUND = "리퀘스트를 찾을 수 없습니다.";
 
     public RowMapper<Request> requestRowMapper = (rs, rowNum) -> {
         int id = rs.getInt("id");
@@ -85,8 +84,8 @@ public class RequestRepository {
             Request result = jdbcTemplate.queryForObject(sql.toString(), requestRowMapper, params.toArray());
             return result;
         } catch (EmptyResultDataAccessException e) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            throw new ResourceNotFoundException(errorCode.name(), REQUEST_NOT_FOUND);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
+            throw new ResourceNotFoundException(errorCode.name(),errorCode.getMessage());
         }
     }
 
@@ -112,9 +111,8 @@ public class RequestRepository {
         List<Request> result = jdbcTemplate.query(sql.toString(), requestRowMapper, params.toArray());
 
         if (result.isEmpty()) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(REQUEST_NOT_FOUND);
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
+            throw new ResourceNotFoundException(errorCode.name(),errorCode.getMessage());
         }
 
         return result;
@@ -129,8 +127,8 @@ public class RequestRepository {
         String sql = "SELECT * FROM request";
         List<Request> result = jdbcTemplate.query(sql, requestRowMapper);
         if (result.isEmpty()) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
+            throw new ResourceNotFoundException(errorCode.name(),errorCode.getMessage());
         }
         return result;
     }
@@ -151,9 +149,8 @@ public class RequestRepository {
                 patchRequestDto.getBorrowerAt(),
                 requestId, borrowerId);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(REQUEST_NOT_FOUND);
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
+            throw new ResourceNotFoundException(errorCode.name(),errorCode.getMessage());
         }
     }
 
@@ -169,8 +166,8 @@ public class RequestRepository {
         boolean cancel = true;
         int result = jdbcTemplate.update(sql, cancel, requestId, borrowerId);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
+            throw new ResourceNotFoundException(errorCode.name(),errorCode.getMessage());
         }
     }
 
@@ -185,9 +182,8 @@ public class RequestRepository {
         String sql = "UPDATE request SET state=? WHERE ID=?";
         int result = jdbcTemplate.update(sql, state.name(), requestId);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(REQUEST_NOT_FOUND);
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
+            throw new ResourceNotFoundException(errorCode.name(),errorCode.getMessage());
         }
     }
 
@@ -201,9 +197,8 @@ public class RequestRepository {
         String sql = "DELETE FROM request WHERE id = ?";
         int result = jdbcTemplate.update(sql, requestId);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(REQUEST_NOT_FOUND);
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
+            throw new ResourceNotFoundException(errorCode.name(),errorCode.getMessage());
         }
     }
 

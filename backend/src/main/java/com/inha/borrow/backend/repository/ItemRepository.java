@@ -30,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ItemRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final String NOT_FOUND_MESSAGE = "존재하지 않는 물품입니다.";
 
     /**
      * Item객체를 DB에 저장하는 메서드
@@ -131,8 +130,7 @@ public class ItemRepository {
                         .build();
             }, id);
         } catch (IncorrectResultSizeDataAccessException e) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_ITEM;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -141,15 +139,14 @@ public class ItemRepository {
      * 특정 Item객체를 DB에서 삭제하는 메서드
      * 
      * @param id           삭제할 Item의 아이디
-     * @param deleteReason 삭제 이유
+     * @param deleteRequestDto  삭제 이유
      * @throws ResourceNotFoundException 없는 자원에 대해 삭제 요청을 보낸경우
      */
     public void deleteItem(int id, ItemDeleteRequestDto deleteRequestDto) {
         String sql = "UPDATE item SET state = 'DELETED', delete_reason = ? WHERE id = ?;";
         int affectedRow = jdbcTemplate.update(sql, deleteRequestDto.getDeleteReason(), id);
         if (affectedRow == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_ITEM;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -167,8 +164,7 @@ public class ItemRepository {
                 item.getDeleteReason(),
                 item.getPrice(), item.getState().name(), id);
         if (affectedRow == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_ITEM;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -185,7 +181,7 @@ public class ItemRepository {
         String sql = "UPDATE item SET state = ? WHERE id =?";
         int result = jdbcTemplate.update(sql, state.name(), id);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_ITEM;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }

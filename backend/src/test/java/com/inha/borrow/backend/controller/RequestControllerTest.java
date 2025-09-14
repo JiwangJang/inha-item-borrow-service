@@ -100,7 +100,6 @@ class RequestControllerTest {
                 patchRequestDto = PatchRequestDto.builder()
                                 .returnAt(Timestamp.valueOf(LocalDateTime.now().plusDays(14)))
                                 .borrowerAt(Timestamp.valueOf(LocalDateTime.now()))
-                                .type(RequestType.BORROW)
                                 .build();
 
                 findRequest = new Request(

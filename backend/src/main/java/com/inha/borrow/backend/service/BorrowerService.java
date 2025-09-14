@@ -90,8 +90,8 @@ public class BorrowerService implements UserDetailsService {
     /**
      * 대여자의 정보를 수정하는 메서드
      *
-     * @param phoneNumber
-     * @param id
+     * @param borrowerId
+     * @param dto
      * @author 형민재
      */
     public void patchPhoneNumber(String borrowerId, PatchPhonenumberDto dto) {
@@ -100,9 +100,8 @@ public class BorrowerService implements UserDetailsService {
         String userCode = dto.getSmsVerifyCode();
         String newPhonenumber = dto.getNewPhonenumber();
         if (!sentCode.equals(userCode)) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
-            apiErrorCode.setMessage("인증코드를 다시 확인해주세요.");
-            throw new InvalidValueException(userCode, userCode);
+            ApiErrorCode apiErrorCode = ApiErrorCode.INCORRECT_CODE;
+            throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
 
         borrowerRepository.patchPhoneNumber(newPhonenumber, borrowerId);

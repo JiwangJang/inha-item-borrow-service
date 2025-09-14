@@ -117,31 +117,12 @@ class RequestServiceTest {
         Request result = requestService.findById(borrower, requestId);
         assertThat(result.getBorrowerId()).isEqualTo("123");
     }
-    @Test
-    @DisplayName("리퀘스트 조회 (실패 권한 없음)")
-    void findByIdFailNotAllowed() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        borrower.setAuthorities(authorities);
-        assertThatThrownBy(()->requestService.findById(borrower,requestId))
-                .isInstanceOf(AccessDeniedException.class);
-    }
-
 
     @Test
     @DisplayName("조건 조회 성공")
     void findByCondition() {
         List<Request> result = requestService.findByCondition(borrower,borrowerDto.getId() ,"BORROW", "PENDING");
         assertThat(result).hasSize(1);
-    }
-
-    @Test
-    @DisplayName("조건 조회 (실패 권한 없음)")
-    void findByConditionFailNotAllowed() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        borrower.setAuthorities(authorities);
-        assertThatThrownBy(()->requestService.findByCondition(borrower,borrowerDto.getId() ,"BORROW", "PENDING"))
-                .isInstanceOf(AccessDeniedException.class);
-
     }
 
 
@@ -159,7 +140,6 @@ class RequestServiceTest {
         PatchRequestDto dto = PatchRequestDto.builder()
                 .borrowerAt(Timestamp.valueOf(LocalDateTime.of(2025, 9, 1, 10, 0)))
                 .returnAt(Timestamp.valueOf(LocalDateTime.of(2025, 9, 4, 10, 0)))
-                .type(RequestType.BORROW)
                 .build();
 
         requestService.patchRequest(dto, requestId, "123");

@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 public class BorrowerRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final String NOT_FOUND_MESSAGE = "존재하지 않는 계정입니다.";
 
     private RowMapper<Borrower> borrowerRowMapper = (rs, rowNum) -> {
         String id = rs.getString("id");
@@ -59,8 +58,7 @@ public class BorrowerRepository {
             String sql = "SELECT * FROM borrower WHERE id=? AND withdrawal = false;";
             return jdbcTemplate.queryForObject(sql, borrowerRowMapper, id);
         } catch (IncorrectResultSizeDataAccessException e) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -75,8 +73,7 @@ public class BorrowerRepository {
         String sql = "SELECT * FROM borrower WHERE withdrawal = false;";
         List<Borrower> result = jdbcTemplate.query(sql, borrowerRowMapper);
         if (result.isEmpty()) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("등록된 대여자가 없습니다.");
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
         return result;
@@ -108,8 +105,7 @@ public class BorrowerRepository {
         String sql = "UPDATE borrower SET password = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, password, id);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -118,8 +114,7 @@ public class BorrowerRepository {
         String sql = " UPDATE borrower SET email = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, email, id);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -128,8 +123,7 @@ public class BorrowerRepository {
         String sql = " UPDATE borrower SET name = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, name, id);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -138,8 +132,7 @@ public class BorrowerRepository {
         String sql = " UPDATE borrower SET phonenumber = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, phoneNumber, id);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
 
@@ -149,8 +142,7 @@ public class BorrowerRepository {
         String sql = " UPDATE borrower SET student_number = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, studentNumber, id);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -159,8 +151,7 @@ public class BorrowerRepository {
         String sql = " UPDATE borrower SET account_number = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, accountNumber, id);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -169,8 +160,7 @@ public class BorrowerRepository {
         String sql = " UPDATE borrower SET withdrawal = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, withDrawal, id);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -179,8 +169,7 @@ public class BorrowerRepository {
         String sql = " UPDATE borrower SET ban = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, ban, id);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }

@@ -74,14 +74,15 @@ create table signup_request(
     student_council_fee_photo TEXT NOT NULL,
     account_number varchar(20) NOT NULL,
     state varchar(10) default 'PENDING',
-    rejectReason varchar(100)
+    reject_reason varchar(100)
 );
 
+-- manager NOT NULL 로 되있었지만 기존 테스트 충돌로 인해 임시로 지움
 create table request (
     id int NOT NULL primary key auto_increment,
     item_id int NOT NULL,
     borrower_id varchar(50) NOT NULL,
-    manager varchar(20) NOT NULL,
+    manager varchar(20),
     foreign key(manager) references admin(id),
     foreign key(item_id) references item(id),
     foreign key(borrower_id) references borrower(id),

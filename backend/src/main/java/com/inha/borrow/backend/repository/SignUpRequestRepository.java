@@ -24,7 +24,6 @@ import java.util.List;
 @Slf4j
 public class SignUpRequestRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final String NOT_FOUND_MESSAGE = "회원가입 신청내역이 존재하지 않습니다.";
 
     private RowMapper<SignUpForm> rowMapper = (rs, rowNum) -> {
         String id = rs.getString("id");
@@ -103,8 +102,7 @@ public class SignUpRequestRepository {
             String sql = "SELECT * FROM signup_request WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (EmptyResultDataAccessException e) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -122,8 +120,7 @@ public class SignUpRequestRepository {
             String sql = "SELECT password FROM signup_request WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, String.class, id);
         } catch (EmptyResultDataAccessException e) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -139,7 +136,11 @@ public class SignUpRequestRepository {
 
     public void patchEvaluation(EvaluationRequestDto evaluationRequest, String id) {
         String sql = "UPDATE signup_request SET state = ?, reject_reason = ? WHERE id = ?";
-        jdbcTemplate.update(sql, evaluationRequest.getState().name(), evaluationRequest.getRejectReason(), id);
+        int result = jdbcTemplate.update(sql, evaluationRequest.getState().name(), evaluationRequest.getRejectReason(), id);
+        if(result==0){
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 
     /**
@@ -165,8 +166,7 @@ public class SignUpRequestRepository {
                 signUpForm.getAccountNumber(),
                 id);
         if (affectedRow == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -183,7 +183,7 @@ public class SignUpRequestRepository {
         String sql = "DELETE FROM signup_request WHERE id = ?";
         int affectedRow = jdbcTemplate.update(sql, id);
         if (affectedRow == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }

@@ -1,5 +1,6 @@
 package com.inha.borrow.backend.repository;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
@@ -46,7 +47,6 @@ class RequestRepositoryTest {
     private SaveRequestDto saveRequestDto;
     private ItemDto itemDto;
     private BorrowerDto borrowerDto;
-    private final String REQUEST_NOT_FOUND = "리퀘스트를 찾을 수 없습니다.";
 
 
 
@@ -106,8 +106,8 @@ class RequestRepositoryTest {
     void findByIdFailNotFoundBorrowerId() {
         requestRepository.deleteAll();
         assertThatThrownBy(()-> requestRepository.findById("321",requestRepository.save(saveRequestDto)))
-                .isInstanceOf(ResourceNotFoundException.class);
-                //.hasMessageContaining(REQUEST_NOT_FOUND);
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_REQUEST.getMessage());
     }
 
     @Test
@@ -121,8 +121,8 @@ class RequestRepositoryTest {
     @DisplayName("리퀘스트 조건 조회 (실패 BorrowerId 미존재)")
     void findByConditionFailNotFoundBorrowerId() {
         assertThatThrownBy(()->requestRepository.findByCondition("321","BORROW","PENDING"))
-                .isInstanceOf(ResourceNotFoundException.class);
-                //.hasMessageContaining(REQUEST_NOT_FOUND);
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_REQUEST.getMessage());
 
     }
 
@@ -138,7 +138,8 @@ class RequestRepositoryTest {
     void findAllFail() {
         requestRepository.deleteAll();
         assertThatThrownBy(()->requestRepository.findAll())
-                .isInstanceOf(ResourceNotFoundException.class);
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_REQUEST.getMessage());
 
     }
 
@@ -148,11 +149,10 @@ class RequestRepositoryTest {
         PatchRequestDto patchRequestDto =new PatchRequestDto();
         patchRequestDto.setBorrowerAt(Timestamp.valueOf(LocalDateTime.now().plusDays(7)));
         patchRequestDto.setReturnAt(Timestamp.valueOf(LocalDateTime.now().plusDays(8)));
-        patchRequestDto.setType(RequestType.RETURN);
         int requestId = requestRepository.save(saveRequestDto);
         requestRepository.patchRequest(patchRequestDto,requestId ,borrowerDto.getId());
         Request result = requestRepository.findById(borrowerDto.getId(),requestId);
-        assertThat(result.getType()).isEqualTo(RequestType.RETURN);
+        assertThat(result.getType()).isEqualTo(RequestType.BORROW);
     }
 
     @Test
@@ -161,9 +161,9 @@ class RequestRepositoryTest {
         PatchRequestDto patchRequestDto =new PatchRequestDto();
         patchRequestDto.setBorrowerAt(Timestamp.valueOf(LocalDateTime.now().plusDays(7)));
         patchRequestDto.setReturnAt(Timestamp.valueOf(LocalDateTime.now().plusDays(8)));
-        patchRequestDto.setType(RequestType.RETURN);
         assertThatThrownBy(()->requestRepository.patchRequest(patchRequestDto,1 ,borrowerDto.getId()))
-                .isInstanceOf(ResourceNotFoundException.class);
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_REQUEST.getMessage());
     }
 
     @Test
@@ -179,7 +179,8 @@ class RequestRepositoryTest {
     @DisplayName("리퀘스트 취소 (실패 borrowerId 미존재")
     void cancelRequestFailNotFoundBorrowerId() {
         assertThatThrownBy(()->requestRepository.cancelRequest(3,borrowerDto.getId()))
-                .isInstanceOf(ResourceNotFoundException.class);
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_REQUEST.getMessage());
     }
 
     @Test
@@ -195,7 +196,8 @@ class RequestRepositoryTest {
     @DisplayName("리퀘스트 평가 (실패 borrowerId 미존재")
     void evaluationRequestFailNotFoundBorrowerId() {
         assertThatThrownBy(()->requestRepository.evaluationRequest(RequestState.ASSIGNED,3))
-                .isInstanceOf(ResourceNotFoundException.class);
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_REQUEST.getMessage());
 
     }
 
@@ -213,7 +215,8 @@ class RequestRepositoryTest {
     @DisplayName("리퀘스트 삭제 (실패 borrowerId 미존재")
     void deleteRequestFailNotFoundBorrowerId() {
         assertThatThrownBy(()->requestRepository.deleteRequest(3))
-                .isInstanceOf(ResourceNotFoundException.class);
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_REQUEST.getMessage());
 
     }
 }

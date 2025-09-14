@@ -52,7 +52,7 @@ public class GlobalErrorHandler {
                                 .queryString(request.getQueryString())
                                 .build();
                 log.info("[INFO] invalid value: {}", serviceLog);
-                ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
+                ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getMessage());
                 ApiResponse<ErrorResponse> apiResponse = new ApiResponse<ErrorResponse>(false, errorResponse);
                 return apiResponse;
         }
@@ -194,7 +194,7 @@ public class GlobalErrorHandler {
                                 .queryString(request.getQueryString())
                                 .build();
                 log.info("[INFO] resource not found: {}", serviceLog);
-                ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
+                ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getMessage());
                 ApiResponse<ErrorResponse> apiResponse = new ApiResponse<ErrorResponse>(false, errorResponse);
                 return apiResponse;
         }

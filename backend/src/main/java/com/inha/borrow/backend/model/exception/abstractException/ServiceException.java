@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public abstract class ServiceException extends RuntimeException {
     String errorCode;
-    String errorMessage;
 
     public ServiceException(String errorCode, String errorMessage) {
+        super(errorMessage);
         this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
+
     }
 }
