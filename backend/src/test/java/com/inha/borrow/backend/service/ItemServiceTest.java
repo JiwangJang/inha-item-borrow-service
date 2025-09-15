@@ -96,8 +96,8 @@ public class ItemServiceTest {
                 .borrowerAt(Timestamp.from(Instant.now()))
                 .type(RequestType.BORROW)
                 .build();
-        int reqId = requestRepository.save(saveRequest);
-        requestRepository.evaluationRequest(RequestState.PERMIT, reqId);
+        int reqId = requestRepository.save(saveRequest).getRequestId();
+        requestRepository.updateRequestState(RequestState.PERMIT, reqId);
         return reqId;
     }
 

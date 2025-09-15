@@ -90,7 +90,7 @@ class ResponseRepositoryTest {
                 .borrowerAt(Timestamp.valueOf(LocalDateTime.now().plusDays(7)))
                 .type(RequestType.BORROW)
                 .build();
-        requestId = requestRepository.save(saveRequestDto);
+        requestId = requestRepository.save(saveRequestDto).getRequestId();
     }
 
     @Test
@@ -107,6 +107,7 @@ class ResponseRepositoryTest {
         assertThat(saved.getCreatedAt()).isNotNull();
     }
 
+    @SuppressWarnings("null")
     @Test
     @DisplayName("응답 수정 성공 (reject_reason 변경)")
     void update_success() {

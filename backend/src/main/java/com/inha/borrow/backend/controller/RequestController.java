@@ -1,20 +1,21 @@
 package com.inha.borrow.backend.controller;
 
-import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
 import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.service.RequestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @Controller
@@ -29,11 +30,15 @@ public class RequestController {
      * @param saveRequestDto
      * @author 형민재
      */
-    @PostMapping()
-    public ResponseEntity<ApiResponse<Integer>> saveRequest(@AuthenticationPrincipal User user,
+    @PostMapping
+    public ResponseEntity<ApiResponse<SaveRequestResultDto>> saveRequest(
+            @AuthenticationPrincipal(expression = "id") String borrowerId,
             @Valid @RequestBody SaveRequestDto saveRequestDto) {
-        int result = requestService.saveRequest(user, saveRequestDto, saveRequestDto.getItemId());
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, result));
+        saveRequestDto.setBorrowerId(borrowerId);
+        SaveRequestResultDto result = requestService.saveRequest(saveRequestDto);
+        // DB의 정확한 시간을 가져올수 없어 이렇게 생성시간 표시
+        result.setCreatedAt(Timestamp.from(Instant.now()));
+        return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
     /**
@@ -49,11 +54,11 @@ public class RequestController {
             @AuthenticationPrincipal(expression = "id") String borrowerId,
             @PathVariable("request-id") int requestId, @Valid @RequestBody PatchRequestDto patchRequestDto) {
         requestService.patchRequest(patchRequestDto, requestId, borrowerId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok().build();
     }
 
     /**
-     * 리퀘스트를 취소하는 메서드
+     * 요청을 취소하는 메서드
      * 
      * @param borrowerId
      * @param requestId
@@ -64,25 +69,25 @@ public class RequestController {
             @AuthenticationPrincipal(expression = "id") String borrowerId,
             @PathVariable("request-id") int requestId) {
         requestService.cancelRequest(requestId, borrowerId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok().build();
     }
 
     /**
-     * 리퀘스트의 state를 수정하는 메서드
+     * 담당자 지정하는 메서드
      * 
+     * @param admin
      * @param requestId
-     * @param state
-     * @author 형민재
+     * @return
      */
-    @PatchMapping("/{request-id}/evaluate")
-    public ResponseEntity<ApiResponse<Void>> evaluateRequest(@PathVariable("request-id") int requestId,
-            @RequestBody RequestState state) {
-        requestService.evaluationRequest(state, requestId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    @PatchMapping("/{request-id}/manage")
+    public ResponseEntity<Void> manageRequest(@AuthenticationPrincipal(expression = "id") String adminId,
+            @PathVariable("request-id") int requestId) {
+        requestService.manageRequest(adminId, requestId);
+        return ResponseEntity.noContent().build();
     }
 
     /**
-     * 리퀘스트를 여러 조건으로 가져오는 메서드
+     * 대여 요청을 여러 조건으로 가져오는 메서드
      * 
      * @param user
      * @param borrowerId
@@ -90,15 +95,17 @@ public class RequestController {
      * @param type
      * @author 형민재
      */
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<ApiResponse<List<Request>>> findDetailRequest(@AuthenticationPrincipal User user,
-            @RequestParam String borrowerId, @RequestParam String type, @RequestParam String state) {
+            @RequestParam(value = "borrowerId") String borrowerId,
+            @RequestParam(value = "type") String type,
+            @RequestParam(value = "state") String state) {
         List<Request> result = requestService.findByCondition(user, borrowerId, type, state);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, result));
+        return ResponseEntity.ok().body(new ApiResponse<>(true, result));
     }
 
     /**
-     * 사용자가 자신이 요청을 리퀘스트를 가져오는 메서드
+     * 대여요청 단건조회 메서드
      * 
      * @param user
      * @param requestId
@@ -108,7 +115,7 @@ public class RequestController {
     public ResponseEntity<ApiResponse<Request>> findRequest(@AuthenticationPrincipal User user,
             @PathVariable("request-id") int requestId) {
         Request result = requestService.findById(user, requestId);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, result));
+        return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
 }

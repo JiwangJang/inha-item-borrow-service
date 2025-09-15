@@ -1,12 +1,12 @@
-2025-09-09T19:33:33.195+09:00  INFO 48868 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Starting RequestServiceTest using Java 21.0.8 with PID 48868 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T19:33:33.197+09:00  INFO 48868 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T19:33:33.613+09:00  INFO 48868 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-09T19:33:33.820+09:00  INFO 48868 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2726a511
-2025-09-09T19:33:33.821+09:00  INFO 48868 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-09T19:33:34.166+09:00  INFO 48868 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
-2025-09-09T19:33:34.167+09:00  WARN 48868 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
-2025-09-09T19:33:34.198+09:00  WARN 48868 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests, /request/requestuser, /requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
-2025-09-09T19:33:34.210+09:00  WARN 48868 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
+2025-09-14T19:29:01.719+09:00  INFO 69391 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Starting RequestServiceTest using Java 21.0.8 with PID 69391 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-14T19:29:01.720+09:00  INFO 69391 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : No active profile set, falling back to 1 default profile: "default"
+2025-09-14T19:29:02.106+09:00  INFO 69391 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-14T19:29:02.257+09:00  INFO 69391 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7345f97d
+2025-09-14T19:29:02.258+09:00  INFO 69391 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-14T19:29:02.567+09:00  INFO 69391 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2025-09-14T19:29:02.567+09:00  WARN 69391 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
+2025-09-14T19:29:02.600+09:00  WARN 69391 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
+2025-09-14T19:29:02.610+09:00  WARN 69391 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
 
 ********************************************************************
 **********        Security debugging is enabled.       *************
@@ -15,19 +15,49 @@
 ********************************************************************
 
 
-2025-09-09T19:33:34.342+09:00  INFO 48868 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Started RequestServiceTest in 1.288 seconds (process running for 1.701)
-2025-09-09T19:33:34.342+09:00  INFO 48868 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
-2025-09-09T19:33:36.128+09:00  INFO 48868 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-09T19:33:36.130+09:00  INFO 48868 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-09-09T19:36:15.598+09:00  INFO 49416 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Starting RequestServiceTest using Java 21.0.8 with PID 49416 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T19:36:15.599+09:00  INFO 49416 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T19:36:15.970+09:00  INFO 49416 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-09T19:36:16.126+09:00  INFO 49416 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@72c9ebfa
-2025-09-09T19:36:16.127+09:00  INFO 49416 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-09T19:36:16.429+09:00  INFO 49416 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
-2025-09-09T19:36:16.430+09:00  WARN 49416 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
-2025-09-09T19:36:16.460+09:00  WARN 49416 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests, /request/requestuser, /requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
-2025-09-09T19:36:16.471+09:00  WARN 49416 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
+2025-09-14T19:29:02.718+09:00  INFO 69391 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Started RequestServiceTest in 1.115 seconds (process running for 1.564)
+2025-09-14T19:29:02.719+09:00  INFO 69391 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
+2025-09-14T19:29:03.218+09:00  INFO 69391 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        item.name AS item_name,
+        item.price AS item_price,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        borrower.name AS borrower_name
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        rq.manager,
+        admin.name AS manager_name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+        LEFT JOIN item
+            ON rq.item_id = item.id
+        LEFT JOIN borrower
+            ON rq.borrower_id = borrower.id
+    WHERE rq.id = ? AND rq.cancel != true
+
+2025-09-14T19:29:03.482+09:00  INFO 69391 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-14T19:29:03.485+09:00  INFO 69391 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-14T19:30:25.528+09:00  INFO 69660 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Starting RequestServiceTest using Java 21.0.8 with PID 69660 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-14T19:30:25.529+09:00  INFO 69660 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : No active profile set, falling back to 1 default profile: "default"
+2025-09-14T19:30:25.896+09:00  INFO 69660 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-14T19:30:26.044+09:00  INFO 69660 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6d6039df
+2025-09-14T19:30:26.045+09:00  INFO 69660 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-14T19:30:26.341+09:00  INFO 69660 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2025-09-14T19:30:26.341+09:00  WARN 69660 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
+2025-09-14T19:30:26.371+09:00  WARN 69660 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
+2025-09-14T19:30:26.381+09:00  WARN 69660 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
 
 ********************************************************************
 **********        Security debugging is enabled.       *************
@@ -36,19 +66,49 @@
 ********************************************************************
 
 
-2025-09-09T19:36:16.573+09:00  INFO 49416 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Started RequestServiceTest in 1.108 seconds (process running for 1.503)
-2025-09-09T19:36:16.574+09:00  INFO 49416 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
-2025-09-09T19:36:18.181+09:00  INFO 49416 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-09T19:36:18.183+09:00  INFO 49416 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-09-09T19:38:05.567+09:00  INFO 49822 --- [backend] [main] c.i.b.backend.service.ItemServiceTest    : Starting ItemServiceTest using Java 21.0.8 with PID 49822 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T19:38:05.568+09:00  INFO 49822 --- [backend] [main] c.i.b.backend.service.ItemServiceTest    : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T19:38:05.934+09:00  INFO 49822 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-09T19:38:06.094+09:00  INFO 49822 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@62f9c790
-2025-09-09T19:38:06.094+09:00  INFO 49822 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-09T19:38:06.384+09:00  INFO 49822 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
-2025-09-09T19:38:06.385+09:00  WARN 49822 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
-2025-09-09T19:38:06.415+09:00  WARN 49822 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests, /request/requestuser, /requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
-2025-09-09T19:38:06.426+09:00  WARN 49822 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
+2025-09-14T19:30:26.494+09:00  INFO 69660 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Started RequestServiceTest in 1.082 seconds (process running for 1.526)
+2025-09-14T19:30:26.495+09:00  INFO 69660 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
+2025-09-14T19:30:27.000+09:00  INFO 69660 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        item.name AS item_name,
+        item.price AS item_price,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        borrower.name AS borrower_name,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        rq.manager,
+        admin.name AS manager_name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+        LEFT JOIN item
+            ON rq.item_id = item.id
+        LEFT JOIN borrower
+            ON rq.borrower_id = borrower.id
+    WHERE rq.id = ? AND rq.cancel != true
+
+2025-09-14T19:30:27.042+09:00  INFO 69660 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-14T19:30:27.044+09:00  INFO 69660 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-14T19:32:02.755+09:00  INFO 69925 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Starting RequestServiceTest using Java 21.0.8 with PID 69925 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-14T19:32:02.758+09:00  INFO 69925 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : No active profile set, falling back to 1 default profile: "default"
+2025-09-14T19:32:03.127+09:00  INFO 69925 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-14T19:32:03.283+09:00  INFO 69925 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4217bce6
+2025-09-14T19:32:03.283+09:00  INFO 69925 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-14T19:32:03.589+09:00  INFO 69925 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2025-09-14T19:32:03.589+09:00  WARN 69925 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
+2025-09-14T19:32:03.620+09:00  WARN 69925 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
+2025-09-14T19:32:03.630+09:00  WARN 69925 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
 
 ********************************************************************
 **********        Security debugging is enabled.       *************
@@ -57,639 +117,7 @@
 ********************************************************************
 
 
-2025-09-09T19:38:06.533+09:00  INFO 49822 --- [backend] [main] c.i.b.backend.service.ItemServiceTest    : Started ItemServiceTest in 1.099 seconds (process running for 1.491)
-2025-09-09T19:38:06.533+09:00  INFO 49822 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
-2025-09-09T19:38:06.955+09:00  INFO 49822 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-09T19:38:06.957+09:00  INFO 49822 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-09-09T19:38:58.473+09:00  INFO 49978 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : Starting ItemRepositoryTest using Java 21.0.8 with PID 49978 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T19:38:58.474+09:00  INFO 49978 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T19:38:58.727+09:00  INFO 49978 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : Started ItemRepositoryTest in 0.397 seconds (process running for 0.75)
-2025-09-09T19:38:58.734+09:00  INFO 49978 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-09T19:38:58.888+09:00  INFO 49978 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@49f3ff41
-2025-09-09T19:38:58.889+09:00  INFO 49978 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-09T19:38:59.344+09:00  INFO 49978 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-09T19:38:59.386+09:00  INFO 49978 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-09-09T19:43:35.281+09:00  INFO 50787 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : Starting ItemRepositoryTest using Java 21.0.8 with PID 50787 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T19:43:35.282+09:00  INFO 50787 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T19:43:35.492+09:00  INFO 50787 --- [backend] [main] c.i.b.b.repository.ItemRepositoryTest    : Started ItemRepositoryTest in 0.357 seconds (process running for 0.706)
-2025-09-09T19:43:35.499+09:00  INFO 50787 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-09T19:43:35.655+09:00  INFO 50787 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6f5e16cf
-2025-09-09T19:43:35.656+09:00  INFO 50787 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-09T19:43:36.012+09:00  INFO 50787 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-09T19:43:36.025+09:00  INFO 50787 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-09-09T20:34:43.996+09:00  INFO 61229 --- [backend] [main] c.i.b.b.r.ResponseRepositoryTest         : Starting ResponseRepositoryTest using Java 21.0.8 with PID 61229 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T20:34:43.997+09:00  INFO 61229 --- [backend] [main] c.i.b.b.r.ResponseRepositoryTest         : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T20:34:44.223+09:00  INFO 61229 --- [backend] [main] c.i.b.b.r.ResponseRepositoryTest         : Started ResponseRepositoryTest in 0.39 seconds (process running for 0.825)
-2025-09-09T20:34:44.239+09:00  INFO 61229 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-09T20:34:44.475+09:00  INFO 61229 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5438c17a
-2025-09-09T20:34:44.476+09:00  INFO 61229 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-09T20:34:44.894+09:00  INFO 61229 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-09T20:34:44.900+09:00  INFO 61229 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-09-09T20:36:13.423+09:00  INFO 61518 --- [backend] [main] c.i.b.b.r.ResponseRepositoryTest         : Starting ResponseRepositoryTest using Java 21.0.8 with PID 61518 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T20:36:13.425+09:00  INFO 61518 --- [backend] [main] c.i.b.b.r.ResponseRepositoryTest         : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T20:36:13.647+09:00  INFO 61518 --- [backend] [main] c.i.b.b.r.ResponseRepositoryTest         : Started ResponseRepositoryTest in 0.38 seconds (process running for 0.733)
-2025-09-09T20:36:13.653+09:00  INFO 61518 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-09T20:36:13.811+09:00  INFO 61518 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5438c17a
-2025-09-09T20:36:13.811+09:00  INFO 61518 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-09T20:36:14.200+09:00  INFO 61518 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-09T20:36:14.232+09:00  INFO 61518 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-09-09T20:36:19.679+09:00  INFO 61545 --- [backend] [main] c.i.b.b.r.ResponseRepositoryTest         : Starting ResponseRepositoryTest using Java 21.0.8 with PID 61545 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T20:36:19.679+09:00  INFO 61545 --- [backend] [main] c.i.b.b.r.ResponseRepositoryTest         : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T20:36:19.894+09:00  INFO 61545 --- [backend] [main] c.i.b.b.r.ResponseRepositoryTest         : Started ResponseRepositoryTest in 0.371 seconds (process running for 0.733)
-2025-09-09T20:36:19.901+09:00  INFO 61545 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-09T20:36:20.062+09:00  INFO 61545 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1378eea2
-2025-09-09T20:36:20.063+09:00  INFO 61545 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-09T20:36:20.427+09:00  INFO 61545 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-09T20:36:20.439+09:00  INFO 61545 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-09-09T20:49:28.723+09:00  INFO 64016 --- [backend] [main] c.i.b.b.service.ResponseServiceTest      : Starting ResponseServiceTest using Java 21.0.8 with PID 64016 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T20:49:28.724+09:00  INFO 64016 --- [backend] [main] c.i.b.b.service.ResponseServiceTest      : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T20:49:29.109+09:00  INFO 64016 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-09T20:49:29.303+09:00  INFO 64016 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@34a6d9db
-2025-09-09T20:49:29.303+09:00  INFO 64016 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-09T20:49:29.630+09:00  INFO 64016 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
-2025-09-09T20:49:29.630+09:00  WARN 64016 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
-2025-09-09T20:49:29.662+09:00  WARN 64016 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests, /request/requestuser, /requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
-2025-09-09T20:49:29.674+09:00  WARN 64016 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
-
-********************************************************************
-**********        Security debugging is enabled.       *************
-**********    This may include sensitive information.  *************
-**********      Do not use in a production system!     *************
-********************************************************************
-
-
-2025-09-09T20:49:29.779+09:00  INFO 64016 --- [backend] [main] c.i.b.b.service.ResponseServiceTest      : Started ResponseServiceTest in 1.184 seconds (process running for 1.549)
-2025-09-09T20:49:29.780+09:00  INFO 64016 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
-2025-09-09T20:49:30.415+09:00  INFO 64016 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-09T20:49:30.417+09:00  INFO 64016 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-09-09T20:52:49.519+09:00  INFO 64708 --- [backend] [main] c.i.b.b.service.ResponseServiceTest      : Starting ResponseServiceTest using Java 21.0.8 with PID 64708 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T20:52:49.520+09:00  INFO 64708 --- [backend] [main] c.i.b.b.service.ResponseServiceTest      : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T20:52:49.893+09:00  INFO 64708 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-09T20:52:50.049+09:00  INFO 64708 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@34a6d9db
-2025-09-09T20:52:50.049+09:00  INFO 64708 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-09T20:52:50.344+09:00  INFO 64708 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
-2025-09-09T20:52:50.345+09:00  WARN 64708 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
-2025-09-09T20:52:50.374+09:00  WARN 64708 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests, /request/requestuser, /requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
-2025-09-09T20:52:50.385+09:00  WARN 64708 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
-
-********************************************************************
-**********        Security debugging is enabled.       *************
-**********    This may include sensitive information.  *************
-**********      Do not use in a production system!     *************
-********************************************************************
-
-
-2025-09-09T20:52:50.493+09:00  INFO 64708 --- [backend] [main] c.i.b.b.service.ResponseServiceTest      : Started ResponseServiceTest in 1.1 seconds (process running for 1.454)
-2025-09-09T20:52:50.494+09:00  INFO 64708 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
-2025-09-09T20:52:51.230+09:00  INFO 64708 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-09T20:52:51.232+09:00  INFO 64708 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-09-09T20:54:19.593+09:00  INFO 65032 --- [backend] [main] c.i.b.b.service.ResponseServiceTest      : Starting ResponseServiceTest using Java 21.0.8 with PID 65032 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T20:54:19.594+09:00  INFO 65032 --- [backend] [main] c.i.b.b.service.ResponseServiceTest      : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T20:54:19.988+09:00  INFO 65032 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-09T20:54:20.141+09:00  INFO 65032 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@34a6d9db
-2025-09-09T20:54:20.142+09:00  INFO 65032 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-09T20:54:20.456+09:00  INFO 65032 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [adminAuthenticationProvider, borrowerAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
-2025-09-09T20:54:20.457+09:00  WARN 65032 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Found 2 UserDetailsService beans, with names [adminService, borrowerService]. Global Authentication Manager will not use a UserDetailsService for username/password login. Consider publishing a single UserDetailsService bean.
-2025-09-09T20:54:20.488+09:00  WARN 65032 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests, /request/requestuser, /requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
-2025-09-09T20:54:20.498+09:00  WARN 65032 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
-
-********************************************************************
-**********        Security debugging is enabled.       *************
-**********    This may include sensitive information.  *************
-**********      Do not use in a production system!     *************
-********************************************************************
-
-
-2025-09-09T20:54:20.605+09:00  INFO 65032 --- [backend] [main] c.i.b.b.service.ResponseServiceTest      : Started ResponseServiceTest in 1.139 seconds (process running for 1.508)
-2025-09-09T20:54:20.605+09:00  INFO 65032 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
-2025-09-09T20:54:21.088+09:00  INFO 65032 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-09-09T20:54:21.091+09:00  INFO 65032 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-09-09T21:01:04.847+09:00  INFO 66379 --- [backend] [main] c.i.b.b.c.ResponseControllerTest         : Starting ResponseControllerTest using Java 21.0.8 with PID 66379 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
-2025-09-09T21:01:04.847+09:00  INFO 66379 --- [backend] [main] c.i.b.b.c.ResponseControllerTest         : No active profile set, falling back to 1 default profile: "default"
-2025-09-09T21:01:05.621+09:00  INFO 66379 --- [backend] [main] eAuthenticationProviderManagerConfigurer : Found 2 AuthenticationProvider beans, with names [com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider#0, com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider#0]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
-2025-09-09T21:01:05.653+09:00  WARN 66379 --- [backend] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/requests, /request/requestuser, /requests/*/patch, requests/*/cancel] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
-2025-09-09T21:01:05.665+09:00  WARN 66379 --- [backend] [main] o.s.s.c.a.web.builders.WebSecurity       : 
-
-********************************************************************
-**********        Security debugging is enabled.       *************
-**********    This may include sensitive information.  *************
-**********      Do not use in a production system!     *************
-********************************************************************
-
-
-2025-09-09T21:01:05.725+09:00  INFO 66379 --- [backend] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
-2025-09-09T21:01:05.726+09:00  INFO 66379 --- [backend] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2025-09-09T21:01:05.726+09:00  INFO 66379 --- [backend] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-2025-09-09T21:01:05.737+09:00  INFO 66379 --- [backend] [main] c.i.b.b.c.ResponseControllerTest         : Started ResponseControllerTest in 1.046 seconds (process running for 1.415)
-2025-09-09T21:01:05.776+09:00  INFO 66379 --- [backend] [main] Spring Security Debugger                 : 
-
-************************************************************
-
-Request received for PATCH '/responses/10':
-
-org.springframework.mock.web.MockHttpServletRequest@23d0944b
-
-servletPath:
-pathInfo:/responses/10
-headers: 
-Content-Type: application/json;charset=UTF-8
-Content-Length: 33
-
-
-Security filter chain: [
-  DisableEncodeUrlFilter
-  WebAsyncManagerIntegrationFilter
-  SecurityContextHolderFilter
-  HeaderWriterFilter
-  LogoutFilter
-  BorrowerAuthenticationFilter
-  AdminAuthenticationFilter
-  RequestCacheAwareFilter
-  SecurityContextHolderAwareRequestFilter
-  ExceptionTranslationFilter
-  AuthorizationFilter
-]
-
-
-************************************************************
-
-
-2025-09-09T21:01:05.781+09:00  INFO 66379 --- [backend] [main] Spring Security Debugger                 : 
-
-************************************************************
-
-New HTTP session created: 1
-
-Call stack: 
-
-	at org.springframework.security.web.debug.Logger.info(Logger.java:46)
-	at org.springframework.security.web.debug.DebugFilter$DebugRequestWrapper.getSession(DebugFilter.java:171)
-	at jakarta.servlet.http.HttpServletRequestWrapper.getSession(HttpServletRequestWrapper.java:229)
-	at jakarta.servlet.http.HttpServletRequestWrapper.getSession(HttpServletRequestWrapper.java:229)
-	at jakarta.servlet.http.HttpServletRequestWrapper.getSession(HttpServletRequestWrapper.java:229)
-	at org.springframework.security.web.savedrequest.HttpSessionRequestCache.saveRequest(HttpSessionRequestCache.java:78)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.sendStartAuthentication(ExceptionTranslationFilter.java:218)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.handleAuthenticationException(ExceptionTranslationFilter.java:184)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.handleSpringSecurityException(ExceptionTranslationFilter.java:174)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:146)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
-	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
-	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.security.web.debug.DebugFilter.invokeWithWrappedRequest(DebugFilter.java:90)
-	at org.springframework.security.web.debug.DebugFilter.doFilter(DebugFilter.java:78)
-	at org.springframework.security.web.debug.DebugFilter.doFilter(DebugFilter.java:67)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
-	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
-	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
-	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
-	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
-	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
-	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:201)
-	at com.inha.borrow.backend.controller.ResponseControllerTest.updateResponse_unauthorized(ResponseControllerTest.java:143)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:775)
-	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:479)
-	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:161)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:152)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:91)
-	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:112)
-	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:94)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
-	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:93)
-	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:87)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:216)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:212)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:137)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
-	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
-	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:201)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:170)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:94)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:59)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:142)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:58)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:94)
-	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:52)
-	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$2(InterceptingLauncher.java:47)
-	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
-	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:46)
-	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:52)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:70)
-	at org.eclipse.jdt.internal.junit5.runner.JUnit5TestReference.run(JUnit5TestReference.java:100)
-	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:40)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:520)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:748)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:443)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:211)
-
-
-************************************************************
-
-
-2025-09-09T21:01:05.802+09:00  INFO 66379 --- [backend] [main] Spring Security Debugger                 : 
-
-************************************************************
-
-Request received for POST '/responses':
-
-org.springframework.mock.web.MockHttpServletRequest@299eca90
-
-servletPath:
-pathInfo:/responses
-headers: 
-Content-Type: application/json;charset=UTF-8
-Content-Length: 51
-
-
-Security filter chain: [
-  DisableEncodeUrlFilter
-  WebAsyncManagerIntegrationFilter
-  SecurityContextHolderFilter
-  HeaderWriterFilter
-  LogoutFilter
-  BorrowerAuthenticationFilter
-  AdminAuthenticationFilter
-  RequestCacheAwareFilter
-  SecurityContextHolderAwareRequestFilter
-  ExceptionTranslationFilter
-  AuthorizationFilter
-]
-
-
-************************************************************
-
-
-2025-09-09T21:01:05.809+09:00  INFO 66379 --- [backend] [main] Spring Security Debugger                 : 
-
-************************************************************
-
-Request received for PATCH '/responses/10':
-
-org.springframework.mock.web.MockHttpServletRequest@3eff6846
-
-servletPath:
-pathInfo:/responses/10
-headers: 
-Content-Type: application/json;charset=UTF-8
-Content-Length: 33
-
-
-Security filter chain: [
-  DisableEncodeUrlFilter
-  WebAsyncManagerIntegrationFilter
-  SecurityContextHolderFilter
-  HeaderWriterFilter
-  LogoutFilter
-  BorrowerAuthenticationFilter
-  AdminAuthenticationFilter
-  RequestCacheAwareFilter
-  SecurityContextHolderAwareRequestFilter
-  ExceptionTranslationFilter
-  AuthorizationFilter
-]
-
-
-************************************************************
-
-
-2025-09-09T21:01:05.829+09:00  INFO 66379 --- [backend] [main] Spring Security Debugger                 : 
-
-************************************************************
-
-Request received for POST '/responses':
-
-org.springframework.mock.web.MockHttpServletRequest@47ffdbba
-
-servletPath:
-pathInfo:/responses
-headers: 
-Content-Type: application/json;charset=UTF-8
-Content-Length: 51
-
-
-Security filter chain: [
-  DisableEncodeUrlFilter
-  WebAsyncManagerIntegrationFilter
-  SecurityContextHolderFilter
-  HeaderWriterFilter
-  LogoutFilter
-  BorrowerAuthenticationFilter
-  AdminAuthenticationFilter
-  RequestCacheAwareFilter
-  SecurityContextHolderAwareRequestFilter
-  ExceptionTranslationFilter
-  AuthorizationFilter
-]
-
-
-************************************************************
-
-
-2025-09-09T21:01:05.915+09:00  INFO 66379 --- [backend] [main] Spring Security Debugger                 : 
-
-************************************************************
-
-Request received for POST '/responses':
-
-org.springframework.mock.web.MockHttpServletRequest@7bc8ffbc
-
-servletPath:
-pathInfo:/responses
-headers: 
-Content-Type: application/json;charset=UTF-8
-Content-Length: 51
-
-
-Security filter chain: [
-  DisableEncodeUrlFilter
-  WebAsyncManagerIntegrationFilter
-  SecurityContextHolderFilter
-  HeaderWriterFilter
-  LogoutFilter
-  BorrowerAuthenticationFilter
-  AdminAuthenticationFilter
-  RequestCacheAwareFilter
-  SecurityContextHolderAwareRequestFilter
-  ExceptionTranslationFilter
-  AuthorizationFilter
-]
-
-
-************************************************************
-
-
-2025-09-09T21:01:05.917+09:00  INFO 66379 --- [backend] [main] Spring Security Debugger                 : 
-
-************************************************************
-
-New HTTP session created: 5
-
-Call stack: 
-
-	at org.springframework.security.web.debug.Logger.info(Logger.java:46)
-	at org.springframework.security.web.debug.DebugFilter$DebugRequestWrapper.getSession(DebugFilter.java:171)
-	at jakarta.servlet.http.HttpServletRequestWrapper.getSession(HttpServletRequestWrapper.java:229)
-	at jakarta.servlet.http.HttpServletRequestWrapper.getSession(HttpServletRequestWrapper.java:229)
-	at jakarta.servlet.http.HttpServletRequestWrapper.getSession(HttpServletRequestWrapper.java:229)
-	at org.springframework.security.web.savedrequest.HttpSessionRequestCache.saveRequest(HttpSessionRequestCache.java:78)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.sendStartAuthentication(ExceptionTranslationFilter.java:218)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.handleAuthenticationException(ExceptionTranslationFilter.java:184)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.handleSpringSecurityException(ExceptionTranslationFilter.java:174)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:146)
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
-	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235)
-	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-	at org.springframework.security.web.debug.DebugFilter.invokeWithWrappedRequest(DebugFilter.java:90)
-	at org.springframework.security.web.debug.DebugFilter.doFilter(DebugFilter.java:78)
-	at org.springframework.security.web.debug.DebugFilter.doFilter(DebugFilter.java:67)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267)
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240)
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
-	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
-	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
-	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
-	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:162)
-	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
-	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:201)
-	at com.inha.borrow.backend.controller.ResponseControllerTest.createResponse_unauthorized(ResponseControllerTest.java:98)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:775)
-	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:479)
-	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:161)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:152)
-	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:91)
-	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:112)
-	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:94)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
-	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
-	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:93)
-	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:87)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:216)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:212)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:137)
-	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
-	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
-	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
-	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
-	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
-	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
-	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:201)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:170)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:94)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:59)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:142)
-	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:58)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
-	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:94)
-	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:52)
-	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$2(InterceptingLauncher.java:47)
-	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
-	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:46)
-	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:52)
-	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:70)
-	at org.eclipse.jdt.internal.junit5.runner.JUnit5TestReference.run(JUnit5TestReference.java:100)
-	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:40)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:520)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:748)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:443)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:211)
-
-
-************************************************************
-
-
-2025-09-09T21:01:05.945+09:00  INFO 66379 --- [backend] [main] Spring Security Debugger                 : 
-
-************************************************************
-
-Request received for PATCH '/responses/10':
-
-org.springframework.mock.web.MockHttpServletRequest@6c8e5ac4
-
-servletPath:
-pathInfo:/responses/10
-headers: 
-Content-Type: application/json;charset=UTF-8
-Content-Length: 33
-
-
-Security filter chain: [
-  DisableEncodeUrlFilter
-  WebAsyncManagerIntegrationFilter
-  SecurityContextHolderFilter
-  HeaderWriterFilter
-  LogoutFilter
-  BorrowerAuthenticationFilter
-  AdminAuthenticationFilter
-  RequestCacheAwareFilter
-  SecurityContextHolderAwareRequestFilter
-  ExceptionTranslationFilter
-  AuthorizationFilter
-]
-
-
-************************************************************
-
-
+2025-09-14T19:32:03.728+09:00  INFO 69925 --- [backend] [main] c.i.b.b.service.RequestServiceTest       : Started RequestServiceTest in 1.089 seconds (process running for 1.548)
+2025-09-14T19:32:03.729+09:00  INFO 69925 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
+2025-09-14T19:32:04.819+09:00  INFO 69925 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-14T19:32:04.821+09:00  INFO 69925 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
