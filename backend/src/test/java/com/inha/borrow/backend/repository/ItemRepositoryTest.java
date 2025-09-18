@@ -8,9 +8,9 @@ import com.inha.borrow.backend.model.dto.item.BorrowedItemDto;
 import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
 import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.entity.Item;
-import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
 import jakarta.validation.ConstraintViolation;
@@ -78,8 +78,8 @@ class ItemRepositoryTest {
                 .borrowerAt(Timestamp.from(Instant.now()))
                 .type(RequestType.BORROW)
                 .build();
-        int requestId = requestRepository.save(saveRequest);
-        requestRepository.evaluationRequest(RequestState.PERMIT, requestId);
+        int requestId = requestRepository.save(saveRequest).getRequestId();
+        requestRepository.updateRequestState(RequestState.PERMIT, requestId);
     }
 
     @Test
@@ -231,12 +231,12 @@ class ItemRepositoryTest {
         borrowerRepository.save(borrower1);
         borrowerRepository.save(borrower2);
 
-        int id1 = requestRepository.save(saveRequest1);
-        int id2 = requestRepository.save(saveRequest2);
+        int id1 = requestRepository.save(saveRequest1).getRequestId();
+        int id2 = requestRepository.save(saveRequest2).getRequestId();
 
         // 동일한 아이템에 여러 요청이 있을 경우 테스트
         // 첫번째 요청은 빌리고 반납까지 완료됐다고 가정
-        requestRepository.evaluationRequest(RequestState.DONE, id1);
+        requestRepository.updateRequestState(RequestState.PERMIT, id1);
         // 두번쨰 요청은 대여신청을 취소했다고 가정
         requestRepository.cancelRequest(id2, borrower2.getId());
 

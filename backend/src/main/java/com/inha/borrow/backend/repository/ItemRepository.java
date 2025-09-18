@@ -116,7 +116,8 @@ public class ItemRepository {
                             AND request.type = 'BORROW'
                             AND request.state = 'PERMIT'
                             AND request.cancel = false
-                        WHERE item.id = ? AND item.state != 'DELETED';
+                        WHERE item.id = ? AND item.state != 'DELETED'
+                        ORDER BY request.created_at DESC LIMIT 1;
                     """;
             return jdbcTemplate.queryForObject(sql, (ResultSet resultSet, int index) -> {
                 return BorrowedItemDto.builder()
@@ -186,6 +187,21 @@ public class ItemRepository {
         }
     }
 
+    /**
+     * 대여물품의 상태를 반환하는 메서드
+     * 
+     * @param id
+     * @return
+     */
+    public ItemState findItemStateById(int id) {
+        String sql = "SELECT state FROM item WHERE id = ?;";
+        return jdbcTemplate.queryForObject(sql, (rs, index) -> {
+            String state = rs.getString("state");
+            return ItemState.valueOf(state);
+        }, id);
+    }
+
+    // 테스트용
     public void deleteAll() {
         String sql = "DELETE FROM item";
         jdbcTemplate.update(sql);

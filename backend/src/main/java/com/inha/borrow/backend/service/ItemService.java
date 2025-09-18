@@ -102,4 +102,8 @@ public class ItemService {
     public void updateState(ItemState state, int id) {
         itemRepository.updateState(state, id);
     }
+
+    public ItemState findItemStateById(int id) {
+        return itemRepository.findItemStateById(id);
+    }
 }

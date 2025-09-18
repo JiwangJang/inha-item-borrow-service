@@ -6,12 +6,14 @@ import com.inha.borrow.backend.model.entity.Item;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ItemDto {
     @NotBlank(message = "대여물품 이름은 비울수 없습니다.")
     private String name;

@@ -24,12 +24,12 @@ import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
 import com.inha.borrow.backend.model.dto.item.ItemDto;
 import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.entity.user.User;
-import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.repository.RequestRepository;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
@@ -96,8 +96,8 @@ public class ItemServiceTest {
                 .borrowerAt(Timestamp.from(Instant.now()))
                 .type(RequestType.BORROW)
                 .build();
-        int reqId = requestRepository.save(saveRequest);
-        requestRepository.evaluationRequest(RequestState.PERMIT, reqId);
+        int reqId = requestRepository.save(saveRequest).getRequestId();
+        requestRepository.updateRequestState(RequestState.PERMIT, reqId);
         return reqId;
     }
 

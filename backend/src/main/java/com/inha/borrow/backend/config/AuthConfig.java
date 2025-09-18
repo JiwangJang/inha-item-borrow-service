@@ -141,23 +141,32 @@ public class AuthConfig {
 							.hasAuthority(Role.PRESIDENT.name())
 							// 관리자의 부서나 직급을 수정하는건 국장권한(DIVISION_HEAD)부터 가능하다
 							.requestMatchers("/admins/info/*/division", "/admins/info/*/position")
-							.hasAnyAuthority(Role.DIVISION_HEAD.name())
+							.hasAuthority(Role.DIVISION_HEAD.name())
 							//
 							// /requests 관련 인증설정
-							// 대여요청을 만드는 경로는 대여자 권한으로 로그인 한 사람만 가능하다
+							// 대여요청을 조회하는 경로는 대여자나 관리자 권한이면 접근 가능하다
+							.requestMatchers(HttpMethod.GET, "/reqeusts", "/request/*")
+							.hasAnyAuthority(Role.BORROWER.name(), Role.DIVISION_MEMBER.name())
+							// 대여요청 또는 반납요청을 하는 경로는 대여자 권한으로 로그인 한 사람만 가능하다
 							// 대여요청을 수정하거나 취소하는 경로는 대여자 권한으로 로그인 한 사람만 가능하다
 							// 자신의 대여요청을 가져오는 경로는 대여자 권한으로 로그인 한 사람만 가능하다
-							.requestMatchers(HttpMethod.POST,"/requests")
-							.hasAnyAuthority(Role.BORROWER.name())
-							.requestMatchers("/requests/*/cancel","/requests/*/patch","/requests/*")
-							.hasAnyAuthority(Role.BORROWER.name())
+							.requestMatchers(HttpMethod.POST, "/requests")
+							.hasAuthority(Role.BORROWER.name())
+							.requestMatchers("/requests/*/patch",
+									"requests/*/cancel")
+							.hasAuthority(Role.BORROWER.name())
 							// 대여요청의 상태를 수정하는 경로는 학생회 임원만 가능하다
-							.requestMatchers("/requests/*/evaluate")
+							// 대여요청의 목록을 여러 조건을 걸어서 가져오는 경로는 학생회 임원만 가능하다
+							// 다른 사람의 대여요청 단건조회는 학생회 임원만 가능하다
+							.requestMatchers("/requests/*/manage")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							// 대여요청의 목록을 여러 조건을 걸어서 가져오는 경로는 학생회 임원, 대여자 둘 다 가능하다
 							.requestMatchers(HttpMethod.GET,"/requests")
 							.hasAnyAuthority(Role.BORROWER.name(),Role.DIVISION_MEMBER.name())
 							//
+							// /responses 관련 인증설정
+							.requestMatchers("/responses", "/responses/*")
+							.hasAuthority(Role.DIVISION_MEMBER.name())
 							// 이외의 경로는 무조건 인증 필요함
 							.anyRequest().authenticated();
 
