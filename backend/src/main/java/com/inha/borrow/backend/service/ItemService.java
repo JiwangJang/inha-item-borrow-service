@@ -57,7 +57,8 @@ public class ItemService {
     /**
      * 특정 Item을 찾는 메서드
      * 
-     * @param id
+     * @param user
+     * @param itemId
      * @return Item
      * @author 장지왕
      */
@@ -77,7 +78,7 @@ public class ItemService {
      * 특정 Item을 삭제하는 메서드
      * 
      * @param id           삭제할 Item의 아이디
-     * @param deleteReason 삭제 이유
+     * @param deleteRequestDto 삭제 이유
      */
     public void deleteItem(int id, ItemDeleteRequestDto deleteRequestDto) {
         itemRepository.deleteItem(id, deleteRequestDto);

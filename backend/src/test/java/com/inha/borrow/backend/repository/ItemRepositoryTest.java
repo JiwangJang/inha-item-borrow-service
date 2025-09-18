@@ -254,8 +254,8 @@ class ItemRepositoryTest {
         // then
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
                 () -> itemRepository.findById(192));
-        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
-        assertThat(ex.getErrorMessage()).isEqualTo("존재하지 않는 물품입니다.");
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND_ITEM.name());
+        assertThat(ex.getMessage()).isEqualTo("존재하지 않는 물품입니다.");
     }
 
     @Test
@@ -269,8 +269,8 @@ class ItemRepositoryTest {
         // then
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
                 () -> itemRepository.findById(savedItem.getId()));
-        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
-        assertThat(ex.getErrorMessage()).isEqualTo("존재하지 않는 물품입니다.");
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND_ITEM.name());
+        assertThat(ex.getMessage()).isEqualTo("존재하지 않는 물품입니다.");
     }
 
     @Test

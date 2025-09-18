@@ -85,7 +85,9 @@ public class SignUpRequestService {
     /**
      * singUpRequest 단건조회
      *
-     * @param id
+     * @param admin
+     * @param signUpRequestId
+     * @param passwordDto
      * @return
      */
     public SignUpForm findById(Admin admin, String signUpRequestId, SignUpRequestPasswordDto passwordDto) {
@@ -97,8 +99,7 @@ public class SignUpRequestService {
             if (passwordEncoder.matches(passwordDto.getPassword(), encodedPassword)) {
                 return signUpRequestRepository.findById(signUpRequestId);
             } else {
-                ApiErrorCode errorCode = ApiErrorCode.INVALID_PASSWORD;
-                errorCode.setMessage("비밀번호가 다릅니다.");
+                ApiErrorCode errorCode = ApiErrorCode.INCORRECT_PASSWORD;
                 throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
             }
         }
@@ -135,8 +136,7 @@ public class SignUpRequestService {
     public void patchSignUpRequest(SignUpForm signUpForm, MultipartFile studentIdentification,
             MultipartFile studentCouncilFee, String id, String originPassword) {
         if (!idCache.contains(id)) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("기존 회원가입 요청을 찾을 수 없습니다.");
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
         String password = signUpRequestRepository.findPasswordById(id);

@@ -33,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final String NOT_FOUND_MESSAGE = "존재하지 않는 관리자계정입니다.";
     private final PasswordEncoder passwordEncoder;
     private final String RAW_DEFAULT_PASSWORD = "a12345";
     private final JwtTokenService jwtTokenService;
@@ -74,8 +73,7 @@ public class AdminRepository {
                 return admin;
             }, id);
         } catch (IncorrectResultSizeDataAccessException e) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_ADMIN;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }
@@ -125,7 +123,8 @@ public class AdminRepository {
                     saveAdminDto.getName(), saveAdminDto.getPhonenumber(), saveAdminDto.getPosition().name(),
                     saveAdminDto.getDivision(), refreshToken);
         } catch (DataAccessException e) {
-            throw new InvalidValueException(ApiErrorCode.INVALID_VALUE.name(), "이미 존재하는 아이디입니다.");
+            ApiErrorCode errorCode = ApiErrorCode.EXIST_ID; //에러코드 EXIST_ID로 수정
+            throw new InvalidValueException(errorCode.name(),errorCode.getMessage());
         }
 
     }
@@ -144,8 +143,7 @@ public class AdminRepository {
                 updateAdminInfoDto.getPhonenumber(), updateAdminInfoDto.getEmail(),
                 id);
         if (affectedRow == 0) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
-            apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_ADMIN;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
     }
@@ -162,8 +160,7 @@ public class AdminRepository {
         String sql = "UPDATE admin SET password = ? WHERE id = ?;";
         int affectedRow = jdbcTemplate.update(sql, newPassword, id);
         if (affectedRow == 0) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
-            apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_ADMIN;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
     }
@@ -172,8 +169,9 @@ public class AdminRepository {
      * 직책을 변경하는 메서드
      * 한 단계위의 권한을 가져야만 호출 가능
      * 
-     * @param id
-     * @param position
+     * @param admin
+     * @param targetAdminId
+     * @param updatePositionDto
      * @author 장지왕
      */
     @Transactional
@@ -183,8 +181,7 @@ public class AdminRepository {
 
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectSql, targetAdminId);
         if (rows.isEmpty()) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
-            apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_ADMIN;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
         Map<String, Object> result = rows.get(0);
@@ -228,8 +225,7 @@ public class AdminRepository {
 
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(selectSql, targetAdminId);
         if (rows.isEmpty()) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
-            apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_ADMIN;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
         Map<String, Object> result = rows.get(0);
@@ -267,8 +263,7 @@ public class AdminRepository {
         String sql = "UPDATE admin SET is_delete = true WHERE id = ?;";
         int affectedRow = jdbcTemplate.update(sql, id);
         if (affectedRow == 0) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND;
-            apiErrorCode.setMessage(NOT_FOUND_MESSAGE);
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_ADMIN;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
     }

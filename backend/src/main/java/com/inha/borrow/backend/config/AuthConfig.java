@@ -160,6 +160,9 @@ public class AuthConfig {
 							// 다른 사람의 대여요청 단건조회는 학생회 임원만 가능하다
 							.requestMatchers("/requests/*/manage")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
+							// 대여요청의 목록을 여러 조건을 걸어서 가져오는 경로는 학생회 임원, 대여자 둘 다 가능하다
+							.requestMatchers(HttpMethod.GET,"/requests")
+							.hasAnyAuthority(Role.BORROWER.name(),Role.DIVISION_MEMBER.name())
 							//
 							// /responses 관련 인증설정
 							.requestMatchers("/responses", "/responses/*")

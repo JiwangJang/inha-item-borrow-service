@@ -73,10 +73,9 @@ class SignUpRequestRepositoryTest {
     void FindByIdFailNotFoundId() {
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
                 () -> signUpRequestRepository.findById("456"));
-        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
-        assertThat(ex.getErrorMessage()).isEqualTo("회원가입 신청내역이 존재하지 않습니다.");
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST.name());
+        assertThat(ex.getMessage()).isEqualTo("회원가입 요청을 찾을 수 없습니다.");
     }
-
     @Test
     @DisplayName("비밀번호로 단일 조회 성공")
     void findPasswordById() {
@@ -89,8 +88,8 @@ class SignUpRequestRepositoryTest {
     void PasswordByIdFailNotFoundId() {
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
                 () -> signUpRequestRepository.findPasswordById("456"));
-        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
-        assertThat(ex.getErrorMessage()).isEqualTo("회원가입 신청내역이 존재하지 않습니다.");
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST.name());
+        assertThat(ex.getMessage()).isEqualTo("회원가입 요청을 찾을 수 없습니다.");
     }
 
     @Test
@@ -128,8 +127,8 @@ class SignUpRequestRepositoryTest {
         signUpRequestRepository.deleteALL();
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
                 () -> signUpRequestRepository.patchSignUpRequest(signUpForm, "123"));
-        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
-        assertThat(ex.getErrorMessage()).isEqualTo("회원가입 신청내역이 존재하지 않습니다.");
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST.name());
+        assertThat(ex.getMessage()).isEqualTo("회원가입 요청을 찾을 수 없습니다.");
     }
 
     @Test
@@ -144,7 +143,7 @@ class SignUpRequestRepositoryTest {
     void deleteSignUpRequestFailNotFoundId() {
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
                 () -> signUpRequestRepository.deleteSignUpRequest("321", "123"));
-        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
-        assertThat(ex.getErrorMessage()).isEqualTo("회원가입 신청내역이 존재하지 않습니다.");
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST.name());
+        assertThat(ex.getMessage()).isEqualTo("회원가입 요청을 찾을 수 없습니다.");
     }
 }

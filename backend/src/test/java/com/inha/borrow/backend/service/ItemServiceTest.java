@@ -87,7 +87,7 @@ public class ItemServiceTest {
                 .phonenumber("010-0000-0000")
                 .studentNumber("20240001")
                 .accountNumber("111-1111")
-                .refreshToken(null)
+                .refreshToken("123")
                 .build());
         SaveRequestDto saveRequest = SaveRequestDto.builder()
                 .itemId(itemId)
@@ -145,8 +145,8 @@ public class ItemServiceTest {
     @DisplayName("대여물품 단건 조회 테스트(실패-존재하지 않는 대여물품)")
     void getItemByIdFailForNotExistTest() {
         // given
-        ResourceNotFoundException expected = new ResourceNotFoundException(ApiErrorCode.NOT_FOUND.name(),
-                ApiErrorCode.NOT_FOUND.getMessage());
+        ResourceNotFoundException expected = new ResourceNotFoundException(ApiErrorCode.NOT_FOUND_ITEM.name(),
+                ApiErrorCode.NOT_FOUND_ITEM.getMessage());
         // when
         // then
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> {
@@ -154,7 +154,7 @@ public class ItemServiceTest {
         });
 
         assertEquals(ex.getErrorCode(), expected.getErrorCode());
-        assertEquals(ex.getErrorMessage(), "존재하지 않는 물품입니다.");
+        assertEquals(ex.getMessage(), "존재하지 않는 물품입니다.");
     }
 
     @Test
@@ -170,16 +170,16 @@ public class ItemServiceTest {
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> {
             itemService.getItemById(adminUser(), item.getId());
         });
-        assertEquals(ex.getErrorCode(), ApiErrorCode.NOT_FOUND.name());
-        assertEquals(ex.getErrorMessage(), "존재하지 않는 물품입니다.");
+        assertEquals(ex.getErrorCode(), ApiErrorCode.NOT_FOUND_ITEM.name());
+        assertEquals(ex.getMessage(), "존재하지 않는 물품입니다.");
     }
 
     @Test
     @DisplayName("대여물품 삭제 메서드 테스트(실패-존재하지 않는 대여물품)")
     void deleteItemFailForNotExistItemTest() {
         // given
-        ResourceNotFoundException expected = new ResourceNotFoundException(ApiErrorCode.NOT_FOUND.name(),
-                ApiErrorCode.NOT_FOUND.getMessage());
+        ResourceNotFoundException expected = new ResourceNotFoundException(ApiErrorCode.NOT_FOUND_ITEM.name(),
+                ApiErrorCode.NOT_FOUND_ITEM.getMessage());
         // when
         // then
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> {
@@ -187,7 +187,7 @@ public class ItemServiceTest {
         });
 
         assertEquals(ex.getErrorCode(), expected.getErrorCode());
-        assertEquals(ex.getErrorMessage(), expected.getErrorMessage());
+        assertEquals(ex.getMessage(), expected.getMessage());
     }
 
     @Test
@@ -254,8 +254,8 @@ public class ItemServiceTest {
     @DisplayName("대여물품 수정 메서드 테스트(실패-존재하지 않는 대여물품)")
     void updateItemDetailFailForNotExistItemTest() {
         // given
-        ResourceNotFoundException expected = new ResourceNotFoundException(ApiErrorCode.NOT_FOUND.name(),
-                ApiErrorCode.NOT_FOUND.getMessage());
+        ResourceNotFoundException expected = new ResourceNotFoundException(ApiErrorCode.NOT_FOUND_ITEM.name(),
+                ApiErrorCode.NOT_FOUND_ITEM.getMessage());
         // when
         // then
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> {
@@ -264,6 +264,6 @@ public class ItemServiceTest {
         });
 
         assertEquals(ex.getErrorCode(), expected.getErrorCode());
-        assertEquals(ex.getErrorMessage(), expected.getErrorMessage());
+        assertEquals(ex.getMessage(), expected.getMessage());
     }
 }

@@ -46,8 +46,7 @@ public class DivisionRepository {
                     divisionDto.getCode(),
                     divisionDto.getName());
         } catch (DuplicateKeyException e) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
-            apiErrorCode.setMessage("이미 존재하는 부서 코드입니다.");
+            ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_DIVISION_C0DE;
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
     }
@@ -60,9 +59,8 @@ public class DivisionRepository {
 
         int affected = jdbcTemplate.update(sql, divisionDto.getName(), divisionDto.getCode());
         if (affected == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("존재하지 않는 부서입니다.");
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+            ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_DIVISION_C0DE;
+            throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
     }
 
@@ -74,8 +72,7 @@ public class DivisionRepository {
 
         int affected = jdbcTemplate.update(sql, divisionDto.getCode());
         if (affected == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND;
-            errorCode.setMessage("존재하지 않는 부서입니다.");
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_DIVISION;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
     }

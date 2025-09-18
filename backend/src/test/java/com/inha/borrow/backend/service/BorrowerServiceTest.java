@@ -134,8 +134,8 @@ class BorrowerServiceTest {
             borrowerService.findById("123").isWithDrawal();
         });
 
-        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
-        assertThat(ex.getErrorMessage()).isEqualTo("존재하지 않는 계정입니다.");
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND_BORROWER.name());
+        assertThat(ex.getMessage()).isEqualTo("존재하지 않는 대여자입니다.");
 
     }
 
@@ -165,7 +165,7 @@ class BorrowerServiceTest {
         });
 
         assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.name());
-        assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.getMessage());
+        assertThat(ex.getMessage()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.getMessage());
     }
 
     @Test

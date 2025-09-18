@@ -9,18 +9,25 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class BorrowerRepositoryTest {
     @Autowired
     private BorrowerRepository borrowerRepository;
+    @Autowired
+    private RequestRepository requestRepository;
     private BorrowerDto borrowerDto;
 
     @BeforeEach
     void setUp() {
+        requestRepository.deleteAll();
         borrowerRepository.deleteAll();
+
         borrowerDto = BorrowerDto.builder()
                 .id("123")
                 .password("123")
@@ -49,7 +56,7 @@ class BorrowerRepositoryTest {
         String id = "asdf";
         assertThatThrownBy(() -> borrowerRepository.findById(id))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining(ApiErrorCode.NOT_FOUND.getMessage());
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
     }
 
     @DisplayName("전체조회 성공")
@@ -65,7 +72,7 @@ class BorrowerRepositoryTest {
         borrowerRepository.deleteAll();
         assertThatThrownBy(() -> borrowerRepository.findAll())
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("등록된 대여자가 없습니다.");
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
     }
 
     @DisplayName("저장 성공")
@@ -91,7 +98,7 @@ class BorrowerRepositoryTest {
     void patchPasswordFailNotFoundId() {
         assertThatThrownBy(() -> borrowerRepository.patchPassword("456", "321"))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("요청하신 대여자가 존재하지 않습니다.");
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
     }
 
     @DisplayName("이메일 수정 성공")
@@ -106,7 +113,7 @@ class BorrowerRepositoryTest {
     void patchEmailFailNotFoundId() {
         assertThatThrownBy(() -> borrowerRepository.patchEmail("456", "321"))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("요청하신 대여자가 존재하지 않습니다.");
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
     }
 
     @DisplayName("이름 수정 성공")
@@ -121,7 +128,7 @@ class BorrowerRepositoryTest {
     void patchNameFailNotFoundId() {
         assertThatThrownBy(() -> borrowerRepository.patchName("456", "321"))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("요청하신 대여자가 존재하지 않습니다.");
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
     }
 
     @DisplayName("전화번호 수정 성공")
@@ -136,7 +143,7 @@ class BorrowerRepositoryTest {
     void patchPhoneNumberFailNotFoundId() {
         assertThatThrownBy(() -> borrowerRepository.patchPhoneNumber("456", "321"))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("요청하신 대여자가 존재하지 않습니다.");
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
     }
 
     @DisplayName("학번 수정 성공")
@@ -151,7 +158,7 @@ class BorrowerRepositoryTest {
     void patchStudentFailNotFoundId() {
         assertThatThrownBy(() -> borrowerRepository.patchStudentNumber("456", "321"))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("요청하신 대여자가 존재하지 않습니다.");
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
     }
 
     @DisplayName("계좌번호 수정 성공")
@@ -166,6 +173,6 @@ class BorrowerRepositoryTest {
     void patchAccountNumberFailNotFoundId() {
         assertThatThrownBy(() -> borrowerRepository.patchAccountNumber("456", "321"))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("요청하신 대여자가 존재하지 않습니다.");
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
     }
 }

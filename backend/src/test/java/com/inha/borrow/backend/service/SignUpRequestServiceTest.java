@@ -130,7 +130,7 @@ class SignUpRequestServiceTest {
                         signUpRequestService.saveSignUpRequest(signUpFormDto, idCard, councilFee);
                 });
 
-                assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.SIGN_UP_PASS_FAILED.getMessage());
+                assertThat(ex.getMessage()).isEqualTo(ApiErrorCode.SIGN_UP_PASS_FAILED.getMessage());
                 assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.SIGN_UP_PASS_FAILED.name());
         }
 
@@ -265,8 +265,8 @@ class SignUpRequestServiceTest {
                 ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
                                 () -> signUpRequestService.patchSignUpRequest(signUpForm, idCard, councilFee, "123",
                                                 "123"));
-                assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
-                assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.NOT_FOUND.getMessage());
+                assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST.name());
+                assertThat(ex.getMessage()).isEqualTo(ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST.getMessage());
         }
 
         @Test
@@ -300,7 +300,7 @@ class SignUpRequestServiceTest {
                                 () -> signUpRequestService.patchSignUpRequest(signUpForm, idCard, councilFee, "123",
                                                 "321"));
                 assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.name());
-                assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.getMessage());
+                assertThat(ex.getMessage()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.getMessage());
         }
 
         @Test
@@ -321,8 +321,8 @@ class SignUpRequestServiceTest {
                 ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> {
                         signUpRequestRepository.findById("123");
                 });
-                assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND.name());
-                assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.NOT_FOUND.getMessage());
+                assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST.name());
+                assertThat(ex.getMessage()).isEqualTo(ApiErrorCode.NOT_FOUND_SIGN_UP_REQUEST.getMessage());
         }
 
         @Test
@@ -343,7 +343,7 @@ class SignUpRequestServiceTest {
                         signUpRequestService.deleteSignUpRequest("123", "321");
                 });
                 assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.name());
-                assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.getMessage());
+                assertThat(ex.getMessage()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.getMessage());
         }
 
         @Test
