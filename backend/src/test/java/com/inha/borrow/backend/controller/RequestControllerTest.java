@@ -285,7 +285,7 @@ class RequestControllerTest {
         @WithMockBorrower
         void findDetailRequestFail_notFound() throws Exception {
                 doThrow(new ResourceNotFoundException(
-                                ApiErrorCode.REQUEST_NOT_FOUND.name(), ApiErrorCode.REQUEST_NOT_FOUND.getMessage()))
+                                ApiErrorCode.NOT_FOUND_REQUEST.name(), ApiErrorCode.NOT_FOUND_REQUEST.getMessage()))
                                 .when(requestService)
                                 .findByCondition(any(User.class), anyString(), anyString(), anyString());
 
@@ -323,8 +323,8 @@ class RequestControllerTest {
         @WithMockAdmin
         void manageRequestNotFound() throws Exception {
                 org.mockito.Mockito.doThrow(new com.inha.borrow.backend.model.exception.ResourceNotFoundException(
-                                ApiErrorCode.REQUEST_NOT_FOUND.name(),
-                                ApiErrorCode.REQUEST_NOT_FOUND.getMessage()))
+                                ApiErrorCode.NOT_FOUND_REQUEST.name(),
+                                ApiErrorCode.NOT_FOUND_REQUEST.getMessage()))
                                 .when(requestService)
                                 .manageRequest(anyString(), org.mockito.ArgumentMatchers.eq(999));
 

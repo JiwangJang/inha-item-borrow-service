@@ -11,6 +11,5 @@ public abstract class ServiceException extends RuntimeException {
     public ServiceException(String errorCode, String errorMessage) {
         super(errorMessage);
         this.errorCode = errorCode;
-
     }
 }

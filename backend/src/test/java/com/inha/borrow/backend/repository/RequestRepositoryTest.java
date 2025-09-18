@@ -160,8 +160,8 @@ class RequestRepositoryTest {
     void findByIdFailForNotFoundBorrowerId() {
         ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class,
                 () -> requestRepository.findById("321", 1));
-        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.REQUEST_NOT_FOUND.name());
-        assertThat(ex.getErrorMessage()).isEqualTo(ApiErrorCode.REQUEST_NOT_FOUND.getMessage());
+        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND_REQUEST.name());
+        assertThat(ex.getMessage()).isEqualTo(ApiErrorCode.NOT_FOUND_REQUEST.getMessage());
     }
 
     @ParameterizedTest(name = "조건 조회 성공: borrowerId={0}, type={1}, state={2} -> size={3}")

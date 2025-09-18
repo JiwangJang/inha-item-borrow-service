@@ -121,3 +121,41 @@
 2025-09-14T19:32:03.729+09:00  INFO 69925 --- [backend] [scheduling-1] c.i.b.backend.cache.CacheScheduledTask   : [Scheduled] 캐시 정리작업 수행
 2025-09-14T19:32:04.819+09:00  INFO 69925 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2025-09-14T19:32:04.821+09:00  INFO 69925 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-09-19T00:23:25.628+09:00  INFO 91212 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Starting RequestRepositoryTest using Java 21.0.8 with PID 91212 (started by jangjiwang in /Users/jangjiwang/Dev/inha-item-borrow-service/backend)
+2025-09-19T00:23:25.628+09:00  INFO 91212 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : No active profile set, falling back to 1 default profile: "default"
+2025-09-19T00:23:25.890+09:00  INFO 91212 --- [backend] [main] c.i.b.b.r.RequestRepositoryTest          : Started RequestRepositoryTest in 0.42 seconds (process running for 0.84)
+2025-09-19T00:23:25.897+09:00  INFO 91212 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-19T00:23:26.109+09:00  INFO 91212 --- [backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2b08772d
+2025-09-19T00:23:26.110+09:00  INFO 91212 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-19T00:23:26.546+09:00  INFO 91212 --- [backend] [main] c.i.b.b.repository.RequestRepository     : test SELECT
+        rq.id AS request_id,
+        rq.item_id,
+        item.name AS item_name,
+        item.price AS item_price,
+        rq.created_at AS request_created_at,
+        rq.borrower_id,
+        borrower.name AS borrower_name,
+        rq.return_at,
+        rq.borrow_at,
+        rq.type,
+        rq.state,
+        rq.cancel,
+        rp.id AS response_id,
+        rp.created_at AS response_created_at,
+        rp.reject_reason,
+        rq.manager,
+        admin.name AS manager_name,
+        admin.position
+    FROM request AS rq
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq.id
+        LEFT JOIN admin
+            ON admin.id = rq.manager
+        LEFT JOIN item
+            ON rq.item_id = item.id
+        LEFT JOIN borrower
+            ON rq.borrower_id = borrower.id
+    WHERE rq.id = ? AND rq.cancel != true
+AND rq.borrower_id = ?
+2025-09-19T00:23:26.586+09:00  INFO 91212 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-09-19T00:23:26.613+09:00  INFO 91212 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

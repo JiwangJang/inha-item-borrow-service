@@ -41,7 +41,7 @@ public class ResponseRepository {
         String sql = "UPDATE response SET reject_reason = ? WHERE id = ?;";
         int affected = jdbcTemplate.update(sql, rejectReason, responseId);
         if (affected == 0) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.RESPONSE_NOT_FOUND;
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_RESPONSE;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
     }
