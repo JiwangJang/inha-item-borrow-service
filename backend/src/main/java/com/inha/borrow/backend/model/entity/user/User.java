@@ -26,6 +26,13 @@ public abstract class User implements UserDetails {
     private String refreshToken;
     private List<GrantedAuthority> authorities;
 
+    public User(String id, String name, String phonenumber, List<GrantedAuthority> authorities) {
+        this.id = id;
+        this.name = name;
+        this.phonenumber = phonenumber;
+        this.authorities = authorities;
+    }
+
     public String getUsername() {
         return this.id;
     }
