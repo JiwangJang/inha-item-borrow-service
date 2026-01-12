@@ -30,13 +30,9 @@ class BorrowerRepositoryTest {
 
         borrowerDto = BorrowerDto.builder()
                 .id("123")
-                .password("123")
-                .email("123")
                 .name("123")
                 .phonenumber("123")
-                .studentNumber("123")
                 .accountNumber("123")
-                .refreshToken("123")
                 .build();
         borrowerRepository.save(borrowerDto);
     }
@@ -46,8 +42,6 @@ class BorrowerRepositoryTest {
     void findById() {
         Borrower result = borrowerRepository.findById(borrowerDto.getId());
         assertThat(result.getAccountNumber()).isEqualTo(borrowerDto.getAccountNumber());
-        assertThat(result.getEmail()).isEqualTo(borrowerDto.getEmail());
-
     }
 
     @DisplayName("id 찾기 (실패 조회값 없음)")
@@ -81,7 +75,6 @@ class BorrowerRepositoryTest {
         borrowerRepository.deleteAll();
         borrowerRepository.save(borrowerDto);
         Borrower result2 = borrowerRepository.findById("123");
-        assertThat(result2.getEmail()).isEqualTo(borrowerDto.getEmail());
         assertThat(result2.getName()).isEqualTo(borrowerDto.getName());
     }
 

@@ -43,13 +43,9 @@ class BorrowerServiceTest {
         smsCodeCache.deleteAll();
         borrowerDto = BorrowerDto.builder()
                 .id("123")
-                .password(passwordEncoder.encode("Absssf1@2"))
-                .email("123")
                 .name("123")
                 .phonenumber("123")
-                .studentNumber("123")
                 .accountNumber("123")
-                .refreshToken("123")
                 .build();
         borrowerRepository.save(borrowerDto);
     }
