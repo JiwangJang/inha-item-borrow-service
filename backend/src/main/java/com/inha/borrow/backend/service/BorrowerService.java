@@ -68,17 +68,6 @@ public class BorrowerService implements UserDetailsService {
     /**
      * 대여자의 정보를 수정하는 메서드
      *
-     * @param email
-     * @param id
-     * @author 형민재
-     */
-    public void patchEmail(String email, String id) {
-        borrowerRepository.patchEmail(email, id);
-    }
-
-    /**
-     * 대여자의 정보를 수정하는 메서드
-     *
      * @param name
      * @param id
      * @author 형민재
@@ -110,17 +99,6 @@ public class BorrowerService implements UserDetailsService {
     /**
      * 대여자의 정보를 수정하는 메서드
      *
-     * @param studentNumber
-     * @param id
-     * @author 형민재
-     */
-    public void patchStudentNumber(String studentNumber, String id) {
-        borrowerRepository.patchStudentNumber(studentNumber, id);
-    }
-
-    /**
-     * 대여자의 정보를 수정하는 메서드
-     *
      * @param accountNumber
      * @param id
      * @author 형민재
@@ -132,40 +110,12 @@ public class BorrowerService implements UserDetailsService {
     /**
      * 대여자의 정보를 수정하는 메서드
      *
-     * @param withDrawal
-     * @param id
-     * @author 형민재
-     */
-    public void patchWithDrawal(boolean withDrawal, String id) {
-        borrowerRepository.patchWithDrawal(withDrawal, id);
-    }
-
-    /**
-     * 대여자의 정보를 수정하는 메서드
-     *
      * @param ban
      * @param id
      * @author 형민재
      */
     public void patchBan(boolean ban, String id) {
         borrowerRepository.patchBan(ban, id);
-    }
-
-    /**
-     * 대여자의 정보를 수정하는 메서드
-     *
-     * @param patchPasswordDto
-     * @param id
-     * @author 형민재
-     */
-    public void patchPassword(PatchPasswordDto patchPasswordDto, String id) {
-        Borrower borrower = borrowerRepository.findById(id);
-        if (!passwordEncoder.matches(patchPasswordDto.getOriginPassword(), borrower.getPassword())) {
-            ApiErrorCode errorCode = ApiErrorCode.INCORRECT_PASSWORD;
-            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
-        }
-        String newPassword = passwordEncoder.encode(patchPasswordDto.getNewPassword());
-        borrowerRepository.patchPassword(newPassword, id);
     }
 
     /**

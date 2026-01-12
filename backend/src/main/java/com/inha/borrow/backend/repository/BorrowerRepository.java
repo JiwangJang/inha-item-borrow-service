@@ -29,20 +29,14 @@ public class BorrowerRepository {
 
     private RowMapper<Borrower> borrowerRowMapper = (rs, rowNum) -> {
         String id = rs.getString("id");
-        String password = rs.getString("password");
-        String email = rs.getString("email");
         String phonenumber = rs.getString("phonenumber");
         String name = rs.getString("name");
-        String refreshToken = rs.getString("refresh_token");
-        String studentNumber = rs.getString("student_number");
         String accountNumber = rs.getString("account_number");
         boolean ban = rs.getBoolean("ban");
-        boolean withDrawal = rs.getBoolean("withdrawal");
 
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("BORROWER"));
 
-        return new Borrower(id, password, email, name, phonenumber, authorities, ban, studentNumber, accountNumber,
-                refreshToken, withDrawal);
+        return new Borrower(id,name, phonenumber, authorities, ban, accountNumber);
     };
 
     /**
@@ -80,17 +74,13 @@ public class BorrowerRepository {
     }
 
     public void save(BorrowerDto borrower) {
-        String sql = "INSERT INTO borrower(id, password, email, name, phonenumber, " +
-                "student_number, account_number, refresh_Token) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO borrower(id, name, phonenumber, " +
+                " account_number) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 borrower.getId(),
-                borrower.getPassword(),
-                borrower.getEmail(),
                 borrower.getName(),
                 borrower.getPhonenumber(),
-                borrower.getStudentNumber(),
-                borrower.getAccountNumber(),
-                borrower.getRefreshToken());
+                borrower.getAccountNumber());
     }
 
     /**
@@ -101,24 +91,6 @@ public class BorrowerRepository {
      * @throws DataAccessException
      * @author 형민재
      */
-    public void patchPassword(String password, String id) {
-        String sql = "UPDATE borrower SET password = ? WHERE id = ?";
-        int result = jdbcTemplate.update(sql, password, id);
-        if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
-    }
-
-    public void patchEmail(String email, String id) {
-        String sql = " UPDATE borrower SET email = ? WHERE id = ?";
-        int result = jdbcTemplate.update(sql, email, id);
-        if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
-    }
-
     public void patchName(String name, String id) {
         String sql = " UPDATE borrower SET name = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, name, id);
@@ -138,27 +110,9 @@ public class BorrowerRepository {
 
     }
 
-    public void patchStudentNumber(String studentNumber, String id) {
-        String sql = " UPDATE borrower SET student_number = ? WHERE id = ?";
-        int result = jdbcTemplate.update(sql, studentNumber, id);
-        if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
-    }
-
     public void patchAccountNumber(String accountNumber, String id) {
         String sql = " UPDATE borrower SET account_number = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, accountNumber, id);
-        if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
-    }
-
-    public void patchWithDrawal(Boolean withDrawal, String id) {
-        String sql = " UPDATE borrower SET withdrawal = ? WHERE id = ?";
-        int result = jdbcTemplate.update(sql, withDrawal, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());

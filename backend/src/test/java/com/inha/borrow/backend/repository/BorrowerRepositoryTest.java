@@ -85,37 +85,6 @@ class BorrowerRepositoryTest {
         assertThat(result2.getName()).isEqualTo(borrowerDto.getName());
     }
 
-    @DisplayName("비밀번호 수정 성공")
-    @Test
-    void patchPassword() {
-        borrowerRepository.patchPassword("456", "123");
-        Borrower result = borrowerRepository.findById("123");
-        assertThat(result.getPassword()).isEqualTo("456");
-    }
-
-    @DisplayName("비밀번호 수정 (실패 id 미존재)")
-    @Test
-    void patchPasswordFailNotFoundId() {
-        assertThatThrownBy(() -> borrowerRepository.patchPassword("456", "321"))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
-    }
-
-    @DisplayName("이메일 수정 성공")
-    @Test
-    void patchEmail() {
-        borrowerRepository.patchEmail("456", "123");
-        assertThat(borrowerRepository.findById("123").getEmail()).isEqualTo("456");
-    }
-
-    @DisplayName("이메일 수정 (실패 id 미존재)")
-    @Test
-    void patchEmailFailNotFoundId() {
-        assertThatThrownBy(() -> borrowerRepository.patchEmail("456", "321"))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
-    }
-
     @DisplayName("이름 수정 성공")
     @Test
     void patchName() {
@@ -142,21 +111,6 @@ class BorrowerRepositoryTest {
     @Test
     void patchPhoneNumberFailNotFoundId() {
         assertThatThrownBy(() -> borrowerRepository.patchPhoneNumber("456", "321"))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
-    }
-
-    @DisplayName("학번 수정 성공")
-    @Test
-    void patchStudentNumber() {
-        borrowerRepository.patchStudentNumber("456", "123");
-        assertThat(borrowerRepository.findById("123").getStudentNumber()).isEqualTo("456");
-    }
-
-    @DisplayName("학번 수정 (실패 id 미존재)")
-    @Test
-    void patchStudentFailNotFoundId() {
-        assertThatThrownBy(() -> borrowerRepository.patchStudentNumber("456", "321"))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
     }

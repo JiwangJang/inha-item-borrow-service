@@ -72,38 +72,9 @@ public class BorrowerController {
     }
 
     /**
-     * password를 수정하는 메서드
-     * 
-     * @param patchPasswordDto
-     * @return 200 요청 성공
-     * @author 형민재
-     */
-    @PatchMapping("/info/password")
-    public ResponseEntity<ApiResponse<Void>> patchPassword(@Valid @RequestBody PatchPasswordDto patchPasswordDto,
-            @AuthenticationPrincipal(expression = "id") String id) {
-        borrowerService.patchPassword(patchPasswordDto, id);
-        return ResponseEntity.ok().build();
-
-    }
-
-    /**
-     * email을 수정하는 메서드
-     * 
-     * @param emailDto
-     * @return 200 요청 성공
-     * @author 형민재
-     */
-    @PatchMapping("/info/email")
-    public ResponseEntity<Void> patchEmail(@AuthenticationPrincipal(expression = "id") String id,
-            @Valid @RequestBody PatchEmailDto emailDto) {
-        borrowerService.patchEmail(id, emailDto.getEmail());
-        return ResponseEntity.ok().build();
-    }
-
-    /**
      * phoneNumber를 수정하는 메서드
      * 
-     * @param phoneNumber
+     * @param id
      * @return 200 요청 성공
      * @author 형민재
      */
