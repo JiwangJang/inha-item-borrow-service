@@ -43,7 +43,7 @@ CREATE TABLE admin(
 CREATE TABLE borrower(
     id varchar(50) NOT NULL primary key,
     name varchar(10) NOT NULL,
-    phonenumber char(13) NOT NULL,
+    phone_number char(13) NOT NULL,
     account_number varchar(20) NOT NULL,
     ban boolean default false
 );
