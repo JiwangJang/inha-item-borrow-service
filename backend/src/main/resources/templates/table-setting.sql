@@ -42,15 +42,25 @@ CREATE TABLE admin(
 -- borrower table 생성
 CREATE TABLE borrower(
     id varchar(50) NOT NULL primary key,
-    password varchar(60) NOT NULL,
-    email varchar(50) NOT NULL,
     name varchar(10) NOT NULL,
-    phonenumber char(13) NOT NULL,
-    student_number char(8) NOT NULL,
+    phone_number char(13) NOT NULL,
     account_number varchar(20) NOT NULL,
-    withdrawal boolean default false,
-    ban boolean default false,
-    refresh_token varchar(256) NOT NULL
+    ban boolean default false
+);
+
+CREATE TABLE student_council_fee(
+    id varchar(50) NOT NULL PRIMARY KEY,
+    s3_link varchar(50) NOT NULL,
+    Verify boolean default false
+);
+
+CREATE TABLE borrower_privacy_agreement(
+    id int NOT NULL primary key auto_increment,
+    borrower_id varchar(50) NOT NULL,
+    foreign key(borrower_id) references borrower(id),
+    agreed_at datetime NOT NULL,
+    version varchar(50) NOT NULL,
+    is_agreed boolean NOT NULL
 );
 
 create table item (
@@ -61,20 +71,6 @@ create table item (
     delete_reason varchar(50),
     price int NOT NULL,
     state varchar(9) NOT NULL default 'AFFORD'
-);
-
-create table signup_request(
-    id varchar(50) NOT NULL primary key,
-    password varchar(60) NOT NULL,
-    email varchar(50) NOT NULL,
-    name varchar(10) NOT NULL,
-    phonenumber char(13) NOT NULL,
-    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    identity_photo TEXT NOT NULL,
-    student_council_fee_photo TEXT NOT NULL,
-    account_number varchar(20) NOT NULL,
-    state varchar(10) default 'PENDING',
-    reject_reason varchar(100)
 );
 
 -- manager NOT NULL 로 되있었지만 기존 테스트 충돌로 인해 임시로 지움

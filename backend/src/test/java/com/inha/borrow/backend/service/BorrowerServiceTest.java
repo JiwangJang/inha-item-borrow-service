@@ -43,13 +43,9 @@ class BorrowerServiceTest {
         smsCodeCache.deleteAll();
         borrowerDto = BorrowerDto.builder()
                 .id("123")
-                .password(passwordEncoder.encode("Absssf1@2"))
-                .email("123")
                 .name("123")
                 .phonenumber("123")
-                .studentNumber("123")
                 .accountNumber("123")
-                .refreshToken("123")
                 .build();
         borrowerRepository.save(borrowerDto);
     }
@@ -65,13 +61,6 @@ class BorrowerServiceTest {
     void findAll() {
         List<Borrower> result = borrowerService.findAll();
         assertThat(result.size()).isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("ID로 이메일 변경 성공")
-    void patchEmail() {
-        borrowerService.patchEmail("456", "123");
-        assertThat(borrowerService.findById("123").getEmail()).isEqualTo("456");
     }
 
     @Test
@@ -113,13 +102,6 @@ class BorrowerServiceTest {
     }
 
     @Test
-    @DisplayName("ID로 학번 변경 성공")
-    void patchStudentNumber() {
-        borrowerService.patchStudentNumber("456", "123");
-        assertThat(borrowerService.findById("123").getStudentNumber()).isEqualTo("456");
-    }
-
-    @Test
     @DisplayName("ID로 계좌번호 변경 성공")
     void patchAccountNumber() {
         borrowerService.patchAccountNumber("456", "123");
@@ -127,45 +109,10 @@ class BorrowerServiceTest {
     }
 
     @Test
-    @DisplayName("ID로 계정 상태 변경 성공")
-    void patchWithDrawal() {
-        borrowerService.patchWithDrawal(true, "123");
-        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> {
-            borrowerService.findById("123").isWithDrawal();
-        });
-
-        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.NOT_FOUND_BORROWER.name());
-        assertThat(ex.getMessage()).isEqualTo("존재하지 않는 대여자입니다.");
-
-    }
-
-    @Test
     @DisplayName("ID로 밴 상태 변경 성공")
     void patchBan() {
         borrowerService.patchBan(true, "123");
         assertThat(borrowerService.findById("123").isBan()).isTrue();
-    }
-
-    @Test
-    @DisplayName("ID로 비밀번호 변경 성공")
-    void patchPassword() {
-        PatchPasswordDto patchPasswordDto = new PatchPasswordDto("Absssf1@2", "Absssf1@2sss");
-        borrowerService.patchPassword(patchPasswordDto, "123");
-        Borrower result = borrowerService.findById("123");
-        assertThat(passwordEncoder.matches(patchPasswordDto.getNewPassword(), result.getPassword())).isTrue();
-
-    }
-
-    @Test
-    @DisplayName("ID로 비밀번호 변경 실패 비밀번호 검증 미통과 ")
-    void patchPasswordFailMissMatchPassword() {
-        PatchPasswordDto patchPasswordDto = new PatchPasswordDto("false", "Absssf1@2sss");
-        InvalidValueException ex = assertThrows(InvalidValueException.class, () -> {
-            borrowerService.patchPassword(patchPasswordDto, "123");
-        });
-
-        assertThat(ex.getErrorCode()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.name());
-        assertThat(ex.getMessage()).isEqualTo(ApiErrorCode.INCORRECT_PASSWORD.getMessage());
     }
 
     @Test

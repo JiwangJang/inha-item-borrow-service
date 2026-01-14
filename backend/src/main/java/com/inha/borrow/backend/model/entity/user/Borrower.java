@@ -38,22 +38,16 @@ public class Borrower extends User {
      * authroity는 BORROWER
      * 
      * @param id            대여자 ID
-     * @param password      대여자 비밀번호
-     * @param email         대여자 이메일
      * @param name          대여자 이름
      * @param phonenumber   대여자 전화번호
      * @param authorities   대여자 권한(BORROWER 고정)
      * @param ban           대여 정지 사용자 여부
-     * @param studentNumber 대여자 학번
      * @param accountNumber 대여자 보증금 반환 계좌
      */
-    public Borrower(String id, String password, String email, String name, String phonenumber,
-            List<GrantedAuthority> authorities, boolean ban, String studentNumber, String accountNumber,
-            String refreshToken, boolean withDrawal) {
-        super(id, password, email, name, phonenumber, refreshToken, authorities);
+    public Borrower(String id, String name, String phonenumber,
+            List<GrantedAuthority> authorities, boolean ban,String accountNumber) {
+        super(id,name, phonenumber, authorities);
         this.ban = ban;
-        this.withDrawal = withDrawal;
-        this.studentNumber = studentNumber;
         this.accountNumber = accountNumber;
     }
 

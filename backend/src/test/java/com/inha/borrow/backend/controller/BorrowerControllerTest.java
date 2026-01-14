@@ -85,33 +85,6 @@ public class BorrowerControllerTest {
         }
 
         @Test
-        @DisplayName("비밀번호 수정")
-        @WithMockBorrower
-        void patchPassword() throws Exception {
-                PatchPasswordDto dto = new PatchPasswordDto("oldPass", "NewPass123!");
-                doNothing().when(borrowerService).patchPassword(dto, "123");
-
-                mockMvc.perform(patch("/borrowers/info/password")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(dto)))
-                                .andExpect(status().isOk());
-        }
-
-        @Test
-        @DisplayName("이메일 수정")
-        @WithMockBorrower
-        void patchEmail() throws Exception {
-                doNothing().when(borrowerService).patchEmail("123", "test@example.com");
-
-                PatchEmailDto dto = new PatchEmailDto("test@example.com");
-
-                mockMvc.perform(patch("/borrowers/info/email")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(dto)))
-                                .andExpect(status().isOk());
-        }
-
-        @Test
         @DisplayName("이름 수정")
         @WithMockUser(authorities = "DIVISION_MEMBER")
         void patchName() throws Exception {
