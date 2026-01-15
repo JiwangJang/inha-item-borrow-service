@@ -93,7 +93,7 @@ public class AuthConfig {
 							.requestMatchers("/borrowers")
 							.hasAuthority(Role.DIVISION_HEAD.name())
 							// /borrower/info와 그 아래 경로는 대여자만 접근가능하다.
-							.requestMatchers("/borrowers/sms-verify-code", "/borrowers/info", "/borrowers/info/**")
+							.requestMatchers("/borrowers/info", "/borrowers/info/**")
 							.hasAuthority(Role.BORROWER.name())
 							// /borrowers/{borrower-id} 아래경로는 국원 이상만 접근 가능하다
 							.requestMatchers("/borrowers/*/info/**")
@@ -110,18 +110,6 @@ public class AuthConfig {
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							.requestMatchers(HttpMethod.DELETE, "/items/**")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
-							//
-							// /borrowers/signup-requests 관련 인증설정
-							// 회원가입 목록 전체 조회하는 경로는 국원이상만 접근 가능하다.
-							.requestMatchers(HttpMethod.GET, "/borrowers/signup-requests")
-							.hasAuthority(Role.DIVISION_MEMBER.name())
-							// 회원가입 처리 결과를 처리하는 경로는 국원이상만 접근 가능하다.
-							.requestMatchers(HttpMethod.PATCH,
-									"/borrowers/signup-requests/*")
-							.hasAuthority(Role.DIVISION_MEMBER.name())
-							// 회원가입 신청, 삭제, 수정하는 경로는 누구나 접근 가능하다.(서비스단에서 인증 수행)
-							.requestMatchers("/borrowers/signup-requests", "/borrowers/signup-requests/*")
-							.permitAll()
 							//
 							// /divisions 관련 인증설정
 							// 부서 목록을 가져오는 경로는 국장권한 이상만 접근가능하다
@@ -161,8 +149,8 @@ public class AuthConfig {
 							.requestMatchers("/requests/*/manage")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							// 대여요청의 목록을 여러 조건을 걸어서 가져오는 경로는 학생회 임원, 대여자 둘 다 가능하다
-							.requestMatchers(HttpMethod.GET,"/requests")
-							.hasAnyAuthority(Role.BORROWER.name(),Role.DIVISION_MEMBER.name())
+							.requestMatchers(HttpMethod.GET, "/requests")
+							.hasAnyAuthority(Role.BORROWER.name(), Role.DIVISION_MEMBER.name())
 							//
 							// /responses 관련 인증설정
 							.requestMatchers("/responses", "/responses/*")
