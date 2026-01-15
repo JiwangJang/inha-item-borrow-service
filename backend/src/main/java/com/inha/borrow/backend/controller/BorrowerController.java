@@ -59,19 +59,6 @@ public class BorrowerController {
     }
 
     /**
-     * 휴대전화 번호 정보 변경 전 휴대전화 인증을 요청하는 메서드
-     * 
-     * @return 200 발급완료
-     * @author 장지왕
-     */
-    @PostMapping("/sms-verify-code")
-    public ResponseEntity<Void> createSmsCode(@AuthenticationPrincipal Borrower borrower,
-            @RequestBody PhonenumberPatchCodeDto dto) {
-        borrowerService.createSmsCode(borrower.getId(), dto.getNewPhonenumber());
-        return ResponseEntity.ok().build();
-    }
-
-    /**
      * phoneNumber를 수정하는 메서드
      * 
      * @param id

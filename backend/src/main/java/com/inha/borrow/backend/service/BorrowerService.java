@@ -30,19 +30,6 @@ public class BorrowerService implements UserDetailsService {
     private final SMSCodeCache smsCodeCache;
 
     /**
-     * 대여자 계정 정보를 가져오는 메서드
-     * 대여자 인증과정에서 사용됨
-     *
-     * @param id 대여자 아이디
-     * @return UserDetails 대여자 정보
-     * @author 장지왕
-     */
-    @Override
-    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        return borrowerRepository.findById(id);
-    }
-
-    /**
      * 대여자를 id로 찾는 메서드
      *
      * @param id
@@ -117,18 +104,4 @@ public class BorrowerService implements UserDetailsService {
     public void patchBan(boolean ban, String id) {
         borrowerRepository.patchBan(ban, id);
     }
-
-    /**
-     * 대여자 휴대전화번호 변경전 인증번호를 발급해주는 메서드
-     * 
-     * @param borrowerId
-     * @author 장지왕
-     */
-    public void createSmsCode(String borrowerId, String newPhonenumber) {
-        // 나중에는 실제로 무작위 6자리 번호를 번호로 보내기
-        String code = "123456";
-        SMSCode smsCode = new SMSCode(code);
-        smsCodeCache.set(borrowerId, smsCode);
-    }
-
 }

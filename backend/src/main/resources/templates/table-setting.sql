@@ -41,7 +41,9 @@ CREATE TABLE admin(
 
 -- borrower table 생성
 CREATE TABLE borrower(
-    id varchar(50) NOT NULL primary key,
+    -- id : 학번이니깐 8자 고정
+    id char(8) NOT NULL primary key,
+    -- 혹시모르니 10자로 설정
     name varchar(10) NOT NULL,
     phone_number char(13) NOT NULL,
     account_number varchar(20) NOT NULL,
@@ -51,7 +53,8 @@ CREATE TABLE borrower(
 CREATE TABLE student_council_fee(
     id varchar(50) NOT NULL PRIMARY KEY,
     s3_link varchar(50) NOT NULL,
-    Verify boolean default false
+    -- 소문자로 수정함
+    verify boolean default false
 );
 
 CREATE TABLE borrower_privacy_agreement(
@@ -60,7 +63,6 @@ CREATE TABLE borrower_privacy_agreement(
     foreign key(borrower_id) references borrower(id),
     agreed_at datetime NOT NULL,
     version varchar(50) NOT NULL,
-    is_agreed boolean NOT NULL
 );
 
 create table item (
