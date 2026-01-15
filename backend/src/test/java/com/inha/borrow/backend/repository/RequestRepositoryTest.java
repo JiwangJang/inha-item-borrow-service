@@ -13,7 +13,6 @@ import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import com.inha.borrow.backend.service.JwtTokenService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,16 +64,6 @@ class RequestRepositoryTest {
         PasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder();
         }
-
-        @Bean
-        JwtTokenService jwtTokenService() {
-            return new JwtTokenService() {
-                @Override
-                public String createToken(String id) {
-                    return "test-token-" + id;
-                }
-            };
-        }
     }
 
     private String adminId = "testAdmin";
@@ -96,13 +85,9 @@ class RequestRepositoryTest {
 
         BorrowerDto borrowerDto = BorrowerDto.builder()
                 .id(borrowerId)
-                .password("password")
-                .email("test@test.com")
                 .name("borrower")
                 .phonenumber("010-0000-0000")
-                .studentNumber("12341234")
                 .accountNumber("1111-11111-1111")
-                .refreshToken("refresh")
                 .build();
 
         SaveAdminDto saveAdminDto = SaveAdminDto.builder()

@@ -79,20 +79,16 @@ class ResponseServiceTest {
                                 adminDivision, "테스트부서");
                 jdbcTemplate.update("DELETE FROM admin WHERE id = ?", adminId);
                 jdbcTemplate.update(
-                                "INSERT INTO admin(id, password, email, name, phonenumber, position, division, refresh_token, is_delete) VALUES(?, ?, ?, ?, ?, ?, ?, ?, false);",
+                                "INSERT INTO admin(id, password, email, name, phonenumber, position, division, , is_delete) VALUES(?, ?, ?, ?, ?, ?, ?, false);",
                                 adminId, "$2a$10$abcdefghijklmnopqrstuv", adminId + "@test.com", "관리자", "010-0000-0000",
-                                "DIVISION_MEMBER", adminDivision, "refresh-" + adminId);
+                                "DIVISION_MEMBER", adminDivision);
 
                 // Borrower (FK for request)
                 borrowerRepository.save(BorrowerDto.builder()
                                 .id(borrowerId)
-                                .password("pw")
-                                .email("b@b.com")
                                 .name("borrower")
                                 .phonenumber("010")
-                                .studentNumber("20250001")
                                 .accountNumber("111-11")
-                                .refreshToken(null)
                                 .build());
 
                 // Request #1: BORROW

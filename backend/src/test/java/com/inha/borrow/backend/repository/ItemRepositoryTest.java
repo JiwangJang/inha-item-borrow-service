@@ -56,13 +56,9 @@ class ItemRepositoryTest {
     void setUp() {
         BorrowerDto borrowerDto = new BorrowerDto(
                 requester,
-                "1234",
-                "test@naver.com",
-                "name",
+                "테스트용 이름",
                 "010-0000-0000",
-                "123124",
-                "123124214",
-                "null");
+                "23123");
         borrowerRepository.save(borrowerDto);
         ItemDto item = new ItemDto();
         item.setName("우산");
@@ -193,22 +189,14 @@ class ItemRepositoryTest {
         // 두명의 대여자준비
         BorrowerDto borrower1 = new BorrowerDto(
                 "test_borrower1",
-                "1234",
-                "test@naver.com",
-                "name",
+                "테스트용 이름",
                 "010-0000-0000",
-                "123124",
-                "123124214",
-                "null");
+                "23123");
         BorrowerDto borrower2 = new BorrowerDto(
                 "test_borrower2",
-                "1234",
-                "test@naver.com",
-                "name",
+                "테스트용 이름",
                 "010-0000-0000",
-                "123124",
-                "123124214",
-                "null");
+                "23123");
 
         // 두개의 요청 준비
         SaveRequestDto saveRequest1 = SaveRequestDto.builder()

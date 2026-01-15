@@ -26,8 +26,6 @@ public class BorrowerAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) {
-        // 여기서 i-class로 API요청 보내서 인증 확인하면 될듯 + 기존 가입했던 유저인지 확인
-
         String id = (String) authentication.getPrincipal();
         String rawPassword = (String) authentication.getCredentials();
 

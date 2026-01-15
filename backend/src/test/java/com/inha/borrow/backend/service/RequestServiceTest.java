@@ -28,7 +28,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
@@ -58,9 +57,6 @@ class RequestServiceTest {
         @Autowired
         private AdminRepository adminRepository;
 
-        @Autowired
-        private PasswordEncoder passwordEncoder;
-
         private ObjectMapper objectMapper = new ObjectMapper();
 
         private int requestId;
@@ -82,13 +78,9 @@ class RequestServiceTest {
                 // 대여자 생성
                 BorrowerDto borrowerDto = BorrowerDto.builder()
                                 .id(borrowerId)
-                                .password(passwordEncoder.encode("Absssf1@2"))
-                                .email("123")
                                 .name("123")
                                 .phonenumber("123")
-                                .studentNumber("123")
                                 .accountNumber("123")
-                                .refreshToken("123")
                                 .build();
                 borrowerRepository.save(borrowerDto);
 

@@ -28,10 +28,7 @@ import com.inha.borrow.backend.config.AuthConfig;
 import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
 import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
 import com.inha.borrow.backend.forAuthTest.borrower.WithMockBorrower;
-import com.inha.borrow.backend.model.dto.user.PatchPasswordDto;
-import com.inha.borrow.backend.model.dto.user.borrower.PatchEmailDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
-import com.inha.borrow.backend.model.dto.user.borrower.PhonenumberPatchCodeDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerService;
 
@@ -100,7 +97,7 @@ public class BorrowerControllerTest {
         @DisplayName("전화번호 수정")
         @WithMockBorrower
         void patchPhoneNumber() throws Exception {
-                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-1111-2222", "000");
+                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-1111-2222");
                 doNothing().when(borrowerService).patchPhoneNumber("testId", dto);
 
                 mockMvc.perform(patch("/borrowers/info/phonenum")
@@ -163,105 +160,10 @@ public class BorrowerControllerTest {
         }
 
         @Test
-        @DisplayName("/borrowers/info/password 경로접근 테스트(성공)")
-        @WithMockBorrower
-        void patchPasswordSuccessTest() throws Exception {
-                // given
-                PatchPasswordDto passwordDto = new PatchPasswordDto();
-                passwordDto.setOriginPassword("examPass1!");
-                passwordDto.setNewPassword("examPass1!");
-                // when
-                // then
-                mockMvc.perform(
-                                patch("/borrowers/info/password")
-                                                .content(objectMapper.writeValueAsString(passwordDto))
-                                                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
-                                .andExpect(status().isOk());
-        }
-
-        @Test
-        @DisplayName("/borrowers/info/password 경로접근 테스트(실패-인증없음)")
-        @WithAnonymousUser
-        void patchPasswordFailForAnonymousUserTest() throws Exception {
-                // given
-                PatchPasswordDto passwordDto = new PatchPasswordDto();
-                passwordDto.setOriginPassword("1234");
-                passwordDto.setNewPassword("1234");
-                // when
-                // then
-                mockMvc.perform(
-                                patch("/borrowers/info/password")
-                                                .content(objectMapper.writeValueAsString(passwordDto))
-                                                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
-                                .andExpect(status().isUnauthorized());
-        }
-
-        @Test
-        @DisplayName("/borrowers/info/password 경로접근 테스트(실패-권한문제)")
-        @WithMockUser(authorities = "PRESIDENT")
-        void patchPasswordFailForAdminTest() throws Exception {
-                // given
-                PatchPasswordDto passwordDto = new PatchPasswordDto();
-                passwordDto.setOriginPassword("1234");
-                passwordDto.setNewPassword("1234");
-                // when
-                // then
-                mockMvc.perform(
-                                patch("/borrowers/info/password")
-                                                .content(objectMapper.writeValueAsString(passwordDto))
-                                                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
-                                .andExpect(status().isForbidden());
-        }
-
-        @Test
-        @DisplayName("/borrowers/info/email 경로접근 테스트(성공)")
-        @WithMockBorrower
-        void patchEmailSuccessTest() throws Exception {
-                // given
-                String email = "test1@naver.com";
-                PatchEmailDto patchEmailDto = new PatchEmailDto(email);
-                // when
-                // then
-                mockMvc.perform(
-                                patch("/borrowers/info/email")
-                                                .content(objectMapper.writeValueAsString(patchEmailDto))
-                                                .contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(status().isOk());
-        }
-
-        @Test
-        @DisplayName("/borrowers/info/email 경로접근 테스트(실패-인증없음)")
-        @WithAnonymousUser
-        void patchEmailFailForAnonymousUserTest() throws Exception {
-                // given
-                String email = "test1@naver.com";
-                // when
-                // then
-                mockMvc.perform(
-                                patch("/borrowers/info/email")
-                                                .content(email))
-                                .andExpect(status().isUnauthorized());
-        }
-
-        @Test
-        @DisplayName("/borrowers/info/email 경로접근 테스트(실패-권한문제)")
-        @WithMockUser(authorities = "PRESIDENT")
-        void patchEmailFailForAdminTest() throws Exception {
-                // given
-                String email = "test1@naver.com";
-                // when
-                // then
-                mockMvc.perform(
-                                patch("/borrowers/info/email")
-                                                .content(email))
-                                .andExpect(status().isForbidden());
-        }
-
-        @Test
         @DisplayName("/borrowers/info/phonenum 경로접근 테스트(성공)")
         @WithMockBorrower
         void patchPhoneNumberSuccessTest() throws Exception {
-                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-0000-0000", "123456");
+                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-0000-0000");
                 doNothing().when(borrowerService).patchPhoneNumber("test_borrower", dto);
 
                 mockMvc.perform(
@@ -275,7 +177,7 @@ public class BorrowerControllerTest {
         @DisplayName("/borrowers/info/phonenum 경로접근 테스트(실패-인증없음)")
         @WithAnonymousUser
         void patchPhoneNumberFailForAnonymousUserTest() throws Exception {
-                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-0000-0000", "123456");
+                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-0000-0000");
                 mockMvc.perform(
                                 patch("/borrowers/info/phonenum")
                                                 .content(objectMapper.writeValueAsString(dto))
@@ -287,90 +189,12 @@ public class BorrowerControllerTest {
         @DisplayName("/borrowers/info/phonenum 경로접근 테스트(실패-권한문제)")
         @WithMockUser(authorities = "PRESIDENT")
         void patchPhoneNumberFailForAdminTest() throws Exception {
-                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-0000-0000", "123456");
+                PatchPhonenumberDto dto = new PatchPhonenumberDto("010-0000-0000");
                 mockMvc.perform(
                                 patch("/borrowers/info/phonenum")
                                                 .content(objectMapper.writeValueAsString(dto))
                                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isForbidden());
-        }
-
-        // New endpoint: /borrowers/sms-verify-code (POST)
-        @Test
-        @DisplayName("/borrowers/sms-verify-code 경로접근 테스트(성공 - BORROWER)")
-        @WithMockBorrower
-        void createSmsCodeSuccessTest() throws Exception {
-                PhonenumberPatchCodeDto dto = new PhonenumberPatchCodeDto("010-1111-2222");
-                doNothing().when(borrowerService).createSmsCode("test_borrower", dto.getNewPhonenumber());
-
-                mockMvc.perform(post("/borrowers/sms-verify-code")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(dto)))
-                                .andExpect(status().isOk());
-        }
-
-        @Test
-        @DisplayName("/borrowers/sms-verify-code 경로접근 테스트(실패 - 인증없음)")
-        @WithAnonymousUser
-        void createSmsCodeFailForAnonymousTest() throws Exception {
-                PhonenumberPatchCodeDto dto = new PhonenumberPatchCodeDto("010-1111-2222");
-                mockMvc.perform(post("/borrowers/sms-verify-code")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(dto)))
-                                .andExpect(status().isUnauthorized());
-        }
-
-        @Test
-        @DisplayName("/borrowers/sms-verify-code 경로접근 테스트(실패 - ADMIN 403)")
-        @WithMockUser(authorities = "DIVISION_MEMBER")
-        void createSmsCodeFailForAdminTest() throws Exception {
-                PhonenumberPatchCodeDto dto = new PhonenumberPatchCodeDto("010-1111-2222");
-                mockMvc.perform(post("/borrowers/sms-verify-code")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(dto)))
-                                .andExpect(status().isForbidden());
-        }
-
-        @Test
-        @DisplayName("/borrowers/{borrower-id}/info/name 경로접근 테스트(성공)")
-        @WithMockUser(authorities = "DIVISION_MEMBER")
-        void patchNameSuccessTest() throws Exception {
-                // given
-                String name = "수정함";
-                // when
-                // then
-                mockMvc.perform(
-                                patch("/borrowers/test_borrower/info/name")
-                                                .content(name))
-                                .andExpect(status().isOk());
-        }
-
-        @Test
-        @DisplayName("/borrowers/{borrower-id}/info/name 경로접근 테스트(실패-권한문제)")
-        @WithMockBorrower
-        void patchNameFailForBorrowerTest() throws Exception {
-                // given
-                String name = "수정함";
-                // when
-                // then
-                mockMvc.perform(
-                                patch("/borrowers/test_borrower/info/name")
-                                                .content(name))
-                                .andExpect(status().isForbidden());
-        }
-
-        @Test
-        @DisplayName("/borrowers/{borrower-id}/info/name 경로접근 테스트(실패-인증안함)")
-        @WithAnonymousUser
-        void patchNameFailForAnonymousUserTest() throws Exception {
-                // given
-                String name = "수정함";
-                // when
-                // then
-                mockMvc.perform(
-                                patch("/borrowers/test_borrower/info/name")
-                                                .content(name))
-                                .andExpect(status().isUnauthorized());
         }
 
         @Test

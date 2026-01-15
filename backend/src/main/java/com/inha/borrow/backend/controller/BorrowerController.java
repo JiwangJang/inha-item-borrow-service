@@ -1,10 +1,7 @@
 package com.inha.borrow.backend.controller;
 
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
-import com.inha.borrow.backend.model.dto.user.PatchPasswordDto;
-import com.inha.borrow.backend.model.dto.user.borrower.PatchEmailDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
-import com.inha.borrow.backend.model.dto.user.borrower.PhonenumberPatchCodeDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerService;
 

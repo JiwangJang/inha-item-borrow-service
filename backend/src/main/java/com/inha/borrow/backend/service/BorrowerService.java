@@ -1,10 +1,9 @@
 package com.inha.borrow.backend.service;
 
-import com.inha.borrow.backend.cache.SMSCodeCache;
 import com.inha.borrow.backend.enums.ApiErrorCode;
-import com.inha.borrow.backend.model.dto.user.PatchPasswordDto;
+
 import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
-import com.inha.borrow.backend.model.entity.SMSCode;
+
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 
@@ -27,7 +26,8 @@ import java.util.List;
 public class BorrowerService implements UserDetailsService {
     private final BorrowerRepository borrowerRepository;
     private final PasswordEncoder passwordEncoder;
-    private final SMSCodeCache smsCodeCache;
+
+    // i-class 연동부분을 여기서 구현하는게 좋을듯 함
 
     /**
      * 대여자를 id로 찾는 메서드
@@ -71,15 +71,7 @@ public class BorrowerService implements UserDetailsService {
      * @author 형민재
      */
     public void patchPhoneNumber(String borrowerId, PatchPhonenumberDto dto) {
-        SMSCode smsCode = smsCodeCache.get(borrowerId);
-        String sentCode = smsCode.getCode();
-        String userCode = dto.getSmsVerifyCode();
         String newPhonenumber = dto.getNewPhonenumber();
-        if (!sentCode.equals(userCode)) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.INCORRECT_CODE;
-            throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
-        }
-
         borrowerRepository.patchPhoneNumber(newPhonenumber, borrowerId);
     }
 

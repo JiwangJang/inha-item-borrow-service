@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PatchPhonenumberDto {
     private String newPhonenumber;
-    private String smsVerifyCode;
 }

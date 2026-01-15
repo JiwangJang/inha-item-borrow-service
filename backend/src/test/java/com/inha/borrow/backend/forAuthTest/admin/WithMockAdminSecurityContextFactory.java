@@ -24,7 +24,6 @@ public class WithMockAdminSecurityContextFactory implements WithSecurityContextF
                 .name("테스트관리자")
                 .phonenumber("010-0000-0000")
                 .authorities(authorities)
-                .refreshToken("rt-" + customUser.id())
                 .divisionCode(customUser.division())
                 .build();
 

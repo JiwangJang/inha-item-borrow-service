@@ -27,7 +27,6 @@ public class WithMockBorrowerSecurityContextFactory
                                 .name("테스트 대여자")
                                 .phonenumber("010-0000-0000")
                                 .authorities(authorities)
-                                .refreshToken("rt-" + customUser.id())
                                 .ban(false)
                                 .withDrawal(false)
                                 .studentNumber("11111111")

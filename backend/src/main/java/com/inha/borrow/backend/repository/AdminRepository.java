@@ -22,7 +22,6 @@ import com.inha.borrow.backend.model.dto.user.admin.UpdatePositionDto;
 import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import com.inha.borrow.backend.service.JwtTokenService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +34,6 @@ public class AdminRepository {
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
     private final String RAW_DEFAULT_PASSWORD = "a12345";
-    private final JwtTokenService jwtTokenService;
 
     /**
      * 아이디로 관리자 정보를 가져오는 메서드
@@ -55,7 +53,6 @@ public class AdminRepository {
                 String name = rs.getString("name");
                 String phonenumber = rs.getString("phonenumber");
                 String position = rs.getString("position");
-                String refreshToken = rs.getString("refresh_token");
                 String divisionCode = rs.getString("code");
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(position);
                 List<GrantedAuthority> authorities = List.of(authority);
@@ -67,7 +64,6 @@ public class AdminRepository {
                         .name(name)
                         .phonenumber(phonenumber)
                         .authorities(authorities)
-                        .refreshToken(refreshToken)
                         .divisionCode(divisionCode)
                         .build();
                 return admin;
@@ -117,14 +113,13 @@ public class AdminRepository {
     public void saveAdmin(SaveAdminDto saveAdminDto) {
         String sql = "INSERT INTO admin(id, password, email, name, phonenumber, position, division, refresh_token) VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
         String defaultPassword = passwordEncoder.encode(RAW_DEFAULT_PASSWORD);
-        String refreshToken = jwtTokenService.createToken(saveAdminDto.getId());
         try {
             jdbcTemplate.update(sql, saveAdminDto.getId(), defaultPassword, saveAdminDto.getEmail(),
                     saveAdminDto.getName(), saveAdminDto.getPhonenumber(), saveAdminDto.getPosition().name(),
-                    saveAdminDto.getDivision(), refreshToken);
+                    saveAdminDto.getDivision());
         } catch (DataAccessException e) {
-            ApiErrorCode errorCode = ApiErrorCode.EXIST_ID; //에러코드 EXIST_ID로 수정
-            throw new InvalidValueException(errorCode.name(),errorCode.getMessage());
+            ApiErrorCode errorCode = ApiErrorCode.EXIST_ID; // 에러코드 EXIST_ID로 수정
+            throw new InvalidValueException(errorCode.name(), errorCode.getMessage());
         }
 
     }

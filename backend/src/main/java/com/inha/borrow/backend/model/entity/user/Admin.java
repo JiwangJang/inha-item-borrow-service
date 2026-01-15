@@ -44,8 +44,8 @@ public class Admin extends User {
      * @param authorities 관리자 권한 목록(무조건 한개 담겨있음)
      */
     public Admin(String id, String password, String email, String name, String phonenumber,
-            List<GrantedAuthority> authorities, String refreshToken, String divisionCode) {
-        super(id, password, email, name, phonenumber, refreshToken, authorities);
+            List<GrantedAuthority> authorities, String divisionCode) {
+        super(id, password, email, name, phonenumber, authorities);
 
         Role role = Role.valueOf(authorities.get(0).getAuthority());
         this.divisionCode = divisionCode;

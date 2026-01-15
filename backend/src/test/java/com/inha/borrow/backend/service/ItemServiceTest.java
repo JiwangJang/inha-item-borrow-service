@@ -51,7 +51,6 @@ public class ItemServiceTest {
                 .email("a@a.com")
                 .name("admin")
                 .phonenumber("000")
-                .refreshToken(null)
                 .divisionCode("DIV")
                 .authorities(Collections.singletonList(new SimpleGrantedAuthority(Role.DIVISION_MEMBER.name())))
                 .build();
@@ -68,7 +67,6 @@ public class ItemServiceTest {
                 .email("b@b.com")
                 .name("borrower")
                 .phonenumber("000")
-                .refreshToken(null)
                 .ban(false)
                 .withDrawal(false)
                 .studentNumber("20240001")
@@ -81,13 +79,9 @@ public class ItemServiceTest {
         // Ensure FK constraint: borrower must exist
         borrowerRepository.save(BorrowerDto.builder()
                 .id(borrowerId)
-                .password("pw")
-                .email(borrowerId + "@test.com")
                 .name("name")
                 .phonenumber("010-0000-0000")
-                .studentNumber("20240001")
                 .accountNumber("111-1111")
-                .refreshToken("123")
                 .build());
         SaveRequestDto saveRequest = SaveRequestDto.builder()
                 .itemId(itemId)

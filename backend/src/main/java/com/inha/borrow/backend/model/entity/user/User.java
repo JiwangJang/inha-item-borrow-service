@@ -23,7 +23,6 @@ public abstract class User implements UserDetails {
     private String email;
     private String name;
     private String phonenumber;
-    private String refreshToken;
     private List<GrantedAuthority> authorities;
 
     public User(String id, String name, String phonenumber, List<GrantedAuthority> authorities) {

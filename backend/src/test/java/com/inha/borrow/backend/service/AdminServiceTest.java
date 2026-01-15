@@ -10,9 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
@@ -44,20 +41,6 @@ class AdminServiceTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        @Primary
-        JwtTokenService jwtTokenService() {
-            return new JwtTokenService() {
-                @Override
-                public String createToken(String id) {
-                    return "test-token-" + id;
-                }
-            };
-        }
-    }
-
     private void ensureDivision(String code, String name) {
         String sql = "INSERT INTO division(code, name) VALUES(?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name);";
         jdbcTemplate.update(sql, code, name);
@@ -71,7 +54,7 @@ class AdminServiceTest {
     private void insertAdmin(String id, Role role, String division, String rawPassword) {
         jdbcTemplate.update("DELETE FROM admin WHERE id = ?", id);
         String hashed = passwordEncoder.encode(rawPassword);
-        String sql = "INSERT INTO admin(id, password, email, name, phonenumber, position, division, refresh_token, is_delete) VALUES(?, ?, ?, ?, ?, ?, ?, ?, false);";
+        String sql = "INSERT INTO admin(id, password, email, name, phonenumber, position, division, is_delete) VALUES(?, ?, ?, ?, ?, ?, ?, false);";
         jdbcTemplate.update(sql, id, hashed, id + "@test.com", "테스터", "010-0000-0000",
                 role.name(), division, "rt-" + id);
     }
@@ -85,7 +68,6 @@ class AdminServiceTest {
                 .name("액터")
                 .phonenumber("010-0000-0000")
                 .authorities(authorities)
-                .refreshToken("r-" + id)
                 .divisionCode(division)
                 .build();
     }
@@ -158,8 +140,6 @@ class AdminServiceTest {
 
         Integer cnt = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM admin WHERE id = ?", Integer.class, id);
         assertEquals(1, cnt);
-        String rt = jdbcTemplate.queryForObject("SELECT refresh_token FROM admin WHERE id = ?", String.class, id);
-        assertEquals("test-token-" + id, rt);
     }
 
     @Test

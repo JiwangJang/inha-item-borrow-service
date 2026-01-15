@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -27,7 +28,6 @@ import com.inha.borrow.backend.model.dto.user.admin.UpdateDivisionDto;
 import com.inha.borrow.backend.model.dto.user.admin.UpdatePositionDto;
 import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-import com.inha.borrow.backend.service.JwtTokenService;
 
 @JdbcTest
 @Import({ AdminRepository.class, AdminRepositoryTest.TestConfig.class })
@@ -39,20 +39,11 @@ public class AdminRepositoryTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @TestConfiguration
     static class TestConfig {
         @Bean
         PasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder();
-        }
-
-        @Bean
-        JwtTokenService jwtTokenService() {
-            return new JwtTokenService() {
-                @Override
-                public String createToken(String id) {
-                    return "test-token-" + id;
-                }
-            };
         }
     }
 
@@ -69,9 +60,9 @@ public class AdminRepositoryTest {
     private void insertAdmin(String id, Role role, String division) {
         // Clean potential leftovers with same id
         jdbcTemplate.update("DELETE FROM admin WHERE id = ?", id);
-        String sql = "INSERT INTO admin(id, password, email, name, phonenumber, position, division, refresh_token, is_delete) VALUES(?, ?, ?, ?, ?, ?, ?, ?, false);";
+        String sql = "INSERT INTO admin(id, password, email, name, phonenumber, position, division, is_delete) VALUES(?, ?, ?, ?, ?, ?, ?, false);";
         jdbcTemplate.update(sql, id, "$2a$10$abcdefghijklmnopqrstuv", id + "@test.com", "테스터", "010-0000-0000",
-                role.name(), division, "refresh" + id);
+                role.name(), division);
     }
 
     private Admin buildActor(String id, Role role, String division) {
@@ -83,7 +74,6 @@ public class AdminRepositoryTest {
                 .name("액터")
                 .phonenumber("010-0000-0000")
                 .authorities(authorities)
-                .refreshToken("r-" + id)
                 .divisionCode(division)
                 .build();
     }
@@ -151,8 +141,6 @@ public class AdminRepositoryTest {
         // then
         Integer cnt = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM admin WHERE id = ?", Integer.class, id);
         assertEquals(1, cnt);
-        String rt = jdbcTemplate.queryForObject("SELECT refresh_token FROM admin WHERE id = ?", String.class, id);
-        assertEquals("test-token-" + id, rt);
     }
 
     @Test
@@ -206,9 +194,9 @@ public class AdminRepositoryTest {
         String id = "repo_find_pwd";
         String pwd = "$2a$10$originalpasswordhashabcdefghijk";
         jdbcTemplate.update("DELETE FROM admin WHERE id = ?", id);
-        String sql = "INSERT INTO admin(id, password, email, name, phonenumber, position, division, refresh_token, is_delete) VALUES(?, ?, ?, ?, ?, ?, ?, ?, false);";
-        jdbcTemplate.update(sql, id, pwd, id + "@test.com", "테스터", "010-0000-0000", Role.DIVISION_MEMBER.name(), "TEST",
-                "refresh" + id);
+        String sql = "INSERT INTO admin(id, password, email, name, phonenumber, position, division, is_delete) VALUES(?, ?, ?, ?, ?, ?, ?, false);";
+        jdbcTemplate.update(sql, id, pwd, id + "@test.com", "테스터", "010-0000-0000", Role.DIVISION_MEMBER.name(),
+                "TEST");
 
         // when
         String found = adminRepository.findPasswordById(id);

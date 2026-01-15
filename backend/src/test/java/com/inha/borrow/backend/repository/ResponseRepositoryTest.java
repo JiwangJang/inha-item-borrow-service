@@ -72,13 +72,9 @@ class ResponseRepositoryTest {
         // prepare borrower
         BorrowerDto borrower = BorrowerDto.builder()
                 .id("borrower-1")
-                .password("pw")
-                .email("a@b.c")
                 .name("name")
                 .phonenumber("010-0000-0000")
-                .studentNumber("20250000")
                 .accountNumber("123-456")
-                .refreshToken("rtk")
                 .build();
         borrowerRepository.save(borrower);
 
