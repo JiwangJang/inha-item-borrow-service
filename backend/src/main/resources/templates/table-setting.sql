@@ -52,6 +52,8 @@ CREATE TABLE borrower(
 CREATE TABLE student_council_fee(
     id varchar(50) NOT NULL PRIMARY KEY,
     s3_link varchar(50) NOT NULL,
+    request_at datetime NOT NULL,
+    deny_reason varchar(50) NOT NULL,
     -- 소문자로 수정함
     verify boolean default false
 );
@@ -61,7 +63,7 @@ CREATE TABLE borrower_privacy_agreement(
     borrower_id varchar(50) NOT NULL,
     foreign key(borrower_id) references borrower(id),
     agreed_at datetime NOT NULL,
-    version varchar(50) NOT NULL,
+    version varchar(50) NOT NULL
 );
 
 create table item (
