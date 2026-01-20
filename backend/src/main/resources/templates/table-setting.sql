@@ -53,6 +53,7 @@ CREATE TABLE student_council_fee(
     id varchar(50) NOT NULL PRIMARY KEY,
     s3_link varchar(50) NOT NULL,
     request_at datetime NOT NULL,
+    response_at datetime NOT NULL,
     deny_reason varchar(50) NOT NULL,
     -- 소문자로 수정함
     verify boolean default false
