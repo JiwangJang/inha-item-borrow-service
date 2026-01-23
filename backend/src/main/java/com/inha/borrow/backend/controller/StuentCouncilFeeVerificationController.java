@@ -59,7 +59,7 @@ public class StuentCouncilFeeVerificationController {
     }
 
     /**
-     * 사용자의 인증신청 요청을 승인하는 메서드
+     * 대여자의 인증신청 요청을 승인하는 메서드
      * 
      * @param dto
      * @return 200
@@ -72,7 +72,7 @@ public class StuentCouncilFeeVerificationController {
     }
 
     /**
-     * 사용자의 인증신청을 거절하는 메서드
+     * 대여자의 인증신청을 거절하는 메서드
      * 
      * @param dto
      * @return
@@ -97,7 +97,7 @@ public class StuentCouncilFeeVerificationController {
     }
 
     /**
-     * 사용자가 인증 신청을 등록하는 메서드
+     * 대여자가 인증 신청을 등록하는 메서드(거절후 재신청도 여기로)
      * 
      * @param verificationImage 인증이미지
      * @param borrower          사용자정보
@@ -114,7 +114,7 @@ public class StuentCouncilFeeVerificationController {
     }
 
     /**
-     * 사용자가 인증 신청한거 취소하는 메서드
+     * 대여자가 인증 신청한거 취소하는 메서드
      * 
      * @param borrower
      * @return 204

@@ -23,7 +23,7 @@ public class StudentCouncilFeeVerificationService {
     private final String folder = "student-council-fee";
 
     /**
-     * 사용자가 새로운 요청을 등록할 때 사용
+     * 사용자가 새로운(또는 거절후) 요청을 등록할 때 사용
      * 
      * @param id                사용자 아이디
      * @param verificationImage 인증 사진
@@ -31,6 +31,7 @@ public class StudentCouncilFeeVerificationService {
      */
     public void verificationRequestSave(String id, MultipartFile verificationImage) {
         String s3Link = s3Service.uploadFile(verificationImage, "student-council-fee", id);
+        // 기존 사진이 있을경우 삭제하는 로직 추가
         repository.verificationRequestSave(id, s3Link);
     }
 

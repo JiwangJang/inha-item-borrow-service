@@ -104,33 +104,11 @@ public class StudentCouncilFeeVerificationRepository {
     }
 
     /**
-     * 사용자가 학생회비 납부정보를 고칠때 쓰는 메서드
-     * 
-     * @param id     사용자 아이디
-     * @param s3Link 납부인증사진 저장 경로
-     * @author 장지왕
-     */
-    public void updateForBorrower(String id, String s3Link) {
-        LocalDateTime current = LocalDateTime.now();
-        String query = """
-                UPDATE student_council_fee SET
-                    verify = NULL,
-                    s3_link = ?,
-                    request_at = ?,
-                    response_at = NULL,
-                    deny_reason = NULL
-                WHERE id = ?;
-                """;
-
-        jdbcTemplate.update(query, s3Link, current, id);
-    }
-
-    /**
      * 관리자가 요청을 수정할때 사용하는 메서드
      * 
      * @param id         사용자 아이디
      * @param verify     승인여부
-     * @param denyReason 거절이유(승인으로 고칠경우 null)\
+     * @param denyReason 거절이유(승인으로 고칠경우 null)
      * @author 장지왕
      */
     public void updateForAdmin(String id, boolean verify, String denyReason) {
