@@ -37,113 +37,112 @@ import com.inha.borrow.backend.service.ResponseService;
 @Import(AuthConfig.class)
 class ResponseControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @MockitoBean
-    private ResponseService responseService;
+        @MockitoBean
+        private ResponseService responseService;
 
-    @MockitoBean
-    AdminAuthenticationProvider mockAdminAuthenticationProvider;
+        @MockitoBean
+        AdminAuthenticationProvider mockAdminAuthenticationProvider;
 
-    @MockitoBean
-    BorrowerAuthenticationProvider mockBorrowerAuthenticationProvider;
+        @MockitoBean
+        BorrowerAuthenticationProvider mockBorrowerAuthenticationProvider;
 
-    @Test
-    @DisplayName("POST /responses 성공 - DIVISION_MEMBER")
-    @WithMockAdmin
-    void createResponse_success() throws Exception {
-        // given
-        SaveResponseDto req = new SaveResponseDto(1, null, ResponseType.BORROW);
-        Response res = Response.builder()
-                .id(10)
-                .requestId(1)
-                .createdAt(Timestamp.from(Instant.now()))
-                .rejectReason(null)
-                .type(ResponseType.BORROW)
-                .build();
-        when(responseService.createResponse(anyString(), any(SaveResponseDto.class))).thenReturn(res);
+        @Test
+        @DisplayName("POST /responses 성공 - DIVISION_MEMBER")
+        @WithMockAdmin
+        void createResponse_success() throws Exception {
+                // given
+                SaveResponseDto req = new SaveResponseDto(1, null, ResponseType.BORROW);
+                Response res = Response.builder()
+                                .id(10)
+                                .requestId(1)
+                                .createdAt(Timestamp.from(Instant.now()))
+                                .rejectReason(null)
+                                .type(ResponseType.BORROW)
+                                .build();
+                when(responseService.createResponse(anyString(), any(SaveResponseDto.class))).thenReturn(res);
 
-        // when - then
-        mockMvc.perform(post("/responses")
-                .content(objectMapper.writeValueAsString(req))
-                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.id").value(10))
-                .andExpect(jsonPath("$.data.requestId").value(1))
-                .andExpect(jsonPath("$.data.type").value("BORROW"));
-    }
+                // when - then
+                mockMvc.perform(post("/responses")
+                                .content(objectMapper.writeValueAsString(req))
+                                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data.id").value(10))
+                                .andExpect(jsonPath("$.data.requestId").value(1))
+                                .andExpect(jsonPath("$.data.type").value("BORROW"));
+        }
 
-    @Test
-    @DisplayName("POST /responses 실패 - BORROWER는 403")
-    @WithMockBorrower
-    void createResponse_forbidden_for_borrower() throws Exception {
-        SaveResponseDto req = new SaveResponseDto(1, null, ResponseType.BORROW);
+        @Test
+        @DisplayName("POST /responses 실패 - BORROWER는 403")
+        @WithMockBorrower
+        void createResponse_forbidden_for_borrower() throws Exception {
+                SaveResponseDto req = new SaveResponseDto(1, null, ResponseType.BORROW);
 
-        mockMvc.perform(post("/responses")
-                .content(objectMapper.writeValueAsString(req))
-                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
-                .andExpect(status().isForbidden());
-    }
+                mockMvc.perform(post("/responses")
+                                .content(objectMapper.writeValueAsString(req))
+                                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @DisplayName("POST /responses 실패 - 비로그인 401")
-    void createResponse_unauthorized() throws Exception {
-        SaveResponseDto req = new SaveResponseDto(1, null, ResponseType.BORROW);
+        @Test
+        @DisplayName("POST /responses 실패 - 비로그인 401")
+        void createResponse_unauthorized() throws Exception {
+                SaveResponseDto req = new SaveResponseDto(1, null, ResponseType.BORROW);
 
-        mockMvc.perform(post("/responses")
-                .content(objectMapper.writeValueAsString(req))
-                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
-                .andExpect(status().isUnauthorized());
-    }
+                mockMvc.perform(post("/responses")
+                                .content(objectMapper.writeValueAsString(req))
+                                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
+                                .andExpect(status().isUnauthorized());
+        }
 
-    @Test
-    @DisplayName("PATCH /responses/{id} 성공 - DIVISION_MEMBER")
-    @WithMockAdmin
-    void updateResponse_success() throws Exception {
-        PatchResponseDto patch = PatchResponseDto.builder()
-                .requestId(1)
-                .rejectReason("")
-                .build();
-        doNothing().when(responseService).updateResponse(anyString(), anyString(), any(PatchResponseDto.class));
+        @Test
+        @DisplayName("PATCH /responses/{id} 성공 - DIVISION_MEMBER")
+        @WithMockAdmin
+        void updateResponse_success() throws Exception {
+                PatchResponseDto patch = PatchResponseDto.builder()
+                                .requestId(1)
+                                .rejectReason("")
+                                .build();
+                doNothing().when(responseService).updateResponse(anyString(), anyString(), any(PatchResponseDto.class));
 
-        mockMvc.perform(patch("/responses/{response-id}", 10)
-                .content(objectMapper.writeValueAsString(patch))
-                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
-                .andExpect(status().isNoContent());
-    }
+                mockMvc.perform(patch("/responses/{response-id}", 10)
+                                .content(objectMapper.writeValueAsString(patch))
+                                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
+                                .andExpect(status().isNoContent());
+        }
 
-    @Test
-    @DisplayName("PATCH /responses/{id} 실패 - BORROWER는 403")
-    @WithMockBorrower
-    void updateResponse_forbidden_for_borrower() throws Exception {
-        PatchResponseDto patch = PatchResponseDto.builder()
-                .requestId(1)
-                .rejectReason("")
-                .build();
+        @Test
+        @DisplayName("PATCH /responses/{id} 실패 - BORROWER는 403")
+        @WithMockBorrower
+        void updateResponse_forbidden_for_borrower() throws Exception {
+                PatchResponseDto patch = PatchResponseDto.builder()
+                                .requestId(1)
+                                .rejectReason("")
+                                .build();
 
-        mockMvc.perform(patch("/responses/{response-id}", 10)
-                .content(objectMapper.writeValueAsString(patch))
-                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
-                .andExpect(status().isForbidden());
-    }
+                mockMvc.perform(patch("/responses/{response-id}", 10)
+                                .content(objectMapper.writeValueAsString(patch))
+                                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @DisplayName("PATCH /responses/{id} 실패 - 비로그인 401")
-    void updateResponse_unauthorized() throws Exception {
-        PatchResponseDto patch = PatchResponseDto.builder()
-                .requestId(1)
-                .rejectReason("")
-                .build();
+        @Test
+        @DisplayName("PATCH /responses/{id} 실패 - 비로그인 401")
+        void updateResponse_unauthorized() throws Exception {
+                PatchResponseDto patch = PatchResponseDto.builder()
+                                .requestId(1)
+                                .rejectReason("")
+                                .build();
 
-        mockMvc.perform(patch("/responses/{response-id}", 10)
-                .content(objectMapper.writeValueAsString(patch))
-                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
-                .andExpect(status().isUnauthorized());
-    }
+                mockMvc.perform(patch("/responses/{response-id}", 10)
+                                .content(objectMapper.writeValueAsString(patch))
+                                .contentType(ContentType.APPLICATION_JSON.getMimeType()))
+                                .andExpect(status().isUnauthorized());
+        }
 }
-

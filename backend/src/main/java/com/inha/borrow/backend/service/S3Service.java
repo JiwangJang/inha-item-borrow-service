@@ -23,19 +23,19 @@ public class S3Service {
 
     /**
      *
-     * @param multipartFile
-     * @param id
-     * @param folder
+     * @param multipartFile 파일
+     * @param folder        폴더
+     * @param name          파일명
      * @return 사진이 저장된 url
      * @author 형민재
      */
-    public String uploadFile(MultipartFile multipartFile, String folder, String id) {
+    public String uploadFile(MultipartFile multipartFile, String folder, String name) {
         String originalFilename = multipartFile.getOriginalFilename();
         String extension = "";
         if (originalFilename != null && originalFilename.contains(".")) {
             extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
-        String fileName = folder + "/" + id + extension;
+        String fileName = folder + "/" + name + extension;
         ObjectMetadata objMeta = new ObjectMetadata();
         objMeta.setContentLength(multipartFile.getSize());
         objMeta.setContentType(multipartFile.getContentType());
@@ -45,14 +45,14 @@ public class S3Service {
             throw new AmazonS3Exception("s3 업로드 실패");
         }
         return amazonS3.getUrl(bucket, fileName).toString();
+    }
 
-    }
-    public void deleteFile(String bucket,String folder, String id){
-        String key = folder+"/"+id;
-        amazonS3.deleteObject(bucket,key);
-    }
-    public void deleteAllFile(String bucket ,String id){
-        amazonS3.deleteObject(bucket,"student-council-fee/"+id);
-        amazonS3.deleteObject(bucket,"student-identification/"+id);
+    /**
+     * S3에 저장된 사진 삭제
+     * 
+     * @param path 저장된 경로(폴더+이름)
+     */
+    public void deleteFile(String path) {
+        amazonS3.deleteObject(bucket, path);
     }
 }

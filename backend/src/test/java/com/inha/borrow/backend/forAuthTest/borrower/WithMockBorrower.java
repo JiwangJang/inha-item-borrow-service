@@ -8,7 +8,7 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = WithMockBorrowerSecurityContextFactory.class)
 public @interface WithMockBorrower {
-    String id() default "test_borrower";
+    String id() default "12345678";
 
     String[] authorities() default { "BORROWER" };
 }

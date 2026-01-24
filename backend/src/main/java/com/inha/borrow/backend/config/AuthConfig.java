@@ -88,6 +88,14 @@ public class AuthConfig {
 							.requestMatchers("/borrowers/auth/**", "/admins/login")
 							.permitAll()
 							//
+							// /student-council-fee-verification 관련 인증 설정
+							// /student-council-fee-verification GET 요청은 학생회 임원만 가능
+							.requestMatchers(HttpMethod.GET, "/student-council-fee-verification")
+							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
+							// /student-council-fee-verification/permit,dney,modify는 관리자만 접근가능
+							.requestMatchers(HttpMethod.PATCH, "/student-council-fee-verification/*")
+							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
+							//
 							// /borrowers 관련 인증설정
 							// /borrowers 경로는 국장이상만 접근 가능하다
 							.requestMatchers("/borrowers")
