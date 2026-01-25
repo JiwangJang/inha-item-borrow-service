@@ -1,12 +1,10 @@
 package com.inha.borrow.backend.service;
 
-import com.inha.borrow.backend.enums.ApiErrorCode;
-
 import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
 
 import com.inha.borrow.backend.model.entity.user.Borrower;
-import com.inha.borrow.backend.model.exception.InvalidValueException;
 
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,8 +24,19 @@ import java.util.List;
 public class BorrowerService implements UserDetailsService {
     private final BorrowerRepository borrowerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PortalLoginService portalLoginService;
 
     // i-class 연동부분을 여기서 구현하는게 좋을듯 함
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        try {
+            Borrower borrower = borrowerRepository.findById(username);
+        }catch (IncorrectResultSizeDataAccessException e){
+            return null; // 추가 예정
+        }
+        return null; // 추가 예정
+    }
 
     /**
      * 대여자를 id로 찾는 메서드

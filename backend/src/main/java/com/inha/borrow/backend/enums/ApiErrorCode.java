@@ -4,6 +4,7 @@ public enum ApiErrorCode {
     EXIST_ID("이미 사용중인 아이디입니다. 다른 아이디를 사용해주세요."),
     INVALID_ID("아이디 형식에 맞지 않습니다. 다른 아이디를 사용해주세요."),
     INVALID_PASSWORD("비밀번호 형식에 맞지 않습니다. 다른 비밀번호를 사용해주세요"),
+    INVALID_ID_OR_PASSWORD("로그인 실패 아이디 또는 비밀번호를 확인해주세요"),
     INVALID_DIVISION_C0DE("이미 존재하는 부서 코드입니다."),
     INVALID_VALUE("잘못된 값입니다."),
     INVALID_RESPONSE_TYPE("요청의 타입과 응답의 타입은 같아야합니다."),

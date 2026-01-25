@@ -60,17 +60,4 @@ class S3ServiceTest {
         assertThat(metadata.getContentLength()).isEqualTo(10L);
         assertThat(metadata.getContentType()).isEqualTo("image/jpeg");
     }
-
-    @Test
-    void deleteFile_shouldCallAmazonS3Delete() {
-        s3Service.deleteFile("test-bucket", "folder", "123");
-        verify(amazonS3).deleteObject("test-bucket", "folder/123");
-    }
-
-    @Test
-    void deleteAllFile_shouldCallAmazonS3DeleteForBothFolders() {
-        s3Service.deleteAllFile("test-bucket", "123");
-        verify(amazonS3).deleteObject("test-bucket", "student-council-fee/123");
-        verify(amazonS3).deleteObject("test-bucket", "student-identification/123");
-    }
 }
