@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.inha.borrow.backend.model.dto.notification.AddNotificationDto;
 import com.inha.borrow.backend.model.dto.notification.CheckNotificationDto;
 import com.inha.borrow.backend.model.dto.notification.FindNotificationDto;
 import com.inha.borrow.backend.model.entity.Notification;
@@ -17,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 public class NotificationService {
     private final NotificationRepository repository;
 
-    public void addNotification(AddNotificationDto dto) {
-        repository.addNotification(dto.getContent(), dto.getTargetId());
+    public void addNotification(String content, String targetId) {
+        repository.addNotification(content, targetId);
     }
 
     public List<Notification> findAllNotifications(FindNotificationDto dto) {

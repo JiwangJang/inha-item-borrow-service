@@ -5,10 +5,12 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
-import com.inha.borrow.backend.model.dto.notification.AddNotificationDto;
 import com.inha.borrow.backend.model.dto.notification.CheckNotificationDto;
 import com.inha.borrow.backend.model.dto.notification.FindNotificationDto;
 import com.inha.borrow.backend.model.entity.Notification;
@@ -19,14 +21,11 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/notification")
 public class NotificationContorller {
     private final NotificationService service;
 
-    public ResponseEntity<Void> addNotification(@RequestBody AddNotificationDto dto) {
-        service.addNotification(dto);
-        return ResponseEntity.ok().build();
-    }
-
+    @GetMapping
     public ResponseEntity<ApiResponse<List<Notification>>> findAllNotifications(
             @AuthenticationPrincipal Borrower borrower,
             @RequestBody FindNotificationDto dto) {
@@ -36,6 +35,7 @@ public class NotificationContorller {
         return ResponseEntity.ok(response);
     }
 
+    @PatchMapping
     public ResponseEntity<Void> checkNotification(
             @AuthenticationPrincipal Borrower borrower,
             @RequestBody CheckNotificationDto dto) {

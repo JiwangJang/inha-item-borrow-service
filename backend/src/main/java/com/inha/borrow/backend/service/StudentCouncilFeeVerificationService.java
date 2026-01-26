@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StudentCouncilFeeVerificationService {
     private final StudentCouncilFeeVerificationRepository repository;
+    private final NotificationService notificationService;
     private final S3Service s3Service;
     private final String folder = "student-council-fee";
 
@@ -31,7 +32,7 @@ public class StudentCouncilFeeVerificationService {
      */
     public void verificationRequestSave(String id, MultipartFile verificationImage) {
         String s3Link = s3Service.uploadFile(verificationImage, "student-council-fee", id);
-        // 기존 사진이 있을경우 삭제하는 로직 추가
+        // 기존 사진이 있을경우 삭제하는 로직 추가(캐시 확인)
         repository.verificationRequestSave(id, s3Link);
     }
 
@@ -79,6 +80,8 @@ public class StudentCouncilFeeVerificationService {
      * @author 장지왕
      */
     public void permitVerificationRequest(String id) {
+        String content = "학생회비 납부인증이 완료됐습니다.";
+        notificationService.addNotification(content, id);
         repository.updateForAdmin(id, true, null);
     }
 
@@ -90,6 +93,8 @@ public class StudentCouncilFeeVerificationService {
      * @author 장지왕
      */
     public void denyVerificationRequest(DenyFeeVerificationDto dto) {
+        String content = "학생회비 납부인증이 거절됐습니다. 자세한 내용은 거절 사유를 확인해주세요.";
+        notificationService.addNotification(content, dto.getId());
         repository.updateForAdmin(dto.getId(), false, dto.getDenyReason());
     }
 
@@ -102,8 +107,12 @@ public class StudentCouncilFeeVerificationService {
      */
     public void modifyVerificationResponse(ModifyVerificationResponseDto dto) {
         if (dto.isVerify()) {
+            String content = "학생회비 납부인증이 완료됐습니다.";
+            notificationService.addNotification(content, dto.getId());
             repository.updateForAdmin(dto.getId(), true, null);
         } else {
+            String content = "학생회비 납부인증이 거절됐습니다. 자세한 내용은 거절 사유를 확인해주세요.";
+            notificationService.addNotification(content, dto.getId());
             repository.updateForAdmin(dto.getId(), false, dto.getDenyReason());
         }
     }
