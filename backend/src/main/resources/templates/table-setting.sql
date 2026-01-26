@@ -67,7 +67,7 @@ CREATE TABLE borrower_privacy_agreement(
 );
 
 CREATE TABLE notification(
-    id varchar(50) NOT NULL,
+    id int NOT NULL PRIMARY KEY auto_increment,
     is_read boolean DEFAULT false,
     content TEXT NOT NULL,
     target_id char(8) NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE notification(
 );
 
 create table notice (
-    id int NOT NULL primary key auto_increment,
+    id int NOT NULL PRIMARY KEY auto_increment,
     title varchar(50) NOT NULL,
     content TEXT NOT NULL,
     posted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -86,7 +86,7 @@ create table notice (
 );
 
 create table item (
-    id int NOT NULL primary key auto_increment,
+    id int NOT NULL PRIMARY KEY auto_increment,
     name varchar(10) NOT NULL,
     location varchar(50) NOT NULL,
     password varchar(8) NOT NULL,
