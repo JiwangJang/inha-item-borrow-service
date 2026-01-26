@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.DenyFeeVerificationDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.FindFeeVerificationRequestDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.ModifyVerificationResponseDto;
+import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.PermitFeeVerificationDto;
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.entity.user.Borrower;
@@ -122,6 +123,21 @@ public class StudentCouncilFeeVerificationServiceTest {
     }
 
     @Test
+    @DisplayName("permitVerificationRequest 메서드 테스트")
+    public void testPermitVerificationRequest() {
+        // given
+        PermitFeeVerificationDto dto = new PermitFeeVerificationDto(testId);
+        repository.initialSave(testId);
+
+        // when
+        service.permitVerificationRequest(dto.getId());
+        StudentCouncilFeeVerification result = repository.findRequestById(testId);
+
+        // then
+        assertFalse(result.isVerify());
+    }
+
+    @Test
     @DisplayName("denyVerificationRequest 메서드 테스트")
     public void testDenyVerificationRequest() {
         // given
@@ -148,7 +164,6 @@ public class StudentCouncilFeeVerificationServiceTest {
         // when
         service.modifyVerificationResponse(dto);
         StudentCouncilFeeVerification result = repository.findRequestById(testId);
-
         // then
         assertFalse(result.isVerify());
     }
