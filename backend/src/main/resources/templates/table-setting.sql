@@ -66,15 +66,6 @@ CREATE TABLE borrower_privacy_agreement(
     version char(2) NOT NULL
 );
 
-CREATE TABLE notification(
-    id int NOT NULL PRIMARY KEY auto_increment,
-    is_read boolean DEFAULT false,
-    content TEXT NOT NULL,
-    target_id char(8) NOT NULL,
-    foreign key(target_id) references borrower(id),
-    notify_at DATETIME default CURRENT_TIMESTAMP
-);
-
 create table notice (
     id int NOT NULL PRIMARY KEY auto_increment,
     title varchar(50) NOT NULL,

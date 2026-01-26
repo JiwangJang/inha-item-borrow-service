@@ -13,16 +13,13 @@ import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.DenyFeeVe
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.FindFeeVerificationRequestDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.ModifyVerificationResponseDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.PermitFeeVerificationDto;
-import com.inha.borrow.backend.model.entity.Notification;
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.entity.user.Borrower;
-import com.inha.borrow.backend.repository.NotificationRepository;
 import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootTest
@@ -35,9 +32,6 @@ public class StudentCouncilFeeVerificationServiceTest {
 
     @Autowired
     private StudentCouncilFeeVerificationRepository repository;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
 
     @Mock
     private MultipartFile verificationImage;
@@ -137,13 +131,10 @@ public class StudentCouncilFeeVerificationServiceTest {
 
         // when
         service.permitVerificationRequest(dto.getId());
-        Notification notificationResult = notificationRepository.findAllNotifications(testId,
-                LocalDateTime.now()).get(0);
         StudentCouncilFeeVerification result = repository.findRequestById(testId);
 
         // then
         assertFalse(result.isVerify());
-        assertTrue(notificationResult.getContent().equals("학생회비 납부인증이 완료됐습니다."));
     }
 
     @Test
@@ -155,13 +146,10 @@ public class StudentCouncilFeeVerificationServiceTest {
 
         // when
         service.denyVerificationRequest(dto);
-        Notification notificationResult = notificationRepository.findAllNotifications(testId,
-                LocalDateTime.now()).get(0);
         StudentCouncilFeeVerification result = repository.findRequestById(testId);
 
         // then
         assertFalse(result.isVerify());
-        assertTrue(notificationResult.getContent().equals("학생회비 납부인증이 거절됐습니다. 자세한 내용은 거절 사유를 확인해주세요."));
     }
 
     @Test
@@ -176,12 +164,8 @@ public class StudentCouncilFeeVerificationServiceTest {
         // when
         service.modifyVerificationResponse(dto);
         StudentCouncilFeeVerification result = repository.findRequestById(testId);
-        Notification notificationResult = notificationRepository.findAllNotifications(testId,
-                LocalDateTime.now()).get(0);
-
         // then
         assertFalse(result.isVerify());
-        assertTrue(notificationResult.getContent().equals("학생회비 납부인증이 거절됐습니다. 자세한 내용은 거절 사유를 확인해주세요."));
     }
 
     @Test
@@ -196,12 +180,9 @@ public class StudentCouncilFeeVerificationServiceTest {
         // when
         service.modifyVerificationResponse(dto);
         StudentCouncilFeeVerification result = repository.findRequestById(testId);
-        Notification notificationResult = notificationRepository.findAllNotifications(testId,
-                LocalDateTime.now()).get(0);
 
         // then
         assertTrue(result.isVerify());
-        assertTrue(notificationResult.getContent().equals("학생회비 납부인증이 완료됐습니다."));
     }
 
     @Test
