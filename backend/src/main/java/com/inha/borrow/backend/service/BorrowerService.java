@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class BorrowerService implements UserDetailsService {
+public class BorrowerService {
     private final BorrowerRepository borrowerRepository;
     private final PasswordEncoder passwordEncoder;
 
