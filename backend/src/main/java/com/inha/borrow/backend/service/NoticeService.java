@@ -23,8 +23,8 @@ public class NoticeService {
      * @param dto
      * @author 장지왕
      */
-    public void postNotice(String adminId, PostNoticeDto dto) {
-        repository.postNotice(dto.getTitle(), dto.getContent(), adminId);
+    public int postNotice(String adminId, PostNoticeDto dto) {
+        return repository.postNotice(dto.getTitle(), dto.getContent(), adminId);
     }
 
     /**

@@ -1,11 +1,17 @@
 package com.inha.borrow.backend.repository;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.entity.Notice;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,10 +27,23 @@ public class NoticeRepository {
      * @param content
      * @param authorId
      * @author 장지왕
+     * @return id
      */
-    public void postNotice(String title, String content, String authorId) {
+    public int postNotice(String title, String content, String authorId) {
         String sql = "INSERT INTO notice(title, content, author_id) VALUES(?, ?, ?);";
-        jdbcTemplate.update(sql, title, content, authorId);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update((connection) -> {
+            PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, title);
+            ps.setString(2, content);
+            ps.setString(3, authorId);
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().intValue();
     }
 
     /**
@@ -55,17 +74,23 @@ public class NoticeRepository {
      * @author 장지왕
      */
     public Notice findNoticeById(int id) {
-        String sql = "SELECT * FROM notice WHERE id = ?;";
-        return jdbcTemplate.queryForObject(sql, (col, num) -> {
-            return Notice.builder()
-                    .id(col.getInt("id"))
-                    .title(col.getString("title"))
-                    .content(col.getString("content"))
-                    .postedAt(col.getTimestamp("posted_at").toLocalDateTime())
-                    .updatedAt(col.getTimestamp("updated_at").toLocalDateTime())
-                    .authorId(col.getString("author_id"))
-                    .build();
-        }, id);
+        try {
+            String sql = "SELECT * FROM notice WHERE id = ?;";
+            return jdbcTemplate.queryForObject(sql, (col, num) -> {
+                return Notice.builder()
+                        .id(col.getInt("id"))
+                        .title(col.getString("title"))
+                        .content(col.getString("content"))
+                        .postedAt(col.getTimestamp("posted_at").toLocalDateTime())
+                        .updatedAt(col.getTimestamp("updated_at").toLocalDateTime())
+                        .authorId(col.getString("author_id"))
+                        .build();
+            }, id);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_NOTICE;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+
     }
 
     /**
@@ -78,7 +103,7 @@ public class NoticeRepository {
      */
     public void modifyNotice(int id, String newTitle, String newContent, String authorId) {
         String sql = "UPDATE notice SET title = ?, content = ?, author_id = ? WHERE id = ?;";
-        jdbcTemplate.update(sql, id, newTitle, authorId, newContent);
+        jdbcTemplate.update(sql, newTitle, newContent, authorId, id);
     }
 
     /**

@@ -92,10 +92,10 @@ public class AuthConfig {
 							// /notice GET 요청은 누구나 접근가능
 							.requestMatchers(HttpMethod.GET, "/notice")
 							.permitAll()
-							// /notice/* */ GET 요청은 누구나 접근가능
+							// /notice/* GET 요청은 누구나 접근가능
 							.requestMatchers(HttpMethod.GET, "/notice/*")
 							.permitAll()
-							// /notice/* */ GET이외 요청은 관리자만 접근가능
+							// /notice/* GET이외 요청은 관리자만 접근가능
 							.requestMatchers("/notice/*")
 							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
 							// /notice POST 요청은 관리자만 접근가능

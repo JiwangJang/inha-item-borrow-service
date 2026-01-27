@@ -1,6 +1,7 @@
 package com.inha.borrow.backend.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -44,11 +45,12 @@ public class NoticeController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> postNotice(
+    public ResponseEntity<ApiResponse<Map<String, Integer>>> postNotice(
             @AuthenticationPrincipal Admin admin,
             @RequestBody PostNoticeDto dto) {
-        service.postNotice(admin.getId(), dto);
-        return ResponseEntity.ok().build();
+        int id = service.postNotice(admin.getId(), dto);
+        ApiResponse<Map<String, Integer>> response = new ApiResponse<Map<String, Integer>>(true, Map.of("id", id));
+        return ResponseEntity.status(201).body(response);
     }
 
     @PatchMapping("{id}")
