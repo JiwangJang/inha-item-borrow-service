@@ -68,7 +68,6 @@ public class ItemServiceTest {
                 .name("borrower")
                 .phonenumber("000")
                 .ban(false)
-                .withDrawal(false)
                 .studentNumber("20240001")
                 .accountNumber("111-1111")
                 .authorities(Collections.singletonList(new SimpleGrantedAuthority(Role.BORROWER.name())))

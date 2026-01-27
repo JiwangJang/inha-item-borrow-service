@@ -32,11 +32,12 @@ public class BorrowerRepository {
         String phonenumber = rs.getString("phonenumber");
         String name = rs.getString("name");
         String accountNumber = rs.getString("account_number");
+        String department = rs.getString("department");
         boolean ban = rs.getBoolean("ban");
 
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("BORROWER"));
 
-        return new Borrower(id,name, phonenumber, authorities, ban, accountNumber);
+        return new Borrower(id,name, phonenumber, authorities, ban, accountNumber,department);
     };
 
     /**
@@ -49,7 +50,7 @@ public class BorrowerRepository {
      */
     public Borrower findById(String id) {
         try {
-            String sql = "SELECT * FROM borrower WHERE id=? AND withdrawal = false;";
+            String sql = "SELECT * FROM borrower WHERE id=?;";
             return jdbcTemplate.queryForObject(sql, borrowerRowMapper, id);
         } catch (IncorrectResultSizeDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
@@ -64,12 +65,8 @@ public class BorrowerRepository {
      * @author 형민재
      */
     public List<Borrower> findAll() {
-        String sql = "SELECT * FROM borrower WHERE withdrawal = false;";
+        String sql = "SELECT * FROM borrower";
         List<Borrower> result = jdbcTemplate.query(sql, borrowerRowMapper);
-        if (result.isEmpty()) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
         return result;
     }
 

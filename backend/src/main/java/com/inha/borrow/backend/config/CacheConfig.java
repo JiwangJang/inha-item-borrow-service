@@ -2,19 +2,39 @@ package com.inha.borrow.backend.config;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.inha.borrow.backend.model.entity.user.Borrower;
-import com.inha.borrow.backend.model.entity.StudentCouncilFee;
+import com.inha.borrow.backend.model.dto.user.borrower.BorrowerInformDto;
+import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.TimeUnit;
+
 @Configuration
 @EnableCaching
 public class CacheConfig {
+
+    /**
+     * 기존 사용자 캐쉬
+     *
+     * @author 형민재
+     */
     @Bean
-    public Cache<Borrower, StudentCouncilFee> borrowerCache(){
+    public Cache<String, CacheBorrowerDto> borrowerCache(){
         return Caffeine.newBuilder()
                 .maximumSize(10000)
+                .build();
+    }
+    /**
+     * 신규 사용자를 위한 임시 캐쉬
+     *
+     * @author 형민재
+     */
+    @Bean
+    public Cache<String, BorrowerInformDto> tempBorrowerCache(){
+        return Caffeine.newBuilder()
+                .expireAfterWrite(10, TimeUnit.MINUTES)
+                .maximumSize(1000)
                 .build();
     }
 }

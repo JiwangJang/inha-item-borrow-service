@@ -1,10 +1,12 @@
 package com.inha.borrow.backend.service;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.inha.borrow.backend.config.CacheConfig;
+import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
 
 import com.inha.borrow.backend.model.entity.user.Borrower;
 
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,22 +23,17 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class BorrowerService implements UserDetailsService {
+public class BorrowerService implements UserDetailsService{
     private final BorrowerRepository borrowerRepository;
     private final PasswordEncoder passwordEncoder;
-    private final PortalLoginService portalLoginService;
 
     // i-class 연동부분을 여기서 구현하는게 좋을듯 함
-
+    // 따로 하는게 좋아보이는데 반환타입이 걸리기도 하고 인자도 하나밖에 못받음
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        try {
-            Borrower borrower = borrowerRepository.findById(username);
-        }catch (IncorrectResultSizeDataAccessException e){
-            return null; // 추가 예정
-        }
-        return null; // 추가 예정
+        return null;
     }
+
 
     /**
      * 대여자를 id로 찾는 메서드

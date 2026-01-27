@@ -1,6 +1,5 @@
 package com.inha.borrow.backend.model.dto.user.borrower;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +11,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 /**
- * i-class 로그인을 위한 dto
+ * i-class에서 이름과 학과 추출한 것을 저장히기 위한 dto
  *
  * @author 형민재
  */
-public class BorrowerLoginDto {
-    String id;
-    String password;
+public class BorrowerInformDto {
+    String name;
+    String department;
+
 }
