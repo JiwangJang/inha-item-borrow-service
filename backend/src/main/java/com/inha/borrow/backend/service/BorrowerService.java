@@ -1,11 +1,11 @@
 package com.inha.borrow.backend.service;
 
-import com.inha.borrow.backend.enums.ApiErrorCode;
-
+import com.github.benmanes.caffeine.cache.Cache;
+import com.inha.borrow.backend.config.CacheConfig;
+import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
 
 import com.inha.borrow.backend.model.entity.user.Borrower;
-import com.inha.borrow.backend.model.exception.InvalidValueException;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,8 +26,6 @@ import java.util.List;
 public class BorrowerService {
     private final BorrowerRepository borrowerRepository;
     private final PasswordEncoder passwordEncoder;
-
-    // i-class 연동부분을 여기서 구현하는게 좋을듯 함
 
     /**
      * 대여자를 id로 찾는 메서드

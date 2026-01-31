@@ -19,10 +19,10 @@ INSERT INTO admin_role(role, level) VALUE("VICE_PRESIDENT", 3);
 INSERT INTO admin_role(role, level) VALUE("DIVISION_HEAD", 2);
 INSERT INTO admin_role(role, level) VALUE("DIVISION_MEMBER", 1);
 
-INSERT INTO division(code, name) VALUE("TEST", "테스트 부서");
+INSERT INTO division(code, name) VALUE("TEST", "테스트 부서")
 
-INSERT INTO admin(id, password, email, name, phonenumber, position, division)
-    VALUE("test", "$2a$10$SFzLKBUxk9wZ0Tbolo6pUuCi026zyM5L5vtGeiPJXuM21vDTdfrwS", "dd", "테스터", "999", "PRESIDENT", "TEST");
+INSERT INTO admin(id, password, email, name, phonenumber, position, division, refresh_token)
+    VALUE("test", "$2a$10$SFzLKBUxk9wZ0Tbolo6pUuCi026zyM5L5vtGeiPJXuM21vDTdfrwS", "dd", "테스터", "999", "PRESIDENT", "TEST", "dd");
 
 -- admin table 생성
 CREATE TABLE admin(
@@ -40,27 +40,28 @@ CREATE TABLE admin(
 
 -- borrower table 생성
 CREATE TABLE borrower(
+    -- id : 학번이니깐 8자 고정
     id char(8) NOT NULL primary key,
+    -- 혹시모르니 10자로 설정
     name varchar(10) NOT NULL,
-    department varchar(10) NOT NULL,
     phone_number char(13) NOT NULL,
     account_number varchar(20) NOT NULL,
     ban boolean default false
 );
 
 CREATE TABLE student_council_fee(
-    id char(8) NOT NULL,
-    foreign key(id) references borrower(id),
-    verify boolean default false,
-    s3_link varchar(100),
-    request_at datetime,
-    response_at datetime, 
-    deny_reason TEXT
+    id varchar(50) NOT NULL PRIMARY KEY,
+    s3_link varchar(50) NOT NULL,
+    request_at datetime NOT NULL,
+    response_at datetime NOT NULL,
+    deny_reason varchar(50) NOT NULL,
+    -- 소문자로 수정함
+    verify boolean default false
 );
 
 CREATE TABLE borrower_privacy_agreement(
     id int NOT NULL primary key auto_increment,
-    borrower_id char(8) NOT NULL,
+    borrower_id varchar(50) NOT NULL,
     foreign key(borrower_id) references borrower(id),
     agreed_at datetime NOT NULL,
     version char(2) NOT NULL
@@ -86,11 +87,12 @@ create table item (
     state varchar(9) NOT NULL default 'AFFORD'
 );
 
+-- manager NOT NULL 로 되있었지만 기존 테스트 충돌로 인해 임시로 지움
 create table request (
     id int NOT NULL primary key auto_increment,
     item_id int NOT NULL,
-    borrower_id char(8) NOT NULL,
-    manager varchar(20) NOT NULL,
+    borrower_id varchar(50) NOT NULL,
+    manager varchar(20),
     foreign key(manager) references admin(id),
     foreign key(item_id) references item(id),
     foreign key(borrower_id) references borrower(id),
