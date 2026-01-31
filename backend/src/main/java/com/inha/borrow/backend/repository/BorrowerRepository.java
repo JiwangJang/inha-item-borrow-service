@@ -38,7 +38,7 @@ public class BorrowerRepository {
 
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("BORROWER"));
 
-        return new Borrower(id,name, phonenumber, authorities, ban, accountNumber,department);
+        return new Borrower(id, name, phonenumber, authorities, ban, accountNumber, department);
     };
 
     /**
@@ -73,18 +73,18 @@ public class BorrowerRepository {
 
     public List<CacheBorrowerDto> findAllWithFeeVerification() {
         String sql = """
-            SELECT 
-                b.id, 
-                b.name, 
-                b.department, 
-                b.phonenumber, 
-                b.account_number, 
-                b.ban, 
-                COALESCE(v.verify, 0) as is_verified, -- TINYINT(1)은 보통 0/1로 나오므로 0 처리
-                v.s3_link
-            FROM borrower b
-            LEFT JOIN student_council_fee_verification v ON b.id = v.id
-            """;
+                SELECT
+                    b.id,
+                    b.name,
+                    b.department,
+                    b.phone_number,
+                    b.account_number,
+                    b.ban,
+                    v.verify, -- TINYINT(1)은 보통 0/1로 나오므로 0 처리
+                    v.s3_link
+                FROM borrower b
+                LEFT JOIN student_council_fee v ON b.id = v.id
+                """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             return CacheBorrowerDto.builder()
                     .id(rs.getString("id"))
@@ -93,7 +93,7 @@ public class BorrowerRepository {
                     .phoneNumber(rs.getString("phonenumber"))
                     .accountNumber(rs.getString("account_number"))
                     .ban(rs.getBoolean("ban"))
-                    .verify(rs.getBoolean("is_verified"))
+                    .verify(rs.getBoolean("verify"))
                     .s3Link(rs.getString("s3_link"))
                     .build();
         });
@@ -130,7 +130,8 @@ public class BorrowerRepository {
         String sql = " UPDATE borrower SET phonenumber = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, phoneNumber, id);
         if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;;
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
+            ;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
 

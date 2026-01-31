@@ -1,15 +1,12 @@
 package com.inha.borrow.backend.config.auth.borrowers;
 
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerLoginDto;
-import com.inha.borrow.backend.service.LoginService;
+import com.inha.borrow.backend.service.BorrowerService;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.inha.borrow.backend.model.entity.user.Borrower;
-import com.inha.borrow.backend.service.BorrowerService;
 
 import lombok.AllArgsConstructor;
 
@@ -23,14 +20,13 @@ import lombok.AllArgsConstructor;
 @Component
 @AllArgsConstructor
 public class BorrowerAuthenticationProvider implements AuthenticationProvider {
-    private LoginService loginService;
-    private PasswordEncoder passwordEncoder;
+    private BorrowerService loginService;
 
     @Override
     public Authentication authenticate(Authentication authentication) {
         String id = (String) authentication.getPrincipal();
         String rawPassword = (String) authentication.getCredentials();
-        BorrowerLoginDto borrowerLoginDto = new BorrowerLoginDto(id,rawPassword);
+        BorrowerLoginDto borrowerLoginDto = new BorrowerLoginDto(id, rawPassword);
 
         Borrower borrower = loginService.inhaLogin(borrowerLoginDto);
         return new BorrowerAuthenticationToken(borrower, borrower.getAuthorities());

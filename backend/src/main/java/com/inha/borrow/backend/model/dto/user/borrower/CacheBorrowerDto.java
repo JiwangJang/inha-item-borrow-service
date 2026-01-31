@@ -24,6 +24,4 @@ public class CacheBorrowerDto {
     boolean ban;
     boolean verify;
     String s3Link;
-
-
 }

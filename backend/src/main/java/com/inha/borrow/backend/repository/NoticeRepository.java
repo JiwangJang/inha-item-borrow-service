@@ -90,7 +90,6 @@ public class NoticeRepository {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_NOTICE;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
-
     }
 
     /**

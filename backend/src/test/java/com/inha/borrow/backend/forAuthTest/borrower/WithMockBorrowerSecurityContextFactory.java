@@ -28,7 +28,6 @@ public class WithMockBorrowerSecurityContextFactory
                                 .phonenumber("010-0000-0000")
                                 .authorities(authorities)
                                 .ban(false)
-                                .withDrawal(false)
                                 .studentNumber("11111111")
                                 .accountNumber("111111111")
                                 .build();

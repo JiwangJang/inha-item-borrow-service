@@ -21,8 +21,8 @@ INSERT INTO admin_role(role, level) VALUE("DIVISION_MEMBER", 1);
 
 INSERT INTO division(code, name) VALUE("TEST", "테스트 부서")
 
-INSERT INTO admin(id, password, email, name, phonenumber, position, division, refresh_token)
-    VALUE("test", "$2a$10$SFzLKBUxk9wZ0Tbolo6pUuCi026zyM5L5vtGeiPJXuM21vDTdfrwS", "dd", "테스터", "999", "PRESIDENT", "TEST", "dd");
+INSERT INTO admin(id, password, email, name, phonenumber, position, division)
+    VALUE("test_admin", "$2a$10$SFzLKBUxk9wZ0Tbolo6pUuCi026zyM5L5vtGeiPJXuM21vDTdfrwS", "dd", "test_admin", "999", "PRESIDENT", "TEST");
 
 -- admin table 생성
 CREATE TABLE admin(
