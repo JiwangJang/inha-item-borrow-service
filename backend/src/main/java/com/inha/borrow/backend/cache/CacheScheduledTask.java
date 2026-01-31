@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CacheScheduledTask {
     private final BorrowerRepository borrowerRepository;
-    private final StudentCouncilFeeVerificationRepository studentCouncilFeeVerificationRepository;
     private final Cache<String, CacheBorrowerDto> borrowerCache;
     private static final int ONE_HOUR = 3_600_000;
 
@@ -39,38 +38,14 @@ public class CacheScheduledTask {
      */
     @Scheduled(fixedRate = ONE_HOUR)
     public void refreshBorrowerCache(){
-        List<Borrower> borrowers = borrowerRepository.findAll();
-        List<StudentCouncilFeeVerification> councilFees = studentCouncilFeeVerificationRepository.findAllRequests();
-
-        Map<String, StudentCouncilFeeVerification> feeMap = councilFees.stream()
+        List<CacheBorrowerDto> dtoList = borrowerRepository.findAllWithFeeVerification();
+        Map<String, CacheBorrowerDto> map = dtoList.stream()
                 .collect(Collectors.toMap(
-                        v -> v.getId(),
-                        v -> v,
-                        (existing, replacement) -> existing // 중복 시 첫 번째 것 유지
+                        CacheBorrowerDto::getId,
+                        dto -> dto
                 ));
-
-
-        Map<String, CacheBorrowerDto> finalCacheMap = borrowers.stream()
-                .collect(Collectors.toMap(
-                        Borrower::getId,
-                        b -> {
-                            StudentCouncilFeeVerification v = feeMap.get(b.getId());
-
-                            return CacheBorrowerDto.builder()
-                                    .id(b.getId())
-                                    .name(b.getName())
-                                    .department(b.getDepartment())
-                                    .phoneNumber(b.getPhonenumber())
-                                    .accountNumber(b.getAccountNumber())
-                                    .ban(b.isBan())
-                                    .verify(v != null && v.isVerify())
-                                    .s3Link(v != null ? v.getS3Link() : null)
-                                    .build();
-                        }
-                ));
-
-        borrowerCache.putAll(finalCacheMap);
-        log.info("사용자 캐시 갱신 완료. 총 {}명", finalCacheMap.size());
+        borrowerCache.putAll(map);
+        log.info("사용자 캐시 갱신 완료. 총 {}명", map.size());
 
     }
 }

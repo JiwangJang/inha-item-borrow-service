@@ -5,6 +5,7 @@ import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerInformDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerLoginDto;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
+import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.repository.BorrowerRepository;
@@ -31,7 +32,7 @@ public class LoginService {
      * @param borrowerLoginDto
      * @author 형민재
      */
-    public BorrowerInformDto inhaLogin(BorrowerLoginDto borrowerLoginDto) {
+    public Borrower inhaLogin(BorrowerLoginDto borrowerLoginDto) {
         try {
             Connection.Response response = Jsoup.connect(url)
                     .data("username", borrowerLoginDto.getId(), "password", borrowerLoginDto.getPassword())
@@ -46,6 +47,7 @@ public class LoginService {
                 throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
             }
             BorrowerInformDto borrowerInformDto = new BorrowerInformDto(name, department);
+            Borrower borrower = new Borrower(null,name,null,null,false,null,department);
             CacheBorrowerDto dto = borrowerCache.getIfPresent(borrowerLoginDto.getId());
             boolean isExistInDb = true;
             if (dto == null) { // 캐쉬에 정보 있는지 확인
@@ -58,7 +60,7 @@ public class LoginService {
                     tempBorrowerCache.put(borrowerLoginDto.getId(), borrowerInformDto);
                 }
             }
-            return borrowerInformDto; // 이름과 학과를 반환
+            return borrower; // 이름과 학과만 채우고 나머지는 null 반환
         } catch (IOException e) {
             throw new RuntimeException("로그인 시도 중 연결 실패", e);
         }

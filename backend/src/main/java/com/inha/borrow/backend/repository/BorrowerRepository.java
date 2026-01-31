@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
+import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 
 import org.springframework.dao.DataAccessException;
@@ -68,6 +69,34 @@ public class BorrowerRepository {
         String sql = "SELECT * FROM borrower";
         List<Borrower> result = jdbcTemplate.query(sql, borrowerRowMapper);
         return result;
+    }
+
+    public List<CacheBorrowerDto> findAllWithFeeVerification() {
+        String sql = """
+            SELECT 
+                b.id, 
+                b.name, 
+                b.department, 
+                b.phonenumber, 
+                b.account_number, 
+                b.ban, 
+                COALESCE(v.verify, 0) as is_verified, -- TINYINT(1)은 보통 0/1로 나오므로 0 처리
+                v.s3_link
+            FROM borrower b
+            LEFT JOIN student_council_fee_verification v ON b.id = v.id
+            """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            return CacheBorrowerDto.builder()
+                    .id(rs.getString("id"))
+                    .name(rs.getString("name"))
+                    .department(rs.getString("department"))
+                    .phoneNumber(rs.getString("phonenumber"))
+                    .accountNumber(rs.getString("account_number"))
+                    .ban(rs.getBoolean("ban"))
+                    .verify(rs.getBoolean("is_verified"))
+                    .s3Link(rs.getString("s3_link"))
+                    .build();
+        });
     }
 
     public void save(BorrowerDto borrower) {
