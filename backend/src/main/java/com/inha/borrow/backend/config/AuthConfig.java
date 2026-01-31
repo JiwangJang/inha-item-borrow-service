@@ -88,6 +88,20 @@ public class AuthConfig {
 							.requestMatchers("/borrowers/auth/**", "/admins/login")
 							.permitAll()
 							//
+							// /notice 관련 인증 설정
+							// /notice GET 요청은 누구나 접근가능
+							.requestMatchers(HttpMethod.GET, "/notice")
+							.permitAll()
+							// /notice/* GET 요청은 누구나 접근가능
+							.requestMatchers(HttpMethod.GET, "/notice/*")
+							.permitAll()
+							// /notice/* GET이외 요청은 관리자만 접근가능
+							.requestMatchers("/notice/*")
+							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
+							// /notice POST 요청은 관리자만 접근가능
+							.requestMatchers(HttpMethod.POST, "/notice")
+							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
+							//
 							// /student-council-fee-verification 관련 인증 설정
 							// /student-council-fee-verification GET 요청은 학생회 임원만 가능
 							.requestMatchers(HttpMethod.GET, "/student-council-fee-verification")

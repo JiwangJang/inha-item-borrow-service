@@ -31,8 +31,9 @@ public class StudentCouncilFeeVerificationService {
      */
     public void verificationRequestSave(String id, MultipartFile verificationImage) {
         String s3Link = s3Service.uploadFile(verificationImage, "student-council-fee", id);
-        // 기존 사진이 있을경우 삭제하는 로직 추가
+        // 기존 사진이 있을경우 삭제하는 로직 추가(캐시 확인)
         repository.verificationRequestSave(id, s3Link);
+        // 여기서는 캐시 업데이트하기
     }
 
     /**
@@ -69,6 +70,7 @@ public class StudentCouncilFeeVerificationService {
             id = dto.getId();
         }
 
+        // 우선적으로 캐시 찾고 캐시에 없으면 DB에서 찾도록 변경하기
         return repository.findRequestById(id);
     }
 
@@ -80,6 +82,7 @@ public class StudentCouncilFeeVerificationService {
      */
     public void permitVerificationRequest(String id) {
         repository.updateForAdmin(id, true, null);
+        // 여기서는 캐시 업데이트하기
     }
 
     /**
@@ -91,6 +94,7 @@ public class StudentCouncilFeeVerificationService {
      */
     public void denyVerificationRequest(DenyFeeVerificationDto dto) {
         repository.updateForAdmin(dto.getId(), false, dto.getDenyReason());
+        // 여기서는 캐시 업데이트하기
     }
 
     /**
@@ -103,8 +107,10 @@ public class StudentCouncilFeeVerificationService {
     public void modifyVerificationResponse(ModifyVerificationResponseDto dto) {
         if (dto.isVerify()) {
             repository.updateForAdmin(dto.getId(), true, null);
+            // 여기서는 캐시 업데이트하기
         } else {
             repository.updateForAdmin(dto.getId(), false, dto.getDenyReason());
+            // 여기서는 캐시 업데이트하기
         }
     }
 
@@ -117,5 +123,6 @@ public class StudentCouncilFeeVerificationService {
     public void cancel(String id) {
         s3Service.deleteFile(folder + "/" + id);
         repository.cancel(id);
+        // 여기서는 캐시 업데이트하기
     }
 }

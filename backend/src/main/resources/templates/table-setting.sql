@@ -64,11 +64,21 @@ CREATE TABLE borrower_privacy_agreement(
     borrower_id varchar(50) NOT NULL,
     foreign key(borrower_id) references borrower(id),
     agreed_at datetime NOT NULL,
-    version varchar(50) NOT NULL
+    version char(2) NOT NULL
+);
+
+create table notice (
+    id int NOT NULL PRIMARY KEY auto_increment,
+    title varchar(50) NOT NULL,
+    content TEXT NOT NULL,
+    posted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    author_id varchar(20) NOT NULL,
+    foreign key(author_id) references admin(id)
 );
 
 create table item (
-    id int NOT NULL primary key auto_increment,
+    id int NOT NULL PRIMARY KEY auto_increment,
     name varchar(10) NOT NULL,
     location varchar(50) NOT NULL,
     password varchar(8) NOT NULL,

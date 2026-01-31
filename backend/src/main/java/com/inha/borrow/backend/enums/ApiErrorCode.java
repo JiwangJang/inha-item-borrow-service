@@ -31,6 +31,7 @@ public enum ApiErrorCode {
     NOT_FOUND_SIGN_UP_REQUEST("존재하지 않는 회원가입 신청기록입니다."),
     NOT_FOUND_REQUEST(" 존재하지 않는 대여요청입니다."),
     NOT_FOUND_RESPONSE(" 존재하지 않는 대여(반납)응답입니다."),
+    NOT_FOUND_NOTICE(" 존재하지 않는 공지입니다."),
     JSON_PARSING_ERROR("JSON파싱중 에러가 발생했습니다."),
     FILE_SIZE_TOO_LARGE("사진의 크기가 너무 큽니다."),
     REQUIRED_FILE_MISSING("필수 사진이 누락되었습니다."),

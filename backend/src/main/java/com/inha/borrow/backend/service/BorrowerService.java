@@ -23,17 +23,9 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class BorrowerService implements UserDetailsService{
+public class BorrowerService {
     private final BorrowerRepository borrowerRepository;
     private final PasswordEncoder passwordEncoder;
-
-    // i-class 연동부분을 여기서 구현하는게 좋을듯 함
-    // 따로 하는게 좋아보이는데 반환타입이 걸리기도 하고 인자도 하나밖에 못받음
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
-    }
-
 
     /**
      * 대여자를 id로 찾는 메서드
