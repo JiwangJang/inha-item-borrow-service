@@ -177,6 +177,13 @@ public class AuthConfig {
 							// /responses 관련 인증설정
 							.requestMatchers("/responses", "/responses/*")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
+							// agreement 관련 인증설정
+							.requestMatchers("/agreement/borrower/*","/agreement/version/*")
+							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
+							.requestMatchers(HttpMethod.POST,"/agreement")
+							.hasAnyAuthority(Role.BORROWER.name(),Role.DIVISION_MEMBER.name())
+							.requestMatchers(HttpMethod.GET,"/agreement")
+							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
 							// 이외의 경로는 무조건 인증 필요함
 							.anyRequest().authenticated();
 
