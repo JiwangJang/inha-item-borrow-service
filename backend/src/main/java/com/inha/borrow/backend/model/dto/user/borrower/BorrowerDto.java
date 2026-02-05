@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class BorrowerDto {
     String id;
     String name;
+    String department;
     String phonenumber;
     String accountNumber;
 }

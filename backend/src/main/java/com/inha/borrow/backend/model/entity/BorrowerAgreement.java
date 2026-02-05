@@ -5,19 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentCouncilFee {
-    String id;
-    boolean verify;
-    String s3Link;
-    Timestamp requestAt;
-    Timestamp responseAt;
-    String denyReason;
-
-
+public class BorrowerAgreement {
+    private int id;
+    private String borrowerId;
+    private LocalDateTime agreedAt;
+    private String version;
 }

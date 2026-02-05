@@ -100,11 +100,12 @@ public class BorrowerRepository {
     }
 
     public void save(BorrowerDto borrower) {
-        String sql = "INSERT INTO borrower(id, name, phonenumber, " +
-                " account_number) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO borrower(id, name, department, phone_number, " +
+                " account_number) VALUES(?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 borrower.getId(),
                 borrower.getName(),
+                borrower.getDepartment(),
                 borrower.getPhonenumber(),
                 borrower.getAccountNumber());
     }
