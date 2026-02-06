@@ -1,6 +1,13 @@
 @config "../tailwind.config.ts";
 @import "tailwindcss";
 
+/* ✅ 먼저 유틸을 직접 정의 */
+@layer utilities {
+    .font-pretendard {
+        font-family: Pretendard, system-ui, sans-serif;
+    }
+}
+
 @font-face {
     font-family: Pretendard;
     font-weight: 900;
@@ -21,6 +28,9 @@
 }
 
 @layer components {
+    .common-px {
+        @apply px-6;
+    }
     /* Regular */
     .regular-12px {
         @apply font-pretendard font-normal text-xs leading-normal;
@@ -60,6 +70,9 @@
     }
 
     /* Black */
+    .black-12px {
+        @apply font-pretendard font-black text-xs leading-tight;
+    }
     .black-20px {
         @apply font-pretendard font-black text-xl leading-tight;
     }
