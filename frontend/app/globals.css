@@ -1,26 +1,74 @@
+@config "../tailwind.config.ts";
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+    font-family: Pretendard;
+    font-weight: 900;
+    src: url(/fonts/Pretendard-Black.otf);
+    font-display: swap;
+}
+@font-face {
+    font-family: Pretendard;
+    font-weight: 700;
+    src: url(/fonts/Pretendard-Bold.otf);
+    font-display: swap;
+}
+@font-face {
+    font-family: Pretendard;
+    font-weight: 400;
+    src: url(/fonts/Pretendard-Regular.otf);
+    font-display: swap;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer components {
+    /* Regular */
+    .regular-12px {
+        @apply font-pretendard font-normal text-xs leading-normal;
+    }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+    .regular-14px {
+        @apply font-pretendard font-normal text-sm leading-normal;
+    }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    .regular-16px {
+        @apply font-pretendard font-normal text-base leading-normal;
+    }
+
+    /* Bold */
+    .bold-12px {
+        @apply font-pretendard font-bold text-xs leading-normal;
+    }
+
+    .bold-14px {
+        @apply font-pretendard font-bold text-sm leading-normal;
+    }
+
+    .bold-16px {
+        @apply font-pretendard font-bold text-base leading-normal;
+    }
+
+    .bold-18px {
+        @apply font-pretendard font-bold text-lg leading-normal;
+    }
+
+    .bold-20px {
+        @apply font-pretendard font-bold text-xl leading-normal;
+    }
+
+    .bold-24px {
+        @apply font-pretendard font-bold text-2xl leading-normal;
+    }
+
+    /* Black */
+    .black-20px {
+        @apply font-pretendard font-black text-xl leading-tight;
+    }
+
+    .black-24px {
+        @apply font-pretendard font-black text-2xl leading-tight;
+    }
+
+    .black-32px {
+        @apply font-pretendard font-black text-4xl leading-tight;
+    }
 }
