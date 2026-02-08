@@ -4,6 +4,10 @@ import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.inha.borrow.backend.config.auth.handler.LoginFailureHandler;
+import com.inha.borrow.backend.config.auth.handler.LoginSuccessHandler;
+import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,11 +15,16 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationFilter;
 import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
@@ -38,15 +47,43 @@ public class AuthConfig {
 	}
 
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager)
+	LoginFailureHandler loginFailureHandler(ObjectMapper objectMapper) {
+		return new LoginFailureHandler(objectMapper);
+	}
+
+	@Bean
+	BorrowerAuthenticationFilter borrowerAuthenticationFilter(
+			AuthenticationManager authenticationManager,
+			LoginSuccessHandler loginSuccessHandler,
+			LoginFailureHandler loginFailureHandler) {
+		BorrowerAuthenticationFilter filter = new BorrowerAuthenticationFilter(authenticationManager);
+		filter.setAuthenticationSuccessHandler(loginSuccessHandler);
+		filter.setAuthenticationFailureHandler(loginFailureHandler);
+		return filter;
+	}
+
+	@Bean
+	AdminAuthenticationFilter adminAuthenticationFilter(
+			AuthenticationManager authenticationManager,
+			LoginSuccessHandler loginSuccessHandler,
+			LoginFailureHandler loginFailureHandler) {
+		AdminAuthenticationFilter filter = new AdminAuthenticationFilter(authenticationManager);
+		filter.setAuthenticationSuccessHandler(loginSuccessHandler);
+		filter.setAuthenticationFailureHandler(loginFailureHandler);
+		return filter;
+	}
+
+	@Bean
+	SecurityFilterChain securityFilterChain(
+			HttpSecurity httpSecurity,
+			BorrowerAuthenticationFilter borrowerAuthenticationFilter,
+			AdminAuthenticationFilter adminAuthenticationFilter,
+			LogoutSuccessHandler logoutSuccessHandler)
 			throws Exception {
-		AdminAuthenticationFilter adminAuthenticationFilter = new AdminAuthenticationFilter(
-				authenticationManager);
-		BorrowerAuthenticationFilter borrowerAuthenticationFilter = new BorrowerAuthenticationFilter(
-				authenticationManager);
 
 		httpSecurity
 				.csrf((csrf) -> csrf.disable())
+				.cors(Customizer.withDefaults())
 				.formLogin((form) -> form.disable())
 				.exceptionHandling(exceptionHandler -> {
 					exceptionHandler
@@ -80,12 +117,16 @@ public class AuthConfig {
 					logout.logoutUrl("/logout")
 							.invalidateHttpSession(true)
 							.deleteCookies("JSESSIONID")
-							.logoutSuccessHandler(new LogoutSuccessHandler());
+							.logoutSuccessHandler(logoutSuccessHandler);
 				})
 				.authorizeHttpRequests((authorize) -> {
 					authorize
 							// 인증과 관련된 경로는 누구나 접근 가능하다.
 							.requestMatchers("/borrowers/auth/**", "/admins/login")
+							.permitAll()
+							//
+							// CORS 허용
+							.requestMatchers(HttpMethod.OPTIONS, "/**")
 							.permitAll()
 							//
 							// /notice 관련 인증 설정
@@ -178,11 +219,11 @@ public class AuthConfig {
 							.requestMatchers("/responses", "/responses/*")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							// agreement 관련 인증설정
-							.requestMatchers("/agreement/borrower/*","/agreement/version/*")
+							.requestMatchers("/agreement/borrower/*", "/agreement/version/*")
 							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
-							.requestMatchers(HttpMethod.POST,"/agreement")
-							.hasAnyAuthority(Role.BORROWER.name(),Role.DIVISION_MEMBER.name())
-							.requestMatchers(HttpMethod.GET,"/agreement")
+							.requestMatchers(HttpMethod.POST, "/agreement")
+							.hasAnyAuthority(Role.BORROWER.name(), Role.DIVISION_MEMBER.name())
+							.requestMatchers(HttpMethod.GET, "/agreement")
 							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
 							// 이외의 경로는 무조건 인증 필요함
 							.anyRequest().authenticated();
@@ -204,6 +245,31 @@ public class AuthConfig {
 	}
 
 	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration config = new CorsConfiguration();
+
+		// Next.js dev server origin
+		config.setAllowedOrigins(List.of("http://localhost:3000"));
+
+		// Allow typical methods + preflight
+		config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+
+		// Allow headers commonly used by browsers/axios
+		config.setAllowedHeaders(List.of("*"));
+
+		// If you use cookies/session (JSESSIONID), this must be true and origin cannot
+		// be "*"
+		config.setAllowCredentials(true);
+
+		// Cache preflight response (seconds)
+		config.setMaxAge(3600L);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+		return source;
+	}
+
+	@Bean
 	BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
@@ -215,5 +281,15 @@ public class AuthConfig {
 				.role(Role.VICE_PRESIDENT.name()).implies(Role.DIVISION_HEAD.name())
 				.role(Role.DIVISION_HEAD.name()).implies(Role.DIVISION_MEMBER.name())
 				.build();
+	}
+
+	@Bean
+	LoginSuccessHandler loginSuccessHandler(Cache<String, CacheBorrowerDto> borrowerCache, ObjectMapper objectMapper) {
+		return new LoginSuccessHandler(borrowerCache, objectMapper);
+	}
+
+	@Bean
+	LogoutSuccessHandler logoutSuccessHandler() {
+		return new LogoutSuccessHandler();
 	}
 }

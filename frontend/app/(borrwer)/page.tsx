@@ -1,9 +1,5 @@
 "use client";
 
-import Loading from "@/components/utilities/Loading";
-import AlertModal from "@/components/utilities/modal/AlertModal";
-import ConfirmModal from "@/components/utilities/modal/ConfirmModal";
-import PromptModal from "@/components/utilities/modal/PromptModal";
 import { useState } from "react";
 
 export default function Page() {
@@ -18,13 +14,5 @@ export default function Page() {
         }
     };
 
-    return (
-        <div className="p-6">
-            <button className="px-4 py-2 rounded bg-black text-white" onClick={fakeWork}>
-                Start
-            </button>
-
-            <Loading open={loading} />
-        </div>
-    );
+    return <div className="p-6">Page</div>;
 }

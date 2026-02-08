@@ -14,26 +14,28 @@ import com.inha.borrow.backend.model.dto.apiResponse.ErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 로그인에 실패했을때 실행되는 클래스
  * <p>
  * 실패했을 경우 400을 반환함
  */
+@RequiredArgsConstructor
 public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+        private final ObjectMapper objectMapper;
 
-    @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-            AuthenticationException exception) throws IOException, ServletException {
-        ErrorResponse errorResponse = new ErrorResponse(ApiErrorCode.CHECK_YOUR_INFO.name(),
-                ApiErrorCode.CHECK_YOUR_INFO.getMessage());
-        ApiResponse<ErrorResponse> apiResponse = new ApiResponse<>(false, errorResponse);
+        @Override
+        public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+                        AuthenticationException exception) throws IOException, ServletException {
+                ErrorResponse errorResponse = new ErrorResponse(ApiErrorCode.CHECK_YOUR_INFO.name(),
+                                ApiErrorCode.CHECK_YOUR_INFO.getMessage());
+                ApiResponse<ErrorResponse> apiResponse = new ApiResponse<>(false, errorResponse);
 
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.getWriter()
-                .write(objectMapper.writeValueAsString(apiResponse));
-        response.flushBuffer();
-        return;
-    }
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                response.getWriter()
+                                .write(objectMapper.writeValueAsString(apiResponse));
+                response.flushBuffer();
+                return;
+        }
 }

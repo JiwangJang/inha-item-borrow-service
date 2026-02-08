@@ -11,10 +11,8 @@ import org.springframework.security.web.servlet.util.matcher.PathPatternRequestM
 import org.springframework.web.server.ServerErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inha.borrow.backend.config.auth.handler.LoginSuccessHandler;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.auth.LoginRequestDto;
-import com.inha.borrow.backend.config.auth.handler.LoginFailureHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,10 +31,6 @@ public class AdminAuthenticationFilter extends UsernamePasswordAuthenticationFil
         // 세션을 구현하기 위해 설정
         // 기본값은 RequestAttributeSecurityContextRepository로 인증 성공시 세션유지 안됨
         super.setSecurityContextRepository(new HttpSessionSecurityContextRepository());
-        // 인증 성공시 실행될 동작 등록
-        setAuthenticationSuccessHandler(new LoginSuccessHandler());
-        // 인증 실패시 실행될 동작 등록
-        setAuthenticationFailureHandler(new LoginFailureHandler());
         // 특정경로만 처리하도록 설정
         setRequiresAuthenticationRequestMatcher(
                 PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/admins/login"));

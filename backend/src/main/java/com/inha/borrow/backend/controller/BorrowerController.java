@@ -1,6 +1,7 @@
 package com.inha.borrow.backend.controller;
 
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
+import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerService;
@@ -40,6 +41,25 @@ public class BorrowerController {
     public ResponseEntity<ApiResponse<List<Borrower>>> findAllBorrower() {
         List<Borrower> borrower = borrowerService.findAll();
         return ResponseEntity.ok(new ApiResponse<>(true, borrower));
+    }
+
+    /**
+     * 현재 유저의 정보 반환
+     * 
+     * @return 200 요청 성공
+     * @author 형민재
+     */
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<CacheBorrowerDto>> me(@AuthenticationPrincipal Borrower borrower) {
+        CacheBorrowerDto dto = borrowerService.getMyInfo(borrower.getId());
+        if (dto == null) {
+            dto = CacheBorrowerDto.builder()
+                    .id(borrower.getId())
+                    .name(borrower.getName())
+                    .department(borrower.getDepartment())
+                    .build();
+        }
+        return ResponseEntity.ok(new ApiResponse<>(true, dto));
     }
 
     /**

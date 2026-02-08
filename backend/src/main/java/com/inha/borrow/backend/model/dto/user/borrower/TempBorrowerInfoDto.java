@@ -18,5 +18,4 @@ import lombok.NoArgsConstructor;
 public class TempBorrowerInfoDto {
     String name;
     String department;
-
 }

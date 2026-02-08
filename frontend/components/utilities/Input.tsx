@@ -6,14 +6,10 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
     error?: boolean;
 };
 
-/**
- * Design-matched input component
- * - padding: left/right 12px (px-3), top/bottom 16px (py-4)
- * - type is controlled by parent (e.g. password visibility toggle)
- */
-export default function Input({ className = "", type = "text", ...props }: InputProps) {
+const Input = React.forwardRef<HTMLInputElement, InputProps>(function Input({ className = "", type, ...props }, ref) {
     return (
         <input
+            ref={ref}
             type={type}
             className={[
                 "w-full rounded-md border bg-white",
@@ -28,4 +24,6 @@ export default function Input({ className = "", type = "text", ...props }: Input
             {...props}
         />
     );
-}
+});
+
+export default Input;

@@ -2,10 +2,7 @@ package com.inha.borrow.backend.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
-import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
-import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.repository.BorrowerRepository;
-import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -37,13 +34,12 @@ public class CacheScheduledTask {
      * @author 형민재
      */
     @Scheduled(fixedRate = ONE_HOUR)
-    public void refreshBorrowerCache(){
+    public void refreshBorrowerCache() {
         List<CacheBorrowerDto> dtoList = borrowerRepository.findAllWithFeeVerification();
         Map<String, CacheBorrowerDto> map = dtoList.stream()
                 .collect(Collectors.toMap(
                         CacheBorrowerDto::getId,
-                        dto -> dto
-                ));
+                        dto -> dto));
         borrowerCache.putAll(map);
         log.info("사용자 캐시 갱신 완료. 총 {}명", map.size());
 
