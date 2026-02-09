@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/notice")
+@RequestMapping("/notices")
 public class NoticeController {
     private final NoticeService service;
 

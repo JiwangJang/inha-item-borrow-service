@@ -9,14 +9,14 @@ import { cookies } from "next/headers";
  */
 export default async function checkLogin(): Promise<BorrowerInfoInterface | null> {
     try {
-        const cookieStore = cookies();
-        const cookieHeader = (await cookieStore).toString(); // 모든 쿠키 직렬화
+        const cookieStore = await cookies();
+        const cookie = cookieStore.toString();
 
         // 서버컴포넌트에서는 fetch 사용
         const res = await fetch(`${API_SERVER}/borrowers/me`, {
             method: "GET",
             headers: {
-                cookie: cookieHeader,
+                cookie,
             },
             cache: "no-store",
         });
