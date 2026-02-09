@@ -36,7 +36,7 @@ export default function Header() {
     }, [pathname]);
 
     return (
-        <header className="absolute w-full common-px bg-white h-15 border border-b border-boxBorder flex items-center">
+        <header className="absolute w-full common-px bg-white h-15 border border-b border-boxBorder flex items-center z-1">
             {spec == null ? <HomeHeader /> : <NoHomeHeader title={spec} />}
         </header>
     );
