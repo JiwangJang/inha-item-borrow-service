@@ -27,6 +27,11 @@ export default function NoticeSection() {
                     </Link>
                 ))}
             </div>
+            <div className="w-full flex justify-center">
+                <Link href={"/notices"} className="mt-3 bg-black text-white py-0.5 px-4 rounded-full regular-16px">
+                    더보기
+                </Link>
+            </div>
         </div>
     );
 }

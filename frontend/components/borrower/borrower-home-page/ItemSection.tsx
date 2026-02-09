@@ -8,7 +8,7 @@ export default function ItemSection() {
     const items = useContext(ItemContext);
 
     return (
-        <div className="mt-6">
+        <div className="mt-2">
             <p className="black-20px">📦 대여물품현황</p>
             <div className="mt-3">
                 <p className="bold-18px">☂ ️접이식 우산</p>
@@ -25,6 +25,10 @@ export default function ItemSection() {
             <div className="mt-2">
                 <p className="bold-18px">🔋 보조배터리</p>
                 <ItemStatusChildren items={mockItems} name="보조배터리" />
+            </div>
+            <div className="mt-2">
+                <p className="bold-18px">🤦🏻‍♀️ 생리대</p>
+                <p className="regular-16px">학생회 카카오톡 계정으로 문의주세요!</p>
             </div>
         </div>
     );
