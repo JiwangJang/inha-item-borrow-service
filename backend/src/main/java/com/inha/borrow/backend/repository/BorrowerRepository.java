@@ -92,7 +92,7 @@ public class BorrowerRepository {
                     .id(rs.getString("id"))
                     .name(rs.getString("name"))
                     .department(rs.getString("department"))
-                    .phoneNumber(rs.getString("phonenumber"))
+                    .phoneNumber(rs.getString("phone_number"))
                     .accountNumber(rs.getString("account_number"))
                     .ban(rs.getBoolean("ban"))
                     .verify(rs.getBoolean("verify"))

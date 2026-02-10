@@ -1,11 +1,15 @@
 "use client";
 
+import API_SERVER from "@/apiServer";
 import BorrowerContext from "@/context/BorrowerContext";
 import AGREEMENT_AGREEMENT_VERSION from "@/utilities/agreementVersion";
+import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useContext } from "react";
 
 export default function BorrowerInfoPage() {
+    const router = useRouter();
     const borrowerContext = useContext(BorrowerContext);
     const borrowerInfo = borrowerContext.borrowerInfo;
     const className = "px-5 py-4 border-b border-boxBorder last:border-0";
@@ -23,9 +27,19 @@ export default function BorrowerInfoPage() {
                 <Link href={"/borrower-info/student-council-fee"} className={className}>
                     등록금 납부 인증
                 </Link>
-                <Link href={"/borrower-info/logout"} className={className}>
+                <div
+                    className={className + " cursor-pointer"}
+                    onClick={async () => {
+                        if (borrowerContext.setBorrowerInfo) {
+                            await axios.get(`${API_SERVER}/logout`, { withCredentials: true });
+                            alert("로그아웃이 완료됐습니다.");
+                            borrowerContext.setBorrowerInfo(null);
+                            router.push("/");
+                        }
+                    }}
+                >
                     로그아웃
-                </Link>
+                </div>
             </div>
         </div>
     );
