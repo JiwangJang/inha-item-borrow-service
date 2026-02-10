@@ -1,8 +1,8 @@
 "use client";
 
-import ItemInterface from "@/types/ItemInterface";
+import ItemContextInterface from "@/types/ItemContextInterface";
 import { createContext } from "react";
 
-const ItemContext = createContext<ItemInterface[]>([]);
+const ItemContext = createContext<ItemContextInterface | null>(null);
 
 export default ItemContext;
