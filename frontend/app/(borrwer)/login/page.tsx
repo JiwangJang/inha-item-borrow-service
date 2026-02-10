@@ -1,4 +1,4 @@
-import BorrowerLoginPage from "@/components/borrower/borrower-info/login/BorrowerLoginPage";
+import BorrowerLoginPage from "@/components/borrower/login/BorrowerLoginPage";
 import checkLogin from "@/utilities/checkLogin";
 import { redirect } from "next/navigation";
 

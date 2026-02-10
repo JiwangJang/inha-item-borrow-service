@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Button from "../utilities/Button";
 import ItemSection from "./borrower-home-page/ItemSection";
 import NoticeSection from "./borrower-home-page/NoticeSection";

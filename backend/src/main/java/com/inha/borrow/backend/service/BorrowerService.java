@@ -20,6 +20,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.List;
  * 
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class BorrowerService {
     private final BorrowerRepository borrowerRepository;
