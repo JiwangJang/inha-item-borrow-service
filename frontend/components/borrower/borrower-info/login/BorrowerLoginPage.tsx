@@ -12,6 +12,7 @@ import { useContext, useRef, useState } from "react";
 export default function BorrowerLoginPage() {
     const router = useRouter();
     const borrowerContext = useContext(BorrowerContext);
+    const [loading, setLoading] = useState<boolean>(false);
     const [passwordInputType, setPasswordInputType] = useState<string>("password");
     const [errorMsg, setErrorMsg] = useState<string>("");
     const idInputRef = useRef<HTMLInputElement>(null);
@@ -35,7 +36,7 @@ export default function BorrowerLoginPage() {
             !(passwordInputRef.current instanceof HTMLInputElement)
         )
             return;
-
+        setLoading(true);
         const id = idInputRef.current.value;
         const password = passwordInputRef.current.value;
 
@@ -65,6 +66,8 @@ export default function BorrowerLoginPage() {
                     setErrorMsg("서버쪽의 문제입니다. 지속될 경우 관리자에게 연락바랍니다.");
                     return;
             }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -85,7 +88,7 @@ export default function BorrowerLoginPage() {
                         ref={passwordInputRef}
                         type={passwordInputType}
                         onKeyDown={(e) => {
-                            if (e.key == "Enter") {
+                            if (e.key == "Enter" && !loading) {
                                 loginBtnOnclickFunc();
                             }
                         }}
@@ -102,7 +105,12 @@ export default function BorrowerLoginPage() {
                     />
                 </div>
             </div>
-            <Button className="w-full py-3 mt-5 black-20px" title="로그인" onClick={loginBtnOnclickFunc} />
+            <Button
+                className="w-full py-3 mt-5 black-20px"
+                title="로그인"
+                onClick={loginBtnOnclickFunc}
+                loading={loading}
+            />
             {errorMsg ? <p className="mt-2 text-center bold-16px">{errorMsg}</p> : null}
         </div>
     );

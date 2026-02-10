@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import BaseModal from "./BaseModal";
-import Input from "../Input";
 
 export type PromptModalProps = {
     open: boolean;
@@ -28,12 +27,12 @@ export default function PromptModal({ open, onClose, title, placeholder, onConfi
     return (
         <BaseModal open={open} onClose={onClose} title={title} closeOnBackdrop={false}>
             <div className="mt-2 mx-2">
-                <Input
-                    type="text"
+                <textarea
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     placeholder={placeholder}
-                    className="bg-slate-50!"
+                    className="w-full px-3 py-2 bg-back resize-none rounded"
+                    rows={3}
                 />
             </div>
 
@@ -42,7 +41,7 @@ export default function PromptModal({ open, onClose, title, placeholder, onConfi
             <div className="flex">
                 <button
                     type="button"
-                    className="py-2.5 regular-16px text-placeholder hover:bg-slate-100 flex-1"
+                    className="py-2.5 regular-16px text-placeholder hover:bg-slate-100 flex-1 cursor-pointer"
                     onClick={() => {
                         onCancel?.();
                         onClose();
@@ -55,7 +54,7 @@ export default function PromptModal({ open, onClose, title, placeholder, onConfi
 
                 <button
                     type="button"
-                    className="py-2.5 regular-16px text-slate-900 hover:bg-slate-100 flex-1"
+                    className="py-2.5 regular-16px text-slate-900 hover:bg-slate-100 flex-1 cursor-pointer"
                     onClick={() => {
                         onConfirm(value);
                         onClose();

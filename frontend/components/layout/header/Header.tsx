@@ -19,6 +19,8 @@ export default function Header() {
             return "개인정보 수집동의";
         } else if (pathname.startsWith("/borrower-info/me")) {
             return "내 정보확인";
+        } else if (pathname.startsWith("/login")) {
+            return "로그인";
         } else if (pathname.startsWith("/borrower-info/student-council-fee")) {
             return "학생회비 납부";
         } else if (pathname.startsWith("/admin/student-council")) {

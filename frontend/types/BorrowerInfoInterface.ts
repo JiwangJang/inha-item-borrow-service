@@ -7,4 +7,5 @@ export default interface BorrowerInfoInterface {
     ban: boolean;
     verify: boolean;
     s3Link: string;
+    agreementVersion: string;
 }
