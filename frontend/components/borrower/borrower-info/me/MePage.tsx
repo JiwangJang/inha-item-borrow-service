@@ -27,7 +27,16 @@ export default function MePage() {
     };
 
     const phoneNumberPromptModalConfirm = async (value: string) => {
-        if (borrowerInfo?.phoneNumber == null) {
+        // value는 이미 onValueChange로 포맷팅된 상태 (010-1234-5678)
+        const phoneDigits = value.replace(/\D/g, "");
+        const isValidPhoneNumber = /^01[0-9]\d{7,8}$/.test(phoneDigits);
+
+        if (!isValidPhoneNumber) {
+            alert("올바른 전화번호 형식이 아닙니다. (010-0000-0000 형식)");
+            return;
+        }
+
+        if (borrowerInfo?.agreementVersion == null) {
             alert("개인정보 수집동의부터 하시기 바랍니다.");
             setPhoneNumberPromptModal(false);
             return;
@@ -39,6 +48,19 @@ export default function MePage() {
             alert("서버쪽의 에러입니다. 지속될 경우 관리자에게 연락해주세요");
         }
         setPhoneNumberPromptModal(false);
+    };
+
+    // 전화번호 입력값 포맷팅 함수
+    const formatPhoneNumber = (value: string): string => {
+        let phoneDigits = value.replace(/\D/g, "");
+
+        if (phoneDigits.length <= 3) {
+            return phoneDigits;
+        } else if (phoneDigits.length <= 7) {
+            return `${phoneDigits.slice(0, 3)}-${phoneDigits.slice(3)}`;
+        } else {
+            return `${phoneDigits.slice(0, 3)}-${phoneDigits.slice(3, 7)}-${phoneDigits.slice(7, 11)}`;
+        }
     };
     const accountNumberPromptModalConfirm = async (value: string) => {
         if (borrowerInfo?.phoneNumber == null) {
@@ -76,7 +98,7 @@ export default function MePage() {
                     </div>
                     <button
                         className="py-2 px-4 border border-black rounded cursor-pointer"
-                        onClick={phoneNumberPromptModalOpen}
+                        onClick={accountNumberPromptModalOpen}
                     >
                         변경
                     </button>
@@ -89,7 +111,7 @@ export default function MePage() {
                     </div>
                     <button
                         className="py-2 px-4 border border-black rounded cursor-pointer"
-                        onClick={accountNumberPromptModalOpen}
+                        onClick={phoneNumberPromptModalOpen}
                     >
                         변경
                     </button>
@@ -113,6 +135,7 @@ export default function MePage() {
                 title="전화번호 변경"
                 placeholder="010-0000-0000 형식으로 부탁드립니다."
                 onConfirm={phoneNumberPromptModalConfirm}
+                onValueChange={formatPhoneNumber}
             />
         </div>
     );

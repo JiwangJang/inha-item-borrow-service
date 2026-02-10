@@ -1,3 +1,4 @@
+
 package com.inha.borrow.backend.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -25,6 +26,7 @@ public class BorrowerAgreementService {
     private final BorrowerRepository borrowerRepository;
     private final Cache<String, CacheBorrowerDto> borrowerCache;
     private final Cache<String, TempBorrowerInfoDto> tempBorrowerCache;
+    private final StudentCouncilFeeVerificationService studentCouncilFeeVerificationService;
 
     /**
      * 개인정보동의를 저장하기 위한 메서드
@@ -34,29 +36,35 @@ public class BorrowerAgreementService {
      * @author 형민재
      */
     public int saveAgreement(String borrowerId, AgreementDto agreementDto) {
-        log.info(borrowerId);
+        CacheBorrowerDto dto = borrowerCache.getIfPresent(borrowerId);
         TempBorrowerInfoDto borrowerInfo = tempBorrowerCache.getIfPresent(borrowerId);
-        if (borrowerInfo == null) {
+
+        if (borrowerInfo == null && dto == null) {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_CACHE;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
-        BorrowerDto borrowerDto = new BorrowerDto(borrowerId, borrowerInfo.getName(),
-                borrowerInfo.getDepartment(), agreementDto.getPhoneNumber(), agreementDto.getAccountNumber());
-        borrowerRepository.save(borrowerDto);
 
-        CacheBorrowerDto dto = CacheBorrowerDto.builder()
-                .id(borrowerId)
-                .name(borrowerInfo.getName())
-                .department(borrowerInfo.getDepartment())
-                .phoneNumber(agreementDto.getPhoneNumber())
-                .accountNumber(agreementDto.getAccountNumber())
-                .ban(false)
-                .verify(false)
-                .s3Link(null)
-                .agreementVersion(agreementDto.getVersion())
-                .build();
+        if (dto == null && borrowerInfo != null) {
+            // 신규유저인 경우 동작하는 로직(학생회비 납부인증 테이블 등록 및 대여자 테이블 등록, 대여자 캐시 등록)
+            BorrowerDto borrowerDto = new BorrowerDto(borrowerId, borrowerInfo.getName(),
+                    borrowerInfo.getDepartment(), agreementDto.getPhoneNumber(), agreementDto.getAccountNumber());
+            borrowerRepository.save(borrowerDto);
+            dto = CacheBorrowerDto.builder()
+                    .id(borrowerId)
+                    .name(borrowerInfo.getName())
+                    .department(borrowerInfo.getDepartment())
+                    .phoneNumber(agreementDto.getPhoneNumber())
+                    .accountNumber(agreementDto.getAccountNumber())
+                    .ban(false)
+                    .verify(false)
+                    .s3Link(null)
+                    .agreementVersion(agreementDto.getVersion())
+                    .build();
+            borrowerCache.put(borrowerId, dto);
+            studentCouncilFeeVerificationService.initalSave(borrowerId);
+        }
 
-        borrowerCache.put(borrowerId, dto);
+        // 기존유저는 바로 저장 메서드 실행
         return borrowerAgreementRepository.saveAgreement(borrowerId, agreementDto.getVersion());
     }
 

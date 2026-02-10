@@ -119,7 +119,7 @@ export default function V1AgreementPage() {
                     <div>
                         <p className="mb-1 bold-16px">전화번호</p>
                         <Input
-                            placeholder="010-0000-0000형식으로 입력해주세요"
+                            placeholder="전화번호를 입력해주세요"
                             ref={phoneNumberInputRef}
                             onChange={handlePhoneNumberChange}
                         />

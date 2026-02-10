@@ -14,9 +14,20 @@ export type PromptModalProps = {
 
     /** 비밀번호 같은 경우 외부에서 type 지정 가능 */
     inputType?: React.InputHTMLAttributes<HTMLInputElement>["type"];
+
+    /** 입력값이 변경될 때 호출되는 콜백 (검증, 포맷팅 등) */
+    onValueChange?: (value: string) => string;
 };
 
-export default function PromptModal({ open, onClose, title, placeholder, onConfirm, onCancel }: PromptModalProps) {
+export default function PromptModal({
+    open,
+    onClose,
+    title,
+    placeholder,
+    onConfirm,
+    onCancel,
+    onValueChange,
+}: PromptModalProps) {
     const [value, setValue] = useState("");
 
     // 열릴 때마다 초기화(원하면 제거 가능)
@@ -24,12 +35,23 @@ export default function PromptModal({ open, onClose, title, placeholder, onConfi
         if (open) setValue("");
     }, [open]);
 
+    const handleValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        let newValue = e.target.value;
+
+        // onValueChange 콜백이 있으면 호출하여 포맷팅된 값을 받음
+        if (onValueChange) {
+            newValue = onValueChange(newValue);
+        }
+
+        setValue(newValue);
+    };
+
     return (
         <BaseModal open={open} onClose={onClose} title={title} closeOnBackdrop={false}>
             <div className="mt-2 mx-2">
                 <textarea
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={handleValueChange}
                     placeholder={placeholder}
                     className="w-full px-3 py-2 bg-back resize-none rounded"
                     rows={3}
