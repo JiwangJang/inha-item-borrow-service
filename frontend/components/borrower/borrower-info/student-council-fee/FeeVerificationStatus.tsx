@@ -98,6 +98,7 @@ export default function FeeVerificationStatus({
                         disabled={!selectedFile}
                         onClick={() => handleUpload()}
                     />
+                    <p className="mt-2">실패사유 : {verification.denyReason}</p>
                     <input type="file" className="hidden" ref={imageInputRef} onChange={handleFileChange} />
                 </>
             ) : null}
