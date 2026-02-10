@@ -12,7 +12,7 @@ export default function BorrowerHomePage() {
             <NoticeSection />
             <ItemSection />
             <div className="h-16" />
-            <div className="fixed w-full bottom-17.5 right-0 px-6">
+            <div className="fixed w-full max-w-125 bottom-17.5 left-1/2 translate-x-[-50%] pl-6 pr-9">
                 <Button
                     title="대여신청"
                     className="w-full py-3 bold-18px"

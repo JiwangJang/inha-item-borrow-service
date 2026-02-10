@@ -40,7 +40,6 @@ export default function Button({
             onClick={handleClick}
             className={[
                 "inline-flex items-center justify-center gap-2 rounded-md",
-                "bold-16px",
                 "bg-black text-white cursor-pointer",
                 "disabled:bg-placeholder disabled:cursor-not-allowed",
                 "transition",
