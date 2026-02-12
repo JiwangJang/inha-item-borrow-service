@@ -1,7 +1,7 @@
 package com.inha.borrow.backend.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.cache.CacheScheduledTask;
 import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.user.borrower.TempBorrowerInfoDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerLoginDto;
@@ -9,7 +9,6 @@ import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
 
 import com.inha.borrow.backend.model.entity.user.Borrower;
-import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
 import org.jsoup.Jsoup;
@@ -36,6 +35,7 @@ public class BorrowerService {
     private final BorrowerRepository borrowerRepository;
     private final Cache<String, CacheBorrowerDto> borrowerCache;
     private final Cache<String, TempBorrowerInfoDto> tempBorrowerCache;
+    private final CacheScheduledTask cacheScheduledTask;
     private final String LOGIN_URL = "https://learn.inha.ac.kr/login/index.php";
 
     /**
@@ -100,7 +100,19 @@ public class BorrowerService {
      */
 
     public Borrower findById(String id) {
-        return borrowerRepository.findById(id);
+        cacheScheduledTask.refreshBorrowerCache(id);
+        CacheBorrowerDto dto = borrowerCache.getIfPresent(id);
+        if(dto == null) {
+            return borrowerRepository.findById(id);
+        }Borrower borrower = Borrower.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .department(dto.getDepartment())
+                .phonenumber(dto.getPhoneNumber())
+                .accountNumber(dto.getAccountNumber())
+                .ban(dto.isBan())
+                .build();
+        return borrower;
     }
 
     /**
@@ -122,6 +134,7 @@ public class BorrowerService {
      * @author 형민재
      */
     public void patchName(String name, String id) {
+        deleteCache(id);
         borrowerRepository.patchName(name, id);
     }
 
@@ -133,6 +146,7 @@ public class BorrowerService {
      * @author 형민재
      */
     public void patchPhoneNumber(String borrowerId, PatchPhonenumberDto dto) {
+        deleteCache(borrowerId);
         String newPhonenumber = dto.getNewPhonenumber();
         borrowerRepository.patchPhoneNumber(newPhonenumber, borrowerId);
     }
@@ -145,6 +159,7 @@ public class BorrowerService {
      * @author 형민재
      */
     public void patchAccountNumber(String accountNumber, String id) {
+        deleteCache(id);
         borrowerRepository.patchAccountNumber(accountNumber, id);
     }
 
@@ -156,6 +171,11 @@ public class BorrowerService {
      * @author 형민재
      */
     public void patchBan(boolean ban, String id) {
+        deleteCache(id);
         borrowerRepository.patchBan(ban, id);
+    }
+
+    public void deleteCache(String borrowerId){
+        borrowerCache.invalidate(borrowerId);
     }
 }
