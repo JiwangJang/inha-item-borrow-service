@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 /**
  * 대여자 인증 정보 확인하는 함수
  */
-export default async function checkLogin(): Promise<BorrowerInfoInterface | null> {
+export default async function checkBorrowLogin(): Promise<BorrowerInfoInterface | null> {
     try {
         const cookieStore = await cookies();
         const cookie = cookieStore.toString();

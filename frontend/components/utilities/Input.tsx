@@ -19,6 +19,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(function Input({ cl
                 "placeholder:text-placeholder",
                 "text-slate-900",
                 "focus:border-black ",
+                "disabled:text-placeholder",
                 className,
             ].join(" ")}
             {...props}

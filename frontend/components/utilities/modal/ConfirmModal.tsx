@@ -5,7 +5,7 @@ import BaseModal from "./BaseModal";
 export type ConfirmModalProps = {
     open: boolean;
     onClose: () => void;
-    title?: string;
+    title: string;
     message: React.ReactNode;
 
     confirmText?: string;

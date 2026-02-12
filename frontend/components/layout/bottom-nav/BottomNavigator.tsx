@@ -12,10 +12,10 @@ const TOP_LEVEL_ROUTE = [
     "/borrower-info",
     // 관리자용 top level
     "/admin",
-    "/request-list",
-    "/to-do",
-    "/item",
-    "/borrower",
+    "/admin/request-list",
+    "/admin/to-do",
+    "/admin/item",
+    "/admin/borrower",
 ];
 
 const BORROWER_BOTTOM_NAVIGATOR_SPECS: BottomNavigatorItemSpec[] = [

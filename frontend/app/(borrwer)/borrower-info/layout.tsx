@@ -1,8 +1,8 @@
-import checkLogin from "@/utilities/checkLogin";
+import checkBorrowLogin from "@/utilities/checkBorrowLogin";
 import { redirect } from "next/navigation";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-    const result = await checkLogin();
+    const result = await checkBorrowLogin();
     if (result == null) {
         redirect("/login");
     }

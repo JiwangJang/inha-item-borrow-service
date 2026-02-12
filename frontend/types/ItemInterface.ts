@@ -1,11 +1,11 @@
-import { ItemStatusType } from "./ItemStatusType";
+import { ItemStateType } from "./ItemStateType";
 
 export default interface ItemInterface {
     id: number;
     name: string;
-    location: string | null;
+    location: string;
     price: number;
-    password: string | null;
+    password: string;
     deleteReason: string | null;
-    status: ItemStatusType;
+    state: ItemStateType;
 }

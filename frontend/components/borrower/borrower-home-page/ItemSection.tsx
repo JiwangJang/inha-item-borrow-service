@@ -1,7 +1,7 @@
 import ItemContext from "@/context/ItemContext";
 import mockItems from "@/mockData/mockItems";
 import ItemInterface from "@/types/ItemInterface";
-import { ITEM_STATUS_TYPE } from "@/types/ItemStatusType";
+import { ITEM_STATE_TYPE } from "@/types/ItemStateType";
 import { useContext } from "react";
 
 export default function ItemSection() {
@@ -36,9 +36,9 @@ export default function ItemSection() {
 
 function ItemStatusChildren({ items, name }: { items: ItemInterface[]; name: string }) {
     const targetItems = items.filter((item) => item.name.replaceAll(" ", "") == name);
-    const availableItmes = targetItems.filter((item) => item.status == ITEM_STATUS_TYPE.AFFORD).length;
-    const unavailableItmes = targetItems.filter((item) => item.status == ITEM_STATUS_TYPE.BORROWED).length;
-    const reviewingItems = targetItems.filter((item) => item.status == ITEM_STATUS_TYPE.REVIEWING).length;
+    const availableItmes = targetItems.filter((item) => item.state == ITEM_STATE_TYPE.AFFORD).length;
+    const unavailableItmes = targetItems.filter((item) => item.state == ITEM_STATE_TYPE.BORROWED).length;
+    const reviewingItems = targetItems.filter((item) => item.state == ITEM_STATE_TYPE.REVIEWING).length;
 
     const total = availableItmes + unavailableItmes + reviewingItems;
 

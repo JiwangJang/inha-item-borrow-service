@@ -1,5 +1,5 @@
 import BorrowerLoginPage from "@/components/borrower/login/BorrowerLoginPage";
-import checkLogin from "@/utilities/checkLogin";
+import checkLogin from "@/utilities/checkBorrowLogin";
 import { redirect } from "next/navigation";
 
 export default async function Page() {
