@@ -4,6 +4,9 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -100,7 +103,13 @@ public class StudentCouncilFeeVerificationRepository {
                 SELECT * FROM student_council_fee
                 WHERE id = ?;
                 """;
-        return jdbcTemplate.queryForObject(query, rowMapper, id);
+        try{
+            StudentCouncilFeeVerification studentCouncilFeeVerification = jdbcTemplate.queryForObject(query, rowMapper, id);
+            return studentCouncilFeeVerification;
+        }catch (EmptyResultDataAccessException e){
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_COUNCIL;
+            throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
+        }
     }
 
     /**

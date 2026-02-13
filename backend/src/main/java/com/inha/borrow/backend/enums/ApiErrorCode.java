@@ -29,10 +29,12 @@ public enum ApiErrorCode {
     NOT_FOUND_NOTICE(" 존재하지 않는 공지입니다."),
     NOT_FOUND_AGREEMENT(" 존재하지 않는 동의정보입니다."),
     NOT_FOUND_CACHE("캐쉬가 존재하지 않습니다."),
+    NOT_FOUND_COUNCIL("학생회비 납부확인 요청이 존재하지 않습니다."),
     JSON_PARSING_ERROR("JSON파싱중 에러가 발생했습니다."),
     FILE_SIZE_TOO_LARGE("사진의 크기가 너무 큽니다."),
     REQUIRED_FILE_MISSING("필수 사진이 누락되었습니다."),
     NOT_ALLOWED("요청하신 작업을 할 권한이 없습니다."),
+    NOT_ALLOWED_COUNCIL_FEE("요청하신 작업을 할 권한이 없습니다."),
     NOT_LOGINED("로그인 후 이용가능합니다.");
 
     private String message;

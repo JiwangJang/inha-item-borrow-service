@@ -8,6 +8,7 @@ import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -100,6 +101,45 @@ public class BorrowerRepository {
                     .agreementVersion(rs.getString("version"))
                     .build();
         });
+    }
+
+    /**
+     * CACHE에 저장하기 위해 대여자 리스트와 납부정보를 JOIN하여 반환하는 메서드
+     *
+     * @return List<Borrower>
+     * @author 형민재
+     */
+    public CacheBorrowerDto findByIdWithFeeVerification(String borrowerId) {
+        try{
+            String sql = """
+                SELECT
+                    b.id,
+                    b.name,
+                    b.department,
+                    b.phone_number,
+                    b.account_number,
+                    b.ban,
+                    v.verify,
+                    v.s3_link
+                FROM borrower b
+                LEFT JOIN student_council_fee v ON b.id = v.id WHERE b.id = ?
+                """;
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                return CacheBorrowerDto.builder()
+                        .id(rs.getString("id"))
+                        .name(rs.getString("name"))
+                        .department(rs.getString("department"))
+                        .phoneNumber(rs.getString("phone_number"))
+                        .accountNumber(rs.getString("account_number"))
+                        .ban(rs.getBoolean("ban"))
+                        .verify(rs.getBoolean("verify"))
+                        .s3Link(rs.getString("s3_link"))
+                        .build();
+            },borrowerId);
+        }catch (EmptyResultDataAccessException e){
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_BORROWER;
+            throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
+        }
     }
 
     public void save(BorrowerDto borrower) {

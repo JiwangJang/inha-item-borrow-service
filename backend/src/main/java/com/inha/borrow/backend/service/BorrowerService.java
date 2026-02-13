@@ -1,6 +1,7 @@
 package com.inha.borrow.backend.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
+import com.inha.borrow.backend.cache.CacheScheduledTask;
 import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.user.borrower.TempBorrowerInfoDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerLoginDto;
@@ -36,6 +37,7 @@ public class BorrowerService {
     private final BorrowerRepository borrowerRepository;
     private final Cache<String, CacheBorrowerDto> borrowerCache;
     private final Cache<String, TempBorrowerInfoDto> tempBorrowerCache;
+    private final CacheScheduledTask cacheScheduledTask;
     private final String LOGIN_URL = "https://learn.inha.ac.kr/login/index.php";
 
     public CacheBorrowerDto getMyInfo(String borrowerId) {
@@ -105,7 +107,19 @@ public class BorrowerService {
      */
 
     public Borrower findById(String id) {
-        return borrowerRepository.findById(id);
+        CacheBorrowerDto dto = borrowerCache.getIfPresent(id);
+        if(dto == null) {
+            dto = cacheScheduledTask.refreshBorrowerCache(id);
+        }
+        Borrower borrower = Borrower.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .department(dto.getDepartment())
+                .phonenumber(dto.getPhoneNumber())
+                .accountNumber(dto.getAccountNumber())
+                .ban(dto.isBan())
+                .build();
+        return borrower;
     }
 
     /**
@@ -128,6 +142,7 @@ public class BorrowerService {
      */
     public void patchName(String name, String id) {
         borrowerRepository.patchName(name, id);
+        deleteCache(id);
     }
 
     /**
@@ -140,6 +155,7 @@ public class BorrowerService {
     public void patchPhoneNumber(String borrowerId, PatchPhonenumberDto dto) {
         String newPhonenumber = dto.getNewPhonenumber();
         borrowerRepository.patchPhoneNumber(newPhonenumber, borrowerId);
+        deleteCache(borrowerId);
     }
 
     /**
@@ -151,6 +167,7 @@ public class BorrowerService {
      */
     public void patchAccountNumber(String accountNumber, String id) {
         borrowerRepository.patchAccountNumber(accountNumber, id);
+        deleteCache(id);
     }
 
     /**
@@ -162,5 +179,10 @@ public class BorrowerService {
      */
     public void patchBan(boolean ban, String id) {
         borrowerRepository.patchBan(ban, id);
+        deleteCache(id);
+    }
+
+    public void deleteCache(String borrowerId){
+        borrowerCache.invalidate(borrowerId);
     }
 }

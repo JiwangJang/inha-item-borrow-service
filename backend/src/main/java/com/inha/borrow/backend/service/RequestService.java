@@ -5,6 +5,7 @@ import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
+import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
@@ -12,7 +13,9 @@ import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.repository.RequestRepository;
+import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,7 @@ import java.util.List;
 public class RequestService {
     private final RequestRepository requestRepository;
     private final ItemService itemService;
+    private final StudentCouncilFeeVerificationRepository studentCouncilFeeVerificationRepository;
 
     /**
      * 리퀘스트를 저장하는 메서드
@@ -41,6 +45,11 @@ public class RequestService {
         RequestType type = saveRequestDto.getType();
         int itemId = saveRequestDto.getItemId();
         int prevRequestId = saveRequestDto.getPrevRequestId();
+        StudentCouncilFeeVerification council = studentCouncilFeeVerificationRepository.findRequestById(saveRequestDto.getBorrowerId());
+        if(!council.isVerify()){
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_ALLOWED_COUNCIL_FEE;
+            throw new AccessDeniedException(apiErrorCode.name() + ":" + apiErrorCode.getMessage());
+        }
         if (type == RequestType.BORROW) {
             // 대여신청일 경우 대여물품이 실제로 빌릴 수 있는 상태인지 확인
             ItemState itemState = itemService.findItemStateById(itemId);

@@ -34,7 +34,7 @@ public class CacheScheduledTask {
      * @author 형민재
      */
     @Scheduled(fixedRate = ONE_HOUR)
-    public void refreshBorrowerCache() {
+    public void refreshBorrowerListCache(){
         List<CacheBorrowerDto> dtoList = borrowerRepository.findAllWithFeeVerification();
         Map<String, CacheBorrowerDto> map = dtoList.stream()
                 .collect(Collectors.toMap(
@@ -43,5 +43,11 @@ public class CacheScheduledTask {
         borrowerCache.putAll(map);
         log.info("사용자 캐시 갱신 완료. 총 {}명", map.size());
 
+    }
+
+    public CacheBorrowerDto refreshBorrowerCache(String borrowerId){
+        CacheBorrowerDto dto = borrowerRepository.findByIdWithFeeVerification(borrowerId);
+        borrowerCache.put(borrowerId,dto);
+        return dto;
     }
 }
