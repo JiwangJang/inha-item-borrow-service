@@ -65,7 +65,7 @@ public class StudentCouncilFeeVerificationRepository {
         LocalDateTime current = LocalDateTime.now();
         String query = """
                 UPDATE student_council_fee SET
-                    verify = NULL,
+                    verify = false,
                     s3_link = ?,
                     request_at = ?,
                     response_at = NULL,

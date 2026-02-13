@@ -309,6 +309,7 @@ public class GlobalErrorHandler {
                                 .queryString(request.getQueryString())
                                 .build();
                 log.error("[ERROR] database error: {}", serviceLog);
+                e.printStackTrace();
                 ErrorResponse errorResponse = new ErrorResponse(ApiErrorCode.DB_ERROR.name(),
                                 ApiErrorCode.DB_ERROR.getMessage());
                 ApiResponse<ErrorResponse> apiResponse = new ApiResponse<ErrorResponse>(false, errorResponse);
@@ -338,6 +339,7 @@ public class GlobalErrorHandler {
                                 .queryString(request.getQueryString())
                                 .build();
                 log.error("[ERROR] server error: {}", serviceLog);
+                e.printStackTrace();
                 ErrorResponse errorResponse = new ErrorResponse(ApiErrorCode.SERVER_ERROR.name(),
                                 ApiErrorCode.SERVER_ERROR.getMessage());
                 ApiResponse<ErrorResponse> apiResponse = new ApiResponse<ErrorResponse>(false, errorResponse);

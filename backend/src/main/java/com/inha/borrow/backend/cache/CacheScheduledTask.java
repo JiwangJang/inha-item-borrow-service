@@ -39,8 +39,7 @@ public class CacheScheduledTask {
         Map<String, CacheBorrowerDto> map = dtoList.stream()
                 .collect(Collectors.toMap(
                         CacheBorrowerDto::getId,
-                        dto -> dto
-                ));
+                        dto -> dto));
         borrowerCache.putAll(map);
         log.info("사용자 캐시 갱신 완료. 총 {}명", map.size());
 

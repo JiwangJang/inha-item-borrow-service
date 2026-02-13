@@ -63,7 +63,7 @@ CREATE TABLE borrower_privacy_agreement(
     id int NOT NULL primary key auto_increment,
     borrower_id varchar(50) NOT NULL,
     foreign key(borrower_id) references borrower(id),
-    agreed_at datetime NOT NULL,
+    agreed_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     version char(2) NOT NULL
 );
 

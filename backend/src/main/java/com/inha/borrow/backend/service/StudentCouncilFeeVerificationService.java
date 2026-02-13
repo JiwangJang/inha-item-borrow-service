@@ -1,26 +1,33 @@
 package com.inha.borrow.backend.service;
 
+import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.DenyFeeVerificationDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.FindFeeVerificationRequestDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.ModifyVerificationResponseDto;
+import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StudentCouncilFeeVerificationService {
     private final StudentCouncilFeeVerificationRepository repository;
     private final S3Service s3Service;
     private final String folder = "student-council-fee";
+    private final Cache<String, CacheBorrowerDto> borrowerCache;
 
     /**
      * 사용자가 새로운(또는 거절후) 요청을 등록할 때 사용
@@ -30,10 +37,20 @@ public class StudentCouncilFeeVerificationService {
      * @author 장지왕
      */
     public void verificationRequestSave(String id, MultipartFile verificationImage) {
+        CacheBorrowerDto dto = borrowerCache.getIfPresent(id);
+        if (dto != null && dto.getS3Link() != null) {
+            URI uri = URI.create(dto.getS3Link());
+            String path = uri.getPath().substring(1);
+            s3Service.deleteFile(path);
+        }
+
         String s3Link = s3Service.uploadFile(verificationImage, "student-council-fee", id);
-        // 기존 사진이 있을경우 삭제하는 로직 추가(캐시 확인)
+        if (dto != null) {
+            dto.setS3Link(s3Link);
+        }
+
         repository.verificationRequestSave(id, s3Link);
-        // 여기서는 캐시 업데이트하기
+        borrowerCache.put(id, dto);
     }
 
     /**

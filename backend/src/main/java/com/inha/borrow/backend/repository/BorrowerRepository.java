@@ -82,9 +82,11 @@ public class BorrowerRepository {
                     b.account_number,
                     b.ban,
                     v.verify, -- TINYINT(1)은 보통 0/1로 나오므로 0 처리
-                    v.s3_link
+                    v.s3_link,
+                    p.version
                 FROM borrower b
                 LEFT JOIN student_council_fee v ON b.id = v.id
+                LEFT JOIN borrower_privacy_agreement p ON b.id = p.borrower_id;
                 """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             return CacheBorrowerDto.builder()
@@ -96,6 +98,7 @@ public class BorrowerRepository {
                     .ban(rs.getBoolean("ban"))
                     .verify(rs.getBoolean("verify"))
                     .s3Link(rs.getString("s3_link"))
+                    .agreementVersion(rs.getString("version"))
                     .build();
         });
     }
