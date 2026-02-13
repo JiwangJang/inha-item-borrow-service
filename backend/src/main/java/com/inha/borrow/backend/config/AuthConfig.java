@@ -8,6 +8,9 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.inha.borrow.backend.config.auth.handler.LoginFailureHandler;
 import com.inha.borrow.backend.config.auth.handler.LoginSuccessHandler;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -196,7 +199,7 @@ public class AuthConfig {
 							//
 							// /requests 관련 인증설정
 							// 대여요청을 조회하는 경로는 대여자나 관리자 권한이면 접근 가능하다
-							.requestMatchers(HttpMethod.GET, "/reqeusts", "/request/*")
+							.requestMatchers(HttpMethod.GET, "/requests", "/requests/*")
 							.hasAnyAuthority(Role.BORROWER.name(), Role.DIVISION_MEMBER.name())
 							// 대여요청 또는 반납요청을 하는 경로는 대여자 권한으로 로그인 한 사람만 가능하다
 							// 대여요청을 수정하거나 취소하는 경로는 대여자 권한으로 로그인 한 사람만 가능하다

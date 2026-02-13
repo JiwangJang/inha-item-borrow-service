@@ -10,6 +10,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
+import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.entity.user.User;
 
@@ -55,6 +56,10 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                     .write(objectMapper.writeValueAsString(new ApiResponse<CacheBorrowerDto>(true, cache)));
             response.flushBuffer();
         } else {
+            Admin admin = (Admin) user;
+            response.getWriter()
+                    .write(objectMapper.writeValueAsString(new ApiResponse<Admin>(true, admin)));
+            response.flushBuffer();
             log.info("[INFO] 관리자 로그인 / 아이디 : {} / 권한 : {}", user.getId(), authority);
         }
 

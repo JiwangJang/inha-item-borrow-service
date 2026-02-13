@@ -1,11 +1,10 @@
 "use client";
 
 import ItemContext from "@/context/ItemContext";
-import mockItems from "@/mockData/mockItems";
 import ItemInterface from "@/types/ItemInterface";
 import React, { useState } from "react";
 
-export default function ItemProvider({
+export default function AdminItemProvider({
     initialValue,
     children,
 }: {
@@ -13,6 +12,6 @@ export default function ItemProvider({
     children: React.ReactNode;
 }) {
     // 개발용
-    const [itemList, setItemList] = useState(mockItems);
+    const [itemList, setItemList] = useState(initialValue);
     return <ItemContext.Provider value={{ itemList, setItemList }}>{children}</ItemContext.Provider>;
 }

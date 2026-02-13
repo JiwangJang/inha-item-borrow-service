@@ -7,7 +7,7 @@ import ItemContext from "@/context/ItemContext";
 import Image from "next/image";
 import PickerField from "@/components/utilities/select/PickerField";
 import Button from "@/components/utilities/Button";
-import { ITEM_STATUS_TYPE } from "@/types/ItemStatusType";
+import { ITEM_STATUS_TYPE } from "@/types/ItemStateType";
 import axios from "axios";
 import API_SERVER from "@/apiServer";
 

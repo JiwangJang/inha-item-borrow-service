@@ -3,6 +3,9 @@
 import ItemContextInterface from "@/types/ItemContextInterface";
 import { createContext } from "react";
 
-const ItemContext = createContext<ItemContextInterface | null>(null);
+const ItemContext = createContext<ItemContextInterface>({
+    itemList: [],
+    setItemList: null,
+});
 
 export default ItemContext;

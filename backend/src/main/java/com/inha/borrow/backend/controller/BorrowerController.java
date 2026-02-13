@@ -47,7 +47,7 @@ public class BorrowerController {
      * 현재 유저의 정보 반환
      * 
      * @return 200 요청 성공
-     * @author 형민재
+     * @author 장지왕
      */
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<CacheBorrowerDto>> me(@AuthenticationPrincipal Borrower borrower) {
@@ -63,7 +63,7 @@ public class BorrowerController {
     }
 
     /**
-     * 대여자목록을 id로 불러오는 메서드
+     * 대여자를 id로 불러오는 메서드
      * 
      * @return 200 요청 성공
      * @author 형민재

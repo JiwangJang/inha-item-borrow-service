@@ -1,0 +1,8 @@
+export const ADMIN_POSITION_TYPE = {
+    PRESIDENT: "PRESIDENT",
+    VICE_PRESIDENT: "VICE_PRESIDENT",
+    DIVISION_HEAD: "DIVISION_HEAD",
+    DIVISION_MEMBER: "DIVISION_MEMBER",
+} as const;
+
+export type AdminPositionType = (typeof ADMIN_POSITION_TYPE)[keyof typeof ADMIN_POSITION_TYPE];

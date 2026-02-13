@@ -11,6 +11,10 @@ export default function Header() {
     const spec: string | null = useMemo(() => {
         if (pathname === "/borrower-request") {
             return "물품대여신청";
+        } else if (pathname == "/admin/item/new") {
+            return "물품등록";
+        } else if (pathname == "/admin/item/revise") {
+            return "물품정보수정";
         } else if (pathname.startsWith("/borrow-list/")) {
             return "대여신청내역";
         } else if (pathname.startsWith("/return-list/")) {
