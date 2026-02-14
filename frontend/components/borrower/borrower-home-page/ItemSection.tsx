@@ -1,31 +1,22 @@
 import ItemContext from "@/context/ItemContext";
-import mockItems from "@/mockData/mockItems";
 import ItemInterface from "@/types/ItemInterface";
 import { ITEM_STATE_TYPE } from "@/types/ItemStateType";
 import { useContext } from "react";
 
 export default function ItemSection() {
-    const items = useContext(ItemContext);
+    const itemList = useContext(ItemContext).itemList;
+
+    const itemNameList = Array.from(new Set((itemList ?? []).map((it) => it.name)));
 
     return (
         <div className="mt-2">
             <p className="black-20px">📦 대여물품현황</p>
-            <div className="mt-3">
-                <p className="bold-18px">☂ ️접이식 우산</p>
-                <ItemStatusChildren items={mockItems} name="접이식우산" />
-            </div>
-            <div className="mt-2">
-                <p className="bold-18px">🌂 장우산</p>
-                <ItemStatusChildren items={mockItems} name="장우산" />
-            </div>
-            <div className="mt-2">
-                <p className="bold-18px">🧮 공학용 계산기</p>
-                <ItemStatusChildren items={mockItems} name="공학용계산기" />
-            </div>
-            <div className="mt-2">
-                <p className="bold-18px">🔋 보조배터리</p>
-                <ItemStatusChildren items={mockItems} name="보조배터리" />
-            </div>
+            {itemNameList.map((itemName, i) => (
+                <div className="mt-3" key={i}>
+                    <p className="bold-18px">{itemName}</p>
+                    <ItemStatusChildren items={itemList} name={itemName} />
+                </div>
+            ))}
             <div className="mt-2">
                 <p className="bold-18px">🤦🏻‍♀️ 생리대</p>
                 <p className="regular-16px">학생회 카카오톡 계정으로 문의주세요!</p>

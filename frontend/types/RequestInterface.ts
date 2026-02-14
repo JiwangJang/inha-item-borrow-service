@@ -6,11 +6,11 @@ export default interface RequestInterface {
     manager: RequestManager | null;
     borrowerId: string;
     borrowerName: string;
-    createdAt: Date;
-    returnAt: Date;
-    borrowAt: Date;
+    createdAt: string;
+    returnAt: string;
+    borrowAt: string;
     type: RequestType;
-    state: RequestState;
+    state: RequestStateType;
     cancel: boolean | null;
     response: Response | null;
 }
@@ -19,6 +19,8 @@ export interface RequestItem {
     id: number;
     name: string;
     price: number;
+    location: string | null;
+    password: string | null;
 }
 
 export interface RequestManager {
@@ -34,11 +36,11 @@ export const REQUEST_TYPE = {
 
 export type RequestType = (typeof REQUEST_TYPE)[keyof typeof REQUEST_TYPE];
 
-export const REQUEST_STATE = {
+export const REQUEST_STATE_TYPE = {
     PENDING: "PENDING",
     ASSIGNED: "ASSIGNED",
     REJECT: "REJECT",
     PERMIT: "PERMIT",
 } as const;
 
-export type RequestState = (typeof REQUEST_STATE)[keyof typeof REQUEST_STATE];
+export type RequestStateType = (typeof REQUEST_STATE_TYPE)[keyof typeof REQUEST_STATE_TYPE];

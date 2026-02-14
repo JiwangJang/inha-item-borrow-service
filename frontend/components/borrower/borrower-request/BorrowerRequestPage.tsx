@@ -7,22 +7,36 @@ import ItemContext from "@/context/ItemContext";
 import Image from "next/image";
 import PickerField from "@/components/utilities/select/PickerField";
 import Button from "@/components/utilities/Button";
-import { ITEM_STATUS_TYPE } from "@/types/ItemStateType";
-import axios from "axios";
+import { ITEM_STATE_TYPE } from "@/types/ItemStateType";
+import BorrowRequestContext from "@/context/BorrowRequestContext";
+import axios, { Axios, AxiosError } from "axios";
 import API_SERVER from "@/apiServer";
+import RequestInterface, { REQUEST_STATE_TYPE, REQUEST_TYPE } from "@/types/RequestInterface";
+import BorrowerContext from "@/context/BorrowerContext";
+import LoginRequired from "../LoginRequired";
 
 export default function BorrowerRequestPage() {
+    const borrowInfo = useContext(BorrowerContext).borrowerInfo;
+    if (borrowInfo == null) {
+        return <LoginRequired />;
+    }
+
     const itemContext = useContext(ItemContext);
-    const itemList = itemContext?.itemList;
+    const requestContext = useContext(BorrowRequestContext);
+    const itemList = itemContext.itemList;
     const setItemList = itemContext?.setItemList;
 
     const [item, setItem] = useState<string>("");
     const [agree, setAgree] = useState<boolean>(false);
-    const [buttonOn, setButtonOn] = useState<boolean>(false);
     const [borrowDate, setBorrowDate] = useState<string>("");
     const [borrowTime, setBorrowTime] = useState<string>("");
     const [returnDate, setReturnDate] = useState<string>("");
+    const [returnTime, setReturnTime] = useState<string>("");
     // 사용자는 카테고리만 고르고 클라이언트 정보에서 빌릴 수 있는거 요청 넣고, 안되면 다른 아이디로 요청넣기
+
+    const buttonOn =
+        agree && borrowDate != "" && borrowTime != "" && returnDate != "" && returnTime != "" && item != "";
+    const today = new Date();
 
     const checkboxImage =
         `${agree ? "/images/icons/others/active" : "/images/icons/others/inactive"}` + "/password.png";
@@ -35,63 +49,98 @@ export default function BorrowerRequestPage() {
         {} as Record<string, number>,
     );
 
-    const checkButtonCanOn = () => {
-        console.log(agree && borrowDate != "" && borrowTime != "" && returnDate != "" && item != "");
-        return agree && borrowDate != "" && borrowTime != "" && returnDate != "" && item != "";
-    };
-
     const itemSelectOnChange = (value: string) => {
         setItem(value);
-        if (checkButtonCanOn()) setButtonOn(true);
-        else if (!checkButtonCanOn() && buttonOn) setButtonOn(false);
     };
 
     const checkBoxOnClickFunc = () => {
         setAgree(!agree);
-        if (checkButtonCanOn()) setButtonOn(true);
-        else if (!checkButtonCanOn() && buttonOn) setButtonOn(false);
     };
 
     const borrowDateFieldOnChange = (value: string) => {
         setBorrowDate(value);
-        if (checkButtonCanOn()) setButtonOn(true);
-        else if (!checkButtonCanOn() && buttonOn) setButtonOn(false);
     };
 
     const borrowTimeFieldOnChange = (value: string) => {
         setBorrowTime(value);
-        if (checkButtonCanOn()) setButtonOn(true);
-        else if (!checkButtonCanOn() && buttonOn) setButtonOn(false);
     };
 
     const returnDateFieldOnChange = (value: string) => {
         setReturnDate(value);
-        if (checkButtonCanOn()) setButtonOn(true);
-        else if (!checkButtonCanOn() && buttonOn) setButtonOn(false);
+    };
+    const returnTimeFieldOnChange = (value: string) => {
+        setReturnTime(value);
     };
 
     const buttonOnclick = async () => {
         try {
-            if (itemList?.length == 0) return;
-            const selectedItemId = itemList?.find((it) => it.status == ITEM_STATUS_TYPE.AFFORD && it.name == item)?.id;
+            if (itemList.length == 0) return;
+            const selectedItem = itemList.find((it) => it.state == ITEM_STATE_TYPE.AFFORD && it.name == item);
+            if (selectedItem == null) {
+                alert(`현재 빌릴 수 있는 ${item}이 없습니다.`);
+                return;
+            }
             const body = {
-                itemId: selectedItemId,
-                borrowerAt: new Date(borrowDate + " " + borrowTime).toISOString(),
-                returnAt: new Date(returnDate).toISOString(),
+                itemId: selectedItem.id,
+                borrowerAt: `${borrowDate}T${borrowTime}:00`,
+                returnAt: `${returnDate}T${returnTime}:00`,
                 type: "BORROW",
             };
 
-            // const res = await axios.post(`${API_SERVER}/requests`, body, {
-            //     withCredentials: true,
-            // });
+            if (new Date(body.borrowerAt) < today) {
+                alert("대여일시는 현재 이후여야합니다. ");
+                return;
+            }
 
-            // const result = res.data;
-            // 응답으로 준 생성시간하고 아이디  그리고 사용자가 입력한 정보를 기반으로 request객체 만들기
+            if (new Date(body.borrowerAt) > new Date(body.returnAt)) {
+                alert("반납일시는 대여일시 이후여야합니다.");
+                return;
+            }
 
-            console.log(body);
+            const res = await axios.post(`${API_SERVER}/requests`, body, {
+                withCredentials: true,
+            });
+
+            const result = res.data;
+
+            const newRequest: RequestInterface = {
+                id: result.requestId,
+                borrowAt: body.borrowerAt,
+                returnAt: body.returnAt,
+                createdAt: result.createdAt,
+                borrowerId: borrowInfo.id,
+                borrowerName: borrowInfo.name,
+                item: {
+                    id: selectedItem.id,
+                    name: selectedItem.name,
+                    price: selectedItem.price,
+                    location: null,
+                    password: null,
+                },
+                cancel: false,
+                manager: null,
+                response: null,
+                state: REQUEST_STATE_TYPE.PENDING,
+                type: REQUEST_TYPE.BORROW,
+            };
+
+            if (requestContext.setRequestList) {
+                requestContext.setRequestList(requestContext.requestList.concat(newRequest));
+            }
+            alert("대여신청이 완료됐습니다.");
         } catch (error) {
+            if (error instanceof AxiosError) {
+                const errorObj = error.response?.data;
+                const errorCode = errorObj.errorCode;
+                console.log(errorObj);
+                if (errorCode == "INVALID_ITEM_ID") {
+                    alert("누군가 해당 대여물품에 대해 먼저 대여신청을 했습니다. 다시 시도해주세요.");
+                    return;
+                }
+            } else {
+                alert("에러");
+            }
             console.error(error);
-            alert("에러");
         }
     };
 
@@ -125,6 +174,7 @@ export default function BorrowerRequestPage() {
                     <PickerField
                         type="date"
                         placeholder="대여일 선택"
+                        min={`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`}
                         onChange={borrowDateFieldOnChange}
                         value={borrowDate}
                     />
@@ -138,16 +188,27 @@ export default function BorrowerRequestPage() {
             </div>
 
             <div className="mt-3">
-                <p className="bold-18px mb-2">4. 반납일을 선택해주세요</p>
-                <div className="mb-2">
+                <p className="bold-18px mb-2">4. 예상 반납일시를 선택해주세요</p>
+                <div className="mb-2 flex gap-2">
                     <PickerField
                         type="date"
                         placeholder="반납일 선택"
+                        min={
+                            borrowDate
+                                ? borrowDate
+                                : `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`
+                        }
                         onChange={returnDateFieldOnChange}
                         value={returnDate}
                     />
+                    <PickerField
+                        type="time"
+                        placeholder="반납시간 선택"
+                        onChange={returnTimeFieldOnChange}
+                        value={returnTime}
+                    />
                 </div>
-                <p className="text-placeholder pl-0.5 leading-tight">
+                <p className="text-placeholder pl-0.5 leading-tight regular-14px">
                     대여 기간은 원칙적으로 대여한 날로부터 최대 7일로 하며, 공휴일 또는 학생회의 사정으로 대여 및 반납이
                     곤란한 경우, 대여자의 특별한 사정으로 학생회와 사전에 협의된 경우 합리적인 선에서 조정할 수 있음.
                 </p>
@@ -156,7 +217,7 @@ export default function BorrowerRequestPage() {
             <Button
                 title="대여신청"
                 className="w-full p-3 bold-18px mt-6"
-                disabled={buttonOn}
+                disabled={!buttonOn}
                 onClick={buttonOnclick}
             />
         </div>

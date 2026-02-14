@@ -1,11 +1,11 @@
-export default function ItemBorrowConditions() {
+export default function ItemBorrowConditions({ price }: { price?: number | null }) {
     return (
         <div className="bg-white border border-boxBorder rounded p-4">
             <p className="bold-16px mb-2">1. 대여자는 아래 식에 따른 보증금을 아래의 계좌로 납부하여야 합니다.</p>
             <ul className="list-disc pl-5">
                 <li>보증금 = 물품가액 X 0.3(천원단위 내림)</li>
                 <li>
-                    위 식에 따른 보증금을{" "}
+                    위 식에 따른 보증금 {price ? `${Math.floor((price * 0.3) / 1000) * 1000}원` : null}을{" "}
                     <span
                         className="text-blue-500 underline cursor-pointer"
                         onClick={() => {

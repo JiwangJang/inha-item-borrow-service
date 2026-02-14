@@ -1,6 +1,5 @@
 import API_SERVER from "@/apiServer";
-import RequestInterface, { RequestState, RequestType } from "@/types/RequestInterface";
-import axios from "axios";
+import RequestInterface, { RequestStateType, RequestType } from "@/types/RequestInterface";
 import { cookies } from "next/headers";
 
 export default async function getRequests({
@@ -10,7 +9,7 @@ export default async function getRequests({
 }: {
     borrowId?: string | null;
     type?: RequestType;
-    state?: RequestState;
+    state?: RequestStateType;
 } = {}): Promise<RequestInterface[]> {
     try {
         const params = new URLSearchParams();

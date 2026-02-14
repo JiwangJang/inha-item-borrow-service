@@ -1,7 +1,7 @@
 export default interface Response {
     id: number;
     requestId: number;
-    createdAt: Date;
+    createdAt: string;
     rejectReason: string;
     type: ResponseType;
 }

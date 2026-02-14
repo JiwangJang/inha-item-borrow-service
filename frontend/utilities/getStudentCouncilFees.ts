@@ -1,7 +1,7 @@
 "use server";
 
 import API_SERVER from "@/apiServer";
-import StudentCouncilFeeInterface from "@/types/StudentCouncilFeeInterface";
+import StudentCouncilFeeInterface from "@/types/StudentCouncilFeeVerificationInterface";
 import axios from "axios";
 import { cookies } from "next/headers";
 

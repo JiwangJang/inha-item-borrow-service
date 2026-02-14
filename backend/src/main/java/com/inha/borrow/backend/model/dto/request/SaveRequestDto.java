@@ -2,7 +2,6 @@ package com.inha.borrow.backend.model.dto.request;
 
 import com.inha.borrow.backend.enums.RequestType;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +18,6 @@ public class SaveRequestDto {
     private int prevRequestId;
     @NotNull
     private int itemId;
-    @NotBlank
     private String borrowerId;
     @NotNull
     private Timestamp returnAt;

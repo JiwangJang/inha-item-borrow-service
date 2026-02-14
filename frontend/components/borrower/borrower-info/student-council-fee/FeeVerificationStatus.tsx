@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import API_SERVER from "@/apiServer";
+import StudentCouncilFeeVerificationInterface from "@/types/StudentCouncilFeeVerificationInterface";
 
 export default function FeeVerificationStatus({
     verification,

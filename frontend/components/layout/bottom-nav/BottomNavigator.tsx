@@ -29,7 +29,7 @@ const BORROWER_BOTTOM_NAVIGATOR_SPECS: BottomNavigatorItemSpec[] = [
         id: 2321,
         title: "대여내역",
         icon: "/document_search.svg",
-        path: "/borrower-list",
+        path: "/borrow-list",
     },
     {
         id: 4341,

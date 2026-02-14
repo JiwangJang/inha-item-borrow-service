@@ -44,6 +44,8 @@ public class RequestRepository {
         String rejectReason = rs.getString("reject_reason");
         Timestamp responseCreatedAt = rs.getTimestamp("response_created_at");
 
+        log.info("responseId : {}", responseId);
+
         // manager 관련 값
         String managerId = rs.getString("manager");
         String managerName = rs.getString("manager_name");
@@ -53,6 +55,8 @@ public class RequestRepository {
         int itemId = rs.getInt("item_id");
         int itemPrice = rs.getInt("item_price");
         String itemName = rs.getString("item_name");
+        String itemLocation = rs.getString("item_location");
+        String itemPassword = rs.getString("item_password");
 
         // Request 관련 값
         int requestId = rs.getInt("request_id");
@@ -64,6 +68,8 @@ public class RequestRepository {
         RequestType type = RequestType.valueOf(rs.getString("type"));
         RequestState state = RequestState.valueOf(rs.getString("state"));
         Boolean cancel = rs.getBoolean("cancel");
+
+        // 여기서 response없고 request PERMIT인 경우 비밀번호랑 위치 알려줌 아니면 안알려줌
 
         Response response = Response.builder()
                 .id(responseId)
@@ -81,6 +87,8 @@ public class RequestRepository {
                 .id(itemId)
                 .price(itemPrice)
                 .name(itemName)
+                .location(itemLocation)
+                .password(itemPassword)
                 .build();
 
         return Request.builder()
@@ -140,6 +148,8 @@ public class RequestRepository {
                         rq.item_id,
                         item.name AS item_name,
                         item.price AS item_price,
+                        item.location AS item_location,
+                        item.password AS item_password,
                         rq.created_at AS request_created_at,
                         rq.borrower_id,
                         borrower.name AS borrower_name,
@@ -197,6 +207,8 @@ public class RequestRepository {
                         rq.item_id,
                         item.name AS item_name,
                         item.price AS item_price,
+                        item.location AS item_location,
+                        item.password AS item_password,
                         rq.created_at AS request_created_at,
                         rq.borrower_id,
                         borrower.name AS borrower_name,

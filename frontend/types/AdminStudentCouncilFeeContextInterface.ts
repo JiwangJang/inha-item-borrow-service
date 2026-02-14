@@ -1,4 +1,4 @@
-import StudentCouncilFeeInterface from "./StudentCouncilFeeInterface";
+import StudentCouncilFeeInterface from "./StudentCouncilFeeVerificationInterface";
 
 export default interface AdminStudentCouncilFeeContextInterface {
     studentCouncilFeeList: StudentCouncilFeeInterface[];

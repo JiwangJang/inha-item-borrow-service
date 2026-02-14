@@ -4,6 +4,7 @@ import BorrowerContext from "@/context/BorrowerContext";
 import { useContext } from "react";
 import FeeVerificationRequest from "./FeeVerificationRequest";
 import FeeVerificationStatus from "./FeeVerificationStatus";
+import StudentCouncilFeeVerificationInterface from "@/types/StudentCouncilFeeVerificationInterface";
 
 export default function StudentCouncilFeePage({
     verification,
