@@ -45,8 +45,9 @@ public class RequestService {
         RequestType type = saveRequestDto.getType();
         int itemId = saveRequestDto.getItemId();
         int prevRequestId = saveRequestDto.getPrevRequestId();
-        StudentCouncilFeeVerification council = studentCouncilFeeVerificationRepository.findRequestById(saveRequestDto.getBorrowerId());
-        if(!council.isVerify()){
+        StudentCouncilFeeVerification council = studentCouncilFeeVerificationRepository
+                .findRequestByBorrowerId(saveRequestDto.getBorrowerId());
+        if (!council.isVerify()) {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_ALLOWED_COUNCIL_FEE;
             throw new AccessDeniedException(apiErrorCode.name() + ":" + apiErrorCode.getMessage());
         }

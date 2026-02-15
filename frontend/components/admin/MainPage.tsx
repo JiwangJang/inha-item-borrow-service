@@ -8,6 +8,7 @@ import { REQUEST_TYPE } from "@/types/RequestInterface";
 import { useContext } from "react";
 import SimpleTable from "./main/SimpleTable";
 import Button from "../utilities/Button";
+import { useRouter } from "next/navigation";
 
 interface TableContent {
     borrowedCount: number;
@@ -19,6 +20,7 @@ export default function MainPage() {
     const requestContext = useContext(AdminRequestContext);
     const studentCouncilFeeContext = useContext(AdminStudentCouncilFeeContext);
     const itemContext = useContext(ItemContext);
+    const router = useRouter();
 
     const requestList = requestContext.requestList.map((request) => request.type == REQUEST_TYPE.BORROW);
     const returnRequestList = requestContext.requestList.map((request) => request.type == REQUEST_TYPE.RETURN);
@@ -78,6 +80,7 @@ export default function MainPage() {
             <Button
                 title={`등록금 납부확인 처리(${notVerifiedStudentCouncilFeeList.length}명 대기중)`}
                 className="py-3 w-full bold-18px"
+                onClick={() => router.push("/admin/student-council-fee")}
             />
         </div>
     );

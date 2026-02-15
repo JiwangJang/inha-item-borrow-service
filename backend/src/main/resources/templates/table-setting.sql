@@ -50,18 +50,20 @@ CREATE TABLE borrower(
 );
 
 CREATE TABLE student_council_fee(
-    id varchar(50) NOT NULL PRIMARY KEY,
-    s3_link varchar(50) NOT NULL,
-    request_at datetime NOT NULL,
-    response_at datetime NOT NULL,
-    deny_reason varchar(50) NOT NULL,
+    id int PRIMARY KEY auto_increment,
+    borrower_id char(8) UNIQUE,
+    foreign key(borrower_id) references borrower(id),
+    s3_link TEXT,
+    request_at datetime ON UPDATE CURRENT_TIMESTAMP,
+    response_at datetime,
+    deny_reason varchar(50),
     -- 소문자로 수정함
-    verify boolean default false
+    verify boolean
 );
 
 CREATE TABLE borrower_privacy_agreement(
     id int NOT NULL primary key auto_increment,
-    borrower_id varchar(50) NOT NULL,
+    borrower_id char(8) UNIQUE,
     foreign key(borrower_id) references borrower(id),
     agreed_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     version char(2) NOT NULL

@@ -14,17 +14,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.DenyFeeVerificationDto;
-import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.FindFeeVerificationRequestDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.ModifyVerificationResponseDto;
-import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.PermitFeeVerificationDto;
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Borrower;
-import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.service.StudentCouncilFeeVerificationService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @RequiredArgsConstructor
@@ -52,9 +51,8 @@ public class StuentCouncilFeeVerificationController {
      */
     @GetMapping("/single")
     public ResponseEntity<ApiResponse<StudentCouncilFeeVerification>> findRequestById(
-            @RequestBody(required = false) FindFeeVerificationRequestDto dto,
-            @AuthenticationPrincipal User user) {
-        StudentCouncilFeeVerification result = service.findRequestById(user, dto);
+            @AuthenticationPrincipal Borrower user) {
+        StudentCouncilFeeVerification result = service.findRequestByBorrowerId(user.getId());
         return ResponseEntity.ok(new ApiResponse<StudentCouncilFeeVerification>(true, result));
     }
 
@@ -65,9 +63,9 @@ public class StuentCouncilFeeVerificationController {
      * @return 200
      * @author 장지왕
      */
-    @PatchMapping("/permit")
-    public ResponseEntity<Void> permitVerification(PermitFeeVerificationDto dto) {
-        service.permitVerificationRequest(dto.getId());
+    @PatchMapping("/{id}/permit")
+    public ResponseEntity<Void> permitVerification(@PathVariable("id") String id) {
+        service.permitVerificationRequest(Integer.parseInt(id));
         return ResponseEntity.ok().build();
     }
 
@@ -77,9 +75,10 @@ public class StuentCouncilFeeVerificationController {
      * @param dto
      * @return
      */
-    @PatchMapping("/deny")
-    public ResponseEntity<Void> denyVerification(DenyFeeVerificationDto dto) {
-        service.denyVerificationRequest(dto);
+    @PatchMapping("/{id}/deny")
+    public ResponseEntity<Void> denyVerification(@PathVariable("id") String id,
+            @RequestBody @Valid DenyFeeVerificationDto dto) {
+        service.denyVerificationRequest(Integer.parseInt(id), dto);
         return ResponseEntity.ok().build();
     }
 
@@ -90,9 +89,10 @@ public class StuentCouncilFeeVerificationController {
      * @return 200
      * @author 장지왕
      */
-    @PatchMapping("/modify")
-    public ResponseEntity<Void> reviseVerificationResponse(ModifyVerificationResponseDto dto) {
-        service.modifyVerificationResponse(dto);
+    @PatchMapping("/{id}/modify")
+    public ResponseEntity<Void> reviseVerificationResponse(@PathVariable("id") String id,
+            @Valid ModifyVerificationResponseDto dto) {
+        service.modifyVerificationResponse(Integer.parseInt(id), dto);
         return ResponseEntity.ok().build();
     }
 
@@ -122,8 +122,8 @@ public class StuentCouncilFeeVerificationController {
      */
     @DeleteMapping
     public ResponseEntity<Void> cancelVerificationRequest(@AuthenticationPrincipal Borrower borrower) {
-        String id = borrower.getId();
-        service.cancel(id);
+        String borrowerId = borrower.getId();
+        service.cancel(borrowerId);
         return ResponseEntity.noContent().build();
     }
 }

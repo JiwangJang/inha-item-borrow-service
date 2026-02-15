@@ -15,7 +15,7 @@ export default function ItemPart({ name, items }: { name: string; items: ItemInt
             <div className="grid grid-cols-3 gap-2">
                 {items.map((it) => (
                     <Link href={`/admin/item/${it.id}`} key={it.id}>
-                        <EachItem id={it.id} status={it.status} />
+                        <EachItem id={it.id} status={it.state} />
                     </Link>
                 ))}
             </div>

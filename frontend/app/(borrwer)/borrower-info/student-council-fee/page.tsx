@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import API_SERVER from "@/apiServer";
 import StudentCouncilFeePage from "@/components/borrower/borrower-info/student-council-fee/StudentCouncilFeePage";
 import StudentCouncilFeeVerificationInterface from "@/types/StudentCouncilFeeVerificationInterface";
+import { notFound } from "next/navigation";
 
 async function getMyStudentCouncilFeeVerification(): Promise<StudentCouncilFeeVerificationInterface | null> {
     try {
@@ -28,6 +29,10 @@ async function getMyStudentCouncilFeeVerification(): Promise<StudentCouncilFeeVe
 
 export default async function Page() {
     const verification = await getMyStudentCouncilFeeVerification();
-    // console.log(verification);
+
+    if (verification == null) {
+        notFound();
+    }
+
     return <StudentCouncilFeePage verification={verification} />;
 }

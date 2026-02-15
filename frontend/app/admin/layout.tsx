@@ -20,6 +20,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
     const requestList = await getRequests({ state: REQUEST_STATE_TYPE.PENDING });
     const studentCouncilList = await getStudentCouncilFees();
 
+    console.log(studentCouncilList);
+
     return (
         <div className="w-full pt-15 pb-16 bg-back min-h-screen common-px">
             <AdminProvider initialValue={adminInfo}>

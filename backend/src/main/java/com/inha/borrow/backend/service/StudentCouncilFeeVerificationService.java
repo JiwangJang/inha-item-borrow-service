@@ -1,7 +1,6 @@
 package com.inha.borrow.backend.service;
 
 import java.net.URI;
-import java.nio.file.Path;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -9,12 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.DenyFeeVerificationDto;
-import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.FindFeeVerificationRequestDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.ModifyVerificationResponseDto;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
-import com.inha.borrow.backend.model.entity.user.Borrower;
-import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -36,21 +32,21 @@ public class StudentCouncilFeeVerificationService {
      * @param verificationImage 인증 사진
      * @author 장지왕
      */
-    public void verificationRequestSave(String id, MultipartFile verificationImage) {
-        CacheBorrowerDto dto = borrowerCache.getIfPresent(id);
+    public void verificationRequestSave(String borrowerId, MultipartFile verificationImage) {
+        CacheBorrowerDto dto = borrowerCache.getIfPresent(borrowerId);
         if (dto != null && dto.getS3Link() != null) {
             URI uri = URI.create(dto.getS3Link());
             String path = uri.getPath().substring(1);
             s3Service.deleteFile(path);
         }
 
-        String s3Link = s3Service.uploadFile(verificationImage, "student-council-fee", id);
+        String s3Link = s3Service.uploadFile(verificationImage, "student-council-fee", borrowerId);
         if (dto != null) {
             dto.setS3Link(s3Link);
         }
 
-        repository.verificationRequestSave(id, s3Link);
-        borrowerCache.put(id, dto);
+        repository.verificationRequestSave(borrowerId, s3Link);
+        borrowerCache.put(borrowerId, dto);
     }
 
     /**
@@ -59,8 +55,8 @@ public class StudentCouncilFeeVerificationService {
      * @param id
      * @author 장지왕
      */
-    public void initalSave(String id) {
-        repository.initialSave(id);
+    public void initalSave(String borrowerId) {
+        repository.initialSave(borrowerId);
     }
 
     /**
@@ -79,16 +75,9 @@ public class StudentCouncilFeeVerificationService {
      * @return 인증요청 객체
      * @author 장지왕
      */
-    public StudentCouncilFeeVerification findRequestById(User user, FindFeeVerificationRequestDto dto) {
-        String id = "";
-        if (user instanceof Borrower) {
-            id = user.getId();
-        } else {
-            id = dto.getId();
-        }
-
+    public StudentCouncilFeeVerification findRequestByBorrowerId(String borrowerId) {
         // 우선적으로 캐시 찾고 캐시에 없으면 DB에서 찾도록 변경하기
-        return repository.findRequestById(id);
+        return repository.findRequestByBorrowerId(borrowerId);
     }
 
     /**
@@ -97,7 +86,7 @@ public class StudentCouncilFeeVerificationService {
      * @param id
      * @author 장지왕
      */
-    public void permitVerificationRequest(String id) {
+    public void permitVerificationRequest(int id) {
         repository.updateForAdmin(id, true, null);
         // 여기서는 캐시 업데이트하기
     }
@@ -109,8 +98,8 @@ public class StudentCouncilFeeVerificationService {
      * @param denyReason
      * @author 장지왕
      */
-    public void denyVerificationRequest(DenyFeeVerificationDto dto) {
-        repository.updateForAdmin(dto.getId(), false, dto.getDenyReason());
+    public void denyVerificationRequest(int id, DenyFeeVerificationDto dto) {
+        repository.updateForAdmin(id, false, dto.getDenyReason());
         // 여기서는 캐시 업데이트하기
     }
 
@@ -121,12 +110,12 @@ public class StudentCouncilFeeVerificationService {
      * @param denyReason
      * @author 장지왕
      */
-    public void modifyVerificationResponse(ModifyVerificationResponseDto dto) {
+    public void modifyVerificationResponse(int id, ModifyVerificationResponseDto dto) {
         if (dto.isVerify()) {
-            repository.updateForAdmin(dto.getId(), true, null);
+            repository.updateForAdmin(id, true, null);
             // 여기서는 캐시 업데이트하기
         } else {
-            repository.updateForAdmin(dto.getId(), false, dto.getDenyReason());
+            repository.updateForAdmin(id, false, dto.getDenyReason());
             // 여기서는 캐시 업데이트하기
         }
     }
@@ -137,9 +126,9 @@ public class StudentCouncilFeeVerificationService {
      * @param id
      * @author 장지왕
      */
-    public void cancel(String id) {
-        s3Service.deleteFile(folder + "/" + id);
-        repository.cancel(id);
+    public void cancel(String borrowerId) {
+        s3Service.deleteFile(folder + "/" + borrowerId);
+        repository.cancel(borrowerId);
         // 여기서는 캐시 업데이트하기
     }
 }

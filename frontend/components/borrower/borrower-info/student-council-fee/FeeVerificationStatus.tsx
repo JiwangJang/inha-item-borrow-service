@@ -86,7 +86,7 @@ export default function FeeVerificationStatus({
                     if (isReject) {
                         imageInputRef.current?.click();
                     } else if (verification.s3Link) {
-                        router.push(verification.s3Link);
+                        window.open(verification.s3Link);
                     }
                 }}
             />
