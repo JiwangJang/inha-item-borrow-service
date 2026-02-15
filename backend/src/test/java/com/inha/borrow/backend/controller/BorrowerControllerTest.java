@@ -1,5 +1,6 @@
 package com.inha.borrow.backend.controller;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -73,7 +74,7 @@ public class BorrowerControllerTest {
                                 .id("test_borrower")
                                 .name("홍길동")
                                 .build();
-                when(borrowerService.findById("test_borrower")).thenReturn(borrower);
+                when(borrowerService.findById(anyString())).thenReturn(borrower);
 
                 mockMvc.perform(get("/borrowers/info"))
                                 .andExpect(status().isOk())
@@ -91,6 +92,18 @@ public class BorrowerControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("\"새이름\""))
                                 .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("이름 수정")
+        @WithMockUser(authorities = "DIVISION_MEMBER")
+        void patchAccountNumber() throws Exception {
+                doNothing().when(borrowerService).patchAccountNumber("123", "새이름");
+
+                mockMvc.perform(patch("/borrowers/123/info/name")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("\"새이름\""))
+                        .andExpect(status().isOk());
         }
 
         @Test

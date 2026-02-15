@@ -73,6 +73,7 @@ public class BorrowerController {
      * name을 수정하는 메서드
      * 
      * @param name
+     * @param borrowerId
      * @return 200 요청 성공
      * @author 형민재
      */
@@ -80,6 +81,21 @@ public class BorrowerController {
     public ResponseEntity<Void> patchName(@PathVariable("borrower-id") String borrowerId,
             @Valid @NotBlank @RequestBody String name) {
         borrowerService.patchName(borrowerId, name);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * accountNumber을 수정하는 메서드
+     *
+     * @param accountNumber
+     * @param borrowerId
+     * @return 200 요청 성공
+     * @author 형민재
+     */
+    @PatchMapping("/{borrower-id}/info/account-num")
+    public ResponseEntity<Void> patchAccountNumber(@PathVariable("borrower-id") String borrowerId,
+            @Valid @NotBlank @RequestBody String accountNumber) {
+        borrowerService.patchAccountNumber(accountNumber,borrowerId);
         return ResponseEntity.ok().build();
     }
 

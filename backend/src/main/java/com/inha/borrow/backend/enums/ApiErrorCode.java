@@ -19,6 +19,7 @@ public enum ApiErrorCode {
     DB_ERROR("데이터베이스 에러입니다."),
     SERVER_ERROR("서버쪽의 알 수 없는 에러입니다. 계속되면 개발자에게 연락해주시기 바랍니다."),
     CHECK_YOUR_INFO("아이디나 비밀번호를 확인해주세요."),
+    ITEM_STATUS_NOT_AFFORD("물품의 상태가 AFFORD가 아닙니다"),
     NOT_FOUND("요청하신 자원을 찾을수 없습니다."),
     NOT_FOUND_DIVISION("존재하지 않는 부서입니다."),
     NOT_FOUND_ADMIN("존재하지 않는 관리자계정입니다."),
