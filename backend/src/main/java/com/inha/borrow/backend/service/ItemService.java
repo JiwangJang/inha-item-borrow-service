@@ -1,5 +1,6 @@
 package com.inha.borrow.backend.service;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.model.dto.item.BorrowedItemDto;
 import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
@@ -8,6 +9,7 @@ import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.entity.user.User;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.repository.ItemRepository;
 
 import lombok.AllArgsConstructor;
@@ -79,16 +81,27 @@ public class ItemService {
      * 
      * @param id           삭제할 Item의 아이디
      * @param deleteRequestDto 삭제 이유
+     *
+     * @author 장지왕 (수정 : 형민재)
      */
     public void deleteItem(int id, ItemDeleteRequestDto deleteRequestDto) {
-        itemRepository.deleteItem(id, deleteRequestDto);
+        BorrowedItemDto item = itemRepository.findById(id);
+        if(item.getState() == ItemState.AFFORD){
+            itemRepository.deleteItem(id, deleteRequestDto);
+        }else{
+            ApiErrorCode apiErrorCode =ApiErrorCode.ITEM_STATUS_NOT_AFFORD;
+            throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
+        }
+
     }
 
     /**
      * 특정 Item객체의 변경사항을 반영하는 메서드
      * 
-     * @param item 변경 내용이 담긴 Item
+     * @param itemReviseRequestDto 변경 내용이 담긴 Item
      * @param id   변경할 Item객체의 아이디
+     *
+     * @author 장지왕
      */
     public void updateItemDetail(int id, ItemReviseRequestDto itemReviseRequestDto) {
         itemRepository.updateItem(itemReviseRequestDto, id);

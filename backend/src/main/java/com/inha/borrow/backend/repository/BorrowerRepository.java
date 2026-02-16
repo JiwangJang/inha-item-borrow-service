@@ -5,6 +5,7 @@ import java.util.List;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
+import com.inha.borrow.backend.model.dto.user.borrower.SavePhoneAccountNumberDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 
 import org.springframework.dao.DataAccessException;
@@ -31,7 +32,7 @@ public class BorrowerRepository {
 
     private RowMapper<Borrower> borrowerRowMapper = (rs, rowNum) -> {
         String id = rs.getString("id");
-        String phonenumber = rs.getString("phonenumber");
+        String phonenumber = rs.getString("phone_number");
         String name = rs.getString("name");
         String accountNumber = rs.getString("account_number");
         String department = rs.getString("department");
@@ -154,6 +155,23 @@ public class BorrowerRepository {
     }
 
     /**
+     * 아이디로 대여자의 전화번호 계좌번호를 저장하는 메서드
+     *
+     * @param id 대여자 아이디
+     * @param dto
+     *
+     * @author 형민재
+     */
+    public void savePhoneAccountNumber(String id, SavePhoneAccountNumberDto dto){
+        String sql = "UPDATE borrower SET phone_number = ?, account_number =? WHERE id = ?";
+        int result = jdbcTemplate.update(sql,dto.getPhoneNumber(),dto.getAccountNumber(),id);
+        if (result == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+    }
+
+    /**
      * 아이디로 대여자 정보 수정 메서드
      * 
      * @param id 대여자 아이디
@@ -171,7 +189,7 @@ public class BorrowerRepository {
     }
 
     public void patchPhoneNumber(String phoneNumber, String id) {
-        String sql = " UPDATE borrower SET phonenumber = ? WHERE id = ?";
+        String sql = " UPDATE borrower SET phone_number = ? WHERE id = ?";
         int result = jdbcTemplate.update(sql, phoneNumber, id);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
