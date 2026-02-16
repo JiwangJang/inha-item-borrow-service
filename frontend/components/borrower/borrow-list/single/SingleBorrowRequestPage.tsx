@@ -18,7 +18,7 @@ export default function SingleBorrowRequestPage({ requestId }: { requestId: stri
         notFound();
     }
 
-    const { id, item, borrowAt, returnAt, state, manager } = currentRequest;
+    const { id, item, borrowAt, returnAt, state, manager, cancel } = currentRequest;
     const { name: itemName, location: itemLocation, password: itemPassword, price: itemPrice } = item;
 
     let borrowState;
@@ -46,7 +46,7 @@ export default function SingleBorrowRequestPage({ requestId }: { requestId: stri
                 <InfoRow label="대여물품" value={itemName} />
                 <InfoRow label="대여일시" value={dateFormatter(borrowAt)} />
                 <InfoRow label="반납일시" value={`${dateFormatter(returnAt)}(예정)`} />
-                <InfoRow label="대여상태" value={borrowState} />
+                <InfoRow label="대여상태" value={cancel ? "요청취소" : borrowState} />
                 <InfoRow label="보관위치" value={itemLocation ?? "-"} />
                 <InfoRow label="비밀번호" value={itemPassword ?? "-"} />
             </InfoTable>

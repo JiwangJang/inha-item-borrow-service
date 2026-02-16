@@ -11,7 +11,7 @@ export default interface RequestInterface {
     borrowAt: string;
     type: RequestType;
     state: RequestStateType;
-    cancel: boolean | null;
+    cancel: boolean;
     response: Response | null;
 }
 

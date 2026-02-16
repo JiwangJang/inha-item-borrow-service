@@ -15,6 +15,8 @@ export default function Header() {
             return "물품등록";
         } else if (pathname == "/admin/item/revise") {
             return "물품정보수정";
+        } else if (pathname.startsWith("/borrow-list/") && pathname.endsWith("/revise")) {
+            return "대여신청 수정";
         } else if (pathname.startsWith("/borrow-list/")) {
             return "대여신청내역";
         } else if (pathname.startsWith("/return-list/")) {

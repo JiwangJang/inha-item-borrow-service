@@ -15,6 +15,7 @@ interface RequestInfoCardInterface {
     retrunAt: string;
     state: RequestStateType;
     type: RequestType;
+    cancel: boolean;
 }
 
 export default function RequestInfoCard({
@@ -25,6 +26,7 @@ export default function RequestInfoCard({
     retrunAt,
     state,
     type,
+    cancel,
 }: RequestInfoCardInterface) {
     const [viewDetailButton, setViewDetailButton] = useState(false);
     const isBorrowRequest = type == REQUEST_TYPE.BORROW;
@@ -37,8 +39,10 @@ export default function RequestInfoCard({
             break;
         case REQUEST_STATE_TYPE.PENDING:
             stateString = "검토중(담당자 배정안됨)";
+            break;
         case REQUEST_STATE_TYPE.PERMIT:
             stateString = "허가";
+            break;
         default:
             stateString = "불허가";
             break;
@@ -71,10 +75,10 @@ export default function RequestInfoCard({
                 <p>대여물품 : {itemName} </p>
                 <p>대여일시 : {dateFormatter(borrowAt)} </p>
                 <p>
-                    반납일시 : {dateFormatter(retrunAt).slice(0, 12)}
-                    {isBorrowRequest ? "(예정)" : ""}
+                    반납일시 : {dateFormatter(retrunAt)}
+                    {isBorrowRequest ? " (예정)" : ""}
                 </p>
-                <p>대여상태 : {stateString}</p>
+                <p>대여상태 : {cancel ? "요청 취소" : stateString}</p>
             </div>
             {viewDetailButton ? (
                 <div className="flex gap-1 mt-3">

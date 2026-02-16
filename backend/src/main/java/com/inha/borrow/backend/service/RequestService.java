@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 리퀘스트 서비스
@@ -113,6 +114,7 @@ public class RequestService {
     public void patchRequest(PatchRequestDto patchRequestDto, int requestId, String borrowerId) {
         RequestState state = requestRepository.findRequestStateById(requestId);
         if (state != RequestState.PENDING) {
+            // 관리자에게 배정되기 전까지는 수정가능
             ApiErrorCode apiErrorCode = ApiErrorCode.CAN_NOT_MODIFY_REQUEST;
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
@@ -128,12 +130,16 @@ public class RequestService {
      */
     @Transactional
     public void cancelRequest(int requestId, String borrowerId) {
-        RequestType type = requestRepository.findRequestTypeById(requestId);
-        if (type != RequestType.BORROW) {
+        Map<String, String> typeAndItemId = requestRepository.findRequestItemIdAndStateById(requestId);
+        RequestState state = RequestState.valueOf(typeAndItemId.get("state"));
+
+        if (state != RequestState.PENDING) {
+            // 관리자에게 배정되기 전까진 취소가능
             ApiErrorCode apiErrorCode = ApiErrorCode.CAN_NOT_CANCEL_REQUEST;
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
         requestRepository.cancelRequest(requestId, borrowerId);
+        itemService.updateState(ItemState.AFFORD, Integer.parseInt(typeAndItemId.get("item_id")));
     }
 
     /**

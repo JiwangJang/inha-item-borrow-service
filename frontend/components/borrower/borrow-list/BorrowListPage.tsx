@@ -18,20 +18,26 @@ export default function BorrowListPage() {
     return (
         <div className="my-5">
             <p className="black-20px mb-3">🗒️ 대여내역</p>
-            <div className="flex flex-col gap-2">
-                {requestList.map((r, i) => (
-                    <RequestInfoCard
-                        borrowAt={r.borrowAt}
-                        itemName={r.item.name}
-                        requestAt={r.createdAt}
-                        requestId={r.id}
-                        retrunAt={r.returnAt}
-                        state={r.state}
-                        type={r.type}
-                        key={i}
-                    />
-                ))}
-            </div>
+
+            {requestList.length == 0 ? (
+                <p>아직 신청을 한번도 안하셔서 기록이 없습니다.</p>
+            ) : (
+                <div className="flex flex-col gap-2">
+                    {requestList.map((r, i) => (
+                        <RequestInfoCard
+                            cancel={r.cancel}
+                            borrowAt={r.borrowAt}
+                            itemName={r.item.name}
+                            requestAt={r.createdAt}
+                            requestId={r.id}
+                            retrunAt={r.returnAt}
+                            state={r.state}
+                            type={r.type}
+                            key={i}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

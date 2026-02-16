@@ -1,16 +1,27 @@
 "use client";
 
+import API_SERVER from "@/apiServer";
 import LoginRequired from "@/components/borrower/LoginRequired";
+import Button from "@/components/utilities/Button";
+import ConfirmModal from "@/components/utilities/modal/ConfirmModal";
 import BorrowerContext from "@/context/BorrowerContext";
 import BorrowRequestContext from "@/context/BorrowRequestContext";
+import ItemContext from "@/context/ItemContext";
+import { ITEM_STATE_TYPE } from "@/types/ItemStateType";
+import { REQUEST_STATE_TYPE } from "@/types/RequestInterface";
 import { dateFormatter } from "@/utilities/dateFormatter";
-import { notFound } from "next/navigation";
-import { useContext } from "react";
+import axios from "axios";
+import { notFound, useRouter } from "next/navigation";
+import { useContext, useState } from "react";
 
 export default function RequestPaperPage({ id }: { id: string }) {
     const requestList = useContext(BorrowRequestContext).requestList;
+    const setRequestList = useContext(BorrowRequestContext).setRequestList;
+    const { itemList, setItemList } = useContext(ItemContext);
     const borrowerInfo = useContext(BorrowerContext).borrowerInfo;
     const current = requestList.find((r) => String(r.id) == id);
+
+    const [confirmModal, setConfirmModal] = useState(false);
 
     if (current == null) {
         notFound();
@@ -25,6 +36,64 @@ export default function RequestPaperPage({ id }: { id: string }) {
     const { name: itemName } = current.item;
     const response = current.response;
     const responseAt = response?.createdAt;
+    const router = useRouter();
+
+    const cancelRequest = async () => {
+        if (current.state != REQUEST_STATE_TYPE.PENDING) {
+            alert("관리자 배정 이전에만 취소가 가능합니다.");
+            return;
+        }
+
+        try {
+            await axios.patch(`${API_SERVER}/requests/${id}/cancel`, null, { withCredentials: true });
+
+            if (setRequestList) {
+                // 취소한 요청 표시
+                setRequestList(
+                    requestList.map((rq) => {
+                        if (String(rq.id) == id) {
+                            return {
+                                ...rq,
+                                cancel: true,
+                            };
+                        }
+                        return rq;
+                    }),
+                );
+            }
+
+            if (setItemList) {
+                // 취소한 아이템 대여 가능하다는 상태로 보여지게 설정
+                setItemList(
+                    itemList.map((it) => {
+                        if (it.id == current.item.id) {
+                            return {
+                                ...it,
+                                state: ITEM_STATE_TYPE.AFFORD,
+                            };
+                        }
+                        return it;
+                    }),
+                );
+            }
+
+            alert("해당 요청 취소가 완료됐습니다.");
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const goRevisePage = () => {
+        if (current.cancel) {
+            alert("취소된 요청은 수정할 수 없습니다.");
+            return;
+        }
+        if (current.state != REQUEST_STATE_TYPE.PENDING) {
+            alert("관리자 배정 이전에만 수정이 가능합니다.");
+            return;
+        }
+        router.push(`/borrow-list/${id}/revise`);
+    };
 
     return (
         <div className="bg-white border border-boxBorder rounded-xl mt-5 py-5 px-6">
@@ -41,9 +110,10 @@ export default function RequestPaperPage({ id }: { id: string }) {
             <div className="mt-4 text-center">
                 <p className="bold-16px">본인은 위와 같이 물품대여신청합니다.</p>
                 <p className="regular-16px">{dateFormatter(createdAt).slice(0, 13)}</p>
+                {current.cancel ? <p>취소된 요청입니다.</p> : null}
             </div>
 
-            {response != null ? (
+            {responseAt != null ? (
                 <div className="mt-4 pt-4 border-t border-black text-center bold-16px flex flex-col justify-center items-center">
                     <p>위 사람의 물품대여신청을 허가합니다.</p>
                     <div className="my-5 relative w-fit">
@@ -60,7 +130,24 @@ export default function RequestPaperPage({ id }: { id: string }) {
 
                     <p>{dateFormatter(responseAt!).slice(0, 13)}</p>
                 </div>
-            ) : null}
+            ) : (
+                <div className="flex gap-1 mt-3">
+                    <Button
+                        title="취소하기"
+                        className="w-full py-2 bg-white! border-2 border-black text-black!"
+                        onClick={() => setConfirmModal(true)}
+                    />
+                    <Button title="수정하기" className="w-full py-2" onClick={goRevisePage} />
+                </div>
+            )}
+
+            <ConfirmModal
+                title="알림"
+                message="정말 취소하시겠습니까?"
+                onClose={() => setConfirmModal(false)}
+                onConfirm={cancelRequest}
+                open={confirmModal}
+            />
         </div>
     );
 }

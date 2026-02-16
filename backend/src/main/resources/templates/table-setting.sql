@@ -94,7 +94,7 @@ create table request (
     id int NOT NULL primary key auto_increment,
     item_id int NOT NULL,
     borrower_id varchar(50) NOT NULL,
-    manager varchar(20),
+    manager varchar(20) DEFAULT NULL,
     foreign key(manager) references admin(id),
     foreign key(item_id) references item(id),
     foreign key(borrower_id) references borrower(id),

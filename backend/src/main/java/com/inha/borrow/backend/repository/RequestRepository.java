@@ -1,19 +1,13 @@
 package com.inha.borrow.backend.repository;
 
-import com.inha.borrow.backend.enums.ApiErrorCode;
-import com.inha.borrow.backend.enums.RequestState;
-import com.inha.borrow.backend.enums.RequestType;
-import com.inha.borrow.backend.model.dto.item.RequestItem;
-import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
-import com.inha.borrow.backend.model.entity.Response;
-import com.inha.borrow.backend.model.entity.request.Request;
-import com.inha.borrow.backend.model.entity.request.RequestManager;
-import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
-import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
-import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,12 +16,20 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.enums.RequestState;
+import com.inha.borrow.backend.enums.RequestType;
+import com.inha.borrow.backend.model.dto.item.RequestItem;
+import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
+import com.inha.borrow.backend.model.entity.Response;
+import com.inha.borrow.backend.model.entity.request.Request;
+import com.inha.borrow.backend.model.entity.request.RequestManager;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 리퀘스트 관련 리포지토리
@@ -70,6 +72,11 @@ public class RequestRepository {
         Boolean cancel = rs.getBoolean("cancel");
 
         // 여기서 response없고 request PERMIT인 경우 비밀번호랑 위치 알려줌 아니면 안알려줌
+
+        if (responseId == 0) {
+            itemLocation = null;
+            itemPassword = null;
+        }
 
         Response response = Response.builder()
                 .id(responseId)
@@ -123,8 +130,8 @@ public class RequestRepository {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, request.getItemId());
             ps.setString(2, request.getBorrowerId());
-            ps.setTimestamp(3, request.getReturnAt());
-            ps.setTimestamp(4, request.getBorrowerAt());
+            ps.setTimestamp(3, Timestamp.from(request.getReturnAt().toInstant()));
+            ps.setTimestamp(4, Timestamp.from(request.getBorrowAt().toInstant()));
             ps.setString(5, request.getType().name());
             return ps;
         }, keyHolder);
@@ -275,7 +282,7 @@ public class RequestRepository {
                 """;
         int result = jdbcTemplate.update(sql,
                 patchRequestDto.getReturnAt(),
-                patchRequestDto.getBorrowerAt(),
+                patchRequestDto.getBorrowAt(),
                 requestId, borrowerId);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
@@ -394,18 +401,31 @@ public class RequestRepository {
     }
 
     /**
-     * 대여요청인지 반납요청인지 확인하는 메서드
+     * 요청의 타입과 요청에 연결된 대여물품을 확인하는 메서드
      * 
-     * @param id
+     * @param id 요청 아이디
      * @return
      * @author 장지왕
      */
-    public RequestType findRequestTypeById(int id) {
+    public Map<String, String> findRequestItemIdAndStateById(int id) {
         try {
-            String sql = "SELECT type FROM request WHERE id = ?;";
+            String sql = """
+                        SELECT
+                            rq.state AS request_state,
+                            it.id AS item_id
+                        FROM request AS rq
+                        LEFT JOIN item AS it
+                        ON it.id = rq.item_id
+                        WHERE rq.id = ?;
+                    """;
+
             return jdbcTemplate.queryForObject(sql, (rs, i) -> {
-                return RequestType.valueOf(rs.getString("type"));
+                Map<String, String> result = new HashMap<>();
+                result.put("item_id", rs.getString("item_id"));
+                result.put("state", rs.getString("request_state"));
+                return result;
             }, id);
+
         } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());

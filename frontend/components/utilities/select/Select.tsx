@@ -16,7 +16,12 @@ export default function Select({
     disabled?: boolean;
 }) {
     return (
-        <div className="relative w-full">
+        <div
+            className="relative w-full"
+            style={{
+                opacity: disabled ? 0.6 : 1,
+            }}
+        >
             <FieldBox inactive={value == ""}>
                 <span className={value ? "text-black" : "text-placeholder"}>{value ? value : placeholder}</span>
             </FieldBox>
@@ -26,7 +31,10 @@ export default function Select({
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 disabled={disabled}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0"
+                style={{
+                    cursor: disabled ? "default" : "pointer",
+                }}
                 aria-label={placeholder}
             >
                 <option value="" disabled>

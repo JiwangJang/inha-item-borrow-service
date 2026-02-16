@@ -9,11 +9,12 @@ import PickerField from "@/components/utilities/select/PickerField";
 import Button from "@/components/utilities/Button";
 import { ITEM_STATE_TYPE } from "@/types/ItemStateType";
 import BorrowRequestContext from "@/context/BorrowRequestContext";
-import axios, { Axios, AxiosError } from "axios";
+import axios from "axios";
 import API_SERVER from "@/apiServer";
 import RequestInterface, { REQUEST_STATE_TYPE, REQUEST_TYPE } from "@/types/RequestInterface";
 import BorrowerContext from "@/context/BorrowerContext";
 import LoginRequired from "../LoginRequired";
+import { useRouter } from "next/navigation";
 
 export default function BorrowerRequestPage() {
     const borrowInfo = useContext(BorrowerContext).borrowerInfo;
@@ -25,6 +26,7 @@ export default function BorrowerRequestPage() {
     const requestContext = useContext(BorrowRequestContext);
     const itemList = itemContext.itemList;
     const setItemList = itemContext?.setItemList;
+    const router = useRouter();
 
     const [item, setItem] = useState<string>("");
     const [agree, setAgree] = useState<boolean>(false);
@@ -73,26 +75,29 @@ export default function BorrowerRequestPage() {
     };
 
     const buttonOnclick = async () => {
+        if (itemList.length == 0) return;
+        const selectedItem = itemList.find((it) => it.state == ITEM_STATE_TYPE.AFFORD && it.name == item);
+        if (selectedItem == null) {
+            alert(`현재 빌릴 수 있는 ${item}이 없습니다.`);
+            return;
+        }
         try {
-            if (itemList.length == 0) return;
-            const selectedItem = itemList.find((it) => it.state == ITEM_STATE_TYPE.AFFORD && it.name == item);
-            if (selectedItem == null) {
-                alert(`현재 빌릴 수 있는 ${item}이 없습니다.`);
-                return;
-            }
             const body = {
                 itemId: selectedItem.id,
-                borrowerAt: `${borrowDate}T${borrowTime}:00`,
-                returnAt: `${returnDate}T${returnTime}:00`,
+                borrowAt: `${borrowDate}T${borrowTime}:00+09:00`,
+                returnAt: `${returnDate}T${returnTime}:00+09:00`,
                 type: "BORROW",
             };
 
-            if (new Date(body.borrowerAt) < today) {
+            console.log("borrowTime raw:", borrowTime);
+            console.log("borrowAt:", body.borrowAt, new Date(body.borrowAt));
+
+            if (new Date(body.borrowAt) < today) {
                 alert("대여일시는 현재 이후여야합니다. ");
                 return;
             }
 
-            if (new Date(body.borrowerAt) > new Date(body.returnAt)) {
+            if (new Date(body.borrowAt) > new Date(body.returnAt)) {
                 alert("반납일시는 대여일시 이후여야합니다.");
                 return;
             }
@@ -101,11 +106,11 @@ export default function BorrowerRequestPage() {
                 withCredentials: true,
             });
 
-            const result = res.data;
+            const result = res.data.data;
 
             const newRequest: RequestInterface = {
                 id: result.requestId,
-                borrowAt: body.borrowerAt,
+                borrowAt: body.borrowAt,
                 returnAt: body.returnAt,
                 createdAt: result.createdAt,
                 borrowerId: borrowInfo.id,
@@ -127,19 +132,56 @@ export default function BorrowerRequestPage() {
             if (requestContext.setRequestList) {
                 requestContext.setRequestList(requestContext.requestList.concat(newRequest));
             }
+
+            if (setItemList) {
+                setItemList(
+                    itemList.map((it) => {
+                        if (it.id == selectedItem.id) {
+                            return {
+                                ...it,
+                                state: ITEM_STATE_TYPE.REVIEWING,
+                            };
+                        }
+
+                        return it;
+                    }),
+                );
+            }
+
             alert("대여신청이 완료됐습니다.");
+
+            router.back();
         } catch (error) {
-            if (error instanceof AxiosError) {
-                const errorObj = error.response?.data;
-                const errorCode = errorObj.errorCode;
+            if (axios.isAxiosError(error)) {
+                const errorObj = error.response?.data.data;
+                const errorCode = errorObj?.errorCode;
+
                 console.log(errorObj);
-                if (errorCode == "INVALID_ITEM_ID") {
+
+                if (errorCode === "INVALID_ITEM_ID") {
                     alert("누군가 해당 대여물품에 대해 먼저 대여신청을 했습니다. 다시 시도해주세요.");
+                    if (setItemList) {
+                        setItemList(
+                            itemList.map((it) => {
+                                if (it.id == selectedItem.id) {
+                                    return {
+                                        ...it,
+                                        state: ITEM_STATE_TYPE.REVIEWING,
+                                    };
+                                }
+                                return it;
+                            }),
+                        );
+                    }
                     return;
                 }
-            } else {
-                alert("에러");
+
+                // Any other Axios error
+                alert(errorObj?.message ?? "요청 중 오류가 발생했습니다. 지속될 경우 관리자에게 연락해주세요.");
+                console.error(error);
+                return;
             }
+            alert("요청 중 오류가 발생했습니다. 지속될 경우 관리자에게 연락해주세요.(x Axios)");
             console.error(error);
         }
     };
