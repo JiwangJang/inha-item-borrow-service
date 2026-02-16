@@ -93,8 +93,8 @@ public class BorrowerController {
      * @return 200 요청 성공
      * @author 형민재
      */
-    @PatchMapping("/{borrower-id}/info/account-num")
-    public ResponseEntity<Void> patchAccountNumber(@PathVariable("borrower-id") String borrowerId,
+    @PatchMapping("/info/account-num")
+    public ResponseEntity<Void> patchAccountNumber(@AuthenticationPrincipal(expression = "id") String borrowerId,
             @Valid @NotBlank @RequestBody String accountNumber) {
         borrowerService.patchAccountNumber(accountNumber,borrowerId);
         return ResponseEntity.ok().build();
