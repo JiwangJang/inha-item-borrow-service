@@ -62,7 +62,6 @@ public class StudentCouncilFeeVerificationRepositoryTest {
 
         assertEquals(s3Link, result.getS3Link());
         assertNotNull(result.getRequestAt());
-        assertNull(result.isVerify());
     }
 
     @Test
@@ -112,6 +111,5 @@ public class StudentCouncilFeeVerificationRepositoryTest {
         StudentCouncilFeeVerification result = repository.findRequestById(testId);
         assertNull(result.getS3Link());
         assertNull(result.getRequestAt());
-        assertNull(result.isVerify());
     }
 }

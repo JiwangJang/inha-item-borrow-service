@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,10 +33,11 @@ public class S3Service {
     public String uploadFile(MultipartFile multipartFile, String folder, String name) {
         String originalFilename = multipartFile.getOriginalFilename();
         String extension = "";
+        String uuid = UUID.randomUUID().toString().replace("-","");
         if (originalFilename != null && originalFilename.contains(".")) {
             extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
-        String fileName = folder + "/" + name + extension;
+        String fileName = folder + "/" + name + "-" +uuid + extension;
         ObjectMetadata objMeta = new ObjectMetadata();
         objMeta.setContentLength(multipartFile.getSize());
         objMeta.setContentType(multipartFile.getContentType());

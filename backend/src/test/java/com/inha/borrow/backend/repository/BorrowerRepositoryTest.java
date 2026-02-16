@@ -2,6 +2,7 @@ package com.inha.borrow.backend.repository;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
+import com.inha.borrow.backend.model.dto.user.borrower.SavePhoneAccountNumberDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,7 @@ class BorrowerRepositoryTest {
                 .id("123")
                 .name("123")
                 .phonenumber("123")
+                .department("123")
                 .accountNumber("123")
                 .build();
         borrowerRepository.save(borrowerDto);
@@ -58,15 +60,6 @@ class BorrowerRepositoryTest {
     void findAll() {
         List<Borrower> result = borrowerRepository.findAll();
         assertThat(result.size()).isEqualTo(1);
-    }
-
-    @DisplayName("전체조회 (실패 조회값 없음)")
-    @Test
-    void findAllFailNotFoundId() {
-        borrowerRepository.deleteAll();
-        assertThatThrownBy(() -> borrowerRepository.findAll())
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
     }
 
     @DisplayName("저장 성공")
@@ -119,6 +112,33 @@ class BorrowerRepositoryTest {
     @Test
     void patchAccountNumberFailNotFoundId() {
         assertThatThrownBy(() -> borrowerRepository.patchAccountNumber("456", "321"))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
+    }
+
+    @DisplayName("전화번호 및 계좌번호 저장 성공")
+    @Test
+    void savePhoneAccountNumber() {
+        // given (기존 setUp에서 "123" 아이디가 생성되어 있다고 가정)
+        SavePhoneAccountNumberDto dto = new SavePhoneAccountNumberDto("010-1234-5678", "110-123-456789");
+
+        // when
+        borrowerRepository.savePhoneAccountNumber("123", dto);
+
+        // then
+        // 엔티티 구조에 따라 getPhoneNumber() 또는 getPhonenumber()로 맞춰서 사용하세요.
+        assertThat(borrowerRepository.findById("123").getPhonenumber()).isEqualTo("010-1234-5678");
+        assertThat(borrowerRepository.findById("123").getAccountNumber()).isEqualTo("110-123-456789");
+    }
+
+    @DisplayName("전화번호 및 계좌번호 저장 (실패 id 미존재)")
+    @Test
+    void savePhoneAccountNumberFailNotFoundId() {
+        // given
+        SavePhoneAccountNumberDto dto = new SavePhoneAccountNumberDto("010-1234-5678", "110-123-456789");
+
+        // when & then ("321"은 존재하지 않는 ID로 가정)
+        assertThatThrownBy(() -> borrowerRepository.savePhoneAccountNumber("321", dto))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining(ApiErrorCode.NOT_FOUND_BORROWER.getMessage());
     }

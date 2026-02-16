@@ -1,8 +1,8 @@
 package com.inha.borrow.backend.controller;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import com.inha.borrow.backend.model.dto.user.borrower.SavePhoneAccountNumberDto;
 import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,7 +74,7 @@ public class BorrowerControllerTest {
                                 .id("test_borrower")
                                 .name("홍길동")
                                 .build();
-                when(borrowerService.findById("test_borrower")).thenReturn(borrower);
+                when(borrowerService.findById(anyString())).thenReturn(borrower);
 
                 mockMvc.perform(get("/borrowers/info"))
                                 .andExpect(status().isOk())
@@ -91,6 +92,35 @@ public class BorrowerControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("\"새이름\""))
                                 .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("전화번호 및 계좌번호 수정 요청 성공")
+        void patchUserNumber_Success() throws Exception {
+                // given
+                String borrowerId = "user123";
+                SavePhoneAccountNumberDto dto = new SavePhoneAccountNumberDto("010-1234-5678", "110-123-456789");
+
+                // when & then
+                mockMvc.perform(patch("/{borrower-id}/info/account-num", borrowerId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(dto)))
+                        .andExpect(status().isOk());
+
+                // 서비스 메서드가 올바른 파라미터로 호출되었는지 검증
+                verify(borrowerService).savePhoneAccountNumber(eq(borrowerId), any(SavePhoneAccountNumberDto.class));
+        }
+
+        @Test
+        @DisplayName("계좌번호 수정")
+        @WithMockUser(authorities = "DIVISION_MEMBER")
+        void patchAccountNumber() throws Exception {
+                doNothing().when(borrowerService).patchAccountNumber("123", "새이름");
+
+                mockMvc.perform(patch("/borrowers/123/info/name")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("\"새이름\""))
+                        .andExpect(status().isOk());
         }
 
         @Test

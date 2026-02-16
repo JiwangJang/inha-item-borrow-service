@@ -118,13 +118,15 @@ public class StudentCouncilFeeVerificationRepository {
      * @param id         사용자 아이디
      * @param verify     승인여부
      * @param denyReason 거절이유(승인으로 고칠경우 null)
-     * @author 장지왕
+     * @author 장지왕 (수정 : 형민재 )
      */
     public void updateForAdmin(String id, boolean verify, String denyReason) {
         LocalDateTime current = LocalDateTime.now();
         String query = """
-                INSERT INTO student_council_fee(verify, deny_reason, response_at) INTO (?, ?, ?)
+                UPDATE student_council_fee
+                SET verify = ?, deny_reason = ?, response_at = ?
                 WHERE id = ?;
+                
                 """;
 
         jdbcTemplate.update(query, verify, denyReason, current, id);
