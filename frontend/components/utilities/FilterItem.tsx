@@ -1,4 +1,4 @@
-export default function ItemFilter({
+export default function FilterItem({
     name,
     isSelect,
     onClick,

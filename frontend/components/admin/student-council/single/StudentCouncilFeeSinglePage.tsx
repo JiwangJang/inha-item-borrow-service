@@ -22,8 +22,6 @@ export default function StudentCouncilFeeSinglePage({ id }: { id: number }) {
     const [promptModalMsg, setPromptModalMsg] = useState("");
     const [promptModalFunc, setPromptModalFunc] = useState<(v: string) => void>(() => {});
 
-    const [denyReason, setDenyReason] = useState("");
-
     const studentCouncilFeeList = useContext(AdminStudentCouncilFeeContext).studentCouncilFeeList;
     const setStudentCouncilFeeList = useContext(AdminStudentCouncilFeeContext).setStudentCouncilFeeList;
     const selected = studentCouncilFeeList.find((fee) => fee.id == id);
@@ -104,11 +102,11 @@ export default function StudentCouncilFeeSinglePage({ id }: { id: number }) {
                 style={{
                     backgroundImage: `url(${selected.s3Link})`,
                 }}
-                onClick={() => window.open(selected.s3Link)}
+                onClick={() => window.open(selected.s3Link!)}
             />
             <div className="mt-3 flex flex-col">
                 <InfoRow label="제출자" value={`${selected.borrowerName} (${selected.borrowerId})}`} />
-                <InfoRow label="제출일시" value={dateFormatter(selected.requestAt)} />
+                <InfoRow label="제출일시" value={dateFormatter(selected.requestAt!)} />
                 <InfoRow label="상태" value={`${selected.verify! ? "승인" : "미승인"}`} />
                 {selected.verify ? null : (
                     <InfoRow

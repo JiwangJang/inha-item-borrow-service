@@ -2,7 +2,6 @@ import AdminItemProvider from "@/components/provider/AdminItemProvider";
 import AdminProvider from "@/components/provider/AdminProvider";
 import AdminRequestProvider from "@/components/provider/AdminRequestProvider";
 import AdminStudentCouncilFeeProvider from "@/components/provider/AdminStudentCouncilFeeProvider";
-import { REQUEST_STATE_TYPE } from "@/types/RequestInterface";
 import checkAdminLogin from "@/utilities/checkAdminLogin";
 import getItems from "@/utilities/getItems";
 import getRequests from "@/utilities/getRequests";
@@ -17,10 +16,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
     }
 
     const itemList = await getItems();
-    const requestList = await getRequests({ state: REQUEST_STATE_TYPE.PENDING });
+    const requestList = await getRequests();
     const studentCouncilList = await getStudentCouncilFees();
-
-    console.log(studentCouncilList);
 
     return (
         <div className="w-full pt-15 pb-16 bg-back min-h-screen common-px">

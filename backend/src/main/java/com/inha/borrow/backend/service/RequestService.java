@@ -96,9 +96,9 @@ public class RequestService {
      */
     public List<Request> findByCondition(User user, String borrowerId, String type, String state) {
         if (user instanceof Borrower) {
-            return requestRepository.findRequestsByCondition(user.getId(), type, state);
+            return requestRepository.findRequestsByCondition(user.getId(), null, type, state);
         } else {
-            return requestRepository.findRequestsByCondition(borrowerId, type, state);
+            return requestRepository.findRequestsByCondition(borrowerId, user.getId(), type, state);
         }
     }
 

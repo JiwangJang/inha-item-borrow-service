@@ -2,10 +2,10 @@
 
 import ItemContext from "@/context/ItemContext";
 import { useContext, useState } from "react";
-import ItemFilter from "./ItemFilter";
 import ItemPart from "./ItemPart";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Filter from "@/components/utilities/Filter";
 
 export default function ItemManagePage() {
     const [selectItem, setSelectItem] = useState("전체");
@@ -33,16 +33,8 @@ export default function ItemManagePage() {
     return (
         <div className="mt-5">
             <p className="black-20px">물품관리</p>
-            <div className="flex gap-1 mt-3 overflow-x-auto flex-nowrap whitespace-nowrap -mx-3 px-3 scroll-px-3 pb-2">
-                <div className="shrink-0">
-                    <ItemFilter name="전체" isSelect={"전체" == selectItem} onClick={itemFilterOnClick} />
-                </div>
-
-                {itemNameList.map((name) => (
-                    <div key={name} className="shrink-0">
-                        <ItemFilter name={name} isSelect={name == selectItem} onClick={itemFilterOnClick} />
-                    </div>
-                ))}
+            <div className="mt-3 overflow-x-auto flex-nowrap whitespace-nowrap -mx-3 px-3 scroll-px-3 pb-2">
+                <Filter curValue={selectItem} labels={["전체"].concat(itemNameList)} onClick={itemFilterOnClick} />
             </div>
             {...itemParts}
             <div className="w-full h-6" />

@@ -89,9 +89,6 @@ export default function BorrowerRequestPage() {
                 type: "BORROW",
             };
 
-            console.log("borrowTime raw:", borrowTime);
-            console.log("borrowAt:", body.borrowAt, new Date(body.borrowAt));
-
             if (new Date(body.borrowAt) < today) {
                 alert("대여일시는 현재 이후여야합니다. ");
                 return;

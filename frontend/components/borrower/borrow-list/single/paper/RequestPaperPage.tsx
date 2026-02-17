@@ -4,6 +4,7 @@ import API_SERVER from "@/apiServer";
 import LoginRequired from "@/components/borrower/LoginRequired";
 import Button from "@/components/utilities/Button";
 import ConfirmModal from "@/components/utilities/modal/ConfirmModal";
+import SameSpaceRow from "@/components/utilities/SameSpaceRow";
 import BorrowerContext from "@/context/BorrowerContext";
 import BorrowRequestContext from "@/context/BorrowRequestContext";
 import ItemContext from "@/context/ItemContext";
@@ -99,12 +100,12 @@ export default function RequestPaperPage({ id }: { id: string }) {
         <div className="bg-white border border-boxBorder rounded-xl mt-5 py-5 px-6">
             <p className="black-24px text-center">물품대여신청서</p>
             <div className="mt-5 regular-16px flex flex-col gap-1">
-                <PaperRow label="이름" value={stName} />
-                <PaperRow label="연락처" value={phoneNumber} />
-                <PaperRow label="학번" value={studentNumber} />
-                <PaperRow label="대여물품" value={itemName} />
-                <PaperRow label="대여일시" value={dateFormatter(borrowAt)} />
-                <PaperRow label="반납일시" value={`${dateFormatter(returnAt)}(예정)`} />
+                <SameSpaceRow label="이름" value={stName} />
+                <SameSpaceRow label="연락처" value={phoneNumber} />
+                <SameSpaceRow label="학번" value={studentNumber} />
+                <SameSpaceRow label="대여물품" value={itemName} />
+                <SameSpaceRow label="대여일시" value={dateFormatter(borrowAt)} />
+                <SameSpaceRow label="반납일시" value={`${dateFormatter(returnAt)}(예정)`} />
             </div>
 
             <div className="mt-4 text-center">
@@ -127,7 +128,6 @@ export default function RequestPaperPage({ id }: { id: string }) {
                             }}
                         ></div>
                     </div>
-
                     <p>{dateFormatter(responseAt!).slice(0, 13)}</p>
                 </div>
             ) : (
@@ -148,26 +148,6 @@ export default function RequestPaperPage({ id }: { id: string }) {
                 onConfirm={cancelRequest}
                 open={confirmModal}
             />
-        </div>
-    );
-}
-
-function PaperRow({ label, value }: { label: string; value: React.ReactNode }) {
-    function splitCharacters(text: string): string[] {
-        // Array.from handles Unicode properly (including Korean characters)
-        return Array.from(text);
-    }
-
-    return (
-        <div className="flex">
-            {/* Stretch the label text so the colon aligns nicely (Korean-friendly) */}
-            <div className="w-15 flex justify-between">
-                {splitCharacters(label).map((s, i) => (
-                    <span key={i}>{s}</span>
-                ))}
-            </div>
-            <span className="mx-1">:</span>
-            <span>{value}</span>
         </div>
     );
 }

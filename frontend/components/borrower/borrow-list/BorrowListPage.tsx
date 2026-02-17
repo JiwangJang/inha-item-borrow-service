@@ -13,7 +13,9 @@ export default function BorrowListPage() {
         return <LoginRequired />;
     }
 
-    const requestList = useContext(BorrowRequestContext).requestList.filter((r) => r.type == REQUEST_TYPE.BORROW);
+    const requestList = useContext(BorrowRequestContext)
+        .requestList.filter((r) => r.type == REQUEST_TYPE.BORROW)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return (
         <div className="my-5">

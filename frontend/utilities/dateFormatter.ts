@@ -7,8 +7,6 @@ export const dateFormatter = (input: string | Date): string => {
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
 
-    console.log(date);
-
     return `${year}. ${month}. ${day}. ${hours}:${minutes}`;
 };
 

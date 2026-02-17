@@ -3,6 +3,7 @@ package com.inha.borrow.backend.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.response.PatchResponseDto;
 import com.inha.borrow.backend.model.dto.response.SaveResponseDto;
@@ -46,6 +47,12 @@ public class ResponseController {
             @AuthenticationPrincipal(expression = "id") String adminId,
             @PathVariable("response-id") String responseId,
             @RequestBody PatchResponseDto dto) {
+
+        if (dto.getRequestState() == RequestState.ASSIGNED || dto.getRequestState() == RequestState.PENDING) {
+            // 새롭게 설정할 상태가 ASSIGNED나 PENDING인 경우 거절
+            return ResponseEntity.badRequest().build();
+        }
+
         responseService.updateResponse(adminId, responseId, dto);
         return ResponseEntity.noContent().build();
     }

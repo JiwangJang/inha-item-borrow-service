@@ -207,7 +207,7 @@ public class RequestRepository {
      * @return
      * @author 형민재(수정 : 장지왕)
      */
-    public List<Request> findRequestsByCondition(String borrowerId, String type, String state) {
+    public List<Request> findRequestsByCondition(String borrowerId, String adminId, String type, String state) {
         StringBuilder sql = new StringBuilder("""
                 SELECT
                         rq.id AS request_id,
@@ -242,6 +242,12 @@ public class RequestRepository {
                     WHERE rq.cancel != true
                 """);
         List<Object> params = new ArrayList<>();
+
+        // 관리자의 경우, 자신이 과거에 응답한 요청까지 조회할 수 있도록 수정
+        if (adminId != null && !adminId.isEmpty()) {
+            sql.append("AND (rq.manager IS NULL OR rq.manager = ?) ");
+            params.add(adminId);
+        }
 
         if (borrowerId != null && !borrowerId.isEmpty()) {
             sql.append("AND rq.borrower_id = ? ");
