@@ -9,18 +9,18 @@ import BorrowerContext from "@/context/BorrowerContext";
 import BorrowRequestContext from "@/context/BorrowRequestContext";
 import ItemContext from "@/context/ItemContext";
 import { ITEM_STATE_TYPE } from "@/types/ItemStateType";
-import { REQUEST_STATE_TYPE } from "@/types/RequestInterface";
+import { REQUEST_STATE_TYPE, REQUEST_TYPE } from "@/types/RequestInterface";
 import { dateFormatter } from "@/utilities/dateFormatter";
 import axios from "axios";
 import { notFound, useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 
-export default function RequestPaperPage({ id }: { id: string }) {
-    const requestList = useContext(BorrowRequestContext).requestList;
+export default function BorrowRequestPaperPage({ requestId }: { requestId: string }) {
+    const { requestList } = useContext(BorrowRequestContext);
     const setRequestList = useContext(BorrowRequestContext).setRequestList;
     const { itemList, setItemList } = useContext(ItemContext);
     const borrowerInfo = useContext(BorrowerContext).borrowerInfo;
-    const current = requestList.find((r) => String(r.id) == id);
+    const current = requestList.filter((rq) => rq.type == REQUEST_TYPE.BORROW).find((r) => String(r.id) == requestId);
 
     const [confirmModal, setConfirmModal] = useState(false);
 
@@ -33,7 +33,7 @@ export default function RequestPaperPage({ id }: { id: string }) {
     }
 
     const { name: stName, phoneNumber, id: studentNumber } = borrowerInfo;
-    const { borrowAt, returnAt, createdAt } = current;
+    const { borrowAt, returnAt, createdAt, state } = current;
     const { name: itemName } = current.item;
     const response = current.response;
     const responseAt = response?.createdAt;
@@ -46,13 +46,13 @@ export default function RequestPaperPage({ id }: { id: string }) {
         }
 
         try {
-            await axios.patch(`${API_SERVER}/requests/${id}/cancel`, null, { withCredentials: true });
+            await axios.patch(`${API_SERVER}/requests/${requestId}/cancel`, null, { withCredentials: true });
 
             if (setRequestList) {
                 // 취소한 요청 표시
                 setRequestList(
                     requestList.map((rq) => {
-                        if (String(rq.id) == id) {
+                        if (String(rq.id) == requestId) {
                             return {
                                 ...rq,
                                 cancel: true,
@@ -93,7 +93,7 @@ export default function RequestPaperPage({ id }: { id: string }) {
             alert("관리자 배정 이전에만 수정이 가능합니다.");
             return;
         }
-        router.push(`/borrow-list/${id}/revise`);
+        router.push(`/borrow-list/${requestId}/revise`);
     };
 
     return (
@@ -103,6 +103,7 @@ export default function RequestPaperPage({ id }: { id: string }) {
                 <SameSpaceRow label="이름" value={stName} />
                 <SameSpaceRow label="연락처" value={phoneNumber} />
                 <SameSpaceRow label="학번" value={studentNumber} />
+                <SameSpaceRow label="요청번호" value={requestId} />
                 <SameSpaceRow label="대여물품" value={itemName} />
                 <SameSpaceRow label="대여일시" value={dateFormatter(borrowAt)} />
                 <SameSpaceRow label="반납일시" value={`${dateFormatter(returnAt)}(예정)`} />
@@ -114,9 +115,9 @@ export default function RequestPaperPage({ id }: { id: string }) {
                 {current.cancel ? <p>취소된 요청입니다.</p> : null}
             </div>
 
-            {responseAt != null ? (
+            {state == REQUEST_STATE_TYPE.PERMIT || state == REQUEST_STATE_TYPE.REJECT ? (
                 <div className="mt-4 pt-4 border-t border-black text-center bold-16px flex flex-col justify-center items-center">
-                    <p>위 사람의 물품대여신청을 허가합니다.</p>
+                    <p>위 사람의 물품대여신청을 {state == REQUEST_STATE_TYPE.PERMIT ? "허가" : "불허가"}합니다.</p>
                     <div className="my-5 relative w-fit">
                         <p className="black-20px">미래융합대학 학생회장</p>
                         <div
@@ -129,8 +130,9 @@ export default function RequestPaperPage({ id }: { id: string }) {
                         ></div>
                     </div>
                     <p>{dateFormatter(responseAt!).slice(0, 13)}</p>
+                    {state == REQUEST_STATE_TYPE.PERMIT ? null : <p>불허가 사유 : {response?.rejectReason}</p>}
                 </div>
-            ) : (
+            ) : state == REQUEST_STATE_TYPE.PENDING ? (
                 <div className="flex gap-1 mt-3">
                     <Button
                         title="취소하기"
@@ -139,6 +141,8 @@ export default function RequestPaperPage({ id }: { id: string }) {
                     />
                     <Button title="수정하기" className="w-full py-2" onClick={goRevisePage} />
                 </div>
+            ) : (
+                <p className="text-center mt-4">담당자 배정 이전에만 수정 또는 취소가 가능합니다.</p>
             )}
 
             <ConfirmModal

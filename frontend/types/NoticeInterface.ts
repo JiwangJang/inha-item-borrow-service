@@ -3,6 +3,6 @@ export default interface NoticeInterface {
     title: string;
     content: string;
     authorId: string;
-    postedAt: Date;
-    updatedAt: Date;
+    postedAt: string;
+    updatedAt: string;
 }

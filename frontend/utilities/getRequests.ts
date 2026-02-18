@@ -24,6 +24,7 @@ export default async function getRequests({
             headers: {
                 cookie,
             },
+            cache: "no-cache",
         });
 
         if (!res.ok) return [];

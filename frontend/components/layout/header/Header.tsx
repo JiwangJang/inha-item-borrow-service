@@ -17,6 +17,14 @@ export default function Header() {
             return "물품정보수정";
         } else if (pathname.startsWith("/admin/to-do")) {
             return "세부사항보기";
+        } else if (pathname.startsWith("/admin/student-council")) {
+            return "학생회비 납부확인";
+        } else if (pathname.startsWith("/admin/to-do/borrow/") || pathname.startsWith("/admin/to-do/return/")) {
+            return "세부사항보기";
+        } else if (pathname.startsWith("/admin/item/")) {
+            return "물품조회";
+        } else if (pathname.startsWith("/admin/borrower/info/")) {
+            return "회원정보조회";
         } else if (pathname.startsWith("/borrow-list/") && pathname.endsWith("/revise")) {
             return "대여신청 수정";
         } else if (pathname.startsWith("/borrow-list/")) {
@@ -31,16 +39,9 @@ export default function Header() {
             return "로그인";
         } else if (pathname.startsWith("/borrower-info/student-council-fee")) {
             return "학생회비 납부";
-        } else if (pathname.startsWith("/admin/student-council")) {
-            return "학생회비 납부확인";
-        } else if (pathname.startsWith("/admin/to-do/borrow/") || pathname.startsWith("/admin/to-do/return/")) {
-            return "세부사항보기";
-        } else if (pathname.startsWith("/admin/item/")) {
-            return "물품조회";
-        } else if (pathname.startsWith("/admin/borrower/info/")) {
-            return "회원정보조회";
+        } else if (pathname.startsWith("/notice")) {
+            return "공지사항조회";
         }
-
         // 기타 페이지는 기본 형태로 표시(HomeHeader)
         return null;
     }, [pathname]);

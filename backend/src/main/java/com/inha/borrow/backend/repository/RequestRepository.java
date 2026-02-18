@@ -283,6 +283,8 @@ public class RequestRepository {
      * @author 형민재
      */
     public void patchRequest(PatchRequestDto patchRequestDto, int requestId, String borrowerId) {
+        // 반납과 대여 요청 구분
+
         String sql = """
                     UPDATE request SET return_at = ?, borrow_at = ? WHERE id = ? AND borrower_id = ?;
                 """;
@@ -400,6 +402,30 @@ public class RequestRepository {
             return jdbcTemplate.queryForObject(sql, (rs, i) -> {
                 return RequestState.valueOf(rs.getString("state"));
             }, id, type.name());
+        } catch (EmptyResultDataAccessException e) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+    }
+
+    /**
+     * 대여 및 반납요청의 상태, 타입, 요청시간을 조회하는 메서드(patchRequest메서드에서 사용)
+     * 
+     * @param id
+     * @param type
+     * @return
+     * @author 장지왕
+     */
+    public Map<String, Object> findRequestStateAndTypeAndBorrowAtById(int id) {
+        try {
+            String sql = "SELECT state, type, borrow_at FROM request WHERE id = ?;";
+            return jdbcTemplate.queryForObject(sql, (rs, i) -> {
+                HashMap<String, Object> result = new HashMap<>();
+                result.put("state", rs.getString("state"));
+                result.put("type", rs.getString("type"));
+                result.put("borrow_at", rs.getTimestamp("borrow_at"));
+                return result;
+            }, id);
         } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());

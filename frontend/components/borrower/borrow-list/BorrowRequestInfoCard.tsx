@@ -86,7 +86,9 @@ export default function RequestInfoCard({
                     <Button
                         title="세부사항보기"
                         className="py-2.5 flex-1  bold-16px"
-                        onClick={() => router.push(`/borrow-list/${requestId}`)}
+                        onClick={() =>
+                            router.push(isBorrowRequest ? `/borrow-list/${requestId}` : `/return-list/${requestId}`)
+                        }
                     />
                 </div>
             ) : (

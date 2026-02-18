@@ -1,15 +1,14 @@
 import NoticeContext from "@/context/NoticeContext";
 import { mockNotices } from "@/mockData/mockNotices";
+import { dateFormatter } from "@/utilities/dateFormatter";
 import Link from "next/link";
 import { useContext } from "react";
 
 export default function NoticeSection() {
-    const notices = useContext(NoticeContext);
+    const { noticeList } = useContext(NoticeContext);
 
-    const sortedNotices = [...mockNotices].sort(
-        (a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime(),
-    );
-    const exposeNotice = sortedNotices.slice(0, 3);
+    noticeList.sort((a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime());
+    const exposeNotice = noticeList.slice(0, 3);
 
     return (
         <div>
@@ -20,7 +19,7 @@ export default function NoticeSection() {
                         <div className="w-full flex-1 px-3 py-2 border-b border-boxBorder last:border-0">
                             <div className="flex justify-between items-end">
                                 <p className="flex-1 bold-16px">{notice.title}</p>
-                                <p className="text-placeholder regular-14px">{notice.updatedAt.toLocaleDateString()}</p>
+                                <p className="text-placeholder regular-14px">{dateFormatter(notice.updatedAt)}</p>
                             </div>
                             <p className="truncate text-elipsis regular-14px mt-1">{notice.content}</p>
                         </div>
@@ -28,7 +27,7 @@ export default function NoticeSection() {
                 ))}
             </div>
             <div className="w-full flex justify-center">
-                <Link href={"/notices"} className="mt-3 bg-black text-white py-0.5 px-4 rounded-full regular-16px">
+                <Link href={"/notice"} className="mt-3 bg-black text-white py-0.5 px-4 rounded-full regular-16px">
                     더보기
                 </Link>
             </div>

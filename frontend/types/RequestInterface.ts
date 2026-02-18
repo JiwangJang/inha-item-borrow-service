@@ -1,6 +1,7 @@
 import Response from "./ResponseInterface";
 
 export default interface RequestInterface {
+    prevRequestId: number | null;
     id: number;
     item: RequestItem;
     manager: RequestManager | null;

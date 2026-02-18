@@ -1,8 +1,8 @@
-import RequestPaperPage from "@/components/borrower/borrow-list/single/paper/RequestPaperPage";
+import BorrowRequestPaperPage from "@/components/borrower/borrow-list/single/paper/BorrowRequestPaperPage";
 import PathParamsInterface from "@/types/PathParamsInterface";
 
 export default async function Page({ params }: PathParamsInterface) {
     const { id } = await params;
 
-    return <RequestPaperPage id={id} />;
+    return <BorrowRequestPaperPage requestId={id} />;
 }

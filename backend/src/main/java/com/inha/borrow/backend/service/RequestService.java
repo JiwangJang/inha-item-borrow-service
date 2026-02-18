@@ -19,6 +19,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +55,23 @@ public class RequestService {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_ALLOWED_COUNCIL_FEE;
             throw new AccessDeniedException(apiErrorCode.name() + ":" + apiErrorCode.getMessage());
         }
+
+        // borrowAt < returnAt
+        if (!saveRequestDto.getBorrowAt().isBefore(saveRequestDto.getReturnAt())) {
+            // 대여요청이든 반납요청이든 동일하게 적용
+            ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
+            throw new InvalidValueException(apiErrorCode.name(), "반납일시는 대여일시보다 이후여야 합니다.");
+        }
+
         if (type == RequestType.BORROW) {
+            OffsetDateTime now = OffsetDateTime.now(ZoneId.of("Asia/Seoul"));
+
+            // 1시간 이후인지
+            if (saveRequestDto.getBorrowAt().isBefore(now.plusHours(1))) {
+                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
+                throw new InvalidValueException(apiErrorCode.name(), "대여일시는 현재 시각보다 한시간 이후여야 합니다.");
+            }
+
             // 대여신청일 경우 대여물품이 실제로 빌릴 수 있는 상태인지 확인
             ItemState itemState = itemService.findItemStateById(itemId);
             if (itemState != ItemState.AFFORD) {
@@ -112,13 +131,47 @@ public class RequestService {
      */
     @Transactional
     public void patchRequest(PatchRequestDto patchRequestDto, int requestId, String borrowerId) {
-        RequestState state = requestRepository.findRequestStateById(requestId);
+        Map<String, Object> result = requestRepository.findRequestStateAndTypeAndBorrowAtById(requestId);
+        RequestState state = RequestState.valueOf((String) result.get("state"));
+        RequestType type = RequestType.valueOf((String) result.get("type"));
+        OffsetDateTime borrowAt = ((Timestamp) result.get("borrow_at")).toInstant().atZone(ZoneId.of("Asia/Seoul"))
+                .toOffsetDateTime();
+        OffsetDateTime now = OffsetDateTime.now();
+
+        // 사용자가 대여요청을 수정한 경우 -> 대여 요청시간이 현재보다 한시간 뒤인지 + 반납요청시간이 대여요청시간 이후인지 확인
+        // 사용자가 반납요청을 수정한 경우 -> 반납 요청시간이 현재시간보다 이후인지.
+
         if (state != RequestState.PENDING) {
             // 관리자에게 배정되기 전까지는 수정가능
             ApiErrorCode apiErrorCode = ApiErrorCode.CAN_NOT_MODIFY_REQUEST;
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
+
+        if (type == RequestType.BORROW) {
+            // 1시간 이후인지
+            if (patchRequestDto.getBorrowAt().isBefore(now.plusHours(1))) {
+                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
+                throw new InvalidValueException(apiErrorCode.name(), "대여일시는 현재 시각보다 한시간 이후여야 합니다.");
+            }
+            if (!patchRequestDto.getBorrowAt().isBefore(patchRequestDto.getReturnAt())) {
+                // 대여요청이든 반납요청이든 동일하게 적용
+                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
+                throw new InvalidValueException(apiErrorCode.name(), "반납일시는 대여일시보다 이후여야 합니다.");
+            }
+        } else {
+            if (!OffsetDateTime.now().isBefore(patchRequestDto.getReturnAt())) {
+                // 반납요청시각이 현재보다 이전이면 거부
+                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
+                throw new InvalidValueException(apiErrorCode.name(), "반납일시는 현재보다 이전일 수 없습니다.");
+            }
+            if (!patchRequestDto.getBorrowAt().isEqual(borrowAt)) {
+                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
+                throw new InvalidValueException(apiErrorCode.name(), "반납요청의 대여시간은 수정할 수 없습니다.");
+            }
+
+        }
         requestRepository.patchRequest(patchRequestDto, requestId, borrowerId);
+
     }
 
     /**

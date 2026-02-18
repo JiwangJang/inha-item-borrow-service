@@ -1,5 +1,5 @@
-import BorrowListPage from "@/components/borrower/borrow-list/BorrowListPage";
+import BorrowRequestListPage from "@/components/borrower/borrow-list/BorrowRequestListPage";
 
 export default function Page() {
-    return <BorrowListPage />;
+    return <BorrowRequestListPage />;
 }

@@ -89,13 +89,20 @@ export default function BorrowerRequestPage() {
                 type: "BORROW",
             };
 
-            if (new Date(body.borrowAt) < today) {
-                alert("대여일시는 현재 이후여야합니다. ");
+            const now = new Date();
+            const minBorrowAt = new Date(now.getTime() + 60 * 60 * 1000); // now + 1 hour
+            const borrowAtDate = new Date(body.borrowAt);
+            const returnAtDate = new Date(body.returnAt);
+
+            if (borrowAtDate < minBorrowAt) {
+                // 대여일시가 현재시각보다 1시간 이전인 경우
+                alert("대여일시는 현재 시각보다 1시간 이후여야합니다.");
                 return;
             }
 
-            if (new Date(body.borrowAt) > new Date(body.returnAt)) {
-                alert("반납일시는 대여일시 이후여야합니다.");
+            if (borrowAtDate > returnAtDate) {
+                // 반납일시가 대여일시보다 늦은 경우
+                alert("반납일시는 대여일시보다 이후여야합니다.");
                 return;
             }
 
@@ -106,6 +113,7 @@ export default function BorrowerRequestPage() {
             const result = res.data.data;
 
             const newRequest: RequestInterface = {
+                prevRequestId: null,
                 id: result.requestId,
                 borrowAt: body.borrowAt,
                 returnAt: body.returnAt,
