@@ -1,7 +1,7 @@
-import AdminRequestContextInterface from "@/types/AdminRequestContextInterface";
+import RequestContextInterface from "@/types/RequestContextInterface";
 import { createContext } from "react";
 
-const AdminRequestContext = createContext<AdminRequestContextInterface>({
+const AdminRequestContext = createContext<RequestContextInterface>({
     requestList: [],
     setRequestList: null,
 });

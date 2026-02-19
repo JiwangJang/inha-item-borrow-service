@@ -44,6 +44,10 @@
         @apply font-pretendard font-normal text-base leading-normal;
     }
 
+    .regular-18px {
+        @apply font-pretendard font-normal text-[18px] leading-normal;
+    }
+
     /* Bold */
     .bold-12px {
         @apply font-pretendard font-bold text-xs leading-normal;

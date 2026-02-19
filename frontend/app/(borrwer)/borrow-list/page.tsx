@@ -1,3 +1,5 @@
+import BorrowRequestListPage from "@/components/borrower/borrow-list/BorrowRequestListPage";
+
 export default function Page() {
-    return <div>대여신청목록페이지</div>;
+    return <BorrowRequestListPage />;
 }

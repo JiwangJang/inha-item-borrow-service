@@ -13,14 +13,18 @@ import org.springframework.stereotype.Repository;
 
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class StudentCouncilFeeVerificationRepository {
     private final JdbcTemplate jdbcTemplate;
 
     private RowMapper<StudentCouncilFeeVerification> rowMapper = (rs, rowNum) -> {
-        String id = rs.getString("id");
+        int id = rs.getInt("student_council_fee_verification_id");
+        String borrowerId = rs.getString("borrower_id");
+        String borrowerName = rs.getString("borrower_name");
         String denyReason = (String) rs.getObject("deny_reason");
         String s3Link = (String) rs.getObject("s3_link");
         Boolean verify = (Boolean) rs.getObject("verify");
@@ -30,6 +34,8 @@ public class StudentCouncilFeeVerificationRepository {
         StudentCouncilFeeVerification result = StudentCouncilFeeVerification
                 .builder()
                 .id(id)
+                .borrowerId(borrowerId)
+                .borrowerName(borrowerName)
                 .denyReason(denyReason)
                 .s3Link(s3Link)
                 .verify(verify)
@@ -46,12 +52,12 @@ public class StudentCouncilFeeVerificationRepository {
      * @param id
      * @author 장지왕
      */
-    public void initialSave(String id) {
+    public void initialSave(String borrowerId) {
         String query = """
-                INSERT INTO student_council_fee(id) VALUE(?); ;
+                INSERT INTO student_council_fee(borrower_id) VALUE(?);
                 """;
 
-        jdbcTemplate.update(query, id);
+        jdbcTemplate.update(query, borrowerId);
     }
 
     /**
@@ -61,7 +67,7 @@ public class StudentCouncilFeeVerificationRepository {
      * @param s3Link 납부인증사진 저장 경로
      * @author 장지왕
      */
-    public void verificationRequestSave(String id, String s3Link) {
+    public void verificationRequestSave(String borrowerId, String s3Link) {
         LocalDateTime current = LocalDateTime.now();
         String query = """
                 UPDATE student_council_fee SET
@@ -70,10 +76,10 @@ public class StudentCouncilFeeVerificationRepository {
                     request_at = ?,
                     response_at = NULL,
                     deny_reason = NULL
-                WHERE id = ?;
+                WHERE borrower_id = ?;
                 """;
 
-        jdbcTemplate.update(query, s3Link, current, id);
+        jdbcTemplate.update(query, s3Link, current, borrowerId);
     }
 
     /**
@@ -85,7 +91,17 @@ public class StudentCouncilFeeVerificationRepository {
     public List<StudentCouncilFeeVerification> findAllRequests() {
         // request_at이 NULL이라는 것은 사용자가 학생회비 납부 인증 신청을 하지 않았음을 의미
         String query = """
-                SELECT * FROM student_council_fee
+                SELECT
+                fee.id AS student_council_fee_verification_id,
+                fee.borrower_id AS borrower_id,
+                b.name AS borrower_name,
+                fee.s3_link,
+                fee.request_at,
+                fee.response_at,
+                fee.deny_reason,
+                fee.verify
+                FROM student_council_fee AS fee
+                    LEFT JOIN borrower AS b ON b.id = fee.borrower_id
                 WHERE request_at IS NOT NULL;
                 """;
         return jdbcTemplate.query(query, rowMapper);
@@ -94,19 +110,31 @@ public class StudentCouncilFeeVerificationRepository {
     /**
      * 관리자나 사용자가 단건조회할 때 사용하는 메서드
      * 
+     * @param id 인증요청 아이디
      * @param id 사용자 아이디
      * @return 인증요청 객체
      * @author 장지왕
      */
-    public StudentCouncilFeeVerification findRequestById(String id) {
+    public StudentCouncilFeeVerification findRequestByBorrowerId(String borrowerId) {
         String query = """
-                SELECT * FROM student_council_fee
-                WHERE id = ?;
+                SELECT
+                fee.id AS student_council_fee_verification_id,
+                fee.borrower_id AS borrower_id,
+                b.name AS borrower_name,
+                fee.s3_link,
+                fee.request_at,
+                fee.response_at,
+                fee.deny_reason,
+                fee.verify
+                FROM student_council_fee AS fee
+                    LEFT JOIN borrower AS b ON b.id = fee.borrower_id
+                WHERE fee.borrower_id = ?;
                 """;
-        try{
-            StudentCouncilFeeVerification studentCouncilFeeVerification = jdbcTemplate.queryForObject(query, rowMapper, id);
+        try {
+            StudentCouncilFeeVerification studentCouncilFeeVerification = jdbcTemplate.queryForObject(query, rowMapper,
+                    borrowerId);
             return studentCouncilFeeVerification;
-        }catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_COUNCIL;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
@@ -120,7 +148,7 @@ public class StudentCouncilFeeVerificationRepository {
      * @param denyReason 거절이유(승인으로 고칠경우 null)
      * @author 장지왕 (수정 : 형민재 )
      */
-    public void updateForAdmin(String id, boolean verify, String denyReason) {
+    public void updateForAdmin(int id, boolean verify, String denyReason) {
         LocalDateTime current = LocalDateTime.now();
         String query = """
                 UPDATE student_council_fee
@@ -138,16 +166,16 @@ public class StudentCouncilFeeVerificationRepository {
      * @param id
      * @author 장지왕
      */
-    public void cancel(String id) {
+    public void cancel(String borrowerId) {
         String query = """
                 UPDATE student_council_fee SET
-                    verify = NULL,
+                    verify = false,
                     s3_link = NULL,
                     request_at = NULL,
                     response_at = NULL,
                     deny_reason = NULL
-                WHERE id = ?;
+                WHERE borrower_id = ?;
                 """;
-        jdbcTemplate.update(query, id);
+        jdbcTemplate.update(query, borrowerId);
     }
 }

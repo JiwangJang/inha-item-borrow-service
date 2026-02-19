@@ -9,8 +9,6 @@ import com.inha.borrow.backend.config.auth.handler.LoginFailureHandler;
 import com.inha.borrow.backend.config.auth.handler.LoginSuccessHandler;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -151,7 +149,7 @@ public class AuthConfig {
 							.requestMatchers(HttpMethod.GET, "/student-council-fee-verification")
 							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
 							// /student-council-fee-verification/permit,dney,modify는 관리자만 접근가능
-							.requestMatchers(HttpMethod.PATCH, "/student-council-fee-verification/*")
+							.requestMatchers(HttpMethod.PATCH, "/student-council-fee-verification/*/**")
 							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
 							//
 							// /borrowers 관련 인증설정

@@ -14,7 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentCouncilFeeVerification {
-    private String id;
+    private int id;
+    private String borrowerId;
+    private String borrowerName;
     private boolean verify;
     private String s3Link;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

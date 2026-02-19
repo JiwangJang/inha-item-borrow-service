@@ -1,8 +1,7 @@
 "use server";
 
 import API_SERVER from "@/apiServer";
-import StudentCouncilFeeInterface from "@/types/StudentCouncilFeeInterface";
-import axios from "axios";
+import StudentCouncilFeeInterface from "@/types/StudentCouncilFeeVerificationInterface";
 import { cookies } from "next/headers";
 
 export default async function getStudentCouncilFees(): Promise<StudentCouncilFeeInterface[]> {

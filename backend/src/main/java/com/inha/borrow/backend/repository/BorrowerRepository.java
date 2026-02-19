@@ -86,7 +86,7 @@ public class BorrowerRepository {
                     v.s3_link,
                     p.version
                 FROM borrower b
-                LEFT JOIN student_council_fee v ON b.id = v.id
+                LEFT JOIN student_council_fee v ON b.id = v.borrower_id
                 LEFT JOIN borrower_privacy_agreement p ON b.id = p.borrower_id;
                 """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -111,20 +111,20 @@ public class BorrowerRepository {
      * @author 형민재
      */
     public CacheBorrowerDto findByIdWithFeeVerification(String borrowerId) {
-        try{
+        try {
             String sql = """
-                SELECT
-                    b.id,
-                    b.name,
-                    b.department,
-                    b.phone_number,
-                    b.account_number,
-                    b.ban,
-                    v.verify,
-                    v.s3_link
-                FROM borrower b
-                LEFT JOIN student_council_fee v ON b.id = v.id WHERE b.id = ?
-                """;
+                    SELECT
+                        b.id,
+                        b.name,
+                        b.department,
+                        b.phone_number,
+                        b.account_number,
+                        b.ban,
+                        v.verify,
+                        v.s3_link
+                    FROM borrower b
+                    LEFT JOIN student_council_fee v ON b.id = v.id WHERE b.id = ?
+                    """;
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
                 return CacheBorrowerDto.builder()
                         .id(rs.getString("id"))
@@ -136,8 +136,8 @@ public class BorrowerRepository {
                         .verify(rs.getBoolean("verify"))
                         .s3Link(rs.getString("s3_link"))
                         .build();
-            },borrowerId);
-        }catch (EmptyResultDataAccessException e){
+            }, borrowerId);
+        } catch (EmptyResultDataAccessException e) {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }

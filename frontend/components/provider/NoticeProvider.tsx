@@ -1,8 +1,9 @@
 "use client";
 
 import NoticeContext from "@/context/NoticeContext";
+import { mockNotices } from "@/mockData/mockNotices";
 import NoticeInterface from "@/types/NoticeInterface";
-import React from "react";
+import React, { useState } from "react";
 
 export default function NoticeProvider({
     initialValue,
@@ -11,5 +12,15 @@ export default function NoticeProvider({
     initialValue: NoticeInterface[];
     children: React.ReactNode;
 }) {
-    return <NoticeContext.Provider value={initialValue}>{children}</NoticeContext.Provider>;
+    const [noticeList, setNoticeList] = useState(mockNotices);
+    return (
+        <NoticeContext.Provider
+            value={{
+                noticeList,
+                setNoticeList,
+            }}
+        >
+            {children}
+        </NoticeContext.Provider>
+    );
 }

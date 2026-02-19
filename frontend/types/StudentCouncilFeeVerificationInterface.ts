@@ -1,8 +1,10 @@
-interface StudentCouncilFeeVerificationInterface {
-    id: string;
-    verify: boolean;
-    s3Link: string;
-    requestAt: string;
-    responseAt: string;
-    denyReason: string;
+export default interface StudentCouncilFeeVerificationInterface {
+    id: number;
+    borrowerId: string;
+    borrowerName: string;
+    verify: boolean | null;
+    s3Link: string | null;
+    requestAt: string | null;
+    responseAt: string | null;
+    denyReason: string | null;
 }

@@ -4,7 +4,6 @@ import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.entity.BorrowerAgreement;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -27,7 +26,7 @@ public class BorrowerAgreementRepository {
         Timestamp agreedAt = rs.getTimestamp("agreed_at");
         String version = rs.getString("version");
 
-        return new BorrowerAgreement(id, borrowerId, agreedAt.toLocalDateTime(),version);
+        return new BorrowerAgreement(id, borrowerId, agreedAt.toLocalDateTime(), version);
     };
 
     /**
@@ -37,7 +36,7 @@ public class BorrowerAgreementRepository {
      * @param version
      * @author 형민재
      */
-    public int saveAgreement(String borrowerId, String version){
+    public int saveAgreement(String borrowerId, String version) {
         String sql = "INSERT INTO borrower_privacy_agreement(borrower_id,version) VALUES(?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -50,13 +49,12 @@ public class BorrowerAgreementRepository {
         return keyHolder.getKey().intValue();
     }
 
-
     /**
      * 개인정보동의를 불러오기 위한 메서드
      *
      * @author 형민재
      */
-    public List<BorrowerAgreement> findAllAgreement(){
+    public List<BorrowerAgreement> findAllAgreement() {
         String sql = "SELECT * FROM borrower_privacy_agreement";
         return jdbcTemplate.query(sql, agreementRowMapper);
     }
@@ -68,9 +66,9 @@ public class BorrowerAgreementRepository {
      * @param version
      * @author 형민재
      */
-    public List<BorrowerAgreement> findbyVersion(String version){
+    public List<BorrowerAgreement> findbyVersion(String version) {
         String sql = "SELECT * FROM borrower_privacy_agreement WHERE version =?";
-        return jdbcTemplate.query(sql, agreementRowMapper,version);
+        return jdbcTemplate.query(sql, agreementRowMapper, version);
     }
 
     /**

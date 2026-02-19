@@ -51,7 +51,8 @@ export default function BorrowerLoginPage() {
             );
             if (borrowerContext.setBorrowerInfo != null) {
                 borrowerContext.setBorrowerInfo(response.data.data);
-                router.push("/");
+                router.replace("/");
+                router.refresh();
             }
         } catch (error) {
             if (!(error instanceof AxiosError)) {

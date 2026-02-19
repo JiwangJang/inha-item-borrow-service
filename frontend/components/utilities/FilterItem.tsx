@@ -1,6 +1,4 @@
-import { MouseEventHandler } from "react";
-
-export default function ItemFilter({
+export default function FilterItem({
     name,
     isSelect,
     onClick,

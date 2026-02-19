@@ -43,8 +43,26 @@ export default function PickerField({
             <input
                 ref={inputRef}
                 type={type}
+                step={type === "time" ? 600 : undefined}
                 value={value}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={
+                    type === "time"
+                        ? (e) => {
+                              const next = e.target.value;
+                              // 10분단위로 선택되도록 설정
+                              if (type === "time" && /^\d{2}:\d{2}$/.test(next)) {
+                                  const [hh, mm] = next.split(":").map(Number);
+                                  const rounded = Math.round(mm / 10) * 10;
+                                  const clamped = Math.min(50, Math.max(0, rounded));
+                                  const normalized = `${String(hh).padStart(2, "0")}:${String(clamped).padStart(2, "0")}`;
+                                  onChange(normalized);
+                                  return;
+                              }
+
+                              onChange(next);
+                          }
+                        : (e) => onChange(e.target.value)
+                }
                 min={min}
                 max={max}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"

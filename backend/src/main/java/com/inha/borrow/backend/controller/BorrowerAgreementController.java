@@ -3,7 +3,7 @@ package com.inha.borrow.backend.controller;
 import com.inha.borrow.backend.model.dto.agreement.AgreementDto;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.entity.BorrowerAgreement;
-import com.inha.borrow.backend.model.entity.user.User;
+import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.BorrowerAgreementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +63,8 @@ public class BorrowerAgreementController {
      * @author 형민재
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<Integer>> saveAgreement(@AuthenticationPrincipal User user,@RequestBody @Valid AgreementDto agreementDto) {
+    public ResponseEntity<ApiResponse<Integer>> saveAgreement(@AuthenticationPrincipal Borrower user,
+            @RequestBody @Valid AgreementDto agreementDto) {
         int result = borrowerAgreementService.saveAgreement(user.getId(), agreementDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, result));
     }

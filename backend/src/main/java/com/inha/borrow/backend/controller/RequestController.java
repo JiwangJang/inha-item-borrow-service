@@ -97,9 +97,9 @@ public class RequestController {
      */
     @GetMapping
     public ResponseEntity<ApiResponse<List<Request>>> findDetailRequest(@AuthenticationPrincipal User user,
-            @RequestParam(value = "borrowerId") String borrowerId,
-            @RequestParam(value = "type") String type,
-            @RequestParam(value = "state") String state) {
+            @RequestParam(value = "borrowerId", required = false) String borrowerId,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "state", required = false) String state) {
         List<Request> result = requestService.findByCondition(user, borrowerId, type, state);
         return ResponseEntity.ok().body(new ApiResponse<>(true, result));
     }

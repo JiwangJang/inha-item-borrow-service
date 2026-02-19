@@ -1,7 +1,7 @@
 "use client";
 
 import AdminStudentCouncilFeeContext from "@/context/AdminStudentCouncilFeeContext";
-import StudentCouncilFeeInterface from "@/types/StudentCouncilFeeInterface";
+import StudentCouncilFeeInterface from "@/types/StudentCouncilFeeVerificationInterface";
 import { useState } from "react";
 
 export default function AdminStudentCouncilFeeProvider({

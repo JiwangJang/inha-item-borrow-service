@@ -5,7 +5,7 @@ import BorrowerInfoInterface from "@/types/BorrowerInfoInterface";
 import { cookies } from "next/headers";
 
 /**
- * 대여자 인증 정보 확인하는 함수
+ * 대여자 인증 정보 확인하는 함수(인증 안돼 있으면 null)
  */
 export default async function checkBorrowLogin(): Promise<BorrowerInfoInterface | null> {
     try {

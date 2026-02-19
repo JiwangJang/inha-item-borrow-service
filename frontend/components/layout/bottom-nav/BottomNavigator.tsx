@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import BottomNavigatorItem, { BottomNavigatorItemSpec } from "./BottomNavigatorItem";
-import { randomInt } from "crypto";
 
 const TOP_LEVEL_ROUTE = [
     // 대여자용 top level
@@ -29,7 +28,7 @@ const BORROWER_BOTTOM_NAVIGATOR_SPECS: BottomNavigatorItemSpec[] = [
         id: 2321,
         title: "대여내역",
         icon: "/document_search.svg",
-        path: "/borrower-list",
+        path: "/borrow-list",
     },
     {
         id: 4341,
@@ -62,7 +61,7 @@ const ADMIN_BOTTOM_NAVIGATOR_SPECS: BottomNavigatorItemSpec[] = [
         id: 8798,
         title: "결과처리",
         icon: "/search_check_2.svg",
-        path: "/admin/return-list",
+        path: "/admin/to-do",
     },
     {
         id: 5828,

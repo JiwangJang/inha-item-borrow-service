@@ -13,6 +13,7 @@ export default async function getItems() {
             headers: {
                 cookie,
             },
+            cache: "no-cache",
         });
 
         if (!res.ok) return [];

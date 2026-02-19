@@ -11,4 +11,6 @@ public class RequestItem {
     private int id;
     private String name;
     private int price;
+    private String location;
+    private String password;
 }

@@ -78,35 +78,37 @@ public class ResponseService {
         return responseRepository.save(dto);
     }
 
+    @Transactional
     public void updateResponse(String adminId, String responseId, PatchResponseDto dto) {
         // 요청객체 조회해서 담당자 맞는지 확인
-        Request request = requestRepository.findManagerAndItemIdById(dto.getRequestId());
-        String rejectReason = dto.getRejectReason();
         int requestId = dto.getRequestId();
+        Request request = requestRepository.findManagerAndItemIdById(requestId);
+
+        String newRejectReason = dto.getRejectReason();
+        RequestState newRequestState = dto.getRequestState();
+
         String manager = request.getManager().getId();
         int itemId = request.getItem().getId();
-        RequestType requestType = request.getType();
-        RequestState requestState = request.getState();
-        boolean isPermit = !StringUtils.hasText(rejectReason);
+        RequestState currenRequestState = request.getState();
 
         if (!adminId.equals(manager)) {
             throw new AccessDeniedException("해당 요청의 담당자만 답변할 수 있습니다.");
         }
 
-        if (requestType == RequestType.BORROW) {
-            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_ALLOWED_RESPONSE_TYPE;
-            throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
-        }
-
-        if (requestState != RequestState.REJECT) {
+        if (currenRequestState == RequestState.ASSIGNED || currenRequestState == RequestState.PENDING) {
+            // 새롭게 설정할 상태가 ASSIGNED나 PENDING인 경우 거절
             ApiErrorCode apiErrorCode = ApiErrorCode.ALREADY_RESPONEDED_REQUEST;
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
 
-        if (isPermit) {
+        if (newRequestState == RequestState.PERMIT) {
             requestRepository.updateRequestState(RequestState.PERMIT, requestId);
             itemRepository.updateState(ItemState.AFFORD, itemId);
-            responseRepository.update(responseId, rejectReason);
+            responseRepository.update(responseId, newRejectReason);
+        } else {
+            requestRepository.updateRequestState(RequestState.REJECT, requestId);
+            itemRepository.updateState(ItemState.REVIEWING, itemId);
+            responseRepository.update(responseId, newRejectReason);
         }
     }
 }

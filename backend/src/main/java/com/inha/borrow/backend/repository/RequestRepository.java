@@ -1,19 +1,13 @@
 package com.inha.borrow.backend.repository;
 
-import com.inha.borrow.backend.enums.ApiErrorCode;
-import com.inha.borrow.backend.enums.RequestState;
-import com.inha.borrow.backend.enums.RequestType;
-import com.inha.borrow.backend.model.dto.item.RequestItem;
-import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
-import com.inha.borrow.backend.model.entity.Response;
-import com.inha.borrow.backend.model.entity.request.Request;
-import com.inha.borrow.backend.model.entity.request.RequestManager;
-import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
-import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
-import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,12 +16,20 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.enums.RequestState;
+import com.inha.borrow.backend.enums.RequestType;
+import com.inha.borrow.backend.model.dto.item.RequestItem;
+import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
+import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
+import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
+import com.inha.borrow.backend.model.entity.Response;
+import com.inha.borrow.backend.model.entity.request.Request;
+import com.inha.borrow.backend.model.entity.request.RequestManager;
+import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 리퀘스트 관련 리포지토리
@@ -44,6 +46,8 @@ public class RequestRepository {
         String rejectReason = rs.getString("reject_reason");
         Timestamp responseCreatedAt = rs.getTimestamp("response_created_at");
 
+        log.info("responseId : {}", responseId);
+
         // manager 관련 값
         String managerId = rs.getString("manager");
         String managerName = rs.getString("manager_name");
@@ -53,6 +57,8 @@ public class RequestRepository {
         int itemId = rs.getInt("item_id");
         int itemPrice = rs.getInt("item_price");
         String itemName = rs.getString("item_name");
+        String itemLocation = rs.getString("item_location");
+        String itemPassword = rs.getString("item_password");
 
         // Request 관련 값
         int requestId = rs.getInt("request_id");
@@ -64,6 +70,13 @@ public class RequestRepository {
         RequestType type = RequestType.valueOf(rs.getString("type"));
         RequestState state = RequestState.valueOf(rs.getString("state"));
         Boolean cancel = rs.getBoolean("cancel");
+
+        // 여기서 response없고 request PERMIT인 경우 비밀번호랑 위치 알려줌 아니면 안알려줌
+
+        if (responseId == 0) {
+            itemLocation = null;
+            itemPassword = null;
+        }
 
         Response response = Response.builder()
                 .id(responseId)
@@ -81,6 +94,8 @@ public class RequestRepository {
                 .id(itemId)
                 .price(itemPrice)
                 .name(itemName)
+                .location(itemLocation)
+                .password(itemPassword)
                 .build();
 
         return Request.builder()
@@ -115,8 +130,8 @@ public class RequestRepository {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, request.getItemId());
             ps.setString(2, request.getBorrowerId());
-            ps.setTimestamp(3, request.getReturnAt());
-            ps.setTimestamp(4, request.getBorrowerAt());
+            ps.setTimestamp(3, Timestamp.from(request.getReturnAt().toInstant()));
+            ps.setTimestamp(4, Timestamp.from(request.getBorrowAt().toInstant()));
             ps.setString(5, request.getType().name());
             return ps;
         }, keyHolder);
@@ -140,6 +155,8 @@ public class RequestRepository {
                         rq.item_id,
                         item.name AS item_name,
                         item.price AS item_price,
+                        item.location AS item_location,
+                        item.password AS item_password,
                         rq.created_at AS request_created_at,
                         rq.borrower_id,
                         borrower.name AS borrower_name,
@@ -190,13 +207,15 @@ public class RequestRepository {
      * @return
      * @author 형민재(수정 : 장지왕)
      */
-    public List<Request> findRequestsByCondition(String borrowerId, String type, String state) {
+    public List<Request> findRequestsByCondition(String borrowerId, String adminId, String type, String state) {
         StringBuilder sql = new StringBuilder("""
                 SELECT
                         rq.id AS request_id,
                         rq.item_id,
                         item.name AS item_name,
                         item.price AS item_price,
+                        item.location AS item_location,
+                        item.password AS item_password,
                         rq.created_at AS request_created_at,
                         rq.borrower_id,
                         borrower.name AS borrower_name,
@@ -223,6 +242,12 @@ public class RequestRepository {
                     WHERE rq.cancel != true
                 """);
         List<Object> params = new ArrayList<>();
+
+        // 관리자의 경우, 자신이 과거에 응답한 요청까지 조회할 수 있도록 수정
+        if (adminId != null && !adminId.isEmpty()) {
+            sql.append("AND (rq.manager IS NULL OR rq.manager = ?) ");
+            params.add(adminId);
+        }
 
         if (borrowerId != null && !borrowerId.isEmpty()) {
             sql.append("AND rq.borrower_id = ? ");
@@ -258,12 +283,14 @@ public class RequestRepository {
      * @author 형민재
      */
     public void patchRequest(PatchRequestDto patchRequestDto, int requestId, String borrowerId) {
+        // 반납과 대여 요청 구분
+
         String sql = """
                     UPDATE request SET return_at = ?, borrow_at = ? WHERE id = ? AND borrower_id = ?;
                 """;
         int result = jdbcTemplate.update(sql,
                 patchRequestDto.getReturnAt(),
-                patchRequestDto.getBorrowerAt(),
+                patchRequestDto.getBorrowAt(),
                 requestId, borrowerId);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
@@ -382,18 +409,55 @@ public class RequestRepository {
     }
 
     /**
-     * 대여요청인지 반납요청인지 확인하는 메서드
+     * 대여 및 반납요청의 상태, 타입, 요청시간을 조회하는 메서드(patchRequest메서드에서 사용)
      * 
      * @param id
+     * @param type
      * @return
      * @author 장지왕
      */
-    public RequestType findRequestTypeById(int id) {
+    public Map<String, Object> findRequestStateAndTypeAndBorrowAtById(int id) {
         try {
-            String sql = "SELECT type FROM request WHERE id = ?;";
+            String sql = "SELECT state, type, borrow_at FROM request WHERE id = ?;";
             return jdbcTemplate.queryForObject(sql, (rs, i) -> {
-                return RequestType.valueOf(rs.getString("type"));
+                HashMap<String, Object> result = new HashMap<>();
+                result.put("state", rs.getString("state"));
+                result.put("type", rs.getString("type"));
+                result.put("borrow_at", rs.getTimestamp("borrow_at"));
+                return result;
             }, id);
+        } catch (EmptyResultDataAccessException e) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
+    }
+
+    /**
+     * 요청의 타입과 요청에 연결된 대여물품을 확인하는 메서드
+     * 
+     * @param id 요청 아이디
+     * @return
+     * @author 장지왕
+     */
+    public Map<String, String> findRequestItemIdAndStateById(int id) {
+        try {
+            String sql = """
+                        SELECT
+                            rq.state AS request_state,
+                            it.id AS item_id
+                        FROM request AS rq
+                        LEFT JOIN item AS it
+                        ON it.id = rq.item_id
+                        WHERE rq.id = ?;
+                    """;
+
+            return jdbcTemplate.queryForObject(sql, (rs, i) -> {
+                Map<String, String> result = new HashMap<>();
+                result.put("item_id", rs.getString("item_id"));
+                result.put("state", rs.getString("request_state"));
+                return result;
+            }, id);
+
         } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());

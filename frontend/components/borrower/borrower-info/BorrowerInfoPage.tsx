@@ -1,16 +1,18 @@
 "use client";
 
 import API_SERVER from "@/apiServer";
+import ConfirmModal from "@/components/utilities/modal/ConfirmModal";
 import BorrowerContext from "@/context/BorrowerContext";
 import AGREEMENT_AGREEMENT_VERSION from "@/utilities/agreementVersion";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 export default function BorrowerInfoPage() {
     const router = useRouter();
     const borrowerContext = useContext(BorrowerContext);
+    const [confirmModal, setConfirmModal] = useState(false);
     const borrowerInfo = borrowerContext.borrowerInfo;
     const className = "px-5 py-4 border-b border-boxBorder last:border-0";
 
@@ -27,20 +29,24 @@ export default function BorrowerInfoPage() {
                 <Link href={"/borrower-info/student-council-fee"} className={className}>
                     등록금 납부 인증
                 </Link>
-                <div
-                    className={className + " cursor-pointer"}
-                    onClick={async () => {
-                        if (borrowerContext.setBorrowerInfo) {
-                            await axios.get(`${API_SERVER}/logout`, { withCredentials: true });
-                            alert("로그아웃이 완료됐습니다.");
-                            borrowerContext.setBorrowerInfo(null);
-                            router.push("/");
-                        }
-                    }}
-                >
+                <div className={className + " cursor-pointer"} onClick={() => setConfirmModal(true)}>
                     로그아웃
                 </div>
             </div>
+            <ConfirmModal
+                open={confirmModal}
+                title="알림"
+                message="로그아웃 하시겠어요?"
+                onClose={() => setConfirmModal(false)}
+                onConfirm={async () => {
+                    if (borrowerContext.setBorrowerInfo) {
+                        await axios.get(`${API_SERVER}/logout`, { withCredentials: true });
+                        alert("로그아웃이 완료됐습니다.");
+                        borrowerContext.setBorrowerInfo(null);
+                        router.push("/");
+                    }
+                }}
+            />
         </div>
     );
 }
