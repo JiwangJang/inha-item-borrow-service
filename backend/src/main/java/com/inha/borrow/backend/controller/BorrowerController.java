@@ -2,6 +2,7 @@ package com.inha.borrow.backend.controller;
 
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
+import com.inha.borrow.backend.model.dto.user.borrower.PatchAccountNumberDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SavePhoneAccountNumberDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
@@ -115,8 +116,8 @@ public class BorrowerController {
      */
     @PatchMapping("/info/account-num")
     public ResponseEntity<Void> patchAccountNumber(@AuthenticationPrincipal(expression = "id") String borrowerId,
-            @Valid @NotBlank @RequestBody String accountNumber) {
-        borrowerService.patchAccountNumber(accountNumber,borrowerId);
+            @Valid @RequestBody PatchAccountNumberDto dto) {
+        borrowerService.patchAccountNumber(dto.getNewAccountNumber(), borrowerId);
         return ResponseEntity.ok().build();
     }
 
@@ -130,8 +131,8 @@ public class BorrowerController {
      */
     @PatchMapping("/info/user-num")
     public ResponseEntity<Void> patchUserNumber(@AuthenticationPrincipal(expression = "id") String borrowerId,
-                                                @Valid @NotBlank @RequestBody SavePhoneAccountNumberDto dto) {
-        borrowerService.savePhoneAccountNumber(borrowerId,dto);
+            @Valid @NotBlank @RequestBody SavePhoneAccountNumberDto dto) {
+        borrowerService.savePhoneAccountNumber(borrowerId, dto);
         return ResponseEntity.ok().build();
     }
 

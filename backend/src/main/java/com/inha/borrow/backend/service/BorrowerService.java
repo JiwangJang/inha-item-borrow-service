@@ -8,7 +8,6 @@ import com.inha.borrow.backend.model.dto.user.borrower.*;
 
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Borrower;
-import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
 import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
@@ -111,7 +110,7 @@ public class BorrowerService {
 
     public Borrower findById(String id) {
         CacheBorrowerDto dto = borrowerCache.getIfPresent(id);
-        if(dto == null) {
+        if (dto == null) {
             dto = cacheScheduledTask.refreshBorrowerCache(id);
         }
         Borrower borrower = Borrower.builder()
@@ -137,7 +136,7 @@ public class BorrowerService {
     }
 
     /**
-     * 대여자의 정보를 수정하는 메서드
+     * 대여자의 이름을 수정하는 메서드
      *
      * @param name
      * @param id
@@ -149,7 +148,7 @@ public class BorrowerService {
     }
 
     /**
-     * 대여자의 정보를 수정하는 메서드
+     * 대여자의 핸드폰 번호를를 수정하는 메서드
      *
      * @param borrowerId
      * @param dto
@@ -162,7 +161,7 @@ public class BorrowerService {
     }
 
     /**
-     * 대여자의 정보를 수정하는 메서드
+     * 대여자의 반환계좌 정보를 수정하는 메서드
      *
      * @param accountNumber
      * @param id
@@ -182,18 +181,18 @@ public class BorrowerService {
      *
      * @author 형민재
      */
-    public void savePhoneAccountNumber(String id, SavePhoneAccountNumberDto dto){
-        StudentCouncilFeeVerification council = studentCouncilFeeVerificationRepository.findRequestById(id);
-        if(council != null && council.isVerify()){
+    public void savePhoneAccountNumber(String id, SavePhoneAccountNumberDto dto) {
+        StudentCouncilFeeVerification council = studentCouncilFeeVerificationRepository.findRequestByBorrowerId(id);
+        if (council != null && council.isVerify()) {
             borrowerRepository.savePhoneAccountNumber(id, dto);
-        }else{
+        } else {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_ALLOWED_COUNCIL_FEE;
             throw new AccessDeniedException(apiErrorCode.name() + ":" + apiErrorCode.getMessage());
         }
     }
 
     /**
-     * 대여자의 정보를 수정하는 메서드
+     * 대여자의 금지 정보를 수정하는 메서드
      *
      * @param ban
      * @param id
@@ -204,7 +203,7 @@ public class BorrowerService {
         deleteCache(id);
     }
 
-    public void deleteCache(String borrowerId){
+    public void deleteCache(String borrowerId) {
         borrowerCache.invalidate(borrowerId);
     }
 }

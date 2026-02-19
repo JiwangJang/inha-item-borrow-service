@@ -7,10 +7,9 @@ import axios from "axios";
 import { useContext, useState } from "react";
 
 export default function MePage() {
-    const borrowerContext = useContext(BorrowerContext);
+    const { borrowerInfo, setBorrowerInfo } = useContext(BorrowerContext);
     const [accountPromptModal, setAccountPromptModal] = useState<boolean>(false);
     const [phoneNumberPromptModal, setPhoneNumberPromptModal] = useState<boolean>(false);
-    const borrowerInfo = borrowerContext.borrowerInfo;
 
     const phoneNumberPromptModalOpen = () => {
         setPhoneNumberPromptModal(true);
@@ -27,6 +26,10 @@ export default function MePage() {
     };
 
     const phoneNumberPromptModalConfirm = async (value: string) => {
+        if (setBorrowerInfo == null) {
+            alert("새로고침 후 다시시도해주세요.");
+            return;
+        }
         // value는 이미 onValueChange로 포맷팅된 상태 (010-1234-5678)
         const phoneDigits = value.replace(/\D/g, "");
         const isValidPhoneNumber = /^01[0-9]\d{7,8}$/.test(phoneDigits);
@@ -43,11 +46,46 @@ export default function MePage() {
         }
 
         try {
-            axios.patch(`${API_SERVER}/borrowers/info/phonenum`, { newPhonenumber: value });
+            await axios.patch(
+                `${API_SERVER}/borrowers/info/phonenum`,
+                { newPhonenumber: value },
+                { withCredentials: true },
+            );
+            setBorrowerInfo({
+                ...borrowerInfo,
+                phoneNumber: value,
+            });
         } catch (error) {
             alert("서버쪽의 에러입니다. 지속될 경우 관리자에게 연락해주세요");
         }
         setPhoneNumberPromptModal(false);
+    };
+
+    const accountNumberPromptModalConfirm = async (value: string) => {
+        if (setBorrowerInfo == null) {
+            alert("새로고침 후 다시시도해주세요.");
+            return;
+        }
+        if (borrowerInfo?.agreementVersion == null) {
+            alert("개인정보 수집동의부터 하시기 바랍니다.");
+            setAccountPromptModal(false);
+            return;
+        }
+
+        try {
+            await axios.patch(
+                `${API_SERVER}/borrowers/info/account-num`,
+                { newAccountNumber: value },
+                { withCredentials: true },
+            );
+            setBorrowerInfo({
+                ...borrowerInfo,
+                accountNumber: value,
+            });
+        } catch (error) {
+            alert("서버쪽의 에러입니다. 지속될 경우 관리자에게 연락해주세요");
+        }
+        setAccountPromptModal(false);
     };
 
     // 전화번호 입력값 포맷팅 함수
@@ -61,20 +99,6 @@ export default function MePage() {
         } else {
             return `${phoneDigits.slice(0, 3)}-${phoneDigits.slice(3, 7)}-${phoneDigits.slice(7, 11)}`;
         }
-    };
-    const accountNumberPromptModalConfirm = async (value: string) => {
-        if (borrowerInfo?.phoneNumber == null) {
-            alert("개인정보 수집동의부터 하시기 바랍니다.");
-            setAccountPromptModal(false);
-            return;
-        }
-
-        try {
-            axios.patch(`${API_SERVER}/borrowers/info/accountNumber`, { newAccountNumber: value });
-        } catch (error) {
-            alert("서버쪽의 에러입니다. 지속될 경우 관리자에게 연락해주세요");
-        }
-        setAccountPromptModal(false);
     };
 
     return (
