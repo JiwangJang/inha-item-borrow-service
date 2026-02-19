@@ -2,19 +2,21 @@ package com.inha.borrow.backend.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.inha.borrow.backend.cache.CacheScheduledTask;
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.Role;
-import com.inha.borrow.backend.model.dto.user.borrower.TempBorrowerInfoDto;
-import com.inha.borrow.backend.model.dto.user.borrower.BorrowerLoginDto;
-import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
-import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
+import com.inha.borrow.backend.model.dto.user.borrower.*;
 
+import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Borrower;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
+import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -35,6 +37,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BorrowerService {
     private final BorrowerRepository borrowerRepository;
+    private final StudentCouncilFeeVerificationRepository studentCouncilFeeVerificationRepository;
     private final Cache<String, CacheBorrowerDto> borrowerCache;
     private final Cache<String, TempBorrowerInfoDto> tempBorrowerCache;
     private final CacheScheduledTask cacheScheduledTask;
@@ -163,11 +166,30 @@ public class BorrowerService {
      *
      * @param accountNumber
      * @param id
+     *
      * @author 형민재
      */
     public void patchAccountNumber(String accountNumber, String id) {
         borrowerRepository.patchAccountNumber(accountNumber, id);
         deleteCache(id);
+    }
+
+    /**
+     * 아이디로 대여자의 전화번호 계좌번호를 저장하는 메서드
+     *
+     * @param dto
+     * @param id
+     *
+     * @author 형민재
+     */
+    public void savePhoneAccountNumber(String id, SavePhoneAccountNumberDto dto){
+        StudentCouncilFeeVerification council = studentCouncilFeeVerificationRepository.findRequestById(id);
+        if(council != null && council.isVerify()){
+            borrowerRepository.savePhoneAccountNumber(id, dto);
+        }else{
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_ALLOWED_COUNCIL_FEE;
+            throw new AccessDeniedException(apiErrorCode.name() + ":" + apiErrorCode.getMessage());
+        }
     }
 
     /**
