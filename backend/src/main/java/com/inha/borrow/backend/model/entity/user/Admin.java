@@ -38,14 +38,12 @@ public class Admin extends User {
      * 
      * @param id          관리자 ID
      * @param password    관리자 비밀번호
-     * @param email       관리자 이메일
      * @param name        관리자 이름
-     * @param phonenumber 관리자 전화번호
      * @param authorities 관리자 권한 목록(무조건 한개 담겨있음)
      */
     public Admin(String id, String password, String email, String name, String phonenumber,
             List<GrantedAuthority> authorities, String divisionCode) {
-        super(id, password, email, name, phonenumber, authorities);
+        super(id, password, name, authorities);
 
         Role role = Role.valueOf(authorities.get(0).getAuthority());
         this.divisionCode = divisionCode;

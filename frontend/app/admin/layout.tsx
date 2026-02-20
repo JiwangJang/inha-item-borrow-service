@@ -1,8 +1,10 @@
 import AdminItemProvider from "@/components/provider/AdminItemProvider";
+import AdminListProvider from "@/components/provider/AdminListProvider";
 import AdminProvider from "@/components/provider/AdminProvider";
 import AdminRequestProvider from "@/components/provider/AdminRequestProvider";
 import AdminStudentCouncilFeeProvider from "@/components/provider/AdminStudentCouncilFeeProvider";
 import checkAdminLogin from "@/utilities/checkAdminLogin";
+import getAdminList from "@/utilities/getAdminList";
 import getItems from "@/utilities/getItems";
 import getRequests from "@/utilities/getRequests";
 import getStudentCouncilFees from "@/utilities/getStudentCouncilFees";
@@ -18,13 +20,16 @@ export default async function Layout({ children }: { children: React.ReactNode }
     const itemList = await getItems();
     const requestList = await getRequests();
     const studentCouncilList = await getStudentCouncilFees();
+    const adminList = await getAdminList();
 
     return (
         <div className="w-full pt-15 pb-16 bg-back min-h-screen common-px">
             <AdminProvider initialValue={adminInfo}>
                 <AdminRequestProvider initialValue={requestList}>
                     <AdminStudentCouncilFeeProvider initialValue={studentCouncilList}>
-                        <AdminItemProvider initialValue={itemList}>{children}</AdminItemProvider>
+                        <AdminItemProvider initialValue={itemList}>
+                            <AdminListProvider initialValue={adminList}>{children}</AdminListProvider>
+                        </AdminItemProvider>
                     </AdminStudentCouncilFeeProvider>
                 </AdminRequestProvider>
             </AdminProvider>

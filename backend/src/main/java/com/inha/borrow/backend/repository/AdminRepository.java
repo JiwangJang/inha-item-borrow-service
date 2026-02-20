@@ -49,9 +49,7 @@ public class AdminRepository {
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
                 String adminId = rs.getString("id");
                 String password = rs.getString("password");
-                String email = rs.getString("email");
                 String name = rs.getString("name");
-                String phonenumber = rs.getString("phonenumber");
                 String position = rs.getString("position");
                 String divisionCode = rs.getString("code");
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(position);
@@ -60,10 +58,9 @@ public class AdminRepository {
                         .builder()
                         .id(adminId)
                         .password(password)
-                        .email(email)
                         .name(name)
-                        .phonenumber(phonenumber)
                         .authorities(authorities)
+                        .position(position)
                         .divisionCode(divisionCode)
                         .build();
                 return admin;
@@ -83,9 +80,7 @@ public class AdminRepository {
         String sql = "SELECT * FROM admin INNER JOIN division ON division.code = admin.division WHERE admin.is_delete = false;";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             String adminId = rs.getString("id");
-            String email = rs.getString("email");
             String name = rs.getString("name");
-            String phonenumber = rs.getString("phonenumber");
             String position = rs.getString("position");
             String divisionCode = rs.getString("code");
             SimpleGrantedAuthority authority = new SimpleGrantedAuthority(position);
@@ -94,10 +89,9 @@ public class AdminRepository {
                     .builder()
                     .id(adminId)
                     .password(null)
-                    .email(email)
                     .name(name)
-                    .phonenumber(phonenumber)
                     .authorities(authorities)
+                    .position(position)
                     .divisionCode(divisionCode)
                     .build();
             return admin;
@@ -111,11 +105,11 @@ public class AdminRepository {
      * @author 장지왕
      */
     public void saveAdmin(SaveAdminDto saveAdminDto) {
-        String sql = "INSERT INTO admin(id, password, email, name, phonenumber, position, division, refresh_token) VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO admin(id, password, name, position, division) VALUES(?, ?, ?, ?, ?);";
         String defaultPassword = passwordEncoder.encode(RAW_DEFAULT_PASSWORD);
         try {
-            jdbcTemplate.update(sql, saveAdminDto.getId(), defaultPassword, saveAdminDto.getEmail(),
-                    saveAdminDto.getName(), saveAdminDto.getPhonenumber(), saveAdminDto.getPosition().name(),
+            jdbcTemplate.update(sql, saveAdminDto.getId(), defaultPassword,
+                    saveAdminDto.getName(), saveAdminDto.getPosition().name(),
                     saveAdminDto.getDivision());
         } catch (DataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.EXIST_ID; // 에러코드 EXIST_ID로 수정

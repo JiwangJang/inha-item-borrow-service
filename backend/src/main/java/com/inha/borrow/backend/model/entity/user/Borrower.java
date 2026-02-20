@@ -32,6 +32,7 @@ public class Borrower extends User {
     private String accountNumber;
 
     private String department;
+    private String phonenumber;
 
     /**
      * 대여자 객체를 생성
@@ -46,11 +47,12 @@ public class Borrower extends User {
      * @param accountNumber 대여자 보증금 반환 계좌
      */
     public Borrower(String id, String name, String phonenumber,
-            List<GrantedAuthority> authorities, boolean ban,String accountNumber,String department) {
-        super(id,name, phonenumber, authorities);
+            List<GrantedAuthority> authorities, boolean ban, String accountNumber, String department) {
+        super(id, name, authorities);
+        this.phonenumber = phonenumber;
         this.ban = ban;
         this.accountNumber = accountNumber;
-        this.department =department;
+        this.department = department;
     }
 
 }

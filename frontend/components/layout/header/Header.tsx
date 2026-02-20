@@ -23,7 +23,9 @@ export default function Header() {
             return "세부사항보기";
         } else if (pathname.startsWith("/admin/item/")) {
             return "물품조회";
-        } else if (pathname.startsWith("/admin/borrower/info/")) {
+        } else if (pathname == "/admin/users/managers/new") {
+            return "신규관리자등록";
+        } else if (pathname.startsWith("/admin/users/")) {
             return "회원정보조회";
         } else if (pathname.startsWith("/borrow-list/") && pathname.endsWith("/revise")) {
             return "대여신청 수정";

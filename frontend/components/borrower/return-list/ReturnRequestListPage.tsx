@@ -18,19 +18,21 @@ export default function ReturnRequestListPage() {
                 {returnRequestList.length == 0 ? (
                     <p>반납신청 내역이 없습니다.</p>
                 ) : (
-                    returnRequestList.map((rq) => (
-                        <RequestInfoCard
-                            key={rq.id}
-                            requestId={rq.id}
-                            borrowAt={rq.borrowAt}
-                            cancel={rq.cancel}
-                            itemName={rq.item.name}
-                            requestAt={rq.createdAt}
-                            retrunAt={rq.returnAt}
-                            state={rq.state}
-                            type={rq.type}
-                        />
-                    ))
+                    <div className="flex flex-col gap-1">
+                        {returnRequestList.map((rq) => (
+                            <RequestInfoCard
+                                key={rq.id}
+                                requestId={rq.id}
+                                borrowAt={rq.borrowAt}
+                                cancel={rq.cancel}
+                                itemName={rq.item.name}
+                                requestAt={rq.createdAt}
+                                retrunAt={rq.returnAt}
+                                state={rq.state}
+                                type={rq.type}
+                            />
+                        ))}
+                    </div>
                 )}
             </div>
         </div>
