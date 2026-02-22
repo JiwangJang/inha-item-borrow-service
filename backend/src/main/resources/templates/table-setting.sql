@@ -44,7 +44,9 @@ CREATE TABLE borrower(
     name varchar(10) NOT NULL,
     phone_number char(13) NOT NULL,
     account_number varchar(20) NOT NULL,
-    ban boolean default false
+    ban boolean default false,
+    department varchar(50) NOT NULL,
+    ban_reason TEXT
 );
 
 CREATE TABLE student_council_fee(

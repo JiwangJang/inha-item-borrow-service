@@ -162,6 +162,9 @@ public class AuthConfig {
 							// /borrowers/{borrower-id} 아래경로는 국원 이상만 접근 가능하다
 							.requestMatchers("/borrowers/*/info/**")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
+							// /borrowers/search 경로는 국원 이상만 접근 가능하다
+							.requestMatchers("/borrowers/search")
+							.hasAuthority(Role.DIVISION_MEMBER.name())
 							//
 							// /items 관련 인증설정
 							// /items 이하 경로에 대한 GET요청은 모든유저가 가능하다. 단, 사용자의 권한에 따라 볼 수 있는 정보가 제한된다.

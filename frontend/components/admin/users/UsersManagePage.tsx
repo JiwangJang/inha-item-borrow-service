@@ -30,7 +30,7 @@ export default function UsersManagePage() {
                 </div>
                 <div
                     className="bg-white border border-boxBorder flex-1 rounded-xl py-5 px-4 flex flex-col justify-center items-center cursor-pointer"
-                    onClick={() => () => router.push("/admin/users/borrowers")}
+                    onClick={() => router.push("/admin/users/borrowers")}
                 >
                     <div className="relative w-full flex-1">
                         <Image src={"/images/student.png"} alt="이미지" objectFit="contain" fill />
@@ -38,7 +38,16 @@ export default function UsersManagePage() {
                     <p className="bold-18px mt-1">대여자 관리</p>
                 </div>
             </div>
-            <Button className="w-full py-2" title="내정보보기" />
+            <Button
+                className="w-full py-2"
+                title="내정보보기"
+                onClick={() => router.push("/admin/users/managers/me")}
+            />
+            <Button
+                className="mt-2 w-full py-2 bg-blue-400!"
+                title="부서관리"
+                onClick={() => router.push("/admin/division")}
+            />
         </div>
     );
 }

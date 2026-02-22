@@ -22,11 +22,11 @@ export default async function RootLayout({
 
     return (
         <html lang="ko">
-            <body className="bg-slate-950 max-w-125 h-screen my-0 mx-auto relative flex flex-col overflow-hidden">
+            <body className="bg-slate-950 max-w-125 min-h-dvh my-0 mx-auto relative flex flex-col">
                 <Header />
                 <NoticeProvider initialValue={noticeProviderInitialValue}>
                     <DivisionProvider initialValue={divisionList}>
-                        <div className="flex-1 overflow-y-auto">{children}</div>
+                        <div className="flex-1">{children}</div>
                     </DivisionProvider>
                 </NoticeProvider>
                 <BottomNavigator />

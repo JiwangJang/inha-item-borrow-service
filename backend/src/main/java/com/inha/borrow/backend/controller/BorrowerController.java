@@ -1,5 +1,6 @@
 package com.inha.borrow.backend.controller;
 
+import com.inha.borrow.backend.enums.SearchType;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchAccountNumberDto;
@@ -43,6 +44,19 @@ public class BorrowerController {
     public ResponseEntity<ApiResponse<List<Borrower>>> findAllBorrower() {
         List<Borrower> borrower = borrowerService.findAll();
         return ResponseEntity.ok(new ApiResponse<>(true, borrower));
+    }
+
+    /**
+     * 대여자 검색하는 거
+     * 
+     * @return 200 요청 성공
+     * @author 형민재
+     */
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<CacheBorrowerDto>>> searchBorrower(@RequestParam("keyword") String keyword,
+            @RequestParam("searchType") String searchType) {
+        List<CacheBorrowerDto> result = borrowerService.searchBorrower(keyword, SearchType.valueOf(searchType));
+        return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
     /**

@@ -23,6 +23,10 @@ export default function Header() {
             return "세부사항보기";
         } else if (pathname.startsWith("/admin/item/")) {
             return "물품조회";
+        } else if (pathname == "/admin/division") {
+            return "부서관리";
+        } else if (pathname == "/admin/division/new") {
+            return "부서추가";
         } else if (pathname == "/admin/users/managers/new") {
             return "신규관리자등록";
         } else if (pathname.startsWith("/admin/users/")) {
@@ -49,7 +53,7 @@ export default function Header() {
     }, [pathname]);
 
     return (
-        <header className="absolute w-full common-px bg-white h-15 border border-b border-boxBorder flex items-center z-1">
+        <header className="fixed max-w-125 w-full common-px bg-white h-15 border border-b border-boxBorder flex items-center z-1">
             {spec == null ? <HomeHeader /> : <NoHomeHeader title={spec} />}
         </header>
     );

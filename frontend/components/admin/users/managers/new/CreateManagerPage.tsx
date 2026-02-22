@@ -22,7 +22,7 @@ export default function CreateManagerPage() {
 
     const router = useRouter();
 
-    const divisionList = useContext(DivisionContext);
+    const { divisionList } = useContext(DivisionContext)!;
     const positoinList = [
         {
             code: ADMIN_POSITION_TYPE.VICE_PRESIDENT,

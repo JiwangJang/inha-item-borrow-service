@@ -1,6 +1,9 @@
-import DivisionInterface from "@/types/DivisionInterface";
+import DivisionContextInterface from "@/types/DivisionContextInterface";
 import { createContext } from "react";
 
-const DivisionContext = createContext<DivisionInterface[]>([]);
+const DivisionContext = createContext<DivisionContextInterface>({
+    divisionList: [],
+    setDivisionList: null,
+});
 
 export default DivisionContext;

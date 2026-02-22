@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 
 export default function ManagerCard({ adminInfo }: { adminInfo: AdminInfoInterface }) {
-    const divisionList = useContext(DivisionContext);
+    const { divisionList } = useContext(DivisionContext);
     const [viewDetailButton, setViewDetailButton] = useState(false);
     const router = useRouter();
 

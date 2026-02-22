@@ -3,6 +3,8 @@ import AdminListProvider from "@/components/provider/AdminListProvider";
 import AdminProvider from "@/components/provider/AdminProvider";
 import AdminRequestProvider from "@/components/provider/AdminRequestProvider";
 import AdminStudentCouncilFeeProvider from "@/components/provider/AdminStudentCouncilFeeProvider";
+import SearchedBorrowersProvider from "@/components/provider/SearchedBorrowersProvider";
+import mockBorrowers from "@/mockData/mockBorrowers";
 import checkAdminLogin from "@/utilities/checkAdminLogin";
 import getAdminList from "@/utilities/getAdminList";
 import getItems from "@/utilities/getItems";
@@ -28,7 +30,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
                 <AdminRequestProvider initialValue={requestList}>
                     <AdminStudentCouncilFeeProvider initialValue={studentCouncilList}>
                         <AdminItemProvider initialValue={itemList}>
-                            <AdminListProvider initialValue={adminList}>{children}</AdminListProvider>
+                            <AdminListProvider initialValue={adminList}>
+                                <SearchedBorrowersProvider>{children}</SearchedBorrowersProvider>
+                            </AdminListProvider>
                         </AdminItemProvider>
                     </AdminStudentCouncilFeeProvider>
                 </AdminRequestProvider>

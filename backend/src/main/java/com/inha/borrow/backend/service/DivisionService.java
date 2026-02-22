@@ -27,8 +27,8 @@ public class DivisionService {
         divisionRepository.updateDivision(divisionDto);
     }
 
-    public void deleteDivision(DivisionDto divisionDto) {
-        divisionRepository.deleteDivision(divisionDto);
+    public void deleteDivision(String divisionCode) {
+        divisionRepository.deleteDivision(divisionCode);
     }
 
 }

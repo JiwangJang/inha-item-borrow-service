@@ -2,6 +2,7 @@
 
 import DivisionContext from "@/context/DivisionContext";
 import DivisionInterface from "@/types/DivisionInterface";
+import { useRef, useState } from "react";
 
 export default function DivisionProvider({
     initialValue,
@@ -10,5 +11,6 @@ export default function DivisionProvider({
     initialValue: DivisionInterface[];
     children: React.ReactNode;
 }) {
-    return <DivisionContext.Provider value={initialValue}>{children}</DivisionContext.Provider>;
+    const [divisionList, setDivisionList] = useState(initialValue);
+    return <DivisionContext.Provider value={{ divisionList, setDivisionList }}>{children}</DivisionContext.Provider>;
 }

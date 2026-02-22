@@ -83,7 +83,7 @@ export default function BottomNavigator() {
 
     if (TOP_LEVEL_ROUTE.includes(pathname))
         return (
-            <div className="absolute bottom-0 h-16 w-full flex ">
+            <div className="fixed max-w-125 bottom-0 h-16 w-full flex ">
                 {isAdminPage
                     ? ADMIN_BOTTOM_NAVIGATOR_SPECS.map((spec) => (
                           <BottomNavigatorItem currentPath={pathname} spec={spec} key={spec.id} />
