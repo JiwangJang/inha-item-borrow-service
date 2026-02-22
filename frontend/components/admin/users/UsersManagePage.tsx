@@ -43,11 +43,13 @@ export default function UsersManagePage() {
                 title="내정보보기"
                 onClick={() => router.push("/admin/users/managers/me")}
             />
-            <Button
-                className="mt-2 w-full py-2 bg-blue-400!"
-                title="부서관리"
-                onClick={() => router.push("/admin/division")}
-            />
+            {adminInfo?.position == ADMIN_POSITION_TYPE.PRESIDENT ? (
+                <Button
+                    className="mt-2 w-full py-2 bg-blue-400!"
+                    title="부서관리"
+                    onClick={() => router.push("/admin/division")}
+                />
+            ) : null}
         </div>
     );
 }
