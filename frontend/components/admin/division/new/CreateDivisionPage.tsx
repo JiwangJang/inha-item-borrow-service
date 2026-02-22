@@ -8,7 +8,7 @@ import axios from "axios";
 import { useContext, useRef } from "react";
 
 export default function CreateDivisionPage() {
-    const { divisionRef } = useContext(DivisionContext)!;
+    const { setDivisionList } = useContext(DivisionContext)!;
     const nameRef = useRef<HTMLInputElement>(null);
     const codeRef = useRef<HTMLInputElement>(null);
 
@@ -20,6 +20,9 @@ export default function CreateDivisionPage() {
     };
 
     const register = async () => {
+        if (setDivisionList == null) {
+            return;
+        }
         const name = nameRef.current?.value ?? "";
         const code = codeRef.current?.value ?? "";
 
@@ -47,10 +50,12 @@ export default function CreateDivisionPage() {
 
             if (nameRef.current) nameRef.current.value = "";
             if (codeRef.current) codeRef.current.value = "";
-            divisionRef.current.push({
-                code,
-                name: name.trim(),
-            });
+            setDivisionList((prev) =>
+                prev.concat({
+                    code,
+                    name: name.trim(),
+                }),
+            );
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 alert(error.response?.data?.message ?? "부서 등록 중 오류가 발생했습니다.");
