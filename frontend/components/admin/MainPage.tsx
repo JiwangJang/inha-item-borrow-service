@@ -9,6 +9,7 @@ import { useContext } from "react";
 import SimpleTable from "./main/SimpleTable";
 import Button from "../utilities/Button";
 import { useRouter } from "next/navigation";
+import AdminNoticeSection from "./main/AdminNoticeSection";
 
 interface TableContent {
     borrowedCount: number;
@@ -55,7 +56,10 @@ export default function MainPage() {
     });
 
     return (
-        <div className="mt-5">
+        <div className="mt-5 mb-3">
+            <div className="mt-5">
+                <AdminNoticeSection />
+            </div>
             <div>
                 <p className="black-20px mb-2">✅ 대여현황</p>
                 <SimpleTable

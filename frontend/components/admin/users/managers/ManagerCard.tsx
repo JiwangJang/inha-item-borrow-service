@@ -15,7 +15,6 @@ export default function ManagerCard({ adminInfo }: { adminInfo: AdminInfoInterfa
     const router = useRouter();
 
     const division = divisionList.find(({ code }) => code == adminInfo.divisionCode);
-    console.log(divisionList);
 
     return (
         <div

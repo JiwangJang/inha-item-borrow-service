@@ -4,8 +4,14 @@ import BorrowRequestContext from "@/context/BorrowRequestContext";
 import { REQUEST_TYPE } from "@/types/RequestInterface";
 import { useContext } from "react";
 import RequestInfoCard from "../borrow-list/BorrowRequestInfoCard";
+import BorrowerContext from "@/context/BorrowerContext";
+import LoginRequired from "../LoginRequired";
 
 export default function ReturnRequestListPage() {
+    const borrowerInfo = useContext(BorrowerContext).borrowerInfo;
+    if (borrowerInfo == null) {
+        return <LoginRequired />;
+    }
     const { requestList } = useContext(BorrowRequestContext);
     const returnRequestList = requestList
         .filter((rq) => rq.type == REQUEST_TYPE.RETURN)

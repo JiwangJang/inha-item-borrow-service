@@ -3,7 +3,7 @@ import { dateFormatter } from "@/utilities/dateFormatter";
 import Link from "next/link";
 import { useContext } from "react";
 
-export default function NoticeSection() {
+export default function AdminNoticeSection() {
     const { noticeList } = useContext(NoticeContext);
 
     noticeList.sort((a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime());
@@ -26,7 +26,7 @@ export default function NoticeSection() {
                 ))}
             </div>
             <div className="w-full flex justify-center">
-                <Link href={"/notice"} className="mt-3 bg-black text-white py-0.5 px-4 rounded-full regular-16px">
+                <Link href={"/admin/notice"} className="mt-3 bg-black text-white py-0.5 px-4 rounded-full regular-16px">
                     더보기
                 </Link>
             </div>

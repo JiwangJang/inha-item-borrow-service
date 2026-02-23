@@ -31,6 +31,8 @@ export default function Header() {
             return "신규관리자등록";
         } else if (pathname.startsWith("/admin/users/")) {
             return "회원정보조회";
+        } else if (pathname.startsWith("/admin/notice")) {
+            return "공지사항관리";
         } else if (pathname.startsWith("/borrow-list/") && pathname.endsWith("/revise")) {
             return "대여신청 수정";
         } else if (pathname.startsWith("/borrow-list/")) {

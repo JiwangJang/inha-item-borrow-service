@@ -30,8 +30,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class NoticeController {
     private final NoticeService service;
 
-    @GetMapping("{id}")
-    public ResponseEntity<ApiResponse<Notice>> findNoticeById(@PathVariable String id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<Notice>> findNoticeById(@PathVariable("id") String id) {
         Notice notice = service.findNoticeById(Integer.parseInt(id));
         ApiResponse<Notice> result = new ApiResponse<Notice>(true, notice);
         return ResponseEntity.ok(result);
@@ -53,10 +53,10 @@ public class NoticeController {
         return ResponseEntity.status(201).body(response);
     }
 
-    @PatchMapping("{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Void> modifyNotice(
             @AuthenticationPrincipal Admin admin,
-            @PathVariable String id,
+            @PathVariable("id") String id,
             @RequestBody ModifyNoticeDto dto) {
         dto.setId(Integer.parseInt(id));
         service.modifyNotice(admin.getId(), dto);
@@ -65,7 +65,7 @@ public class NoticeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNotice(
-            @PathVariable String id) {
+            @PathVariable("id") String id) {
         int noticeId = Integer.parseInt(id);
         service.deleteNotice(noticeId);
         return ResponseEntity.noContent().build();
