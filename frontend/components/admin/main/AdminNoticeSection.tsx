@@ -12,7 +12,7 @@ export default function AdminNoticeSection() {
     return (
         <div>
             <p className="black-20px">🔔 공지사항</p>
-            <div className="w-full mt-3 flex flex-col bg-white border-boxBorder border rounded overflow-hidden">
+            <div className="w-full mt-3 flex flex-col bg-white border-boxBorder border rounded overflow-hidden divide-y divide-boxBorder">
                 {exposeNotice.map((notice, i) => (
                     <Link href={`/notice/${notice.id}`} key={i}>
                         <div className="w-full flex-1 px-3 py-2 border-b border-boxBorder last:border-0">

@@ -16,8 +16,8 @@ export default function Footer() {
                 {/* 구글 드라이브 링크 걸기 */}
                 <Link href={""} className="underline">
                     개인정보처리방침 세부내역
-                </Link>
-                <br />
+                </Link>{" "}
+                |{" "}
                 <Link href={"/admin"} className="underline">
                     관리자페이지
                 </Link>

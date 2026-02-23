@@ -21,6 +21,10 @@ export default function SingleReturnRequestPage({ requestId }: { requestId: stri
         notFound();
     }
 
+    const previousRequest = requestList.find(
+        (rq) => rq.type == REQUEST_TYPE.BORROW && rq.borrowAt == currentRequest.borrowAt,
+    )!;
+
     const { item, borrowAt, returnAt, state, manager } = currentRequest;
     const { name: itemName } = item;
 
@@ -54,6 +58,11 @@ export default function SingleReturnRequestPage({ requestId }: { requestId: stri
                 className="mt-4 w-full py-3 bold-16px"
                 title="반납확인서 확인"
                 onClick={() => router.push(`/return-list/${requestId}/paper`)}
+            />
+            <Button
+                className="mt-2 w-full py-3 bold-16px bg-white! text-black! border border-black "
+                title="이전 대여요청 확인"
+                onClick={() => router.push(`/borrow-list/${previousRequest.id}`)}
             />
         </div>
     );
