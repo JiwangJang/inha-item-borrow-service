@@ -4,13 +4,20 @@ import { useRouter } from "next/navigation";
 import Button from "../utilities/Button";
 import ItemSection from "./borrower-home-page/ItemSection";
 import NoticeSection from "./borrower-home-page/NoticeSection";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import BorrowerContext from "@/context/BorrowerContext";
+import ConfirmModal from "../utilities/modal/ConfirmModal";
 
 export default function BorrowerHomePage() {
     const { borrowerInfo } = useContext(BorrowerContext);
+    const [confirmModal, setConfirmModal] = useState(false);
     const router = useRouter();
 
+    useEffect(() => {
+        if (borrowerInfo?.id != null && borrowerInfo?.agreementVersion == null) {
+            setConfirmModal(true);
+        }
+    }, []);
     return (
         <div className="mt-5 relative">
             <NoticeSection />
@@ -25,6 +32,13 @@ export default function BorrowerHomePage() {
                     }}
                 />
             </div>
+            <ConfirmModal
+                title="알림"
+                message="개인정보 수집동의를 하셔야 대여신청이 가능합니다. 수집동의하러 가시겠습니까?"
+                onClose={() => setConfirmModal(false)}
+                onConfirm={() => router.push("/borrower-info/agreement/v1")}
+                open={confirmModal}
+            />
         </div>
     );
 }

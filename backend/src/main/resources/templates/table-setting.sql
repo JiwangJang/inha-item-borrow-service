@@ -57,7 +57,6 @@ CREATE TABLE student_council_fee(
     request_at datetime ON UPDATE CURRENT_TIMESTAMP,
     response_at datetime,
     deny_reason varchar(50),
-    -- 소문자로 수정함
     verify boolean DEFAULT false
 );
 

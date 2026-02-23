@@ -17,8 +17,8 @@ import LoginRequired from "../LoginRequired";
 import { useRouter } from "next/navigation";
 
 export default function BorrowerRequestPage() {
-    const borrowInfo = useContext(BorrowerContext).borrowerInfo;
-    if (borrowInfo == null) {
+    const borrowerInfo = useContext(BorrowerContext).borrowerInfo;
+    if (borrowerInfo == null) {
         return <LoginRequired />;
     }
 
@@ -81,6 +81,10 @@ export default function BorrowerRequestPage() {
             alert(`현재 빌릴 수 있는 ${item}이 없습니다.`);
             return;
         }
+        if (!borrowerInfo.verify) {
+            alert("학생회비 납부인증이 완료되지 않았습니다.");
+            return;
+        }
         try {
             const body = {
                 itemId: selectedItem.id,
@@ -118,8 +122,8 @@ export default function BorrowerRequestPage() {
                 borrowAt: body.borrowAt,
                 returnAt: body.returnAt,
                 createdAt: result.createdAt,
-                borrowerId: borrowInfo.id,
-                borrowerName: borrowInfo.name,
+                borrowerId: borrowerInfo.id,
+                borrowerName: borrowerInfo.name,
                 item: {
                     id: selectedItem.id,
                     name: selectedItem.name,

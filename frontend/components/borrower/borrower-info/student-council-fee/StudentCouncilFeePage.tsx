@@ -10,22 +10,44 @@ import ConfirmModal from "@/components/utilities/modal/ConfirmModal";
 import axios, { AxiosError } from "axios";
 import API_SERVER from "@/apiServer";
 import errorHandler from "@/utilities/errorHandler";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function StudentCouncilFeePage({
     verification,
 }: {
-    verification: StudentCouncilFeeVerificationInterface;
+    verification: StudentCouncilFeeVerificationInterface | null;
 }) {
-    const [verifi, setVerifi] = useState<StudentCouncilFeeVerificationInterface>(verification);
+    const router = useRouter();
+    const [verifi, setVerifi] = useState<StudentCouncilFeeVerificationInterface | null>(verification);
     const borrowerContext = useContext(BorrowerContext);
     const borrowerInfo = borrowerContext.borrowerInfo;
     const [confirmModal, setConfirmModal] = useState(false);
+
+    if (verification == null && borrowerInfo?.agreementVersion == null) {
+        return (
+            <div className="mt-5">
+                <div>
+                    <p className="black-20px mb-1">✅ 학생회비 납부여부 확인</p>
+                    <p>개인정보 처리방침에 동의하셔야 학생회비 납부인증 신청이 가능합니다.</p>
+                </div>
+                <div className="w-full relative h-90 my-4 border border-boxBorder rounded-xl overflow-hidden">
+                    <Image src={"/images/need-agreement.png"} fill objectFit="cover" alt="개인정보 동의사진" />
+                </div>
+                <Button
+                    className="w-full py-3 bold-18px"
+                    title="개인정보 수집동의 하러가기"
+                    onClick={() => router.push("/borrower-info/agreement/v1")}
+                />
+            </div>
+        );
+    }
 
     const cancelFunc = async () => {
         try {
             await axios.delete(`${API_SERVER}/student-council-fee-verification`, { withCredentials: true });
             setVerifi({
-                ...verifi,
+                ...verifi!,
                 verify: false,
                 s3Link: null,
                 requestAt: null,
@@ -48,16 +70,19 @@ export default function StudentCouncilFeePage({
             ) : (
                 <FeeVerificationStatus verification={verifi} name={borrowerInfo?.name} />
             )}
-            <Button
-                title="제출 취소하기"
-                className="w-full py-3 mt-2 bg-red-400!"
-                onClick={() => {
-                    if (verifi?.requestAt == null) return;
-                    setConfirmModal(true);
-                }}
-            />
+            {verifi?.verify ? null : (
+                <Button
+                    title="제출 취소하기"
+                    className="w-full py-3 mt-2 bg-red-400!"
+                    onClick={() => {
+                        if (verifi?.requestAt == null) return;
+                        setConfirmModal(true);
+                    }}
+                />
+            )}
+
             <ConfirmModal
-                message="취소하시면 더이상 물품대여가 불가능합니다. 그래도 하시겠습니까?"
+                message="취소하시면 다시 신청하셔야 합니다. 그래도 하시겠습니까?"
                 onClose={() => setConfirmModal(false)}
                 onConfirm={cancelFunc}
                 open={confirmModal}
