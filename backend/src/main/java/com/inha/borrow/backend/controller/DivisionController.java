@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.division.DivisionDto;
@@ -47,8 +48,8 @@ public class DivisionController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteDivision(@RequestBody @Valid DivisionDto divisionDto) {
-        divisionService.deleteDivision(divisionDto);
+    public ResponseEntity<Void> deleteDivision(@RequestParam("division-code") String divisionCode) {
+        divisionService.deleteDivision(divisionCode);
         return ResponseEntity.noContent().build();
     }
 }

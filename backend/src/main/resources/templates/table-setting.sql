@@ -28,9 +28,7 @@ INSERT INTO admin(id, password, email, name, phonenumber, position, division)
 CREATE TABLE admin(
     id varchar(20) NOT NULL primary key,
     password varchar(60) NOT NULL,
-    email varchar(50) NOT NULL,
     name varchar(10) NOT NULL,
-    phonenumber char(13) NOT NULL,
     position varchar(15) NOT NULL,
     division varchar(20) NOT NULL,
     foreign key (position) references admin_role(role),
@@ -46,7 +44,9 @@ CREATE TABLE borrower(
     name varchar(10) NOT NULL,
     phone_number char(13) NOT NULL,
     account_number varchar(20) NOT NULL,
-    ban boolean default false
+    ban boolean default false,
+    department varchar(50) NOT NULL,
+    ban_reason TEXT
 );
 
 CREATE TABLE student_council_fee(

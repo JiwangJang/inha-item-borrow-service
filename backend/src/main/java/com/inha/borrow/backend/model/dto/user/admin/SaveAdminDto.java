@@ -21,10 +21,6 @@ public class SaveAdminDto {
     private String name;
     @NotNull
     private Role position;
-    @NotBlank
-    private String phonenumber;
-    @NotBlank
-    private String email;
     @NotNull
     private String division;
 }

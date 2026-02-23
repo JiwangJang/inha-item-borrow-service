@@ -96,7 +96,7 @@ export default function StudentCouncilFeeSinglePage({ id }: { id: number }) {
 
     return (
         <div className="mt-5">
-            <p className="black-20px mb-2">등록금 인증사진</p>
+            <p className="black-20px mb-2">학생회비 납부 인증사진</p>
             <div
                 className="w-full h-60 bg-no-repeat bg-center bg-contain rounded-xl border border-boxBorder bg-white cursor-pointer"
                 style={{

@@ -59,8 +59,8 @@ public class NoticeRepository {
                     .id(col.getInt("id"))
                     .title(col.getString("title"))
                     .content(col.getString("content"))
-                    .postedAt(col.getTimestamp("posted_at").toLocalDateTime())
-                    .updatedAt(col.getTimestamp("updated_at").toLocalDateTime())
+                    .postedAt(col.getTimestamp("posted_at"))
+                    .updatedAt(col.getTimestamp("updated_at"))
                     .authorId(col.getString("author_id"))
                     .build();
         });
@@ -81,8 +81,8 @@ public class NoticeRepository {
                         .id(col.getInt("id"))
                         .title(col.getString("title"))
                         .content(col.getString("content"))
-                        .postedAt(col.getTimestamp("posted_at").toLocalDateTime())
-                        .updatedAt(col.getTimestamp("updated_at").toLocalDateTime())
+                        .postedAt(col.getTimestamp("posted_at"))
+                        .updatedAt(col.getTimestamp("updated_at"))
                         .authorId(col.getString("author_id"))
                         .build();
             }, id);

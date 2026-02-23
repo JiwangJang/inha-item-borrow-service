@@ -132,16 +132,16 @@ public class AuthConfig {
 							//
 							// /notice 관련 인증 설정
 							// /notice GET 요청은 누구나 접근가능
-							.requestMatchers(HttpMethod.GET, "/notice")
+							.requestMatchers(HttpMethod.GET, "/notices")
 							.permitAll()
 							// /notice/* GET 요청은 누구나 접근가능
-							.requestMatchers(HttpMethod.GET, "/notice/*")
+							.requestMatchers(HttpMethod.GET, "/notices/*")
 							.permitAll()
 							// /notice/* GET이외 요청은 관리자만 접근가능
-							.requestMatchers("/notice/*")
+							.requestMatchers("/notices/*")
 							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
 							// /notice POST 요청은 관리자만 접근가능
-							.requestMatchers(HttpMethod.POST, "/notice")
+							.requestMatchers(HttpMethod.POST, "/notices")
 							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
 							//
 							// /student-council-fee-verification 관련 인증 설정
@@ -161,6 +161,9 @@ public class AuthConfig {
 							.hasAuthority(Role.BORROWER.name())
 							// /borrowers/{borrower-id} 아래경로는 국원 이상만 접근 가능하다
 							.requestMatchers("/borrowers/*/info/**")
+							.hasAuthority(Role.DIVISION_MEMBER.name())
+							// /borrowers/search 경로는 국원 이상만 접근 가능하다
+							.requestMatchers("/borrowers/search")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							//
 							// /items 관련 인증설정

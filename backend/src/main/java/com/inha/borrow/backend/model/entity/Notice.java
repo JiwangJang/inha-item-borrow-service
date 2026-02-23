@@ -1,6 +1,6 @@
 package com.inha.borrow.backend.model.entity;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +16,6 @@ public class Notice {
     private String title;
     private String content;
     private String authorId;
-    private LocalDateTime postedAt;
-    private LocalDateTime updatedAt;
+    private Timestamp postedAt;
+    private Timestamp updatedAt;
 }

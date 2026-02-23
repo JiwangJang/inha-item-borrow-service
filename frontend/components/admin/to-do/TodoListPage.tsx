@@ -34,7 +34,7 @@ export default function TodoListPage() {
             {filtered.length == 0 ? (
                 <p className="mt-2">처리할(한) 요청이 없습니다,</p>
             ) : (
-                <div className="my-3 flex flex-col gap-0.5">
+                <div className="my-3 flex flex-col gap-1">
                     {filtered.map((rq, i) => (
                         <TodoInfoCard
                             key={i}

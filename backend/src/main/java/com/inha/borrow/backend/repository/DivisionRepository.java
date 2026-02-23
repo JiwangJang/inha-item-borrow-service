@@ -67,10 +67,10 @@ public class DivisionRepository {
     /**
      * Division하나를 삭제하는 메서드
      */
-    public void deleteDivision(DivisionDto divisionDto) {
+    public void deleteDivision(String divisionCode) {
         String sql = "UPDATE division SET is_delete = true WHERE code = ?;";
 
-        int affected = jdbcTemplate.update(sql, divisionDto.getCode());
+        int affected = jdbcTemplate.update(sql, divisionCode);
         if (affected == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_DIVISION;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());

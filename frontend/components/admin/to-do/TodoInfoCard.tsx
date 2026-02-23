@@ -51,6 +51,7 @@ export default function TodoInfoCard({
             className="pt-4 pb-2 px-5 bg-white border border-boxBorder rounded-2xl"
             style={{
                 cursor: viewDetailButton ? "" : "pointer",
+                opacity: state != REQUEST_STATE_TYPE.ASSIGNED ? 0.5 : 1,
             }}
             onClick={detailOpen}
         >

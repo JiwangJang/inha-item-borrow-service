@@ -1,5 +1,4 @@
 import NoticeContext from "@/context/NoticeContext";
-import { mockNotices } from "@/mockData/mockNotices";
 import { dateFormatter } from "@/utilities/dateFormatter";
 import Link from "next/link";
 import { useContext } from "react";

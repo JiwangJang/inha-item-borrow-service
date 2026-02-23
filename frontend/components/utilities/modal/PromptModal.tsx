@@ -53,7 +53,7 @@ export default function PromptModal({
                     value={value}
                     onChange={handleValueChange}
                     placeholder={placeholder}
-                    className="w-full px-3 py-2 bg-back resize-none rounded"
+                    className="w-full px-3 py-2 bg-back resize-none rounded border border-slate-400"
                     rows={3}
                 />
             </div>

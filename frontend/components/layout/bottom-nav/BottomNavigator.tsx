@@ -14,7 +14,7 @@ const TOP_LEVEL_ROUTE = [
     "/admin/request-list",
     "/admin/to-do",
     "/admin/item",
-    "/admin/borrower",
+    "/admin/users",
 ];
 
 const BORROWER_BOTTOM_NAVIGATOR_SPECS: BottomNavigatorItemSpec[] = [
@@ -73,7 +73,7 @@ const ADMIN_BOTTOM_NAVIGATOR_SPECS: BottomNavigatorItemSpec[] = [
         id: 4910,
         title: "회원관리",
         icon: "/account_circle.svg",
-        path: "/admin/borrower",
+        path: "/admin/users",
     },
 ];
 
@@ -83,7 +83,7 @@ export default function BottomNavigator() {
 
     if (TOP_LEVEL_ROUTE.includes(pathname))
         return (
-            <div className="absolute bottom-0 h-16 w-full flex ">
+            <div className="fixed max-w-125 bottom-0 h-16 w-full flex ">
                 {isAdminPage
                     ? ADMIN_BOTTOM_NAVIGATOR_SPECS.map((spec) => (
                           <BottomNavigatorItem currentPath={pathname} spec={spec} key={spec.id} />

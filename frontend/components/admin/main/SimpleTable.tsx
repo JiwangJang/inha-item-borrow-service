@@ -5,10 +5,10 @@ type SimpleTableProps = {
 
 export default function SimpleTable({ headers, rows }: SimpleTableProps) {
     return (
-        <table className="w-full border-t-2 border-b-2 border-black border-collapse text-center table-fixed">
+        <table className="w-full border-t-2 border-b-2 bg-white border-black border-collapse text-center table-fixed">
             <colgroup>
                 {headers.map((_, idx) => (
-                    <col key={idx} style={{ width: idx === 0 ? "120px" : "auto" }} />
+                    <col key={idx} style={{ width: idx === 0 ? "100px" : "auto" }} />
                 ))}
             </colgroup>
             <thead>

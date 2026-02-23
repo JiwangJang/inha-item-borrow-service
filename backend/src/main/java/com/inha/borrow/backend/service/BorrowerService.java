@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.inha.borrow.backend.cache.CacheScheduledTask;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.Role;
+import com.inha.borrow.backend.enums.SearchType;
 import com.inha.borrow.backend.model.dto.user.borrower.*;
 
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
@@ -25,7 +26,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 대여자와 관련된 작업을 하는 클래스
@@ -133,6 +136,33 @@ public class BorrowerService {
 
     public List<Borrower> findAll() {
         return borrowerRepository.findAll();
+    }
+
+    /**
+     * 검색 타입에 따라 대여자 정보를 반환하는 함수
+     * 
+     * @param keyword
+     * @param searchType
+     * @return
+     */
+    public List<CacheBorrowerDto> searchBorrower(String keyword, SearchType searchType) {
+        Set<String> userIds = borrowerCache.asMap().keySet();
+        ArrayList<CacheBorrowerDto> result = new ArrayList<>();
+
+        userIds.forEach((String id) -> {
+            if (searchType == SearchType.ID && id.contains(keyword)) {
+                // 학번(ID)로 찾은경우
+                result.add(borrowerCache.getIfPresent(id));
+            } else {
+                // 이름으로 찾은 경우
+                CacheBorrowerDto current = borrowerCache.getIfPresent(id);
+                if (current.getName().contains(keyword)) {
+                    result.add(current);
+                }
+            }
+        });
+
+        return result;
     }
 
     /**

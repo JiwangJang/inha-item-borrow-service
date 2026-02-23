@@ -9,10 +9,12 @@ import { useContext } from "react";
 import SimpleTable from "./main/SimpleTable";
 import Button from "../utilities/Button";
 import { useRouter } from "next/navigation";
+import AdminNoticeSection from "./main/AdminNoticeSection";
 
 interface TableContent {
     borrowedCount: number;
     affordCount: number;
+    reviewingCount: number;
     totalCount: number;
 }
 
@@ -36,6 +38,7 @@ export default function MainPage() {
         if (!tableContent[item.name]) {
             tableContent[item.name] = {
                 borrowedCount: 0,
+                reviewingCount: 0,
                 affordCount: 0,
                 totalCount: 0,
             };
@@ -45,13 +48,18 @@ export default function MainPage() {
 
         if (item.state === ITEM_STATE_TYPE.BORROWED) {
             tableContent[item.name].borrowedCount += 1;
-        } else {
+        } else if (item.state == ITEM_STATE_TYPE.REVIEWING) {
+            tableContent[item.name].reviewingCount += 1;
+        } else if (item.state === ITEM_STATE_TYPE.AFFORD) {
             tableContent[item.name].affordCount += 1;
         }
     });
 
     return (
-        <div className="mt-5">
+        <div className="mt-5 mb-3">
+            <div className="mt-5">
+                <AdminNoticeSection />
+            </div>
             <div>
                 <p className="black-20px mb-2">✅ 대여현황</p>
                 <SimpleTable
@@ -65,14 +73,15 @@ export default function MainPage() {
             <div className="mt-5 mb-6">
                 <p className="black-20px mb-2">📦 물품현황</p>
                 <SimpleTable
-                    headers={["물품명", "대여중", "재고", "총합"]}
+                    headers={["물품명", "대여중", "심사중", "대여가능", "총합"]}
                     rows={[
                         ...itemNameList.map((name) => {
                             const bCount = tableContent[name].borrowedCount;
                             const aCount = tableContent[name].affordCount;
-                            const tCount = bCount + aCount;
+                            const rCount = tableContent[name].reviewingCount;
+                            const tCount = bCount + aCount + rCount;
 
-                            return [name, bCount, aCount, tCount];
+                            return [name, bCount, rCount, aCount, tCount];
                         }),
                     ]}
                 />

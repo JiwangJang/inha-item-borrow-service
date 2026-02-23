@@ -20,15 +20,12 @@ import lombok.Data;
 public abstract class User implements UserDetails {
     private String id;
     private String password;
-    private String email;
     private String name;
-    private String phonenumber;
     private List<GrantedAuthority> authorities;
 
-    public User(String id, String name, String phonenumber, List<GrantedAuthority> authorities) {
+    public User(String id, String name, List<GrantedAuthority> authorities) {
         this.id = id;
         this.name = name;
-        this.phonenumber = phonenumber;
         this.authorities = authorities;
     }
 
