@@ -55,6 +55,11 @@ public class RequestService {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_ALLOWED_COUNCIL_FEE;
             throw new AccessDeniedException(apiErrorCode.name() + ":" + apiErrorCode.getMessage());
         }
+        String currentStateResult = requestRepository.checkRequestCurrentState(saveRequestDto.getBorrowerId());
+        if(currentStateResult.equals(RequestState.ASSIGNED.name()) || currentStateResult.equals(RequestState.PENDING.name())){
+            ApiErrorCode apiErrorCode = ApiErrorCode.REQUEST_EXIST;
+            throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
+        }
 
         // borrowAt < returnAt
         if (!saveRequestDto.getBorrowAt().isBefore(saveRequestDto.getReturnAt())) {

@@ -471,6 +471,18 @@ public class RequestRepository {
             return type;
         },borrowerId,borrowAt);
     }
+
+    public String checkRequestCurrentState(String borrowerId){
+        try{
+            String sql = "SELECT state FROM request WHERE borrower_id = ? ORDER BY borrower_at DESC LIMIT 1";
+            return jdbcTemplate.queryForObject(sql,(rs, rowNum) -> {
+                String state = rs.getString("state");
+                return state;
+            },borrowerId);
+        }catch (EmptyResultDataAccessException e){
+            return null;
+        }
+    }
     /**
      * 테스트용 메서드
      */
