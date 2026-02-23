@@ -106,7 +106,7 @@ public class StuentCouncilFeeVerificationController {
      */
     @PostMapping
     public ResponseEntity<Void> requestVerification(
-            @RequestParam MultipartFile verificationImage,
+            @RequestParam("verificationImage") MultipartFile verificationImage,
             @AuthenticationPrincipal Borrower borrower) {
         String id = borrower.getId();
         service.verificationRequestSave(id, verificationImage);

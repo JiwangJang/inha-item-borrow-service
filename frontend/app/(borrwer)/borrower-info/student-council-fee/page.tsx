@@ -19,7 +19,7 @@ async function getMyStudentCouncilFeeVerification(): Promise<StudentCouncilFeeVe
         }
 
         const data = await res.json();
-        console.log(data);
+
         return data.data;
     } catch (error) {
         console.error(error);

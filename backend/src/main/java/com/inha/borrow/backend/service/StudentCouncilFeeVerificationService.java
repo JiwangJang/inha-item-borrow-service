@@ -35,12 +35,11 @@ public class StudentCouncilFeeVerificationService {
     public void verificationRequestSave(String borrowerId, MultipartFile verificationImage) {
         CacheBorrowerDto dto = borrowerCache.getIfPresent(borrowerId);
         if (dto != null && dto.getS3Link() != null) {
-            URI uri = URI.create(dto.getS3Link());
-            String path = uri.getPath().substring(1);
-            s3Service.deleteFile(path);
+            log.info("사진삭제 {}", dto.getS3Link());
+            s3Service.deleteFile(dto.getS3Link());
         }
 
-        String s3Link = s3Service.uploadFile(verificationImage, "student-council-fee", borrowerId);
+        String s3Link = s3Service.uploadFile(verificationImage, "student-council-fee");
         if (dto != null) {
             dto.setS3Link(s3Link);
         }

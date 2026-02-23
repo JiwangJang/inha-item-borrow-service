@@ -58,7 +58,7 @@ CREATE TABLE student_council_fee(
     response_at datetime,
     deny_reason varchar(50),
     -- 소문자로 수정함
-    verify boolean
+    verify boolean DEFAULT false
 );
 
 CREATE TABLE borrower_privacy_agreement(

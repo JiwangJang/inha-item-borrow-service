@@ -43,14 +43,14 @@ export default function StudentCouncilFeePage({
     return (
         <div className="mt-5">
             <p className="black-20px mb-1">✅ 학생회비 납부여부 확인</p>
-            {verifi?.requestAt == null ? (
+            {verifi?.s3Link == null ? (
                 <FeeVerificationRequest name={borrowerInfo?.name} />
             ) : (
                 <FeeVerificationStatus verification={verifi} name={borrowerInfo?.name} />
             )}
             <Button
                 title="제출 취소하기"
-                className="w-full py-3 mt-2 bg-placeholder!"
+                className="w-full py-3 mt-2 bg-red-400!"
                 onClick={() => {
                     if (verifi?.requestAt == null) return;
                     setConfirmModal(true);

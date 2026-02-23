@@ -30,14 +30,14 @@ public class S3Service {
      * @return 사진이 저장된 url
      * @author 형민재
      */
-    public String uploadFile(MultipartFile multipartFile, String folder, String name) {
+    public String uploadFile(MultipartFile multipartFile, String folder) {
         String originalFilename = multipartFile.getOriginalFilename();
         String extension = "";
-        String uuid = UUID.randomUUID().toString().replace("-","");
+        String uuid = UUID.randomUUID().toString().replace("-", "");
         if (originalFilename != null && originalFilename.contains(".")) {
             extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
-        String fileName = folder + "/" + name + "-" +uuid + extension;
+        String fileName = folder + "/" + uuid + extension;
         ObjectMetadata objMeta = new ObjectMetadata();
         objMeta.setContentLength(multipartFile.getSize());
         objMeta.setContentType(multipartFile.getContentType());
@@ -46,7 +46,8 @@ public class S3Service {
         } catch (IOException e) {
             throw new AmazonS3Exception("s3 업로드 실패");
         }
-        return amazonS3.getUrl(bucket, fileName).toString();
+        amazonS3.getUrl(bucket, fileName).toString();
+        return fileName;
     }
 
     /**
@@ -55,6 +56,11 @@ public class S3Service {
      * @param path 저장된 경로(폴더+이름)
      */
     public void deleteFile(String path) {
-        amazonS3.deleteObject(bucket, path);
+        try {
+            amazonS3.deleteObject(bucket, path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
