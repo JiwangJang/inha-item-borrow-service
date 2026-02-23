@@ -22,7 +22,7 @@ export default function BorrowerHomePage() {
         <div className="mt-5 relative">
             <NoticeSection />
             <ItemSection />
-            <div className="h-16" />
+
             <div className="fixed w-full max-w-125 bottom-17.5 left-1/2 translate-x-[-50%] pl-6 pr-9">
                 <Button
                     title={borrowerInfo?.id == null ? "로그인하기" : "대여신청"}

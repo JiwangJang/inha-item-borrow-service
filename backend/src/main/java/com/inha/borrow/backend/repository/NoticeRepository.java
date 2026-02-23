@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.entity.Notice;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
@@ -53,15 +54,28 @@ public class NoticeRepository {
      * @author 장지왕
      */
     public List<Notice> findAllNotices() {
-        String sql = "SELECT * FROM notice ORDER BY id DESC;";
+        String sql = """
+                    SELECT
+                        notice.id AS notice_id,
+                        notice.title,
+                        notice.content,
+                        notice.posted_at,
+                        notice.updated_at,
+                        notice.author_id,
+                        admin.name AS admin_name,
+                        admin.position AS admin_position
+                    FROM notice LEFT JOIN admin ON admin.id = notice.author_id ORDER BY notice.id DESC;
+                """;
         return jdbcTemplate.query(sql, (col, rowNum) -> {
             return Notice.builder()
-                    .id(col.getInt("id"))
+                    .id(col.getInt("notice_id"))
                     .title(col.getString("title"))
                     .content(col.getString("content"))
                     .postedAt(col.getTimestamp("posted_at"))
                     .updatedAt(col.getTimestamp("updated_at"))
                     .authorId(col.getString("author_id"))
+                    .adminName(col.getString("admin_name"))
+                    .adminPosition(Role.valueOf(col.getString("admin_position")))
                     .build();
         });
     }
@@ -75,15 +89,28 @@ public class NoticeRepository {
      */
     public Notice findNoticeById(int id) {
         try {
-            String sql = "SELECT * FROM notice WHERE id = ?;";
+            String sql = """
+                        SELECT
+                            notice.id AS notice_id,
+                            notice.title,
+                            notice.content,
+                            notice.posted_at,
+                            notice.updated_at,
+                            notice.author_id,
+                            admin.name AS admin_name,
+                            admin.position AS admin_position
+                        FROM notice LEFT JOIN admin ON admin.id = notice.author_id WHERE notice.id = ?;
+                    """;
             return jdbcTemplate.queryForObject(sql, (col, num) -> {
                 return Notice.builder()
-                        .id(col.getInt("id"))
+                        .id(col.getInt("notice_id"))
                         .title(col.getString("title"))
                         .content(col.getString("content"))
                         .postedAt(col.getTimestamp("posted_at"))
                         .updatedAt(col.getTimestamp("updated_at"))
                         .authorId(col.getString("author_id"))
+                        .adminName(col.getString("admin_name"))
+                        .adminPosition(Role.valueOf(col.getString("admin_position")))
                         .build();
             }, id);
         } catch (IncorrectResultSizeDataAccessException e) {

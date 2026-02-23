@@ -6,6 +6,7 @@ import ConfirmModal from "@/components/utilities/modal/ConfirmModal";
 import NoticeContext from "@/context/NoticeContext";
 import { dateFormatter } from "@/utilities/dateFormatter";
 import errorHandler from "@/utilities/errorHandler";
+import positionConvertor from "@/utilities/positionConvertor";
 import axios from "axios";
 import { notFound, useRouter } from "next/navigation";
 import { useContext, useState } from "react";
@@ -21,7 +22,7 @@ export default function AdminNoticeSinglePage({ noticeId }: { noticeId: string }
         notFound();
     }
 
-    const { id, authorId, title, content, updatedAt, postedAt } = current;
+    const { id, authorId, title, content, updatedAt, postedAt, adminName, adminPosition } = current;
 
     const deleteNotice = async () => {
         if (setNoticeList == null) {
@@ -47,7 +48,9 @@ export default function AdminNoticeSinglePage({ noticeId }: { noticeId: string }
         <div className="bg-white rounded-xl border border-boxBorder py-5 px-4 mt-5">
             <p className="bold-20px">{title}</p>
             <p className="regular-14px">글번호 : {id}</p>
-            <p className="regular-14px">글쓴이 : {authorId}</p>
+            <p className="regular-14px">
+                글쓴이 : {positionConvertor(adminPosition)} {adminName}({authorId})
+            </p>
             <p className="text-placeholder regular-14px">
                 게시일시 : {dateFormatter(postedAt)}
                 {postedAt != updatedAt ? `(${dateFormatter(updatedAt)} 최종수정)` : null}

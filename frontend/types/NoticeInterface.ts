@@ -1,3 +1,5 @@
+import { AdminPositionType } from "./AdminPositionType";
+
 export default interface NoticeInterface {
     id: number;
     title: string;
@@ -5,4 +7,6 @@ export default interface NoticeInterface {
     authorId: string;
     postedAt: string;
     updatedAt: string;
+    adminName: string;
+    adminPosition: AdminPositionType;
 }

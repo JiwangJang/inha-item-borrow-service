@@ -11,7 +11,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
     const requests = await getRequests();
 
     return (
-        <div className="w-full pt-15 pb-16 bg-back min-h-screen common-px">
+        <div className="w-full pt-15 pb-16 min-h-[calc(100dvh-60px)] bg-back common-px">
             <BorrowerItemProvider initialValue={initialItemList}>
                 <BorrowRequestProvider initialValue={requests}>
                     <BorrowerProvider initialBorrowerInfo={borrowerInfo}>{children}</BorrowerProvider>

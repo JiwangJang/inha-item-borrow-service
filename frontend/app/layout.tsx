@@ -6,6 +6,7 @@ import NoticeProvider from "@/components/provider/NoticeProvider";
 import getNotices from "@/utilities/getNotices";
 import getDivisionList from "@/utilities/getDivisionList";
 import DivisionProvider from "@/components/provider/DivisionProvider";
+import Footer from "@/components/layout/Footer/Footer";
 
 export const metadata: Metadata = {
     title: "미래융합대학 물품대여시스템",
@@ -30,6 +31,7 @@ export default async function RootLayout({
                     </DivisionProvider>
                 </NoticeProvider>
                 <BottomNavigator />
+                <Footer />
             </body>
         </html>
     );
