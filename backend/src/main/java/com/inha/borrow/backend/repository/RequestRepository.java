@@ -464,6 +464,13 @@ public class RequestRepository {
         }
     }
 
+    public List<String> checkRequestType(String borrowerId, Timestamp borrowAt){
+        String sql = "SELECT type FROM request WHERE borrower_id = ? AND borrow_at = ?";
+        return jdbcTemplate.query(sql,(rs, rowNum) ->{
+            String type = rs.getString("type");
+            return type;
+        },borrowerId,borrowAt);
+    }
     /**
      * 테스트용 메서드
      */

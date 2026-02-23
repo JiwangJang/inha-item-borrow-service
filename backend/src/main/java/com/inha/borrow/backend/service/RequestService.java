@@ -86,7 +86,14 @@ public class RequestService {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_REQUEST_ID;
                 throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
             }
+            Timestamp borrowAt = Timestamp.from(saveRequestDto.getBorrowAt().toInstant());
+            List<String> requestType = requestRepository.checkRequestType(saveRequestDto.getBorrowerId(),borrowAt);
+            if(requestType.contains(RequestType.RETURN.name())){
+                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
+                throw new InvalidValueException(apiErrorCode.name(), "이전에 요청한 반납 요청이 있습니다.");
+            }
         }
+
         return requestRepository.save(saveRequestDto);
     }
 
@@ -141,13 +148,12 @@ public class RequestService {
         // 사용자가 대여요청을 수정한 경우 -> 대여 요청시간이 현재보다 한시간 뒤인지 + 반납요청시간이 대여요청시간 이후인지 확인
         // 사용자가 반납요청을 수정한 경우 -> 반납 요청시간이 현재시간보다 이후인지.
 
-        if (state != RequestState.PENDING) {
-            // 관리자에게 배정되기 전까지는 수정가능
-            ApiErrorCode apiErrorCode = ApiErrorCode.CAN_NOT_MODIFY_REQUEST;
-            throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
-        }
-
         if (type == RequestType.BORROW) {
+            if (state != RequestState.PENDING) {
+                // 관리자에게 배정되기 전까지는 수정가능
+                ApiErrorCode apiErrorCode = ApiErrorCode.CAN_NOT_MODIFY_REQUEST;
+                throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
+            }
             // 1시간 이후인지
             if (patchRequestDto.getBorrowAt().isBefore(now.plusHours(1))) {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
@@ -158,7 +164,13 @@ public class RequestService {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "반납일시는 대여일시보다 이후여야 합니다.");
             }
-        } else {
+
+        } else if (type == RequestType.RETURN) {
+
+            if(state == RequestState.ASSIGNED || state ==RequestState.PERMIT){
+                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
+                throw new InvalidValueException(apiErrorCode.name(), "보류중 또는 거부됨이 아닌 반납 요청은 수정이 불가합니다.");
+            }
             if (!OffsetDateTime.now().isBefore(patchRequestDto.getReturnAt())) {
                 // 반납요청시각이 현재보다 이전이면 거부
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
@@ -215,3 +227,6 @@ public class RequestService {
         requestRepository.updateRequestState(state, requestId);
     }
 }
+
+
+
