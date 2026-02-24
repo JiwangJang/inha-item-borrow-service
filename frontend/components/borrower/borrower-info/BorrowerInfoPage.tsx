@@ -27,7 +27,7 @@ export default function BorrowerInfoPage() {
                     개인정보 처리방침 {borrowerInfo?.accountNumber == null ? "동의하기" : "확인하기"}
                 </Link>
                 <Link href={"/borrower-info/student-council-fee"} className={className}>
-                    등록금 납부 인증
+                    학생회비 납부 인증
                 </Link>
                 <div className={className + " cursor-pointer"} onClick={() => setConfirmModal(true)}>
                     로그아웃

@@ -22,6 +22,7 @@ public class Borrower extends User {
      * 대여 정지 사용자인지 표시
      */
     private boolean ban;
+    private String banReason;
     /**
      * 학번
      */
@@ -47,12 +48,14 @@ public class Borrower extends User {
      * @param accountNumber 대여자 보증금 반환 계좌
      */
     public Borrower(String id, String name, String phonenumber,
-            List<GrantedAuthority> authorities, boolean ban, String accountNumber, String department) {
+            List<GrantedAuthority> authorities, boolean ban, String accountNumber, String department,
+            String banReason) {
         super(id, name, authorities);
         this.phonenumber = phonenumber;
         this.ban = ban;
         this.accountNumber = accountNumber;
         this.department = department;
+        this.banReason = banReason;
     }
 
 }
