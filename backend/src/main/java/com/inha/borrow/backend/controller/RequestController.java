@@ -100,7 +100,7 @@ public class RequestController {
             @RequestParam(value = "borrowerId", required = false) String borrowerId,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "state", required = false) String state) {
-        List<Request> result = requestService.findByCondition(user, borrowerId, type, state);
+        List<Request> result = requestService.findRequestsByCondition(user, borrowerId, type, state);
         return ResponseEntity.ok().body(new ApiResponse<>(true, result));
     }
 

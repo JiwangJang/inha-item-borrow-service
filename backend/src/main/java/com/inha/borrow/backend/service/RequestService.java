@@ -113,7 +113,7 @@ public class RequestService {
      * @param type
      * @author 형민재
      */
-    public List<Request> findByCondition(User user, String borrowerId, String type, String state) {
+    public List<Request> findRequestsByCondition(User user, String borrowerId, String type, String state) {
         if (user instanceof Borrower) {
             return requestRepository.findRequestsByCondition(user.getId(), null, type, state);
         } else {
