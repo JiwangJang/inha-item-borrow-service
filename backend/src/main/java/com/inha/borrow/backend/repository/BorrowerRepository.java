@@ -37,10 +37,20 @@ public class BorrowerRepository {
         String accountNumber = rs.getString("account_number");
         String department = rs.getString("department");
         boolean ban = rs.getBoolean("ban");
+        String banReason = rs.getString("ban_reason");
 
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("BORROWER"));
 
-        return new Borrower(id, name, phonenumber, authorities, ban, accountNumber, department);
+        return Borrower.builder()
+                .id(id)
+                .phonenumber(phonenumber)
+                .name(name)
+                .accountNumber(accountNumber)
+                .department(department)
+                .ban(ban)
+                .banReason(banReason)
+                .authorities(authorities)
+                .build();
     };
 
     /**
@@ -222,9 +232,9 @@ public class BorrowerRepository {
         }
     }
 
-    public void patchBan(Boolean ban, String id) {
-        String sql = " UPDATE borrower SET ban = ? WHERE id = ?";
-        int result = jdbcTemplate.update(sql, ban, id);
+    public void patchBan(String borrwerId, boolean ban, String banReason) {
+        String sql = " UPDATE borrower SET ban = ?, ban_reason = ? WHERE id = ?";
+        int result = jdbcTemplate.update(sql, ban, banReason, borrwerId);
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());

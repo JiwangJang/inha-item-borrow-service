@@ -1,5 +1,6 @@
 "use client";
 
+import API_SERVER from "@/apiServer";
 import Button from "@/components/utilities/Button";
 import InfoRow from "@/components/utilities/InfoRow";
 import InfoTable from "@/components/utilities/InfoTable";
@@ -33,10 +34,12 @@ export default function SearchedBorrowerPage({ borrowerId }: { borrowerId: strin
         }
         try {
             const body = {
+                ban: true,
                 banReason,
             };
 
-            console.log(body, "이용금지");
+            await axios.patch(`${API_SERVER}/borrowers/${id}/info/ban`, body, { withCredentials: true });
+
             setSearchedBorrowers((prev) =>
                 prev.map((p) => {
                     if (p.id == id) {
@@ -67,7 +70,10 @@ export default function SearchedBorrowerPage({ borrowerId }: { borrowerId: strin
         }
         try {
             // 여기 해제하는거
-            console.log("해제 함수");
+            const body = {
+                ban: false,
+            };
+            await axios.patch(`${API_SERVER}/borrowers/${id}/info/ban`, body, { withCredentials: true });
             setSearchedBorrowers((prev) =>
                 prev.map((p) => {
                     if (p.id == id) {

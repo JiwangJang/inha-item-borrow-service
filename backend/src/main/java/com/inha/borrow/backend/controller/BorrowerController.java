@@ -1,12 +1,15 @@
 package com.inha.borrow.backend.controller;
 
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.SearchType;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchAccountNumberDto;
+import com.inha.borrow.backend.model.dto.user.borrower.PatchBanDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SavePhoneAccountNumberDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.service.BorrowerService;
 
 import jakarta.validation.Valid;
@@ -116,6 +119,7 @@ public class BorrowerController {
     @PatchMapping("/{borrower-id}/info/name")
     public ResponseEntity<Void> patchName(@PathVariable("borrower-id") String borrowerId,
             @Valid @NotBlank @RequestBody String name) {
+        // 이거 없어도 될듯(로그인 할때마다 이름 바뀌었나 확인하게 하면 되니)
         borrowerService.patchName(borrowerId, name);
         return ResponseEntity.ok().build();
     }
@@ -160,8 +164,11 @@ public class BorrowerController {
      */
     @PatchMapping("/{borrower-id}/info/ban")
     public ResponseEntity<Void> patchBan(@PathVariable("borrower-id") String borrowerId,
-            @RequestBody String ban) {
-        borrowerService.patchBan(Boolean.parseBoolean(ban), borrowerId);
+            @RequestBody PatchBanDto dto) {
+        if (dto.isBan() && (dto.getBanReason() == null || dto.getBanReason().isBlank())) {
+            throw new InvalidValueException(ApiErrorCode.INVALID_VALUE.name(), "차단 사유를 입력해주세요.");
+        }
+        borrowerService.patchBan(dto, borrowerId);
         return ResponseEntity.ok().build();
     }
 }

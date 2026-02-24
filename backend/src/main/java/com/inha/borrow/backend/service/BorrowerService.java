@@ -123,6 +123,7 @@ public class BorrowerService {
                 .phonenumber(dto.getPhoneNumber())
                 .accountNumber(dto.getAccountNumber())
                 .ban(dto.isBan())
+                .banReason(dto.getBanReason())
                 .build();
         return borrower;
     }
@@ -228,9 +229,9 @@ public class BorrowerService {
      * @param id
      * @author 형민재
      */
-    public void patchBan(boolean ban, String id) {
-        borrowerRepository.patchBan(ban, id);
-        deleteCache(id);
+    public void patchBan(PatchBanDto dto, String borrowerId) {
+        borrowerRepository.patchBan(borrowerId, dto.isBan(), dto.getBanReason());
+        deleteCache(borrowerId);
     }
 
     public void deleteCache(String borrowerId) {

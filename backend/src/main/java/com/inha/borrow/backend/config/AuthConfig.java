@@ -156,12 +156,12 @@ public class AuthConfig {
 							// /borrowers 경로는 국장이상만 접근 가능하다
 							.requestMatchers("/borrowers")
 							.hasAuthority(Role.DIVISION_HEAD.name())
+							// /borrowers/{borrower-id} 아래경로는 국원 이상만 접근 가능하다
+							.requestMatchers("/borrowers/*/info/ban")
+							.hasAuthority(Role.DIVISION_MEMBER.name())
 							// /borrower/info와 그 아래 경로는 대여자만 접근가능하다.
 							.requestMatchers("/borrowers/info", "/borrowers/info/**")
 							.hasAuthority(Role.BORROWER.name())
-							// /borrowers/{borrower-id} 아래경로는 국원 이상만 접근 가능하다
-							.requestMatchers("/borrowers/*/info/**")
-							.hasAuthority(Role.DIVISION_MEMBER.name())
 							// /borrowers/search 경로는 국원 이상만 접근 가능하다
 							.requestMatchers("/borrowers/search")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
