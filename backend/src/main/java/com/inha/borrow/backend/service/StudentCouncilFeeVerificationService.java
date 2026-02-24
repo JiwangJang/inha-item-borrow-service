@@ -1,16 +1,17 @@
 package com.inha.borrow.backend.service;
 
-import java.net.URI;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.benmanes.caffeine.cache.Cache;
+import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.DenyFeeVerificationDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.ModifyVerificationResponseDto;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 public class StudentCouncilFeeVerificationService {
     private final StudentCouncilFeeVerificationRepository repository;
     private final S3Service s3Service;
-    private final String folder = "student-council-fee";
     private final Cache<String, CacheBorrowerDto> borrowerCache;
 
     /**
@@ -35,12 +35,10 @@ public class StudentCouncilFeeVerificationService {
     public void verificationRequestSave(String borrowerId, MultipartFile verificationImage) {
         CacheBorrowerDto dto = borrowerCache.getIfPresent(borrowerId);
         if (dto != null && dto.getS3Link() != null) {
-            URI uri = URI.create(dto.getS3Link());
-            String path = uri.getPath().substring(1);
-            s3Service.deleteFile(path);
+            s3Service.deleteFile(dto.getS3Link());
         }
 
-        String s3Link = s3Service.uploadFile(verificationImage, "student-council-fee", borrowerId);
+        String s3Link = s3Service.uploadFile(verificationImage, "student-council-fee");
         if (dto != null) {
             dto.setS3Link(s3Link);
         }
@@ -127,7 +125,12 @@ public class StudentCouncilFeeVerificationService {
      * @author 장지왕
      */
     public void cancel(String borrowerId) {
-        s3Service.deleteFile(folder + "/" + borrowerId);
+        CacheBorrowerDto cache = borrowerCache.getIfPresent(borrowerId);
+        if (cache.isVerify()) {
+            ApiErrorCode code = ApiErrorCode.NOT_ALLOWED_VALUE;
+            throw new InvalidValueException(code.name(), "승인된 학생회비 인증요청은 취소가 불가능합니다.");
+        }
+        s3Service.deleteFile(cache.getS3Link());
         repository.cancel(borrowerId);
         // 여기서는 캐시 업데이트하기
     }

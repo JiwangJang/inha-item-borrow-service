@@ -57,8 +57,7 @@ CREATE TABLE student_council_fee(
     request_at datetime ON UPDATE CURRENT_TIMESTAMP,
     response_at datetime,
     deny_reason varchar(50),
-    -- 소문자로 수정함
-    verify boolean
+    verify boolean DEFAULT false
 );
 
 CREATE TABLE borrower_privacy_agreement(
@@ -89,7 +88,6 @@ create table item (
     state varchar(9) NOT NULL default 'AFFORD'
 );
 
--- manager NOT NULL 로 되있었지만 기존 테스트 충돌로 인해 임시로 지움
 create table request (
     id int NOT NULL primary key auto_increment,
     item_id int NOT NULL,

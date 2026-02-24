@@ -28,21 +28,17 @@ export default function ItemSection() {
 function ItemStatusChildren({ items, name }: { items: ItemInterface[]; name: string }) {
     const targetItems = items.filter((item) => item.name.replaceAll(" ", "") == name);
     const availableItmes = targetItems.filter((item) => item.state == ITEM_STATE_TYPE.AFFORD).length;
-    const unavailableItmes = targetItems.filter((item) => item.state == ITEM_STATE_TYPE.BORROWED).length;
-    const reviewingItems = targetItems.filter((item) => item.state == ITEM_STATE_TYPE.REVIEWING).length;
-
-    const total = availableItmes + unavailableItmes + reviewingItems;
+    const total = targetItems.length;
+    const unavailableItmes = total - availableItmes;
 
     return (
         <>
             <p className="mb-1">
-                <b>총수량 : {total}</b> (대여가능 : {availableItmes} / 대여중 : {unavailableItmes} / 심사중 :
-                {reviewingItems})
+                <b>총수량 : {total}</b> (대여가능 : {availableItmes} / 대여불가능 : {unavailableItmes})
             </p>
             <div className="w-full h-8 rounded bg-gray-300 flex overflow-hidden">
                 <div className="bg-available h-full" style={{ width: `${(availableItmes / total) * 100}%` }} />
                 <div className="bg-unavailable h-full" style={{ width: `${(unavailableItmes / total) * 100}%` }} />
-                <div className="bg-amber-200 h-full" style={{ width: `${(reviewingItems / total) * 100}%` }} />
             </div>
         </>
     );

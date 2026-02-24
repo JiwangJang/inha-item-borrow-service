@@ -14,8 +14,7 @@ export default function NewItemRegisterPage() {
     const [itemLocation, setItemLocation] = useState("");
     const [itemPassword, setItemPassword] = useState("");
     const [itemPrice, setItemPrice] = useState("");
-    const itemContext = useContext(ItemContext);
-    const itemList = itemContext?.itemList;
+    const { itemList, setItemList } = useContext(ItemContext);
 
     const itemNameList = Array.from(new Set((itemList ?? []).map((it) => it.name)));
     const itemNameInputRef = useRef<HTMLInputElement>(null);
@@ -61,8 +60,8 @@ export default function NewItemRegisterPage() {
                 return;
             }
 
-            if (!Number(price)) {
-                alert("가격은 숫자만 입력하셔야합니다.");
+            if (!Number(price) || !Number(password)) {
+                alert("가격과 비밀번호는 숫자만 입력하셔야합니다.");
                 return;
             }
 
@@ -77,9 +76,8 @@ export default function NewItemRegisterPage() {
                 withCredentials: true,
             });
 
-            if (itemList != undefined) {
-                itemList.push(res.data.data);
-                itemContext?.setItemList(itemList);
+            if (setItemList) {
+                setItemList((prev) => prev.concat(res.data.data));
             }
 
             alert("물품이 정상적으로 등록되었습니다.");
@@ -124,10 +122,14 @@ export default function NewItemRegisterPage() {
             <div>
                 <p className="bold-18px mb-1">비밀번호</p>
                 <Input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     placeholder="대여물품 보관 비밀번호를 입력해주세요"
                     value={itemPassword}
                     onChange={(e) => {
-                        setItemPassword(e.target.value);
+                        const onlyNumber = e.target.value.replace(/[^0-9]/g, "");
+                        setItemPassword(onlyNumber);
                     }}
                     ref={passwordInputRef}
                 />
@@ -135,12 +137,18 @@ export default function NewItemRegisterPage() {
             <div>
                 <p className="bold-18px mb-1">가격(원)</p>
                 <Input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     placeholder={
                         isNewItem ? "대여물품 가격을 입력해주세요" : "대여물품을 선택하면 자동으로 입력됩니다."
                     }
                     ref={priceInputRef}
                     value={itemPrice}
-                    onChange={(e) => setItemPrice(e.target.value)}
+                    onChange={(e) => {
+                        const onlyNumber = e.target.value.replace(/[^0-9]/g, "");
+                        setItemPrice(onlyNumber);
+                    }}
                     disabled={!isNewItem}
                 />
             </div>

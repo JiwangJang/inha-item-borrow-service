@@ -1,7 +1,7 @@
 "use client";
 
 import Select from "@/components/utilities/select/Select";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ItemBorrowConditions from "./ItemBorrowConditions";
 import ItemContext from "@/context/ItemContext";
 import Image from "next/image";
@@ -15,17 +15,44 @@ import RequestInterface, { REQUEST_STATE_TYPE, REQUEST_TYPE } from "@/types/Requ
 import BorrowerContext from "@/context/BorrowerContext";
 import LoginRequired from "../LoginRequired";
 import { useRouter } from "next/navigation";
+import AlertModal from "@/components/utilities/modal/AlertModal";
 
 export default function BorrowerRequestPage() {
-    const borrowInfo = useContext(BorrowerContext).borrowerInfo;
-    if (borrowInfo == null) {
+    const borrowerInfo = useContext(BorrowerContext).borrowerInfo;
+    if (borrowerInfo == null) {
         return <LoginRequired />;
     }
 
-    const itemContext = useContext(ItemContext);
-    const requestContext = useContext(BorrowRequestContext);
-    const itemList = itemContext.itemList;
-    const setItemList = itemContext?.setItemList;
+    const { requestList, setRequestList } = useContext(BorrowRequestContext);
+    const recentRequest = [...requestList].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )[0];
+
+    const [alertModal, setAlertModal] = useState(false);
+    const [alertMsg, setAlertMsg] = useState("");
+
+    useEffect(() => {
+        if (borrowerInfo.ban) {
+            setAlertModal(true);
+            setAlertMsg("이용금지인 경우 대여요청이 불가능합니다. 먼저 이용금지 사유를 해결해주세요.");
+            return;
+        }
+        if (
+            recentRequest != null &&
+            ((recentRequest.type == REQUEST_TYPE.BORROW && recentRequest.state != REQUEST_STATE_TYPE.REJECT) ||
+                (recentRequest.type == REQUEST_TYPE.RETURN && recentRequest.state != REQUEST_STATE_TYPE.PERMIT))
+        ) {
+            // 최신 요청이 존재하면서
+            // 최신 요청이 BORROW 타입이면서 거절(REJECT) 이외의 상태이거나
+            // 최신 요청이 RETURN 타입이면서 승인(PERMIT) 이외의 상태라면,
+            // 추가 대여요청이 불가능하다.
+            setAlertModal(true);
+            setAlertMsg("한 번에 한 물건만 빌릴 수 있습니다.");
+            return;
+        }
+    }, []);
+
+    const { itemList, setItemList } = useContext(ItemContext);
     const router = useRouter();
 
     const [item, setItem] = useState<string>("");
@@ -81,6 +108,10 @@ export default function BorrowerRequestPage() {
             alert(`현재 빌릴 수 있는 ${item}이 없습니다.`);
             return;
         }
+        if (!borrowerInfo.verify) {
+            alert("학생회비 납부인증이 완료되지 않았습니다.");
+            return;
+        }
         try {
             const body = {
                 itemId: selectedItem.id,
@@ -118,8 +149,8 @@ export default function BorrowerRequestPage() {
                 borrowAt: body.borrowAt,
                 returnAt: body.returnAt,
                 createdAt: result.createdAt,
-                borrowerId: borrowInfo.id,
-                borrowerName: borrowInfo.name,
+                borrowerId: borrowerInfo.id,
+                borrowerName: borrowerInfo.name,
                 item: {
                     id: selectedItem.id,
                     name: selectedItem.name,
@@ -134,8 +165,8 @@ export default function BorrowerRequestPage() {
                 type: REQUEST_TYPE.BORROW,
             };
 
-            if (requestContext.setRequestList) {
-                requestContext.setRequestList(requestContext.requestList.concat(newRequest));
+            if (setRequestList) {
+                setRequestList(requestList.concat(newRequest));
             }
 
             if (setItemList) {
@@ -266,6 +297,14 @@ export default function BorrowerRequestPage() {
                 className="w-full p-3 bold-18px mt-6"
                 disabled={!buttonOn}
                 onClick={buttonOnclick}
+            />
+
+            <AlertModal
+                open={alertModal}
+                message={alertMsg}
+                onClose={() => setAlertModal(false)}
+                onConfirm={() => router.back()}
+                title="알림"
             />
         </div>
     );

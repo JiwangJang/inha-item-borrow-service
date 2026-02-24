@@ -40,16 +40,19 @@ export default function NewNoticeRegisterPage() {
             const res = await axios.post(`${API_SERVER}/notices`, body, { withCredentials: true });
             const { id } = res.data.data;
 
-            setNoticeList((prev) =>
-                prev.concat({
+            setNoticeList((prev) => [
+                ...prev,
+                {
                     authorId: adminInfo!.id,
                     content,
                     title,
                     id,
                     postedAt: toKstOffsetDateTimeString(new Date().getTime()),
                     updatedAt: toKstOffsetDateTimeString(new Date().getTime()),
-                }),
-            );
+                    adminName: adminInfo!.name,
+                    adminPosition: adminInfo!.position,
+                },
+            ]);
             alert("공지 등록이 완료됐습니다.");
             router.back();
         } catch (error) {

@@ -35,7 +35,7 @@ export default function ReturnDateSelector({
         >
             <div
                 className={
-                    "bg-back absolute bottom-0 w-full py-4 px-4 transition-transform duration-200 rounded-t-xl " +
+                    "bg-back absolute bottom-0 left-1/2 translate-x-[-50%]  w-full max-w-125 py-4 px-4 transition-transform duration-200 rounded-t-xl " +
                     (open ? "translate-y-0" : "translate-y-full")
                 }
                 onClick={(e) => e.stopPropagation()}

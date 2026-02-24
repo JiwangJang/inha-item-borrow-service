@@ -8,7 +8,7 @@ export default function NoticeListPage() {
     const { noticeList } = useContext(NoticeContext);
 
     return (
-        <div className="mt-5">
+        <div className="mt-5 pb-4">
             <div>
                 <p className="black-20px">📣 공지사항</p>
                 <p>공지사항에 관련된 문의는 학생회 공식 이메일로 해주시면 되겠습니다.</p>

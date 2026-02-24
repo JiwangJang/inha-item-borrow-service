@@ -46,8 +46,6 @@ public class RequestRepository {
         String rejectReason = rs.getString("reject_reason");
         Timestamp responseCreatedAt = rs.getTimestamp("response_created_at");
 
-        log.info("responseId : {}", responseId);
-
         // manager 관련 값
         String managerId = rs.getString("manager");
         String managerName = rs.getString("manager_name");
@@ -71,9 +69,13 @@ public class RequestRepository {
         RequestState state = RequestState.valueOf(rs.getString("state"));
         Boolean cancel = rs.getBoolean("cancel");
 
-        // 여기서 response없고 request PERMIT인 경우 비밀번호랑 위치 알려줌 아니면 안알려줌
+        // 대응하는 요청 있는지 확인하는 부분
+        int counterRequestId = rs.getInt("counter_rq_id");
 
-        if (responseId == 0) {
+        if (!(counterRequestId == 0 && state == RequestState.PERMIT)) {
+            // counterRequestId == 0 : 아직 반납요청을 안했다
+            // 반납요청의 경우 무조건 counterRequestId가 존재함(대여요청을 기반으로 하므로)
+            // 즉, 대여요청인데 반납요청 아직 안했고 허가받은 경우에만 위치와 비밀번호 확인가능
             itemLocation = null;
             itemPassword = null;
         }
@@ -151,45 +153,48 @@ public class RequestRepository {
     public Request findById(String borrowerId, int requestId) {
         StringBuilder sql = new StringBuilder("""
                 SELECT
-                        rq.id AS request_id,
-                        rq.item_id,
+                        rq_a.id AS request_id,
+                        rq_a.item_id,
                         item.name AS item_name,
                         item.price AS item_price,
                         item.location AS item_location,
                         item.password AS item_password,
-                        rq.created_at AS request_created_at,
-                        rq.borrower_id,
+                        rq_a.created_at AS request_created_at,
+                        rq_a.borrower_id,
                         borrower.name AS borrower_name,
-                        rq.return_at,
-                        rq.borrow_at,
-                        rq.type,
-                        rq.state,
-                        rq.cancel,
+                        rq_a.return_at,
+                        rq_a.borrow_at,
+                        rq_a.type,
+                        rq_a.state,
+                        rq_a.cancel,
                         rp.id AS response_id,
                         rp.created_at AS response_created_at,
                         rp.reject_reason,
-                        rq.manager,
+                        rq_a.manager,
                         admin.name AS manager_name,
-                        admin.position
-                    FROM request AS rq
+                        admin.position,
+                        rq_b.id AS counter_rq_id
+                    FROM request AS rq_a
+                        -- 대여요청과 반납요청간 짝지어주는 부분(대여시간이 동일하고 아이디가 다른 것을 묶는다)
+                        LEFT JOIN request AS rq_b
+                            ON rq_a.borrow_at = rq_b.borrow_at AND rq_a.id != rq_b.id
                         LEFT JOIN response AS rp
-                            ON rp.request_id = rq.id
+                            ON rp.request_id = rq_a.id
                         LEFT JOIN admin
-                            ON admin.id = rq.manager
+                            ON admin.id = rq_a.manager
                         LEFT JOIN item
-                            ON rq.item_id = item.id
+                            ON rq_a.item_id = item.id
                         LEFT JOIN borrower
-                            ON rq.borrower_id = borrower.id
-                    WHERE rq.id = ? AND rq.cancel != true
+                            ON rq_a.borrower_id = borrower.id
+                    WHERE rq_a.id = ? AND rq.cancel != true
                 """);
         List<Object> params = new ArrayList<>();
         params.add(requestId);
         if (borrowerId != null && !borrowerId.isEmpty()) {
-            sql.append("AND rq.borrower_id = ?");
+            sql.append("AND rq_a.borrower_id = ?");
             params.add(borrowerId);
         }
         try {
-            log.info("test {}", sql.toString());
             Request result = jdbcTemplate.queryForObject(sql.toString(), requestRowMapper, params.toArray());
             return result;
         } catch (EmptyResultDataAccessException e) {
@@ -210,57 +215,61 @@ public class RequestRepository {
     public List<Request> findRequestsByCondition(String borrowerId, String adminId, String type, String state) {
         StringBuilder sql = new StringBuilder("""
                 SELECT
-                        rq.id AS request_id,
-                        rq.item_id,
+                        rq_a.id AS request_id,
+                        rq_a.item_id,
                         item.name AS item_name,
                         item.price AS item_price,
                         item.location AS item_location,
                         item.password AS item_password,
-                        rq.created_at AS request_created_at,
-                        rq.borrower_id,
+                        rq_a.created_at AS request_created_at,
+                        rq_a.borrower_id,
                         borrower.name AS borrower_name,
-                        rq.return_at,
-                        rq.borrow_at,
-                        rq.type,
-                        rq.state,
-                        rq.cancel,
+                        rq_a.return_at,
+                        rq_a.borrow_at,
+                        rq_a.type,
+                        rq_a.state,
+                        rq_a.cancel,
                         rp.id AS response_id,
                         rp.created_at AS response_created_at,
                         rp.reject_reason,
-                        rq.manager,
+                        rq_a.manager,
                         admin.name AS manager_name,
-                        admin.position
-                    FROM request AS rq
+                        admin.position,
+                        rq_b.id AS counter_rq_id
+                    FROM request AS rq_a
+                        -- 대여요청과 반납요청간 짝지어주는 부분(대여시간이 동일하고 아이디가 다른 것을 묶는다)
+                        LEFT JOIN request AS rq_b
+                            ON rq_a.borrow_at = rq_b.borrow_at AND rq_a.id != rq_b.id
                         LEFT JOIN response AS rp
-                            ON rp.request_id = rq.id
+                            ON rp.request_id = rq_a.id
                         LEFT JOIN admin
-                            ON admin.id = rq.manager
+                            ON admin.id = rq_a.manager
                         LEFT JOIN item
-                            ON rq.item_id = item.id
+                            ON rq_a.item_id = item.id
                         LEFT JOIN borrower
-                            ON rq.borrower_id = borrower.id
-                    WHERE rq.cancel != true
+                            ON rq_a.borrower_id = borrower.id
+                    WHERE rq_a.cancel != true
                 """);
         List<Object> params = new ArrayList<>();
 
         // 관리자의 경우, 자신이 과거에 응답한 요청까지 조회할 수 있도록 수정
         if (adminId != null && !adminId.isEmpty()) {
-            sql.append("AND (rq.manager IS NULL OR rq.manager = ?) ");
+            sql.append("AND (rq_a.manager IS NULL OR rq_a.manager = ?) ");
             params.add(adminId);
         }
 
         if (borrowerId != null && !borrowerId.isEmpty()) {
-            sql.append("AND rq.borrower_id = ? ");
+            sql.append("AND rq_a.borrower_id = ? ");
             params.add(borrowerId);
         }
 
         if (type != null && !type.isEmpty()) {
-            sql.append("AND rq.type = ? ");
+            sql.append("AND rq_a.type = ? ");
             params.add(type);
         }
 
         if (state != null && !state.isEmpty()) {
-            sql.append("AND rq.state = ? ");
+            sql.append("AND rq_a.state = ? ");
             params.add(state);
         }
 

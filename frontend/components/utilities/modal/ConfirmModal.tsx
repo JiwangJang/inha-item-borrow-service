@@ -18,7 +18,7 @@ export type ConfirmModalProps = {
 export default function ConfirmModal({ open, onClose, title, message, onConfirm, onCancel }: ConfirmModalProps) {
     return (
         <BaseModal open={open} onClose={onClose} title={title}>
-            <div className="regular-16px pb-2 px-3">{message}</div>
+            <div className="regular-16px pb-2 px-3 leading-tight">{message}</div>
 
             <div className="h-px bg-boxBorder" />
 

@@ -19,7 +19,6 @@ async function getMyStudentCouncilFeeVerification(): Promise<StudentCouncilFeeVe
         }
 
         const data = await res.json();
-        console.log(data);
         return data.data;
     } catch (error) {
         console.error(error);
@@ -29,10 +28,6 @@ async function getMyStudentCouncilFeeVerification(): Promise<StudentCouncilFeeVe
 
 export default async function Page() {
     const verification = await getMyStudentCouncilFeeVerification();
-
-    if (verification == null) {
-        notFound();
-    }
 
     return <StudentCouncilFeePage verification={verification} />;
 }

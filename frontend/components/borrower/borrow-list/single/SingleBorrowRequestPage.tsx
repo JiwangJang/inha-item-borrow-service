@@ -34,6 +34,10 @@ export default function SingleBorrowRequestPage({ requestId }: { requestId: stri
     const { id, item, borrowAt, returnAt, state, manager, cancel } = currentRequest;
     const { id: itemId, name: itemName, location: itemLocation, password: itemPassword, price: itemPrice } = item;
 
+    const returnRequest = requestList.find(
+        (rq) => rq.type == REQUEST_TYPE.RETURN && new Date(rq.borrowAt).getTime() === new Date(borrowAt).getTime(),
+    );
+
     let borrowState;
 
     switch (state) {
@@ -68,8 +72,6 @@ export default function SingleBorrowRequestPage({ requestId }: { requestId: stri
     };
 
     const returnRequestSend = async (returnAtString?: string) => {
-        // borrowAt: `${borrowDate}T${borrowTime}:00+09:00`, 이런식으로 하면 됨
-
         if (setRequestList == null) {
             alert("새로고침후 다시 시도해주세요. 지속적으로 발생할 경우 관리자에게 연락해주세요.");
             return;
@@ -111,7 +113,23 @@ export default function SingleBorrowRequestPage({ requestId }: { requestId: stri
                 type: body.type,
             };
 
-            setRequestList(requestList.concat(returnRequest));
+            setRequestList(
+                requestList.concat(returnRequest).map((rq) => {
+                    if (rq.id == id) {
+                        return {
+                            ...rq,
+                            item: {
+                                id: itemId,
+                                location: null,
+                                name: itemName,
+                                password: null,
+                                price: itemPrice,
+                            },
+                        };
+                    }
+                    return rq;
+                }),
+            );
 
             alert("반납신청을 완료했습니다.");
             confirmModalOff();
@@ -153,7 +171,7 @@ export default function SingleBorrowRequestPage({ requestId }: { requestId: stri
                 />
                 <Button
                     title="반납신청하기"
-                    disabled={state != REQUEST_STATE_TYPE.PERMIT}
+                    disabled={state != REQUEST_STATE_TYPE.PERMIT || returnRequest != null}
                     className="py-3 flex-1 bold-16px"
                     onClick={confirmModalOn}
                 />
@@ -170,7 +188,7 @@ export default function SingleBorrowRequestPage({ requestId }: { requestId: stri
 
             <ConfirmModal
                 open={confirmModal}
-                message={`당초 신청하신 ${dateFormatter(returnAt)}에 반납하시겠습니까? `}
+                message={`당초 신청하신 ${dateFormatter(returnAt)}에 반납하시겠습니까?(취소 누르실 경우 날짜와 시간 수정이 가능합니다.)`}
                 onConfirm={returnRequestSend}
                 onCancel={dateSelectorOn}
                 onClose={confirmModalOff}

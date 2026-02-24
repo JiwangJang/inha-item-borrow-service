@@ -302,8 +302,8 @@ export default function TodoSinglePage({ id }: { id: string }) {
                 />
             ) : (
                 <div className="flex gap-1 mt-3">
-                    <Button title="불허가" className="flex-1 py-2 bold-16px bg-alert!" onClick={notAllowBtnOnclick} />
-                    <Button title="허가" className="flex-1 py-2 bold-16px" onClick={allowBtnOnclick} />
+                    <Button title="불허가" className="flex-1 py-3 bold-16px bg-alert!" onClick={notAllowBtnOnclick} />
+                    <Button title="허가" className="flex-1 py-3 bold-16px" onClick={allowBtnOnclick} />
                 </div>
             )}
             <ConfirmModal

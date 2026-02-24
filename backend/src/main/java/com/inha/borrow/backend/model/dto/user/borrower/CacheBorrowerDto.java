@@ -25,4 +25,5 @@ public class CacheBorrowerDto {
     boolean verify;
     String s3Link;
     String agreementVersion;
+    String banReason;
 }

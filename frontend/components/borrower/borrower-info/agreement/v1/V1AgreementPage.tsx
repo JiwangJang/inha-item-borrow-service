@@ -17,7 +17,6 @@ export default function V1AgreementPage() {
     const phoneNumberInputRef = useRef<HTMLInputElement>(null);
     const accountInputRef = useRef<HTMLInputElement>(null);
     const isAgreeBefore = borrowerContext.borrowerInfo?.agreementVersion != null;
-    console.log(borrowerContext.borrowerInfo);
 
     const checkboxImage =
         `${isAgree ? "/images/icons/others/active" : "/images/icons/others/inactive"}` + "/password.png";
