@@ -29,8 +29,14 @@ export default function BorrowerRequestPage() {
     )[0];
 
     const [alertModal, setAlertModal] = useState(false);
+    const [alertMsg, setAlertMsg] = useState("");
 
     useEffect(() => {
+        if (borrowerInfo.ban) {
+            setAlertModal(true);
+            setAlertMsg("이용금지인 경우 대여요청이 불가능합니다. 먼저 이용금지 사유를 해결해주세요.");
+            return;
+        }
         if (
             recentRequest != null &&
             ((recentRequest.type == REQUEST_TYPE.BORROW && recentRequest.state != REQUEST_STATE_TYPE.REJECT) ||
@@ -41,6 +47,8 @@ export default function BorrowerRequestPage() {
             // 최신 요청이 RETURN 타입이면서 승인(PERMIT) 이외의 상태라면,
             // 추가 대여요청이 불가능하다.
             setAlertModal(true);
+            setAlertMsg("한 번에 한 물건만 빌릴 수 있습니다.");
+            return;
         }
     }, []);
 
@@ -293,7 +301,7 @@ export default function BorrowerRequestPage() {
 
             <AlertModal
                 open={alertModal}
-                message="한 번에 한 물건만 빌릴 수 있습니다."
+                message={alertMsg}
                 onClose={() => setAlertModal(false)}
                 onConfirm={() => router.back()}
                 title="알림"

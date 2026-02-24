@@ -7,15 +7,23 @@ import NoticeSection from "./borrower-home-page/NoticeSection";
 import { useContext, useEffect, useState } from "react";
 import BorrowerContext from "@/context/BorrowerContext";
 import ConfirmModal from "../utilities/modal/ConfirmModal";
+import AlertModal from "../utilities/modal/AlertModal";
 
 export default function BorrowerHomePage() {
     const { borrowerInfo } = useContext(BorrowerContext);
     const [confirmModal, setConfirmModal] = useState(false);
+    const [alertModal, setAlertModal] = useState(false);
+    const [banReason, setBanReason] = useState("");
     const router = useRouter();
 
     useEffect(() => {
         if (borrowerInfo?.id != null && borrowerInfo?.agreementVersion == null) {
             setConfirmModal(true);
+        }
+
+        if (borrowerInfo?.ban && borrowerInfo?.banReason != null) {
+            setAlertModal(true);
+            setBanReason(borrowerInfo.banReason);
         }
     }, []);
     return (
@@ -38,6 +46,12 @@ export default function BorrowerHomePage() {
                 onClose={() => setConfirmModal(false)}
                 onConfirm={() => router.push("/borrower-info/agreement/v1")}
                 open={confirmModal}
+            />
+            <AlertModal
+                title="알림"
+                message={`귀하께서는 다음의 사유로 인해 이용금지 조치 되었습니다.\n \n(사유) ${banReason}`}
+                onClose={() => setAlertModal(false)}
+                open={alertModal}
             />
         </div>
     );

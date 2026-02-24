@@ -46,8 +46,6 @@ public class RequestRepository {
         String rejectReason = rs.getString("reject_reason");
         Timestamp responseCreatedAt = rs.getTimestamp("response_created_at");
 
-        log.info("responseId : {}", responseId);
-
         // manager 관련 값
         String managerId = rs.getString("manager");
         String managerName = rs.getString("manager_name");

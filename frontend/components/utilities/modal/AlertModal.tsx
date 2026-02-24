@@ -5,7 +5,7 @@ import BaseModal from "./BaseModal";
 export type AlertModalProps = {
     open: boolean;
     onClose: () => void;
-    title?: string;
+    title: string;
     message: React.ReactNode;
     confirmText?: string;
     onConfirm?: () => void;
@@ -14,7 +14,7 @@ export type AlertModalProps = {
 export default function AlertModal({ open, onClose, title, message, confirmText, onConfirm }: AlertModalProps) {
     return (
         <BaseModal open={open} onClose={onClose} title={title}>
-            <div className="regular-16px pb-2 px-3">{message}</div>
+            <p className="regular-16px pb-2 px-3 whitespace-pre-line leading-tight">{message}</p>
 
             <div className="h-px bg-boxBorder" />
 

@@ -82,7 +82,7 @@ public class BorrowerService {
                     .authorities(authorities)
                     .build();
 
-            // 있는 사용자인지 확인
+            // 캐시에 있는 사용자인지 확인
             CacheBorrowerDto dto = borrowerCache.getIfPresent(borrowerLoginDto.getId());
 
             if (dto == null) {
