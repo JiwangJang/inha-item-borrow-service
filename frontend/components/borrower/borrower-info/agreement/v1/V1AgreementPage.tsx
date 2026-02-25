@@ -98,7 +98,10 @@ export default function V1AgreementPage() {
 
     return (
         <div className="mt-5">
-            <p className="black-20px mb-3">1. 개인정보 수집 및 이용 동의</p>
+            {borrowerContext.borrowerInfo?.agreementVersion == null ? (
+                <p className="black-20px mb-3">1. 개인정보 수집 및 이용 동의</p>
+            ) : null}
+
             <AgreementSection />
             {isAgreeBefore ? (
                 <p className="mt-3 text-center">위 방침에 따른 개인정보 수집 및 이용에 동의하셨습니다.</p>
