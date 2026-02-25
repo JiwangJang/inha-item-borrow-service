@@ -4,6 +4,8 @@ import API_SERVER from "@/apiServer";
 import Button from "@/components/utilities/Button";
 import Input from "@/components/utilities/Input";
 import BorrowerContext from "@/context/BorrowerContext";
+import BorrowRequestContext from "@/context/BorrowRequestContext";
+import ItemContext from "@/context/ItemContext";
 import axios, { AxiosError } from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -11,7 +13,9 @@ import { useContext, useRef, useState } from "react";
 
 export default function BorrowerLoginPage() {
     const router = useRouter();
-    const borrowerContext = useContext(BorrowerContext);
+    const { borrowerInfo, setBorrowerInfo } = useContext(BorrowerContext);
+    const { setRequestList } = useContext(BorrowRequestContext);
+    const { setItemList } = useContext(ItemContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [passwordInputType, setPasswordInputType] = useState<string>("password");
     const [errorMsg, setErrorMsg] = useState<string>("");
@@ -36,6 +40,11 @@ export default function BorrowerLoginPage() {
             !(passwordInputRef.current instanceof HTMLInputElement)
         )
             return;
+
+        if (setBorrowerInfo == null || setItemList == null || setRequestList == null) {
+            return;
+        }
+
         setLoading(true);
         const id = idInputRef.current.value;
         const password = passwordInputRef.current.value;
@@ -49,11 +58,14 @@ export default function BorrowerLoginPage() {
                 },
                 { withCredentials: true },
             );
-            if (borrowerContext.setBorrowerInfo != null) {
-                borrowerContext.setBorrowerInfo(response.data.data);
-                router.replace("/");
-                router.refresh();
-            }
+
+            const { borrowerInfo, requests, items } = response.data.data;
+
+            setBorrowerInfo(borrowerInfo);
+            setRequestList(requests);
+            setItemList(items);
+
+            router.replace("/");
         } catch (error) {
             if (!(error instanceof AxiosError)) {
                 alert("브라우저 오류로 판단됩니다. 새로고침후 다시 시도해주세요.");
@@ -72,7 +84,7 @@ export default function BorrowerLoginPage() {
         }
     };
 
-    if (borrowerContext.borrowerInfo != null) {
+    if (borrowerInfo != null) {
         return null; // or loading spinner
     }
     return (

@@ -7,7 +7,7 @@ export default async function getAdminList(): Promise<AdminInfoInterface[]> {
         const cookieStore = await cookies();
         const cookie = cookieStore.toString();
 
-        const res = await fetch(`${API_SERVER}/admins`, { method: "GET", headers: { cookie } });
+        const res = await fetch(`${API_SERVER}/admins`, { method: "GET", headers: { cookie }, cache: "no-cache" });
         if (!res.ok) {
             return [];
         }
