@@ -9,6 +9,7 @@ import com.inha.borrow.backend.model.dto.user.borrower.*;
 
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Borrower;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
 import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
@@ -44,6 +45,7 @@ public class BorrowerService {
     private final Cache<String, TempBorrowerInfoDto> tempBorrowerCache;
     private final CacheScheduledTask cacheScheduledTask;
     private final String LOGIN_URL = "https://learn.inha.ac.kr/login/index.php";
+    private final List<String> DEPARTMENT_LIST = List.of("소프트웨어융합공학과", "메카트로닉스공학과", "반도체산업융합학과", "금융투자학과", "산업경영학과");
 
     public CacheBorrowerDto getMyInfo(String borrowerId) {
         CacheBorrowerDto result = borrowerCache.getIfPresent(borrowerId);
@@ -70,6 +72,9 @@ public class BorrowerService {
             String name = doc.select(".user-info-picture h4").text();
             String department = doc.select(".user-info-picture .department").text();
 
+            if (!DEPARTMENT_LIST.contains(department)) {
+                throw new InvalidValueException(ApiErrorCode.INVALID_ID.name(), "미래융합대학 학생만 이용가능합니다.");
+            }
             if (name.isEmpty()) {
                 // 이름이 null이면 로그인 실패
                 throw new BadCredentialsException("");

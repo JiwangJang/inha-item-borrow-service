@@ -79,6 +79,7 @@ export default function BorrowRequestPaperPage({ requestId }: { requestId: strin
             }
 
             alert("해당 요청 취소가 완료됐습니다.");
+            router.back();
         } catch (error) {
             console.error(error);
         }
