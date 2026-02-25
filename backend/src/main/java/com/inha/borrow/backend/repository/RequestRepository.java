@@ -151,43 +151,50 @@ public class RequestRepository {
      * @author 형민재(수정 : 장지왕)
      */
     public Request findById(String borrowerId, int requestId) {
-        StringBuilder sql = new StringBuilder("""
-                SELECT
-                        rq_a.id AS request_id,
-                        rq_a.item_id,
-                        item.name AS item_name,
-                        item.price AS item_price,
-                        item.location AS item_location,
-                        item.password AS item_password,
-                        rq_a.created_at AS request_created_at,
-                        rq_a.borrower_id,
-                        borrower.name AS borrower_name,
-                        rq_a.return_at,
-                        rq_a.borrow_at,
-                        rq_a.type,
-                        rq_a.state,
-                        rq_a.cancel,
-                        rp.id AS response_id,
-                        rp.created_at AS response_created_at,
-                        rp.reject_reason,
-                        rq_a.manager,
-                        admin.name AS manager_name,
-                        admin.position,
-                        rq_b.id AS counter_rq_id
-                    FROM request AS rq_a
-                        -- 대여요청과 반납요청간 짝지어주는 부분(대여시간이 동일하고 아이디가 다른 것을 묶는다)
-                        LEFT JOIN request AS rq_b
-                            ON rq_a.borrow_at = rq_b.borrow_at AND rq_a.id != rq_b.id
-                        LEFT JOIN response AS rp
-                            ON rp.request_id = rq_a.id
-                        LEFT JOIN admin
-                            ON admin.id = rq_a.manager
-                        LEFT JOIN item
-                            ON rq_a.item_id = item.id
-                        LEFT JOIN borrower
-                            ON rq_a.borrower_id = borrower.id
-                    WHERE rq_a.id = ? AND rq.cancel != true
-                """);
+        StringBuilder sql = new StringBuilder(
+                """
+                        SELECT
+                                rq_a.id AS request_id,
+                                rq_a.item_id,
+                                item.name AS item_name,
+                                item.price AS item_price,
+                                item.location AS item_location,
+                                item.password AS item_password,
+                                rq_a.created_at AS request_created_at,
+                                rq_a.borrower_id,
+                                borrower.name AS borrower_name,
+                                rq_a.return_at,
+                                rq_a.borrow_at,
+                                rq_a.type,
+                                rq_a.state,
+                                rq_a.cancel,
+                                rp.id AS response_id,
+                                rp.created_at AS response_created_at,
+                                rp.reject_reason,
+                                rq_a.manager,
+                                admin.name AS manager_name,
+                                admin.position,
+                                rq_b.id AS counter_rq_id
+                            FROM request AS rq_a
+                                -- 대여요청과 반납요청간 짝지어주는 부분
+                                -- 대여시간이 동일하고 아이디와 티입이 다른 것을 묶는다
+                                -- 이때 대여요청(BORROW)이면서 상태가 거절(REJECT)인 것은 제외하고 조인
+                                LEFT JOIN request AS rq_b
+                                    ON rq_a.borrow_at = rq_b.borrow_at
+                                        AND rq_a.id != rq_b.id
+                                        AND rq_a.type != rq_b.type
+                                        AND NOT(rq_b.type = "BORROW" AND rq_b.state = "REJECT")
+                                        AND rq_a.state != "REJECT"
+                                LEFT JOIN response AS rp
+                                    ON rp.request_id = rq_a.id
+                                LEFT JOIN admin
+                                    ON admin.id = rq_a.manager
+                                LEFT JOIN item
+                                    ON rq_a.item_id = item.id
+                                LEFT JOIN borrower
+                                    ON rq_a.borrower_id = borrower.id
+                            WHERE rq_a.id = ? AND rq_a.cancel != true
+                        """);
         List<Object> params = new ArrayList<>();
         params.add(requestId);
         if (borrowerId != null && !borrowerId.isEmpty()) {
@@ -213,43 +220,50 @@ public class RequestRepository {
      * @author 형민재(수정 : 장지왕)
      */
     public List<Request> findRequestsByCondition(String borrowerId, String adminId, String type, String state) {
-        StringBuilder sql = new StringBuilder("""
-                SELECT
-                        rq_a.id AS request_id,
-                        rq_a.item_id,
-                        item.name AS item_name,
-                        item.price AS item_price,
-                        item.location AS item_location,
-                        item.password AS item_password,
-                        rq_a.created_at AS request_created_at,
-                        rq_a.borrower_id,
-                        borrower.name AS borrower_name,
-                        rq_a.return_at,
-                        rq_a.borrow_at,
-                        rq_a.type,
-                        rq_a.state,
-                        rq_a.cancel,
-                        rp.id AS response_id,
-                        rp.created_at AS response_created_at,
-                        rp.reject_reason,
-                        rq_a.manager,
-                        admin.name AS manager_name,
-                        admin.position,
-                        rq_b.id AS counter_rq_id
-                    FROM request AS rq_a
-                        -- 대여요청과 반납요청간 짝지어주는 부분(대여시간이 동일하고 아이디가 다른 것을 묶는다)
-                        LEFT JOIN request AS rq_b
-                            ON rq_a.borrow_at = rq_b.borrow_at AND rq_a.id != rq_b.id
-                        LEFT JOIN response AS rp
-                            ON rp.request_id = rq_a.id
-                        LEFT JOIN admin
-                            ON admin.id = rq_a.manager
-                        LEFT JOIN item
-                            ON rq_a.item_id = item.id
-                        LEFT JOIN borrower
-                            ON rq_a.borrower_id = borrower.id
-                    WHERE rq_a.cancel != true
-                """);
+        StringBuilder sql = new StringBuilder(
+                """
+                        SELECT
+                                rq_a.id AS request_id,
+                                rq_a.item_id,
+                                item.name AS item_name,
+                                item.price AS item_price,
+                                item.location AS item_location,
+                                item.password AS item_password,
+                                rq_a.created_at AS request_created_at,
+                                rq_a.borrower_id,
+                                borrower.name AS borrower_name,
+                                rq_a.return_at,
+                                rq_a.borrow_at,
+                                rq_a.type,
+                                rq_a.state,
+                                rq_a.cancel,
+                                rp.id AS response_id,
+                                rp.created_at AS response_created_at,
+                                rp.reject_reason,
+                                rq_a.manager,
+                                admin.name AS manager_name,
+                                admin.position,
+                                rq_b.id AS counter_rq_id
+                            FROM request AS rq_a
+                                -- 대여요청과 반납요청간 짝지어주는 부분
+                                -- 대여시간이 동일하고 아이디와 티입이 다른 것을 묶는다
+                                -- 이때 대여요청(BORROW)이면서 상태가 거절(REJECT)인 것은 제외하고 조인
+                                LEFT JOIN request AS rq_b
+                                    ON rq_a.borrow_at = rq_b.borrow_at
+                                        AND rq_a.id != rq_b.id
+                                        AND rq_a.type != rq_b.type
+                                        AND NOT(rq_b.type = "BORROW" AND rq_b.state = "REJECT")
+                                        AND rq_a.state != "REJECT"
+                                LEFT JOIN response AS rp
+                                    ON rp.request_id = rq_a.id
+                                LEFT JOIN admin
+                                    ON admin.id = rq_a.manager
+                                LEFT JOIN item
+                                    ON rq_a.item_id = item.id
+                                LEFT JOIN borrower
+                                    ON rq_a.borrower_id = borrower.id
+                            WHERE rq_a.cancel != true
+                        """);
         List<Object> params = new ArrayList<>();
 
         // 관리자의 경우, 자신이 과거에 응답한 요청까지 조회할 수 있도록 수정

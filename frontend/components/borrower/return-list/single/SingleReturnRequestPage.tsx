@@ -22,10 +22,13 @@ export default function SingleReturnRequestPage({ requestId }: { requestId: stri
     }
 
     const previousRequest = requestList.find(
-        (rq) => rq.type == REQUEST_TYPE.BORROW && rq.borrowAt == currentRequest.borrowAt,
+        (rq) =>
+            rq.type == REQUEST_TYPE.BORROW &&
+            rq.borrowAt == currentRequest.borrowAt &&
+            rq.state == REQUEST_STATE_TYPE.PERMIT,
     )!;
 
-    const { item, borrowAt, returnAt, state, manager } = currentRequest;
+    const { item, borrowAt, returnAt, state, manager, response } = currentRequest;
     const { name: itemName } = item;
 
     let returnState;
@@ -53,6 +56,7 @@ export default function SingleReturnRequestPage({ requestId }: { requestId: stri
                 <InfoRow label="대여일시" value={dateFormatter(borrowAt)} />
                 <InfoRow label="반납일시" value={dateFormatter(returnAt)} />
                 <InfoRow label="요청상태" value={returnState} />
+                {response?.rejectReason != null ? <InfoRow label="불허가사유" value={response.rejectReason} /> : null}
             </InfoTable>
             <Button
                 className="mt-4 w-full py-3 bold-16px"
