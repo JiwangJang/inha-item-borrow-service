@@ -8,6 +8,10 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.inha.borrow.backend.config.auth.handler.LoginFailureHandler;
 import com.inha.borrow.backend.config.auth.handler.LoginSuccessHandler;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
+import com.inha.borrow.backend.service.AdminService;
+import com.inha.borrow.backend.service.ItemService;
+import com.inha.borrow.backend.service.RequestService;
+import com.inha.borrow.backend.service.StudentCouncilFeeVerificationService;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -288,8 +292,13 @@ public class AuthConfig {
 	}
 
 	@Bean
-	LoginSuccessHandler loginSuccessHandler(Cache<String, CacheBorrowerDto> borrowerCache, ObjectMapper objectMapper) {
-		return new LoginSuccessHandler(borrowerCache, objectMapper);
+	LoginSuccessHandler loginSuccessHandler(Cache<String, CacheBorrowerDto> borrowerCache,
+			ObjectMapper objectMapper,
+			ItemService itemService,
+			RequestService requestService,
+			StudentCouncilFeeVerificationService studentCouncilFeeVerificationService,
+			AdminService adminService) {
+		return new LoginSuccessHandler(borrowerCache, objectMapper, itemService, requestService);
 	}
 
 	@Bean

@@ -112,3 +112,47 @@ create table response(
     reject_reason varchar(100),
     type char(6) NOT NULL
 );
+
+
+
+-- 학생회 감사대비 쿼리
+SELECT
+        rq_a.id AS 대여요청번호,
+        rq_a.item_id  AS 대여물품번호,
+        item.name AS 대여물품명,
+        item.price AS 대여물품가격,
+        rq_a.created_at AS 대여요청시각,
+        rq_a.borrower_id AS 대여자학번,
+        borrower.name AS 대여자,
+        rq_a.return_at AS "반납시각(예상)",
+        rq_a.borrow_at AS 대여시각,
+        rq_a.type AS 요청구분,
+        rq_a.state AS 상태,
+        rp.id AS 응답번호,
+        rp.created_at AS 응답시각,
+        rp.reject_reason AS 거절사유,
+        admin.name AS 담당자,
+        admin.position AS 담당자직급,
+        rq_b.id AS 반납요청번호,
+        rq_b.type AS 반납요청구분,
+        rq_b.state AS 반납요청상태,
+        rq_b.created_at AS 반납요청시각,
+        rq_b.return_at AS 반납시각
+    FROM request AS rq_a
+        -- 대여요청과 반납요청간 짝지어주는 부분
+        -- 대여시간이 동일하고 아이디와 티입이 다른 것을 묶는다
+        -- 이때 대여요청(BORROW)이면서 상태가 거절(REJECT)인 것은 제외하고 조인
+        LEFT JOIN request AS rq_b
+            ON rq_a.borrow_at = rq_b.borrow_at
+                AND rq_a.id != rq_b.id
+                AND rq_a.type != rq_b.type
+                AND NOT(rq_b.type = "BORROW" AND rq_b.state = "REJECT")
+        LEFT JOIN response AS rp
+            ON rp.request_id = rq_a.id
+        LEFT JOIN admin
+            ON admin.id = rq_a.manager
+        LEFT JOIN item
+            ON rq_a.item_id = item.id
+        LEFT JOIN borrower
+            ON rq_a.borrower_id = borrower.id
+    WHERE rq_a.cancel != true AND rq_a.state = "PERMIT" AND rq_a.type ="BORROW";

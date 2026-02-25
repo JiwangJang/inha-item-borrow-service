@@ -1,6 +1,9 @@
 package com.inha.borrow.backend.config.auth.handler;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -10,9 +13,12 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
-import com.inha.borrow.backend.model.entity.user.Admin;
+import com.inha.borrow.backend.model.entity.Item;
+import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.entity.user.User;
+import com.inha.borrow.backend.service.ItemService;
+import com.inha.borrow.backend.service.RequestService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +38,8 @@ import lombok.extern.slf4j.Slf4j;
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final Cache<String, CacheBorrowerDto> borrowerCache;
     private final ObjectMapper objectMapper;
+    private final ItemService itemService;
+    private final RequestService requestService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -39,6 +47,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         User user = (User) authentication.getPrincipal();
         String authority = user.getAuthorities().get(0).getAuthority();
+        Map<String, Object> initialValue = new HashMap<>();
 
         if (authority.equals(Role.BORROWER.name())) {
             Borrower borrower = (Borrower) user;
@@ -52,14 +61,20 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                         .build();
             }
 
+            // 초기값 내려주는 작업
+            List<Request> requests = requestService.findRequestsByCondition(user, null, null, null);
+            List<Item> items = itemService.getAllItem(user);
+
+            initialValue.put("borrowerInfo", cache);
+            initialValue.put("requests", requests);
+            initialValue.put("items", items);
+
+            ApiResponse<Map<String, Object>> res = new ApiResponse<>(true, initialValue);
+
             response.getWriter()
-                    .write(objectMapper.writeValueAsString(new ApiResponse<CacheBorrowerDto>(true, cache)));
+                    .write(objectMapper.writeValueAsString(res));
             response.flushBuffer();
         } else {
-            Admin admin = (Admin) user;
-            response.getWriter()
-                    .write(objectMapper.writeValueAsString(new ApiResponse<Admin>(true, admin)));
-            response.flushBuffer();
             log.info("[INFO] 관리자 로그인 / 아이디 : {} / 권한 : {}", user.getId(), authority);
         }
 

@@ -9,9 +9,8 @@ export default function Header() {
     const pathname = usePathname();
 
     const spec: string | null = useMemo(() => {
-        if (pathname === "/borrower-request") {
-            return "물품대여신청";
-        } else if (pathname == "/admin/item/new") {
+        // 관리자용 링크
+        if (pathname == "/admin/item/new") {
             return "물품등록";
         } else if (pathname == "/admin/item/revise") {
             return "물품정보수정";
@@ -33,6 +32,10 @@ export default function Header() {
             return "회원정보조회";
         } else if (pathname.startsWith("/admin/notice")) {
             return "공지사항관리";
+        }
+        // 대여자용 링크
+        else if (pathname === "/borrower-request") {
+            return "물품대여신청";
         } else if (pathname.startsWith("/borrow-list/") && pathname.endsWith("/revise")) {
             return "대여신청 수정";
         } else if (pathname.startsWith("/borrow-list/")) {
@@ -43,12 +46,16 @@ export default function Header() {
             return "개인정보 수집동의";
         } else if (pathname.startsWith("/borrower-info/me")) {
             return "내 정보확인";
-        } else if (pathname.startsWith("/login")) {
-            return "로그인";
         } else if (pathname.startsWith("/borrower-info/student-council-fee")) {
             return "학생회비 납부";
+        }
+        // 공통
+        else if (pathname.startsWith("/login")) {
+            return "로그인";
         } else if (pathname.startsWith("/notice")) {
             return "공지사항조회";
+        } else if (pathname.startsWith("/privacy-policy")) {
+            return "개인정보 처리방침";
         }
         // 기타 페이지는 기본 형태로 표시(HomeHeader)
         return null;

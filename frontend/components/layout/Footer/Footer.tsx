@@ -13,9 +13,8 @@ export default function Footer() {
                 <SameSpaceRow label="책임자" value="제4대 미래융합대학 학생회장 최민성" />
                 <SameSpaceRow label="위치" value="인하대학교 미래융합대학관 M-202" />
                 <SameSpaceRow label="문의" value="inhafuture.4th@gmail.com" />
-                {/* 구글 드라이브 링크 걸기 */}
-                <Link href={""} className="underline">
-                    개인정보처리방침 세부내역
+                <Link href={"/privacy-policy"} className="underline">
+                    개인정보처리방침
                 </Link>{" "}
                 |{" "}
                 <Link href={"/admin"} className="underline">

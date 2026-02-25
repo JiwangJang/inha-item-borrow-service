@@ -47,8 +47,8 @@ export default function AdminLoginPage() {
                 },
                 { withCredentials: true },
             );
+
             router.replace("/admin");
-            router.refresh();
         } catch (error) {
             if (!(error instanceof AxiosError)) {
                 alert("브라우저 오류로 판단됩니다. 새로고침후 다시 시도해주세요.");
