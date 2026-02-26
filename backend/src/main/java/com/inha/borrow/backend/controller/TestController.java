@@ -10,4 +10,9 @@ public class TestController {
         return new String("Test!");
     }
 
+    @GetMapping("/anonymous-test")
+    public String getss() {
+        return new String("Anonymous Test!");
+    }
+
 }

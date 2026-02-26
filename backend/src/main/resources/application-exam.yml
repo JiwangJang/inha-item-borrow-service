@@ -10,6 +10,8 @@ spring:
         multipart:
             max-file-size: 5MB
             max-request-size: 5MB
+    jackson:
+        time-zone: Asia/Seoul
 
 logging:
     file:
@@ -22,8 +24,6 @@ logging:
             clean-history-on-start: false
             
 app:
-    jwt:
-        secret-key: secret-key
     cloud:
         aws:
             s3:
@@ -35,12 +35,14 @@ app:
                     student-council-fee: dir
                     student-identification: dir
                 region: region
-    sms-service:
-        api-key: ${API-KEY}
-        secret-api-key: ${SECRET-API-KEY}
 server:
     servlet:
         encoding:
             charset: UTF-8
             enabled: true
             force: true
+        session:
+            cookie:
+                http-only: true
+                secure: true
+                same-site: none

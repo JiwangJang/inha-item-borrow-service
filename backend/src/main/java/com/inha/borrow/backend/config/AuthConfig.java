@@ -88,7 +88,7 @@ public class AuthConfig {
 
 		httpSecurity
 				.csrf((csrf) -> csrf.disable())
-				.cors(Customizer.withDefaults())
+				.cors(Customizer -> corsConfigurationSource())
 				.formLogin((form) -> form.disable())
 				.exceptionHandling(exceptionHandler -> {
 					exceptionHandler
