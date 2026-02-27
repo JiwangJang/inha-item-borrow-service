@@ -71,10 +71,9 @@ export default function BorrowerLoginPage() {
                 alert("브라우저 오류로 판단됩니다. 새로고침후 다시 시도해주세요.");
                 return;
             }
-            console.log(error.response?.data);
             switch (Number(error.status)) {
                 case 400:
-                    setErrorMsg("아이디나 비밀번호를 확인하세요.");
+                    setErrorMsg(error.response?.data.data.errorMessage);
                     return;
                 default:
                     setErrorMsg("서버쪽의 문제입니다. 지속될 경우 관리자에게 연락바랍니다.");

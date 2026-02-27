@@ -9,7 +9,6 @@ import com.inha.borrow.backend.model.dto.user.borrower.*;
 
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Borrower;
-import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
 import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
@@ -73,15 +72,13 @@ public class BorrowerService {
             String department = doc.select(".user-info-picture .department").text();
 
             if (name.isEmpty()) {
-                // 이름이 null이면 로그인 실패(에러코드 내보내기)
-                throw new BadCredentialsException("아이디나 비밀번호를 확인해주세요.");
+                // 이름이 null이면 로그인 실패
+                throw new BadCredentialsException(ApiErrorCode.CHECK_YOUR_INFO.name());
             }
 
-            department = "다른과";
-
             if (!DEPARTMENT_LIST.contains(department)) {
-                // 타 단과대는 컷(에러코드 내보내기)
-                throw new BadCredentialsException("미래융합대학 학생만 이용가능합니다.");
+                // 타 단과대는 이용 불가
+                throw new BadCredentialsException(ApiErrorCode.INVALID_ID.name());
             }
             Borrower borrower = Borrower.builder()
                     .id(borrowerLoginDto.getId())

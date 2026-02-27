@@ -28,8 +28,15 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         @Override
         public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                         AuthenticationException exception) throws IOException, ServletException {
-                ErrorResponse errorResponse = new ErrorResponse(ApiErrorCode.CHECK_YOUR_INFO.name(),
-                                exception.getMessage());
+                ErrorResponse errorResponse = new ErrorResponse();
+
+                if (exception.getMessage().equals(ApiErrorCode.INVALID_ID.name())) {
+                        errorResponse.setErrorCode(ApiErrorCode.INVALID_ID.name());
+                        errorResponse.setErrorMessage("미래융합대학 학생만 이용가능합니다.");
+                } else {
+                        errorResponse.setErrorCode(ApiErrorCode.CHECK_YOUR_INFO.name());
+                        errorResponse.setErrorMessage(ApiErrorCode.CHECK_YOUR_INFO.getMessage());
+                }
                 ApiResponse<ErrorResponse> apiResponse = new ApiResponse<>(false, errorResponse);
 
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
