@@ -29,7 +29,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                         AuthenticationException exception) throws IOException, ServletException {
                 ErrorResponse errorResponse = new ErrorResponse(ApiErrorCode.CHECK_YOUR_INFO.name(),
-                                ApiErrorCode.CHECK_YOUR_INFO.getMessage());
+                                exception.getMessage());
                 ApiResponse<ErrorResponse> apiResponse = new ApiResponse<>(false, errorResponse);
 
                 response.setStatus(HttpStatus.BAD_REQUEST.value());

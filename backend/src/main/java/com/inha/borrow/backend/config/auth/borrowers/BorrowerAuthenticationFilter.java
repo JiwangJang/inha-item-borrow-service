@@ -13,6 +13,7 @@ import org.springframework.web.server.ServerErrorException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.auth.LoginRequestDto;
+import com.inha.borrow.backend.model.exception.InvalidValueException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

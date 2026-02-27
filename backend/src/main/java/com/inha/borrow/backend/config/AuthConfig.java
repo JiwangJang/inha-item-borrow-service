@@ -13,6 +13,8 @@ import com.inha.borrow.backend.service.ItemService;
 import com.inha.borrow.backend.service.RequestService;
 import com.inha.borrow.backend.service.StudentCouncilFeeVerificationService;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -43,6 +45,7 @@ import com.inha.borrow.backend.model.dto.apiResponse.ErrorResponse;
 
 @Configuration
 @EnableWebSecurity(debug = true)
+@Slf4j
 public class AuthConfig {
 
 	private final ObjectMapper objectMapper;
@@ -88,7 +91,7 @@ public class AuthConfig {
 
 		httpSecurity
 				.csrf((csrf) -> csrf.disable())
-				.cors(Customizer -> corsConfigurationSource())
+				.cors(Customizer.withDefaults())
 				.formLogin((form) -> form.disable())
 				.exceptionHandling(exceptionHandler -> {
 					exceptionHandler
@@ -256,8 +259,12 @@ public class AuthConfig {
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
 
-		// Next.js dev server origin
-		config.setAllowedOrigins(List.of("http://localhost:3000"));
+		// Next.js dev server origin(개발용)
+		config.setAllowedOriginPatterns(List.of(
+				"http://localhost:*",
+				"http://127.0.0.1:*",
+				"http://192.168.0.*:*"));
+		config.setAllowCredentials(true);
 
 		// Allow typical methods + preflight
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

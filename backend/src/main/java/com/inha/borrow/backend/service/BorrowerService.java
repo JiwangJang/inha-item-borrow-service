@@ -72,14 +72,17 @@ public class BorrowerService {
             String name = doc.select(".user-info-picture h4").text();
             String department = doc.select(".user-info-picture .department").text();
 
-            if (!DEPARTMENT_LIST.contains(department)) {
-                throw new InvalidValueException(ApiErrorCode.INVALID_ID.name(), "미래융합대학 학생만 이용가능합니다.");
-            }
             if (name.isEmpty()) {
-                // 이름이 null이면 로그인 실패
-                throw new BadCredentialsException("");
+                // 이름이 null이면 로그인 실패(에러코드 내보내기)
+                throw new BadCredentialsException("아이디나 비밀번호를 확인해주세요.");
             }
 
+            department = "다른과";
+
+            if (!DEPARTMENT_LIST.contains(department)) {
+                // 타 단과대는 컷(에러코드 내보내기)
+                throw new BadCredentialsException("미래융합대학 학생만 이용가능합니다.");
+            }
             Borrower borrower = Borrower.builder()
                     .id(borrowerLoginDto.getId())
                     .name(name)
