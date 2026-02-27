@@ -34,6 +34,7 @@ public enum ApiErrorCode {
     JSON_PARSING_ERROR("JSON파싱중 에러가 발생했습니다."),
     FILE_SIZE_TOO_LARGE("사진의 크기가 너무 큽니다."),
     REQUIRED_FILE_MISSING("필수 사진이 누락되었습니다."),
+    REQUEST_EXIST("진행중인 요청이 존재합니다."),
     NOT_ALLOWED("요청하신 작업을 할 권한이 없습니다."),
     NOT_ALLOWED_COUNCIL_FEE("요청하신 작업을 할 권한이 없습니다."),
     NOT_LOGINED("로그인 후 이용가능합니다.");

@@ -419,11 +419,14 @@ public class RequestRepository {
      * @return
      * @author 장지왕
      */
-    public RequestState findRequestStateById(int id, RequestType type) {
+    public Map<String, Object> findRequestStateById(int id, RequestType type) {
         try {
-            String sql = "SELECT state FROM request WHERE id = ? AND type = ?;";
+            String sql = "SELECT state, borrow_at FROM request WHERE id = ? AND type = ?;";
             return jdbcTemplate.queryForObject(sql, (rs, i) -> {
-                return RequestState.valueOf(rs.getString("state"));
+                Map<String, Object> result = new HashMap<>();
+                result.put("state",rs.getString("state"));
+                result.put("borrowAt",rs.getTimestamp("borrow_at"));
+                return result;
             }, id, type.name());
         } catch (EmptyResultDataAccessException e) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
@@ -487,6 +490,27 @@ public class RequestRepository {
         }
     }
 
+    public List<String> checkRequestType(String borrowerId, Timestamp borrowAt){
+        String sql = "SELECT type FROM request WHERE borrower_id = ? AND borrow_at = ?";
+        return jdbcTemplate.query(sql,(rs, rowNum) ->{
+            String type = rs.getString("type");
+            return type;
+        },borrowerId,borrowAt);
+    }
+
+    public Map<String, String> checkRequestCurrentState(String borrowerId){
+        try{
+            String sql = "SELECT state, type FROM request WHERE borrower_id = ? ORDER BY borrower_at DESC LIMIT 1";
+            return jdbcTemplate.queryForObject(sql,(rs, rowNum) -> {
+                Map<String, String> result = new HashMap<>();
+                result.put("state", rs.getString("state"));
+                result.put("type", rs.getString("type"));
+                return result;
+            },borrowerId);
+        }catch (EmptyResultDataAccessException e){
+            return new HashMap<>();
+        }
+    }
     /**
      * 테스트용 메서드
      */

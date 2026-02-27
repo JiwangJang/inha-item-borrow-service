@@ -55,7 +55,36 @@ public class RequestService {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_ALLOWED_COUNCIL_FEE;
             throw new AccessDeniedException(apiErrorCode.name() + ":" + apiErrorCode.getMessage());
         }
-
+        Map<String, String> currentTypeAndState = requestRepository.checkRequestCurrentState(saveRequestDto.getBorrowerId());
+        String currentType = currentTypeAndState.get("type");
+        String currentState = currentTypeAndState.get("state");
+        // 리퀘스트 type이 무엇이든지 진행중인 요청이 있는 경우 새 요청을 반려한다.
+        if(RequestState.ASSIGNED.name().equals(currentState) || RequestState.PENDING.name().equals(currentState)){
+            ApiErrorCode apiErrorCode = ApiErrorCode.REQUEST_EXIST;
+            throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
+        }
+        //borrow의 경우 사용자의 최근 리퀘스트가 없거나 있다면 type는 return 과 state는 permit 이여야 한다.
+        if(saveRequestDto.getType() == RequestType.BORROW){
+            if(currentType != null){
+                boolean returnPermit = RequestType.RETURN.name().equals(currentType) &&
+                        RequestState.PERMIT.name().equals(currentState);
+                boolean borrowReject = RequestType.BORROW.name().equals(currentType) &&
+                        RequestState.REJECT.name().equals(currentState);
+                if(!(returnPermit || borrowReject)){
+                    ApiErrorCode apiErrorCode = ApiErrorCode.REQUEST_EXIST;
+                    throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
+                }
+            }
+        }
+        //return의 경우 사용자의 최근 리퀘스트는 type는 borrow state는 permit 이여야한다.
+        if(saveRequestDto.getType() == RequestType.RETURN) {
+            boolean borrowPermit = currentType.equals(RequestType.BORROW.name()) &&
+                                   currentState.equals(RequestState.PERMIT.name());
+            if(!borrowPermit){
+                ApiErrorCode apiErrorCode = ApiErrorCode.REQUEST_EXIST;
+                throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
+            }
+        }
         // borrowAt < returnAt
         if (!saveRequestDto.getBorrowAt().isBefore(saveRequestDto.getReturnAt())) {
             // 대여요청이든 반납요청이든 동일하게 적용
@@ -81,10 +110,18 @@ public class RequestService {
             itemService.updateState(ItemState.REVIEWING, itemId);
         } else {
             // 반납일 경우 이전에 보냈던 요청이 있는지 확인
-            RequestState prevRequestState = requestRepository.findRequestStateById(prevRequestId, RequestType.BORROW);
-            if (prevRequestState != RequestState.PERMIT) {
+            Map<String, Object> stateAndBorrowAt = requestRepository.findRequestStateById(prevRequestId,RequestType.BORROW);
+            String prevRequestState = String.valueOf(stateAndBorrowAt.get("state"));
+            Timestamp prevRequestBorrowAt = (Timestamp) stateAndBorrowAt.get("borrowAt");
+            if (!(RequestState.PERMIT.name().equals(prevRequestState) && prevRequestBorrowAt.equals(saveRequestDto.getBorrowAt()))) {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_REQUEST_ID;
                 throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
+            }
+            Timestamp borrowAt = Timestamp.from(saveRequestDto.getBorrowAt().toInstant());
+            List<String> requestType = requestRepository.checkRequestType(saveRequestDto.getBorrowerId(),borrowAt);
+            if(requestType.contains(RequestType.RETURN.name())){
+                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
+                throw new InvalidValueException(apiErrorCode.name(), "이전에 요청한 반납 요청이 있습니다.");
             }
         }
         return requestRepository.save(saveRequestDto);
@@ -141,13 +178,12 @@ public class RequestService {
         // 사용자가 대여요청을 수정한 경우 -> 대여 요청시간이 현재보다 한시간 뒤인지 + 반납요청시간이 대여요청시간 이후인지 확인
         // 사용자가 반납요청을 수정한 경우 -> 반납 요청시간이 현재시간보다 이후인지.
 
-        if (state != RequestState.PENDING) {
-            // 관리자에게 배정되기 전까지는 수정가능
-            ApiErrorCode apiErrorCode = ApiErrorCode.CAN_NOT_MODIFY_REQUEST;
-            throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
-        }
-
         if (type == RequestType.BORROW) {
+            if (state != RequestState.PENDING) {
+                // 관리자에게 배정되기 전까지는 수정가능
+                ApiErrorCode apiErrorCode = ApiErrorCode.CAN_NOT_MODIFY_REQUEST;
+                throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
+            }
             // 1시간 이후인지
             if (patchRequestDto.getBorrowAt().isBefore(now.plusHours(1))) {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
@@ -158,7 +194,13 @@ public class RequestService {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "반납일시는 대여일시보다 이후여야 합니다.");
             }
-        } else {
+
+        } else if (type == RequestType.RETURN) {
+
+            if(state == RequestState.ASSIGNED || state ==RequestState.PERMIT){
+                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
+                throw new InvalidValueException(apiErrorCode.name(), "보류중 또는 거부됨이 아닌 반납 요청은 수정이 불가합니다.");
+            }
             if (!OffsetDateTime.now().isBefore(patchRequestDto.getReturnAt())) {
                 // 반납요청시각이 현재보다 이전이면 거부
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
@@ -215,3 +257,6 @@ public class RequestService {
         requestRepository.updateRequestState(state, requestId);
     }
 }
+
+
+
