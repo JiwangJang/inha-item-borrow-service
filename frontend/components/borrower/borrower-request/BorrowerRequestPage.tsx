@@ -131,7 +131,7 @@ export default function BorrowerRequestPage() {
                 return;
             }
 
-            if (borrowAtDate > returnAtDate) {
+            if (borrowAtDate >= returnAtDate) {
                 // 반납일시가 대여일시보다 늦은 경우
                 alert("반납일시는 대여일시보다 이후여야합니다.");
                 return;

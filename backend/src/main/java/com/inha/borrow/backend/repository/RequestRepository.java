@@ -289,11 +289,6 @@ public class RequestRepository {
 
         List<Request> result = jdbcTemplate.query(sql.toString(), requestRowMapper, params.toArray());
 
-        if (result.isEmpty()) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
-
         return result;
     }
 
@@ -424,8 +419,8 @@ public class RequestRepository {
             String sql = "SELECT state, borrow_at FROM request WHERE id = ? AND type = ?;";
             return jdbcTemplate.queryForObject(sql, (rs, i) -> {
                 Map<String, Object> result = new HashMap<>();
-                result.put("state",rs.getString("state"));
-                result.put("borrowAt",rs.getTimestamp("borrow_at"));
+                result.put("state", rs.getString("state"));
+                result.put("borrow_at", rs.getTimestamp("borrow_at"));
                 return result;
             }, id, type.name());
         } catch (EmptyResultDataAccessException e) {
@@ -490,27 +485,36 @@ public class RequestRepository {
         }
     }
 
-    public List<String> checkRequestType(String borrowerId, Timestamp borrowAt){
+    public List<String> checkRequestType(String borrowerId, Timestamp borrowAt) {
         String sql = "SELECT type FROM request WHERE borrower_id = ? AND borrow_at = ?";
-        return jdbcTemplate.query(sql,(rs, rowNum) ->{
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
             String type = rs.getString("type");
             return type;
-        },borrowerId,borrowAt);
+        }, borrowerId, borrowAt);
     }
 
-    public Map<String, String> checkRequestCurrentState(String borrowerId){
-        try{
-            String sql = "SELECT state, type FROM request WHERE borrower_id = ? ORDER BY borrower_at DESC LIMIT 1";
-            return jdbcTemplate.queryForObject(sql,(rs, rowNum) -> {
-                Map<String, String> result = new HashMap<>();
-                result.put("state", rs.getString("state"));
-                result.put("type", rs.getString("type"));
+    /**
+     * 최신 요청의 정보(아이디, 상태, 타입, 대여일시)를 반환함
+     * 
+     * @param borrowerId
+     * @return Map
+     */
+    public Map<String, Object> getRecentRequestInfo(String borrowerId) {
+        try {
+            String sql = "SELECT id, borrow_at, state, type FROM request WHERE borrower_id = ? ORDER BY created_at DESC LIMIT 1";
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                Map<String, Object> result = new HashMap<>();
+                result.put("state", RequestState.valueOf(rs.getString("state")));
+                result.put("borrow_at", rs.getTimestamp("borrow_at"));
+                result.put("id", rs.getInt("id"));
+                result.put("type", RequestType.valueOf(rs.getString("type")));
                 return result;
-            },borrowerId);
-        }catch (EmptyResultDataAccessException e){
-            return new HashMap<>();
+            }, borrowerId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         }
     }
+
     /**
      * 테스트용 메서드
      */

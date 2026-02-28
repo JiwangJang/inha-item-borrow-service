@@ -48,7 +48,9 @@ public class BorrowerService {
 
     public CacheBorrowerDto getMyInfo(String borrowerId) {
         CacheBorrowerDto result = borrowerCache.getIfPresent(borrowerId);
-
+        if (result == null) {
+            result = cacheScheduledTask.refreshBorrowerCache(borrowerId);
+        }
         return result;
     }
 

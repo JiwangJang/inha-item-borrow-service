@@ -107,7 +107,8 @@ public class ResponseService {
             responseRepository.update(responseId, newRejectReason);
         } else {
             requestRepository.updateRequestState(RequestState.REJECT, requestId);
-            itemRepository.updateState(ItemState.REVIEWING, itemId);
+            itemRepository.updateState(request.getType() == RequestType.BORROW ? ItemState.AFFORD : ItemState.REVIEWING,
+                    itemId);
             responseRepository.update(responseId, newRejectReason);
         }
     }
