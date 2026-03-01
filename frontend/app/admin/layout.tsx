@@ -4,7 +4,6 @@ import AdminProvider from "@/components/provider/AdminProvider";
 import AdminRequestProvider from "@/components/provider/AdminRequestProvider";
 import AdminStudentCouncilFeeProvider from "@/components/provider/AdminStudentCouncilFeeProvider";
 import SearchedBorrowersProvider from "@/components/provider/SearchedBorrowersProvider";
-import mockBorrowers from "@/mockData/mockBorrowers";
 import checkAdminLogin from "@/utilities/checkAdminLogin";
 import getAdminList from "@/utilities/getAdminList";
 import getItems from "@/utilities/getItems";
