@@ -11,9 +11,8 @@ import { useContext, useState } from "react";
 
 export default function BorrowerInfoPage() {
     const router = useRouter();
-    const borrowerContext = useContext(BorrowerContext);
+    const { borrowerInfo, setBorrowerInfo } = useContext(BorrowerContext);
     const [confirmModal, setConfirmModal] = useState(false);
-    const borrowerInfo = borrowerContext.borrowerInfo;
     const className = "px-5 py-4 border-b border-boxBorder last:border-0";
 
     return (
@@ -39,10 +38,10 @@ export default function BorrowerInfoPage() {
                 message="로그아웃 하시겠어요?"
                 onClose={() => setConfirmModal(false)}
                 onConfirm={async () => {
-                    if (borrowerContext.setBorrowerInfo) {
+                    if (setBorrowerInfo) {
                         await axios.get(`${API_SERVER}/logout`, { withCredentials: true });
                         alert("로그아웃이 완료됐습니다.");
-                        borrowerContext.setBorrowerInfo(null);
+                        setBorrowerInfo(null);
                         router.push("/");
                     }
                 }}

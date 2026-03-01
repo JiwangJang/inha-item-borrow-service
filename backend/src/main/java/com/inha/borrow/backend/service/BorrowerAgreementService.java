@@ -36,23 +36,24 @@ public class BorrowerAgreementService {
      * @author 형민재
      */
     public int saveAgreement(String borrowerId, AgreementDto agreementDto) {
-        CacheBorrowerDto dto = borrowerCache.getIfPresent(borrowerId);
-        TempBorrowerInfoDto borrowerInfo = tempBorrowerCache.getIfPresent(borrowerId);
+        CacheBorrowerDto cacheBorrowerDto = borrowerCache.getIfPresent(borrowerId);
+        TempBorrowerInfoDto tempBorrowerInfoDto = tempBorrowerCache.getIfPresent(borrowerId);
 
-        if (borrowerInfo == null && dto == null) {
+        if (tempBorrowerInfoDto == null && cacheBorrowerDto == null) {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_CACHE;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
 
-        if (dto == null && borrowerInfo != null) {
+        if (cacheBorrowerDto == null && tempBorrowerInfoDto != null) {
             // 신규유저인 경우 동작하는 로직(학생회비 납부인증 테이블 등록 및 대여자 테이블 등록, 대여자 캐시 등록)
-            BorrowerDto borrowerDto = new BorrowerDto(borrowerId, borrowerInfo.getName(),
-                    borrowerInfo.getDepartment(), agreementDto.getPhoneNumber(), agreementDto.getAccountNumber());
+            BorrowerDto borrowerDto = new BorrowerDto(borrowerId, tempBorrowerInfoDto.getName(),
+                    tempBorrowerInfoDto.getDepartment(), agreementDto.getPhoneNumber(),
+                    agreementDto.getAccountNumber());
             borrowerRepository.save(borrowerDto);
-            dto = CacheBorrowerDto.builder()
+            cacheBorrowerDto = CacheBorrowerDto.builder()
                     .id(borrowerId)
-                    .name(borrowerInfo.getName())
-                    .department(borrowerInfo.getDepartment())
+                    .name(tempBorrowerInfoDto.getName())
+                    .department(tempBorrowerInfoDto.getDepartment())
                     .phoneNumber(agreementDto.getPhoneNumber())
                     .accountNumber(agreementDto.getAccountNumber())
                     .ban(false)
@@ -60,7 +61,9 @@ public class BorrowerAgreementService {
                     .s3Link(null)
                     .agreementVersion(agreementDto.getVersion())
                     .build();
-            borrowerCache.put(borrowerId, dto);
+            borrowerCache.put(borrowerId, cacheBorrowerDto);
+            // 개인정보 동의후 임시캐시는 지운다
+            tempBorrowerCache.invalidate(borrowerId);
             studentCouncilFeeVerificationService.initalSave(borrowerId);
         }
 

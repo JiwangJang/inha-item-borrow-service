@@ -2,10 +2,12 @@ package com.inha.borrow.backend.service;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.benmanes.caffeine.cache.Cache;
+import com.inha.borrow.backend.cache.CacheScheduledTask;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.DenyFeeVerificationDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.ModifyVerificationResponseDto;
@@ -24,6 +26,7 @@ public class StudentCouncilFeeVerificationService {
     private final StudentCouncilFeeVerificationRepository repository;
     private final S3Service s3Service;
     private final Cache<String, CacheBorrowerDto> borrowerCache;
+    private final CacheScheduledTask scheduledTask;
 
     /**
      * 사용자가 새로운(또는 거절후) 요청을 등록할 때 사용
@@ -34,6 +37,10 @@ public class StudentCouncilFeeVerificationService {
      */
     public void verificationRequestSave(String borrowerId, MultipartFile verificationImage) {
         CacheBorrowerDto dto = borrowerCache.getIfPresent(borrowerId);
+        if (dto == null) {
+            throw new AccessDeniedException("개인정보 수집 이용에 동의해주셔야 등록 가능합니다.");
+        }
+
         if (dto != null && dto.getS3Link() != null) {
             s3Service.deleteFile(dto.getS3Link());
         }
@@ -84,9 +91,10 @@ public class StudentCouncilFeeVerificationService {
      * @param id
      * @author 장지왕
      */
-    public void permitVerificationRequest(int id) {
-        repository.updateForAdmin(id, true, null);
-        // 여기서는 캐시 업데이트하기
+    public void permitVerificationRequest(int verificationId, String borrowerId) {
+        repository.updateForAdmin(verificationId, true, null);
+        borrowerCache.invalidate(borrowerId);
+        scheduledTask.refreshBorrowerCache(borrowerId);
     }
 
     /**
@@ -98,7 +106,8 @@ public class StudentCouncilFeeVerificationService {
      */
     public void denyVerificationRequest(int id, DenyFeeVerificationDto dto) {
         repository.updateForAdmin(id, false, dto.getDenyReason());
-        // 여기서는 캐시 업데이트하기
+        borrowerCache.invalidate(dto.getBorrowerId());
+        scheduledTask.refreshBorrowerCache(dto.getBorrowerId());
     }
 
     /**
@@ -111,11 +120,11 @@ public class StudentCouncilFeeVerificationService {
     public void modifyVerificationResponse(int id, ModifyVerificationResponseDto dto) {
         if (dto.isVerify()) {
             repository.updateForAdmin(id, true, null);
-            // 여기서는 캐시 업데이트하기
         } else {
             repository.updateForAdmin(id, false, dto.getDenyReason());
-            // 여기서는 캐시 업데이트하기
         }
+        borrowerCache.invalidate(dto.getBorrowerId());
+        scheduledTask.refreshBorrowerCache(dto.getBorrowerId());
     }
 
     /**
@@ -132,6 +141,7 @@ public class StudentCouncilFeeVerificationService {
         }
         s3Service.deleteFile(cache.getS3Link());
         repository.cancel(borrowerId);
-        // 여기서는 캐시 업데이트하기
+        borrowerCache.invalidate(borrowerId);
+        scheduledTask.refreshBorrowerCache(borrowerId);
     }
 }

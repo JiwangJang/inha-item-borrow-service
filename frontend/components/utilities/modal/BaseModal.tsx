@@ -17,15 +17,7 @@ export type BaseModalProps = {
     transitionMs?: number;
 };
 
-export default function BaseModal({
-    open,
-    onClose,
-    title,
-    children,
-    closeOnBackdrop = true,
-    closeOnEsc = true,
-    transitionMs = 200,
-}: BaseModalProps) {
+export default function BaseModal({ open, onClose, title, children, transitionMs = 200 }: BaseModalProps) {
     const [mounted, setMounted] = useState(false);
     const [render, setRender] = useState(open);
 
@@ -44,14 +36,8 @@ export default function BaseModal({
     }, [open, transitionMs]);
 
     useEffect(() => {
-        // ESC눌렀을때 닫히도록 이벤트 등록
-        if (!open || !closeOnEsc) return;
-        const onKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
-        };
-        window.addEventListener("keydown", onKeyDown);
-        return () => window.removeEventListener("keydown", onKeyDown);
-    }, [open, closeOnEsc, onClose]);
+        if (!open) return;
+    }, [open, onClose]);
 
     if (!mounted || !render) return null;
 
@@ -63,7 +49,6 @@ export default function BaseModal({
                     "absolute inset-0 bg-black/40 transition-opacity duration-200",
                     open ? "opacity-100" : "opacity-0",
                 ].join(" ")}
-                onClick={closeOnBackdrop ? onClose : undefined}
             />
 
             {/* Dialog */}

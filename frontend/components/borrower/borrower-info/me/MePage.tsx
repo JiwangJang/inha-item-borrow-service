@@ -142,7 +142,7 @@ export default function MePage() {
                 </div>
 
                 <div className="px-5 py-4 border-b border-boxBorder last:border-0 flex flex-col">
-                    <p className="bold-18px">등록금 납부여부</p>
+                    <p className="bold-18px">학생회비 납부인증</p>
                     <p className="regular-16px">{borrowerInfo?.verify ? "납부완료" : "인증안함"}</p>
                 </div>
             </div>

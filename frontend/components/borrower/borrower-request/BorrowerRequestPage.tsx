@@ -30,11 +30,27 @@ export default function BorrowerRequestPage() {
 
     const [alertModal, setAlertModal] = useState(false);
     const [alertMsg, setAlertMsg] = useState("");
+    const [confirmFunc, setConfirmFunc] = useState<() => void>(() => {});
 
     useEffect(() => {
         if (borrowerInfo.ban) {
             setAlertModal(true);
             setAlertMsg("이용금지인 경우 대여요청이 불가능합니다. 먼저 이용금지 사유를 해결해주세요.");
+            setConfirmFunc(() => () => router.back());
+            return;
+        }
+        if (borrowerInfo.agreementVersion == null) {
+            setAlertModal(true);
+            setAlertMsg(
+                "개인정보 수집 이용에 동의하지 않은 경우 대여요청이 불가능합니다. 먼저 개인정보 수집에 동의해주세요.",
+            );
+            setConfirmFunc(() => () => router.push("/borrower-info/agreement/v1"));
+            return;
+        }
+        if (!borrowerInfo.verify) {
+            setAlertModal(true);
+            setAlertMsg("학생회비 납부인증을 하셔야 이용가능합니다.");
+            setConfirmFunc(() => () => router.push("/borrower-info/student-council-fee"));
             return;
         }
         if (
@@ -48,6 +64,7 @@ export default function BorrowerRequestPage() {
             // 추가 대여요청이 불가능하다.
             setAlertModal(true);
             setAlertMsg("한 번에 한 물건만 빌릴 수 있습니다.");
+            setConfirmFunc(() => () => router.back());
             return;
         }
     }, []);
@@ -213,8 +230,7 @@ export default function BorrowerRequestPage() {
                 }
 
                 // Any other Axios error
-                alert(errorObj?.message ?? "요청 중 오류가 발생했습니다. 지속될 경우 관리자에게 연락해주세요.");
-                console.error(error);
+                alert(errorObj?.errorMessage ?? "요청 중 오류가 발생했습니다. 지속될 경우 관리자에게 연락해주세요.");
                 return;
             }
             alert("요청 중 오류가 발생했습니다. 지속될 경우 관리자에게 연락해주세요.(x Axios)");
@@ -303,7 +319,7 @@ export default function BorrowerRequestPage() {
                 open={alertModal}
                 message={alertMsg}
                 onClose={() => setAlertModal(false)}
-                onConfirm={() => router.back()}
+                onConfirm={confirmFunc}
                 title="알림"
             />
         </div>

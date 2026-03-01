@@ -29,13 +29,13 @@ public class CacheScheduledTask {
     }
 
     /**
-     * 기존 사용자 캐쉬 리프레쉬를 위한 메서드
+     * 전체 사용자 캐쉬 리프레쉬를 위한 메서드
      *
      * @author 형민재
      */
     @Scheduled(fixedRate = ONE_HOUR)
-    public void refreshBorrowerListCache(){
-        List<CacheBorrowerDto> dtoList = borrowerRepository.findAllWithFeeVerification();
+    public void refreshBorrowerListCache() {
+        List<CacheBorrowerDto> dtoList = borrowerRepository.findAllForCache();
         Map<String, CacheBorrowerDto> map = dtoList.stream()
                 .collect(Collectors.toMap(
                         CacheBorrowerDto::getId,
@@ -45,9 +45,15 @@ public class CacheScheduledTask {
 
     }
 
-    public CacheBorrowerDto refreshBorrowerCache(String borrowerId){
-        CacheBorrowerDto dto = borrowerRepository.findByIdWithFeeVerification(borrowerId);
-        borrowerCache.put(borrowerId,dto);
+    /**
+     * 특정 사용자 캐시 초기화 메서드
+     * 
+     * @param borrowerId
+     * @return
+     */
+    public CacheBorrowerDto refreshBorrowerCache(String borrowerId) {
+        CacheBorrowerDto dto = borrowerRepository.findByIdForCache(borrowerId);
+        borrowerCache.put(borrowerId, dto);
         return dto;
     }
 }

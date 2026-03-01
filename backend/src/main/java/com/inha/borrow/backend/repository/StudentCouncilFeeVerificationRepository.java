@@ -154,7 +154,6 @@ public class StudentCouncilFeeVerificationRepository {
                 UPDATE student_council_fee
                 SET verify = ?, deny_reason = ?, response_at = ?
                 WHERE id = ?;
-                
                 """;
 
         jdbcTemplate.update(query, verify, denyReason, current, id);

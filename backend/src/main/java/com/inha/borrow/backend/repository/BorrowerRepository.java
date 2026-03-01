@@ -89,7 +89,7 @@ public class BorrowerRepository {
      * @return List<CacheBorrowerDto>
      * @author 형민재
      */
-    public List<CacheBorrowerDto> findAllWithFeeVerification() {
+    public List<CacheBorrowerDto> findAllForCache() {
         String sql = """
                 SELECT
                     b.id,
@@ -128,7 +128,7 @@ public class BorrowerRepository {
      * @return List<Borrower>
      * @author 형민재
      */
-    public CacheBorrowerDto findByIdWithFeeVerification(String borrowerId) {
+    public CacheBorrowerDto findByIdForCache(String borrowerId) {
         try {
             String sql = """
                     SELECT

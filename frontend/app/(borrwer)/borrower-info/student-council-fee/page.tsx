@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import API_SERVER from "@/apiServer";
 import StudentCouncilFeePage from "@/components/borrower/borrower-info/student-council-fee/StudentCouncilFeePage";
 import StudentCouncilFeeVerificationInterface from "@/types/StudentCouncilFeeVerificationInterface";
-import { notFound } from "next/navigation";
 
 async function getMyStudentCouncilFeeVerification(): Promise<StudentCouncilFeeVerificationInterface | null> {
     try {

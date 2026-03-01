@@ -71,13 +71,7 @@ public class BorrowerController {
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<CacheBorrowerDto>> me(@AuthenticationPrincipal Borrower borrower) {
         CacheBorrowerDto dto = borrowerService.getMyInfo(borrower.getId());
-        if (dto == null) {
-            dto = CacheBorrowerDto.builder()
-                    .id(borrower.getId())
-                    .name(borrower.getName())
-                    .department(borrower.getDepartment())
-                    .build();
-        }
+
         return ResponseEntity.ok(new ApiResponse<>(true, dto));
     }
 

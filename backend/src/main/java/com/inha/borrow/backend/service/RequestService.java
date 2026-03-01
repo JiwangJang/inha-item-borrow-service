@@ -52,8 +52,6 @@ public class RequestService {
         RequestType type = saveRequestDto.getType();
         int itemId = saveRequestDto.getItemId();
         int prevRequestId = saveRequestDto.getPrevRequestId();
-        StudentCouncilFeeVerification council = studentCouncilFeeVerificationRepository
-                .findRequestByBorrowerId(saveRequestDto.getBorrowerId());
         CacheBorrowerDto cacheBorrower = borrowerCache.getIfPresent(saveRequestDto.getBorrowerId());
         Map<String, Object> recentRequestInfo = requestRepository
                 .getRecentRequestInfo(saveRequestDto.getBorrowerId());
@@ -68,7 +66,12 @@ public class RequestService {
             throw new AccessDeniedException("이용이 금지된 사용자입니다.");
         }
 
-        if (!council.isVerify()) {
+        if (cacheBorrower.getAgreementVersion() == null) {
+            // 개인정보 동의 하지 않은 경우 물품대여 불가능
+            throw new AccessDeniedException("개인정보 동의를 먼저 하셔야합니다.");
+        }
+
+        if (!cacheBorrower.isVerify()) {
             // 학생회비 납부 인증이 되지 않은 경우 물품대여 불가능
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_ALLOWED_COUNCIL_FEE;
             throw new AccessDeniedException(apiErrorCode.name() + ":" + apiErrorCode.getMessage());

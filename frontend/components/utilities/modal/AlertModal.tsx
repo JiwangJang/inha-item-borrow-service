@@ -7,11 +7,10 @@ export type AlertModalProps = {
     onClose: () => void;
     title: string;
     message: React.ReactNode;
-    confirmText?: string;
     onConfirm?: () => void;
 };
 
-export default function AlertModal({ open, onClose, title, message, confirmText, onConfirm }: AlertModalProps) {
+export default function AlertModal({ open, onClose, title, message, onConfirm }: AlertModalProps) {
     return (
         <BaseModal open={open} onClose={onClose} title={title}>
             <p className="regular-16px pb-2 px-3 whitespace-pre-line leading-tight">{message}</p>

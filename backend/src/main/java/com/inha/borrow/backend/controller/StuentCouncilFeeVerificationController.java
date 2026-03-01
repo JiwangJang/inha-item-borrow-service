@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.DenyFeeVerificationDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.ModifyVerificationResponseDto;
+import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.PermitFeeVerificationDto;
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.StudentCouncilFeeVerificationService;
@@ -64,8 +65,9 @@ public class StuentCouncilFeeVerificationController {
      * @author 장지왕
      */
     @PatchMapping("/{id}/permit")
-    public ResponseEntity<Void> permitVerification(@PathVariable("id") String id) {
-        service.permitVerificationRequest(Integer.parseInt(id));
+    public ResponseEntity<Void> permitVerification(@PathVariable("id") String id,
+            @RequestBody PermitFeeVerificationDto dto) {
+        service.permitVerificationRequest(Integer.parseInt(id), dto.getBorrowerId());
         return ResponseEntity.ok().build();
     }
 

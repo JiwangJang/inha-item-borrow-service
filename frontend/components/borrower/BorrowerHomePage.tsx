@@ -8,6 +8,7 @@ import { useContext, useEffect, useState } from "react";
 import BorrowerContext from "@/context/BorrowerContext";
 import ConfirmModal from "../utilities/modal/ConfirmModal";
 import AlertModal from "../utilities/modal/AlertModal";
+import AGREEMENT_AGREEMENT_VERSION from "@/utilities/agreementVersion";
 
 export default function BorrowerHomePage() {
     const { borrowerInfo } = useContext(BorrowerContext);
@@ -44,7 +45,7 @@ export default function BorrowerHomePage() {
                 title="알림"
                 message="개인정보 수집동의를 하셔야 대여신청이 가능합니다. 수집동의하러 가시겠습니까?"
                 onClose={() => setConfirmModal(false)}
-                onConfirm={() => router.push("/borrower-info/agreement/v1")}
+                onConfirm={() => router.push(`/borrower-info/agreement/${AGREEMENT_AGREEMENT_VERSION}`)}
                 open={confirmModal}
             />
             <AlertModal

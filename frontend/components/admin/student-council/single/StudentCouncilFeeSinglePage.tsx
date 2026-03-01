@@ -31,11 +31,17 @@ export default function StudentCouncilFeeSinglePage({ id }: { id: number }) {
         notFound();
     }
 
+    const { borrowerId } = selected;
+
     const permit = async () => {
         try {
-            await axios.patch(`${API_SERVER}/student-council-fee-verification/${selected.id}/permit`, null, {
-                withCredentials: true,
-            });
+            await axios.patch(
+                `${API_SERVER}/student-council-fee-verification/${selected.id}/permit`,
+                { borrowerId },
+                {
+                    withCredentials: true,
+                },
+            );
 
             if (setStudentCouncilFeeList) {
                 // 변경사항 업데이트
@@ -65,7 +71,7 @@ export default function StudentCouncilFeeSinglePage({ id }: { id: number }) {
         try {
             await axios.patch(
                 `${API_SERVER}/student-council-fee-verification/${selected.id}/deny`,
-                { denyReason },
+                { denyReason, borrowerId },
                 { withCredentials: true },
             );
 

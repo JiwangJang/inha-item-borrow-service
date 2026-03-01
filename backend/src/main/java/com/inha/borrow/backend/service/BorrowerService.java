@@ -47,11 +47,18 @@ public class BorrowerService {
     private final List<String> DEPARTMENT_LIST = List.of("소프트웨어융합공학과", "메카트로닉스공학과", "반도체산업융합학과", "금융투자학과", "산업경영학과");
 
     public CacheBorrowerDto getMyInfo(String borrowerId) {
-        CacheBorrowerDto result = borrowerCache.getIfPresent(borrowerId);
-        if (result == null) {
-            result = cacheScheduledTask.refreshBorrowerCache(borrowerId);
+        CacheBorrowerDto cacheBorrowerDto = borrowerCache.getIfPresent(borrowerId);
+        TempBorrowerInfoDto tempBorrowerInfoDto = tempBorrowerCache.getIfPresent(borrowerId);
+
+        if (cacheBorrowerDto == null) {
+            cacheBorrowerDto = CacheBorrowerDto.builder()
+                    .id(borrowerId)
+                    .name(tempBorrowerInfoDto.getName())
+                    .department(tempBorrowerInfoDto.getDepartment())
+                    .build();
         }
-        return result;
+
+        return cacheBorrowerDto;
     }
 
     /**
@@ -183,6 +190,7 @@ public class BorrowerService {
     public void patchName(String name, String id) {
         borrowerRepository.patchName(name, id);
         deleteCache(id);
+        cacheScheduledTask.refreshBorrowerCache(id);
     }
 
     /**
@@ -196,6 +204,7 @@ public class BorrowerService {
         String newPhonenumber = dto.getNewPhonenumber();
         borrowerRepository.patchPhoneNumber(newPhonenumber, borrowerId);
         deleteCache(borrowerId);
+        cacheScheduledTask.refreshBorrowerCache(borrowerId);
     }
 
     /**
@@ -209,6 +218,7 @@ public class BorrowerService {
     public void patchAccountNumber(String accountNumber, String id) {
         borrowerRepository.patchAccountNumber(accountNumber, id);
         deleteCache(id);
+        cacheScheduledTask.refreshBorrowerCache(id);
     }
 
     /**
@@ -239,6 +249,7 @@ public class BorrowerService {
     public void patchBan(PatchBanDto dto, String borrowerId) {
         borrowerRepository.patchBan(borrowerId, dto.isBan(), dto.getBanReason());
         deleteCache(borrowerId);
+        cacheScheduledTask.refreshBorrowerCache(borrowerId);
     }
 
     public void deleteCache(String borrowerId) {
