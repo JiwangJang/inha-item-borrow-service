@@ -1,0 +1,43 @@
+spring:
+    application:
+        name: backend
+    datasource:
+        url: jdbc:mysql://localhost:3306/
+        username: asdf
+        password: dd
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    servlet:
+        multipart:
+            max-file-size: 5MB
+            max-request-size: 5MB
+    jackson:
+        time-zone: Asia/Seoul
+
+logging:
+    file:
+        name: path
+    level:
+        root: info
+    logback:
+        rollingpolicy:
+            file-name-pattern: path
+            clean-history-on-start: false
+            
+app:
+    cloud:
+        aws:
+            s3:
+                credentials:
+                    accessKey: ket0
+                    secretKey: key1
+                bucket: bbb
+                dir:
+                    student-council-fee: dir
+                    student-identification: dir
+                region: region
+server:
+    servlet:
+        encoding:
+            charset: UTF-8
+            enabled: true
+            force: true

@@ -1,0 +1,3 @@
+const AGREEMENT_AGREEMENT_VERSION: string = "v1";
+
+export default AGREEMENT_AGREEMENT_VERSION;

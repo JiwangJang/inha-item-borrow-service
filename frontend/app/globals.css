@@ -1,0 +1,91 @@
+@config "../tailwind.config.ts";
+@import "tailwindcss";
+
+/* ✅ 먼저 유틸을 직접 정의 */
+@layer utilities {
+    .font-pretendard {
+        font-family: Pretendard, system-ui, sans-serif;
+    }
+}
+
+@font-face {
+    font-family: Pretendard;
+    font-weight: 900;
+    src: url(/fonts/Pretendard-Black.otf);
+    font-display: swap;
+}
+@font-face {
+    font-family: Pretendard;
+    font-weight: 700;
+    src: url(/fonts/Pretendard-Bold.otf);
+    font-display: swap;
+}
+@font-face {
+    font-family: Pretendard;
+    font-weight: 400;
+    src: url(/fonts/Pretendard-Regular.otf);
+    font-display: swap;
+}
+
+@layer components {
+    .common-px {
+        @apply px-6;
+    }
+    /* Regular */
+    .regular-12px {
+        @apply font-pretendard font-normal text-xs leading-normal;
+    }
+
+    .regular-14px {
+        @apply font-pretendard font-normal text-sm leading-normal;
+    }
+
+    .regular-16px {
+        @apply font-pretendard font-normal text-base leading-normal;
+    }
+
+    .regular-18px {
+        @apply font-pretendard font-normal text-[18px] leading-normal;
+    }
+
+    /* Bold */
+    .bold-12px {
+        @apply font-pretendard font-bold text-xs leading-normal;
+    }
+
+    .bold-14px {
+        @apply font-pretendard font-bold text-sm leading-normal;
+    }
+
+    .bold-16px {
+        @apply font-pretendard font-bold text-base leading-normal;
+    }
+
+    .bold-18px {
+        @apply font-pretendard font-bold text-lg leading-normal;
+    }
+
+    .bold-20px {
+        @apply font-pretendard font-bold text-xl leading-normal;
+    }
+
+    .bold-24px {
+        @apply font-pretendard font-bold text-2xl leading-normal;
+    }
+
+    /* Black */
+    .black-12px {
+        @apply font-pretendard font-black text-xs leading-tight;
+    }
+    .black-20px {
+        @apply font-pretendard font-black text-xl leading-tight;
+    }
+
+    .black-24px {
+        @apply font-pretendard font-black text-2xl leading-tight;
+    }
+
+    .black-32px {
+        @apply font-pretendard font-black text-4xl leading-tight;
+    }
+}

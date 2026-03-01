@@ -1,0 +1,61 @@
+package com.inha.borrow.backend.model.entity.user;
+
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.springframework.security.core.GrantedAuthority;
+
+/**
+ * 대여자(Borrower) 유저를 나타내는 클래스
+ * <p>
+ * User 추상클래스를 상속함. authroity는 BORROWER
+ * 
+ * @author 장지왕
+ */
+@Getter
+@Setter
+@SuperBuilder
+public class Borrower extends User {
+    /**
+     * 대여 정지 사용자인지 표시
+     */
+    private boolean ban;
+    private String banReason;
+    /**
+     * 학번
+     */
+    private String studentNumber;
+    /**
+     * 보증금 반환계좌
+     */
+    private String accountNumber;
+
+    private String department;
+    private String phonenumber;
+
+    /**
+     * 대여자 객체를 생성
+     * <p>
+     * authroity는 BORROWER
+     * 
+     * @param id            대여자 ID
+     * @param name          대여자 이름
+     * @param phonenumber   대여자 전화번호
+     * @param authorities   대여자 권한(BORROWER 고정)
+     * @param ban           대여 정지 사용자 여부
+     * @param accountNumber 대여자 보증금 반환 계좌
+     */
+    public Borrower(String id, String name, String phonenumber,
+            List<GrantedAuthority> authorities, boolean ban, String accountNumber, String department,
+            String banReason) {
+        super(id, name, authorities);
+        this.phonenumber = phonenumber;
+        this.ban = ban;
+        this.accountNumber = accountNumber;
+        this.department = department;
+        this.banReason = banReason;
+    }
+
+}
