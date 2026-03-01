@@ -11,6 +11,6 @@ export default function AdminProvider({
     initialValue: AdminInfoInterface;
     children: React.ReactNode;
 }) {
-    const [adminInfo, setAdminInfo] = useState(initialValue);
+    const [adminInfo, setAdminInfo] = useState<AdminInfoInterface | null>(initialValue);
     return <AdminContext value={{ adminInfo, setAdminInfo }}>{children}</AdminContext>;
 }
