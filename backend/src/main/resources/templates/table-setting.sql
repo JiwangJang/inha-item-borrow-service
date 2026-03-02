@@ -41,7 +41,7 @@ CREATE TABLE borrower(
     -- 혹시모르니 10자로 설정
     name varchar(10) NOT NULL,
     phone_number char(13) NOT NULL,
-    account_number varchar(20) NOT NULL,
+    account_number TEXT NOT NULL,
     ban boolean default false,
     department varchar(50) NOT NULL,
     ban_reason TEXT
