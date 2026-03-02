@@ -260,6 +260,7 @@ public class AuthConfig {
 		CorsConfiguration config = new CorsConfiguration();
 
 		// Next.js dev server origin(개발용)
+		config.setAllowedOrigins(List.of("https://inha-item-borrow-service.vercel.app"));
 		config.setAllowedOriginPatterns(List.of(
 				"http://localhost:*",
 				"http://127.0.0.1:*",
