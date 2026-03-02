@@ -104,6 +104,12 @@ export default function AdminLoginPage() {
                 onClick={loginBtnOnclickFunc}
                 loading={loading}
             />
+            <Button
+                className="w-full py-3 mt-1 bg-placeholder!"
+                title="대여자용 페이지로 이동"
+                onClick={() => router.push("/")}
+                loading={loading}
+            />
             {errorMsg ? <p className="mt-2 text-center bold-16px">{errorMsg}</p> : null}
         </div>
     );
