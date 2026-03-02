@@ -23,7 +23,6 @@ export default async function checkBorrowLogin(): Promise<BorrowerInfoInterface 
 
         if (!res.ok) return null;
         const data = await res.json();
-        console.log(data);
         return data.data;
     } catch (e) {
         console.log(e);
