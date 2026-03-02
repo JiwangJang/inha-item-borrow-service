@@ -44,7 +44,7 @@ import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.apiResponse.ErrorResponse;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @Slf4j
 public class AuthConfig {
 
