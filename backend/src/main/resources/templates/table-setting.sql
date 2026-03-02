@@ -14,15 +14,13 @@ CREATE TABLE division(
     is_delete boolean default false
 );
 
-INSERT INTO admin_role(role, level) VALUE("PRESIDENT", 4);
-INSERT INTO admin_role(role, level) VALUE("VICE_PRESIDENT", 3);
-INSERT INTO admin_role(role, level) VALUE("DIVISION_HEAD", 2);
-INSERT INTO admin_role(role, level) VALUE("DIVISION_MEMBER", 1);
+INSERT INTO admin_role (role, level)
+VALUES ('PRESIDENT', 4), ('VICE_PRESIDENT', 3), ('DIVISION_HEAD', 2), ('DIVISION_MEMBER', 1);
 
-INSERT INTO division(code, name) VALUE("TEST", "테스트 부서")
+INSERT INTO division(code, name) VALUE("TEST", "테스트 부서");
 
-INSERT INTO admin(id, password, email, name, phonenumber, position, division)
-    VALUE("test_admin", "$2a$10$SFzLKBUxk9wZ0Tbolo6pUuCi026zyM5L5vtGeiPJXuM21vDTdfrwS", "dd", "test_admin", "999", "PRESIDENT", "TEST");
+INSERT INTO admin(id, password, name, position, division)
+    VALUE("test_admin", "$2a$10$SFzLKBUxk9wZ0Tbolo6pUuCi026zyM5L5vtGeiPJXuM21vDTdfrwS", "test_admin", "PRESIDENT", "TEST");
 
 -- admin table 생성
 CREATE TABLE admin(
