@@ -55,7 +55,7 @@ export default function AdminNoticeSinglePage({ noticeId }: { noticeId: string }
                 게시일시 : {dateFormatter(postedAt)}
                 {postedAt != updatedAt ? `(${dateFormatter(updatedAt)} 최종수정)` : null}
             </p>
-            <p className="leading-tight line-clamp-2 mt-3">{content}</p>
+            <p className="leading-tight line-clamp-2 mt-3 whitespace-pre-wrap">{content}</p>
             <div className="flex gap-2 mt-4">
                 <Button title="삭제" className="py-2 bg-alert! w-full" onClick={() => setConfirmModal(true)} />
                 <Button
