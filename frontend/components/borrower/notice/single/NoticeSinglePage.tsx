@@ -23,7 +23,7 @@ export default function NoticeSinglePage({ noticeId }: { noticeId: string }) {
                 게시일시 : {dateFormatter(postedAt)}
                 {postedAt != updatedAt ? `(${dateFormatter(updatedAt)} 최종수정)` : null}
             </p>
-            <p className="leading-tight line-clamp-2 mt-3 whitespace-pre-wrap">{content}</p>
+            <p className="leading-tight mt-3 whitespace-pre-wrap">{content}</p>
         </div>
     );
 }
