@@ -88,6 +88,19 @@ export default function StudentCouncilFeePage({
                 open={confirmModal}
                 title="경고"
             />
+
+            {verifi?.s3Link == null ? (
+                <div className="mt-5">
+                    <p className="bold-18px">[참고] 학생회비 납부인증 사진 예시 </p>
+                    <p>사진클릭시 새창보기로 열립니다.</p>
+                    <div
+                        className="relative w-full h-75 mt-3 border-2 border-black"
+                        onClick={() => window.open("/images/council-fee-example.png")}
+                    >
+                        <Image src={"/images/council-fee-example.png"} fill alt="학생회비 납부인증 사진 예시"></Image>
+                    </div>
+                </div>
+            ) : null}
         </div>
     );
 }

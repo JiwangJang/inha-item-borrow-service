@@ -16,7 +16,7 @@ export default function Header() {
             return "물품정보수정";
         } else if (pathname.startsWith("/admin/student-council")) {
             return "학생회비 납부확인";
-        } else if (pathname.startsWith("/admin/to-do/borrow/") || pathname.startsWith("/admin/to-do/return/")) {
+        } else if (pathname.startsWith("/admin/to-do/") || pathname.startsWith("/admin/to-do/")) {
             return "세부사항보기";
         } else if (pathname.startsWith("/admin/item/")) {
             return "물품조회";

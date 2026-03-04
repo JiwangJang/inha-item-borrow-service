@@ -36,7 +36,8 @@ export default function BorrowRequestPaperPage({ requestId }: { requestId: strin
     const { borrowAt, returnAt, createdAt, state } = current;
     const { name: itemName } = current.item;
     const response = current.response;
-    const responseAt = response?.createdAt;
+    const responseDate = response?.createdAt == null ? null : new Date(response.createdAt);
+    const createdAtDate = new Date(createdAt);
     const router = useRouter();
 
     const cancelRequest = async () => {
@@ -112,7 +113,7 @@ export default function BorrowRequestPaperPage({ requestId }: { requestId: strin
 
             <div className="mt-4 text-center">
                 <p className="bold-16px">본인은 위와 같이 물품대여신청합니다.</p>
-                <p className="regular-16px">{dateFormatter(createdAt).slice(0, 13)}</p>
+                <p className="regular-16px">{`${createdAtDate.getFullYear()}. ${createdAtDate.getMonth() + 1}. ${createdAtDate.getDate()}.`}</p>
                 {current.cancel ? <p>취소된 요청입니다.</p> : null}
             </div>
 
@@ -130,7 +131,7 @@ export default function BorrowRequestPaperPage({ requestId }: { requestId: strin
                             }}
                         ></div>
                     </div>
-                    <p>{dateFormatter(responseAt!).slice(0, 13)}</p>
+                    <p>{`${responseDate!.getFullYear()}. ${responseDate!.getMonth() + 1}. ${responseDate!.getDate()}.`}</p>
                     {state == REQUEST_STATE_TYPE.PERMIT ? null : <p>불허가 사유 : {response?.rejectReason}</p>}
                 </div>
             ) : state == REQUEST_STATE_TYPE.PENDING ? (

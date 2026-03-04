@@ -19,6 +19,10 @@ export default function Footer() {
                 |{" "}
                 <Link href={"/admin"} className="underline">
                     관리자페이지
+                </Link>{" "}
+                | {/* 메뉴얼 제작후 노션 링크 추가 */}
+                <Link href={"#"} className="underline">
+                    사용 메뉴얼
                 </Link>
             </div>
 

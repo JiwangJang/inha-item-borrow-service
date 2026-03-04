@@ -38,6 +38,7 @@ export default function ReturnRequestPaperPage({ requestId }: { requestId: strin
     const { name: itemName } = current.item;
     const response = current.response;
     const responseAt = response?.createdAt;
+    const createdAtDate = new Date(createdAt);
 
     const returnRequestRevise = async (returnAtString: string) => {
         // borrowAt: `${borrowDate}T${borrowTime}:00+09:00`, 이런식으로 하면 됨
@@ -106,7 +107,7 @@ export default function ReturnRequestPaperPage({ requestId }: { requestId: strin
 
             <div className="mt-4 text-center">
                 <p className="bold-16px">본인은 위와 같이 물품반납신청합니다.</p>
-                <p className="regular-16px">{dateFormatter(createdAt).slice(0, 13)}</p>
+                <p className="regular-16px">{`${createdAtDate.getFullYear()}. ${createdAtDate.getMonth() + 1}. ${createdAtDate.getDate()}.`}</p>
             </div>
 
             {state == REQUEST_STATE_TYPE.PERMIT || state == REQUEST_STATE_TYPE.REJECT ? (
