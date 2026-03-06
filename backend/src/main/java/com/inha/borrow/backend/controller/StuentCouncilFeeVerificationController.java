@@ -32,6 +32,27 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class StuentCouncilFeeVerificationController {
     private final StudentCouncilFeeVerificationService service;
 
+    // --------- 등록 메서드 ---------
+
+    /**
+     * 대여자가 인증 신청을 등록하는 메서드(거절후 재신청도 여기로)
+     * 
+     * @param verificationImage 인증이미지
+     * @param borrower          사용자정보
+     * @return 200
+     * @author 장지왕
+     */
+    @PostMapping
+    public ResponseEntity<Void> saveStudentCouncilFeeVerification(
+            @RequestParam("verificationImage") MultipartFile verificationImage,
+            @AuthenticationPrincipal Borrower borrower) {
+        String id = borrower.getId();
+        service.verificationRequestSave(id, verificationImage);
+        return ResponseEntity.ok().build();
+    }
+
+    // --------- 조회 메서드 ---------
+
     /**
      * 관리자가 처리해야할(또는 한) 요청 목록을 가져오는 메서드
      * 
@@ -39,7 +60,7 @@ public class StuentCouncilFeeVerificationController {
      * @author 장지왕
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<StudentCouncilFeeVerification>>> findAllRequests() {
+    public ResponseEntity<ApiResponse<List<StudentCouncilFeeVerification>>> findAllStudentCouncilFeeVerification() {
         List<StudentCouncilFeeVerification> result = service.findAllRequests();
         return ResponseEntity.ok(new ApiResponse<List<StudentCouncilFeeVerification>>(true, result));
     }
@@ -51,11 +72,13 @@ public class StuentCouncilFeeVerificationController {
      * @author 장지왕
      */
     @GetMapping("/single")
-    public ResponseEntity<ApiResponse<StudentCouncilFeeVerification>> findRequestById(
+    public ResponseEntity<ApiResponse<StudentCouncilFeeVerification>> findStudentCouncilFeeVerificationById(
             @AuthenticationPrincipal Borrower user) {
         StudentCouncilFeeVerification result = service.findRequestByBorrowerId(user.getId());
         return ResponseEntity.ok(new ApiResponse<StudentCouncilFeeVerification>(true, result));
     }
+
+    // --------- 수정 메서드 ---------
 
     /**
      * 대여자의 인증신청 요청을 승인하는 메서드
@@ -65,7 +88,7 @@ public class StuentCouncilFeeVerificationController {
      * @author 장지왕
      */
     @PatchMapping("/{id}/permit")
-    public ResponseEntity<Void> permitVerification(@PathVariable("id") String id,
+    public ResponseEntity<Void> updateStudentCouncilFeeVerificationVerify(@PathVariable("id") String id,
             @RequestBody PermitFeeVerificationDto dto) {
         service.permitVerificationRequest(Integer.parseInt(id), dto.getBorrowerId());
         return ResponseEntity.ok().build();
@@ -78,7 +101,7 @@ public class StuentCouncilFeeVerificationController {
      * @return
      */
     @PatchMapping("/{id}/deny")
-    public ResponseEntity<Void> denyVerification(@PathVariable("id") String id,
+    public ResponseEntity<Void> updateStudentCouncilFeeVerificationVerify(@PathVariable("id") String id,
             @RequestBody @Valid DenyFeeVerificationDto dto) {
         service.denyVerificationRequest(Integer.parseInt(id), dto);
         return ResponseEntity.ok().build();
@@ -92,38 +115,22 @@ public class StuentCouncilFeeVerificationController {
      * @author 장지왕
      */
     @PatchMapping("/{id}/modify")
-    public ResponseEntity<Void> reviseVerificationResponse(@PathVariable("id") String id,
+    public ResponseEntity<Void> updateStudentCouncilFeeVerificationResponse(@PathVariable("id") String id,
             @Valid ModifyVerificationResponseDto dto) {
         service.modifyVerificationResponse(Integer.parseInt(id), dto);
         return ResponseEntity.ok().build();
     }
 
+    // --------- 삭제 메서드 ---------
     /**
-     * 대여자가 인증 신청을 등록하는 메서드(거절후 재신청도 여기로)
-     * 
-     * @param verificationImage 인증이미지
-     * @param borrower          사용자정보
-     * @return 200
-     * @author 장지왕
-     */
-    @PostMapping
-    public ResponseEntity<Void> requestVerification(
-            @RequestParam("verificationImage") MultipartFile verificationImage,
-            @AuthenticationPrincipal Borrower borrower) {
-        String id = borrower.getId();
-        service.verificationRequestSave(id, verificationImage);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * 대여자가 인증 신청한거 취소하는 메서드
+     * 대여자가 인증 신청한거 취소하는 메서드(Soft-delete)
      * 
      * @param borrower
      * @return 204
      * @author 장지왕
      */
     @DeleteMapping
-    public ResponseEntity<Void> cancelVerificationRequest(@AuthenticationPrincipal Borrower borrower) {
+    public ResponseEntity<Void> updateStudentCouncilFeeVerificationCancel(@AuthenticationPrincipal Borrower borrower) {
         String borrowerId = borrower.getId();
         service.cancel(borrowerId);
         return ResponseEntity.noContent().build();

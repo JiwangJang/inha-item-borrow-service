@@ -31,12 +31,40 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
+    // --------- 생성 메서드 ---------
+
+    /**
+     * 새로운 대여물품을 등록하는 메서드
+     * 
+     * @param itemDto
+     * @return
+     */
+    @PostMapping
+    public ResponseEntity<ApiResponse<Item>> saveItem(@RequestBody @Valid ItemDto itemDto) {
+        Item newItem = itemService.createItem(itemDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, newItem));
+    }
+
+    // --------- 조회 메서드 ---------
+    /**
+     * 등록된 모든 대여물품을 조회하는 메서드
+     * 
+     * @param user
+     * @return
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<List<Item>>> getAllItems(@AuthenticationPrincipal User user) {
         List<Item> result = itemService.getAllItem(user);
         return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
+    /**
+     * 대여물품 단일조회 메서드
+     * 
+     * @param user
+     * @param id
+     * @return
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Item>> getItemById(@AuthenticationPrincipal User user,
             @PathVariable("id") int id) {
@@ -44,12 +72,15 @@ public class ItemController {
         return ResponseEntity.ok(new ApiResponse<Item>(true, result));
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<Item>> createItem(@RequestBody @Valid ItemDto itemDto) {
-        Item newItem = itemService.createItem(itemDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, newItem));
-    }
+    // --------- 수정 메서드 ---------
 
+    /**
+     * 대여물품의 정보를 수정하는 메서드
+     * 
+     * @param id
+     * @param itemReviseRequestDto
+     * @return
+     */
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> updateItem(@PathVariable("id") int id,
             @Valid @RequestBody ItemReviseRequestDto itemReviseRequestDto) {
@@ -57,6 +88,15 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(true, null));
     }
 
+    // --------- 삭제 메서드 ---------
+
+    /**
+     * 대여물품을 삭제하는 메서드
+     * 
+     * @param id
+     * @param deleteRequestDto
+     * @return
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteItem(@PathVariable("id") int id,
             @Valid @RequestBody ItemDeleteRequestDto deleteRequestDto) {

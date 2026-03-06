@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class ResponseController {
     private final ResponseService responseService;
 
+    // --------- 생성 메서드 ---------
+
     /**
      * 응답을 생성하는 API
      * 
@@ -34,7 +36,7 @@ public class ResponseController {
      * @author 장지왕
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<Response>> createResponse(
+    public ResponseEntity<ApiResponse<Response>> saveResponse(
             @AuthenticationPrincipal(expression = "id") String adminId,
             @RequestBody SaveResponseDto dto) {
         Response response = responseService.createResponse(adminId, dto);
@@ -42,8 +44,17 @@ public class ResponseController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // --------- 수정 메서드 ---------
+    /**
+     * 응답을 수정하는 메서드
+     * 
+     * @param adminId
+     * @param responseId
+     * @param dto
+     * @return
+     */
     @PatchMapping("/{response-id}")
-    public ResponseEntity<Void> updateReseponse(
+    public ResponseEntity<Void> updateResponse(
             @AuthenticationPrincipal(expression = "id") String adminId,
             @PathVariable("response-id") String responseId,
             @RequestBody PatchResponseDto dto) {

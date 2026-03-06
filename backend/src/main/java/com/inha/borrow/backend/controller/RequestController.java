@@ -24,8 +24,9 @@ import java.util.List;
 public class RequestController {
     private final RequestService requestService;
 
+    // --------- 생성 메서드 ---------
     /**
-     * 리퀘스트를 저장하는 메서드
+     * 요청(대여/반납)을 저장하는 메서드
      * 
      * @param saveRequestDto
      * @author 형민재
@@ -41,8 +42,30 @@ public class RequestController {
         return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
+    // --------- 조회 메서드 ---------
+
     /**
-     * 리퀘스트를 수정하는 메서드
+     * 대여 요청을 여러 조건으로 조회하는 메서드
+     * 
+     * @param user
+     * @param borrowerId
+     * @param state
+     * @param type
+     * @author 형민재
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Request>>> findRequestsByConditions(@AuthenticationPrincipal User user,
+            @RequestParam(value = "borrowerId", required = false) String borrowerId,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "state", required = false) String state) {
+        List<Request> result = requestService.findRequestsByCondition(user, borrowerId, type, state);
+        return ResponseEntity.ok().body(new ApiResponse<>(true, result));
+    }
+
+    // --------- 수정 메서드 ---------
+
+    /**
+     * 요청을 수정하는 메서드
      * 
      * @param borrowerId
      * @param requestId
@@ -50,7 +73,7 @@ public class RequestController {
      * @author 형민재
      */
     @PatchMapping("/{request-id}/patch")
-    public ResponseEntity<ApiResponse<SaveRequestDto>> patchRequest(
+    public ResponseEntity<ApiResponse<SaveRequestDto>> updateRequest(
             @AuthenticationPrincipal(expression = "id") String borrowerId,
             @PathVariable("request-id") int requestId, @Valid @RequestBody PatchRequestDto patchRequestDto) {
         requestService.patchRequest(patchRequestDto, requestId, borrowerId);
@@ -65,7 +88,7 @@ public class RequestController {
      * @author 형민재
      */
     @PatchMapping("/{request-id}/cancel")
-    public ResponseEntity<ApiResponse<Void>> cancelRequest(
+    public ResponseEntity<ApiResponse<Void>> updateRequestCancel(
             @AuthenticationPrincipal(expression = "id") String borrowerId,
             @PathVariable("request-id") int requestId) {
         requestService.cancelRequest(requestId, borrowerId);
@@ -80,42 +103,9 @@ public class RequestController {
      * @return
      */
     @PatchMapping("/{request-id}/manage")
-    public ResponseEntity<Void> manageRequest(@AuthenticationPrincipal(expression = "id") String adminId,
+    public ResponseEntity<Void> updateRequestManager(@AuthenticationPrincipal(expression = "id") String adminId,
             @PathVariable("request-id") int requestId) {
         requestService.manageRequest(adminId, requestId);
         return ResponseEntity.noContent().build();
     }
-
-    /**
-     * 대여 요청을 여러 조건으로 가져오는 메서드
-     * 
-     * @param user
-     * @param borrowerId
-     * @param state
-     * @param type
-     * @author 형민재
-     */
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<Request>>> findDetailRequest(@AuthenticationPrincipal User user,
-            @RequestParam(value = "borrowerId", required = false) String borrowerId,
-            @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "state", required = false) String state) {
-        List<Request> result = requestService.findRequestsByCondition(user, borrowerId, type, state);
-        return ResponseEntity.ok().body(new ApiResponse<>(true, result));
-    }
-
-    /**
-     * 대여요청 단건조회 메서드
-     * 
-     * @param user
-     * @param requestId
-     * @author 형민재
-     */
-    @GetMapping("/{request-id}")
-    public ResponseEntity<ApiResponse<Request>> findRequest(@AuthenticationPrincipal User user,
-            @PathVariable("request-id") int requestId) {
-        Request result = requestService.findById(user, requestId);
-        return ResponseEntity.ok(new ApiResponse<>(true, result));
-    }
-
 }

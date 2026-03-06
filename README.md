@@ -1,5 +1,10 @@
 <h1>미래융합대학 물품대여사업 프로젝트</h1>
 
+### 0. 서비스 실행명령어
+  - front -> frontend폴더로 이동후 npm run build -> npm run start
+  - back -> backend폴더로 이동후 ./gradlew build -x test -> java -jar build/libs/inha-borrow-backend.jar
+
+
 ### 1. 🧠 네이밍 규칙 (변수, 함수, 클래스 등)
 
 | 항목     | 규칙                      | 예시                                       |
@@ -89,3 +94,91 @@
 -   커밋 메시지엔 반드시 의미를 담아라
 -   머지 전에 꼭 팀원 리뷰 받자
 -   PR 열 때마다 README나 API 명세 업데이트 체크해라
+
+
+---
+
+### 5. 🖥️ Backend 개발 규칙
+
+#### 5.1 계층 간 데이터 전달 규칙
+
+- Controller와 Service는 **DTO로만 소통합니다.**
+- Service와 Repository는 **Entity로만 소통합니다.**
+
+즉, 계층 간 데이터 전달 구조는 다음과 같습니다.
+
+```
+Controller ↔ Service : DTO
+Service ↔ Repository : Entity
+```
+
+이 규칙을 통해 계층 간 책임을 명확하게 분리하고,
+Entity가 외부 API 응답으로 직접 노출되는 것을 방지합니다.
+
+---
+
+#### 5.2 메서드 작성 순서 (CRUD)
+
+각 **Controller / Service / Repository** 클래스 내부의 메서드는
+다음 **CRUD 순서**로 작성합니다.
+
+1. 생성 (Create)
+2. 조회 (Read)
+3. 수정 (Update)
+4. 삭제 (Delete)
+
+또한 각 구간은 가독성을 위해 **주석으로 구분합니다.**
+
+예시
+
+```java
+// ==================== Create ====================
+
+// ==================== Read ====================
+
+// ==================== Update ====================
+
+// ==================== Delete ====================
+```
+
+---
+
+#### 5.3 메서드 네이밍 규칙
+
+메서드는 다음 **접두어 규칙**을 따릅니다.
+
+| 기능 | 접두어 |
+|-----|------|
+| 생성 | `save` |
+| 삭제 | `delete` |
+| 수정 | `update` |
+| 단건 조회 | `findBy` |
+| 전체 조회 | `findAllBy` |
+
+예시
+
+```java
+saveBorrower()
+deleteBorrower()
+updateBorrowerPhoneNumber()
+findById()
+findAllByDepartment()
+```
+
+---
+
+#### 5.4 DTO 네이밍 규칙
+
+DTO는 **메서드 목적이 드러나도록 메서드명과 결합하여 작성합니다.**
+
+예시
+
+```
+BorrowerLoginDto
+PatchPhoneNumberDto
+SavePhoneAccountNumberDto
+```
+
+이를 통해 DTO의 사용 목적을 명확하게 파악할 수 있도록 합니다.
+
+---
