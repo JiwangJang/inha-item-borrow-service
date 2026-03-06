@@ -66,7 +66,7 @@ public class AdminController {
      */
     @GetMapping("/info")
     public ResponseEntity<ApiResponse<Admin>> findById(@AuthenticationPrincipal Admin admin) {
-        Admin foundedAdmin = adminService.findById(admin.getId());
+        Admin foundedAdmin = adminService.findById(admin);
         ApiResponse<Admin> apiResponse = new ApiResponse<>(true, foundedAdmin);
         return ResponseEntity.ok(apiResponse);
     }
@@ -83,7 +83,7 @@ public class AdminController {
     @PatchMapping("/info/password")
     public ResponseEntity<Void> updatePassword(@AuthenticationPrincipal Admin admin,
             @Valid @RequestBody UpdatePasswordDto updatePasswordDto) {
-        adminService.updatePassword(admin.getId(), updatePasswordDto);
+        adminService.updatePassword(admin, updatePasswordDto);
         return ResponseEntity.noContent().build();
     }
 

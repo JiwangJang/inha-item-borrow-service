@@ -7,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import com.inha.borrow.backend.enums.Role;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -19,7 +18,6 @@ import lombok.experimental.SuperBuilder;
  */
 @SuperBuilder
 @Getter
-@Setter
 public class Admin extends User {
     /**
      * 관리자 직책. 예: "학생회장", "부학생회장", "사업국장" 등
