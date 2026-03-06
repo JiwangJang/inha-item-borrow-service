@@ -114,7 +114,7 @@ public class BorrowerService {
         CacheBorrowerDto cacheBorrowerDto = borrowerCache.getIfPresent(borrowerId);
         TempBorrowerInfoDto tempBorrowerInfoDto = tempBorrowerCache.getIfPresent(borrowerId);
 
-        if (cacheBorrowerDto == null) {
+        if (cacheBorrowerDto == null && tempBorrowerInfoDto != null) {
             cacheBorrowerDto = CacheBorrowerDto.builder()
                     .id(borrowerId)
                     .name(tempBorrowerInfoDto.getName())
