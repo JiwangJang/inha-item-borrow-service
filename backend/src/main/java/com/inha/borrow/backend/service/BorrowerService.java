@@ -46,21 +46,6 @@ public class BorrowerService {
     private final String LOGIN_URL = "https://learn.inha.ac.kr/login/index.php";
     private final List<String> DEPARTMENT_LIST = List.of("소프트웨어융합공학과", "메카트로닉스공학과", "반도체산업융합학과", "금융투자학과", "산업경영학과");
 
-    public CacheBorrowerDto getMyInfo(String borrowerId) {
-        CacheBorrowerDto cacheBorrowerDto = borrowerCache.getIfPresent(borrowerId);
-        TempBorrowerInfoDto tempBorrowerInfoDto = tempBorrowerCache.getIfPresent(borrowerId);
-
-        if (cacheBorrowerDto == null) {
-            cacheBorrowerDto = CacheBorrowerDto.builder()
-                    .id(borrowerId)
-                    .name(tempBorrowerInfoDto.getName())
-                    .department(tempBorrowerInfoDto.getDepartment())
-                    .build();
-        }
-
-        return cacheBorrowerDto;
-    }
-
     /**
      * i-class를 활용한 로그인 메서드
      *
@@ -118,28 +103,26 @@ public class BorrowerService {
     }
 
     /**
-     * 대여자를 id로 찾는 메서드
+     * 대여자 캐시정보 반환하는 메서드
      *
      * @param id
      * @return 대여자 정보
      * @author 형민재
      */
 
-    public Borrower findById(String id) {
-        CacheBorrowerDto dto = borrowerCache.getIfPresent(id);
-        if (dto == null) {
-            dto = cacheScheduledTask.refreshBorrowerCache(id);
+    public CacheBorrowerDto findCacheById(String borrowerId) {
+        CacheBorrowerDto cacheBorrowerDto = borrowerCache.getIfPresent(borrowerId);
+        TempBorrowerInfoDto tempBorrowerInfoDto = tempBorrowerCache.getIfPresent(borrowerId);
+
+        if (cacheBorrowerDto == null) {
+            cacheBorrowerDto = CacheBorrowerDto.builder()
+                    .id(borrowerId)
+                    .name(tempBorrowerInfoDto.getName())
+                    .department(tempBorrowerInfoDto.getDepartment())
+                    .build();
         }
-        Borrower borrower = Borrower.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .department(dto.getDepartment())
-                .phonenumber(dto.getPhoneNumber())
-                .accountNumber(dto.getAccountNumber())
-                .ban(dto.isBan())
-                .banReason(dto.getBanReason())
-                .build();
-        return borrower;
+
+        return cacheBorrowerDto;
     }
 
     /**

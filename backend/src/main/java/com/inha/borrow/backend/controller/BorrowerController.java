@@ -7,7 +7,6 @@ import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchAccountNumberDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchBanDto;
 import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
-import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.service.BorrowerService;
 
@@ -49,29 +48,16 @@ public class BorrowerController {
         return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
-    // me와 findById 통합 해야함
     /**
-     * 현재 유저의 정보 반환
-     * 
-     * @return 200 요청 성공
-     * @author 장지왕
-     */
-    @GetMapping("/me")
-    public ResponseEntity<ApiResponse<CacheBorrowerDto>> me(@AuthenticationPrincipal Borrower borrower) {
-        CacheBorrowerDto dto = borrowerService.getMyInfo(borrower.getId());
-        return ResponseEntity.ok(new ApiResponse<>(true, dto));
-    }
-
-    /**
-     * 대여자를 id로 불러오는 메서드
+     * 현재 접속한 대여자의 정보를 불러오는 메서드
      * 
      * @return 200 요청 성공
      * @author 형민재
      */
     @GetMapping("/info")
-    public ResponseEntity<ApiResponse<Borrower>> findById(
+    public ResponseEntity<ApiResponse<CacheBorrowerDto>> findCacheById(
             @AuthenticationPrincipal(expression = "id") String id) {
-        Borrower foundedBorrower = borrowerService.findById(id);
+        CacheBorrowerDto foundedBorrower = borrowerService.findCacheById(id);
         return ResponseEntity.ok(new ApiResponse<>(true, foundedBorrower));
     }
 
