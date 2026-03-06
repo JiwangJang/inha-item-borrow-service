@@ -91,7 +91,7 @@ export default function AdminNoticeRevisePage({ noticeId }: { noticeId: string }
                 </div>
             </div>
             <div className="fixed bottom-0 left-1/2 translate-x-[-50%] max-w-125 w-full px-5 pb-4">
-                <Button title="등록" className="py-3 w-full bold-18px" onClick={() => setConfirmModal(true)} />
+                <Button title="수정" className="py-3 w-full bold-18px" onClick={() => setConfirmModal(true)} />
             </div>
             <ConfirmModal
                 open={confirmModal}

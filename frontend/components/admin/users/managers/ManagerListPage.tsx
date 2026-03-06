@@ -5,9 +5,11 @@ import { useContext } from "react";
 import AdminListContext from "@/context/AdminListContext";
 import Button from "@/components/utilities/Button";
 import { useRouter } from "next/navigation";
+import AdminContext from "@/context/AdminContext";
 
 export default function ManagerListPage() {
     const { adminList } = useContext(AdminListContext);
+    const { adminInfo } = useContext(AdminContext);
     const router = useRouter();
 
     return (
@@ -21,15 +23,17 @@ export default function ManagerListPage() {
                     <ManagerCard adminInfo={admin} key={admin.id} />
                 ))}
             </div>
-            <div className="fixed left-1/2 bottom-0 w-full max-w-125 translate-x-[-50%] px-5 pb-5 pointer-events-none">
-                <div className="pointer-events-auto">
-                    <Button
-                        className="w-full py-3 bold-18px"
-                        title="새 관리자 추가"
-                        onClick={() => router.push("/admin/users/managers/new")}
-                    />
+            {adminInfo?.position != "PRESIDENT" ? null : (
+                <div className="fixed left-1/2 bottom-0 w-full max-w-125 translate-x-[-50%] px-5 pb-5 pointer-events-none">
+                    <div className="pointer-events-auto">
+                        <Button
+                            className="w-full py-3 bold-18px"
+                            title="새 관리자 추가"
+                            onClick={() => router.push("/admin/users/managers/new")}
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

@@ -32,7 +32,7 @@ export default function ManagerMyPage() {
                 <InfoRow label="아이디" value={id} />
                 <InfoRow label="이름" value={name} />
                 <InfoRow label="직급" value={positionConvertor(position)} />
-                <InfoRow label="부서" value={current!.name} />
+                <InfoRow label="부서" value={current?.name ?? ""} />
             </InfoTable>
             <Button
                 className="mt-2 py-3 w-full bold-18px"

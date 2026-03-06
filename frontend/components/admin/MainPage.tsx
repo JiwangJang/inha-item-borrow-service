@@ -87,7 +87,7 @@ export default function MainPage() {
                 />
             </div>
             <Button
-                title={`등록금 납부확인 처리(${notVerifiedStudentCouncilFeeList.length}명 대기중)`}
+                title={`학생회비 납부확인 처리(${notVerifiedStudentCouncilFeeList.length}명 대기중)`}
                 className="py-3 w-full bold-18px"
                 onClick={() => router.push("/admin/student-council-fee")}
             />

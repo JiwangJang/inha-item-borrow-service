@@ -17,10 +17,6 @@ export default function UsersManagePage() {
             <div className="my-3 flex gap-2 h-50">
                 <div
                     className="bg-white border border-boxBorder flex-1 rounded-xl py-5 px-4 flex flex-col justify-center items-center"
-                    style={{
-                        opacity: adminInfo?.position == ADMIN_POSITION_TYPE.DIVISION_MEMBER ? 0.5 : 1,
-                        cursor: adminInfo?.position == ADMIN_POSITION_TYPE.DIVISION_MEMBER ? "default" : "pointer",
-                    }}
                     onClick={() => router.push("/admin/users/managers")}
                 >
                     <div className="relative w-full flex-1">

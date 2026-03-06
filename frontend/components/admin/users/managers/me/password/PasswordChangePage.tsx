@@ -60,6 +60,9 @@ export default function PasswordChangePage() {
                         placeholder="새로운 비밀번호를 입력해주세요"
                         onChange={(e) => setNewPassword(e.target.value)}
                     />
+                    <p className="regular-14px pl-1 pt-2 text-placeholder">
+                        비밀번호는 9~13자로 특수문자와 영어대소문자를 포함해야합니다.
+                    </p>
                 </div>
                 <div>
                     <p className="bold-16px mb-1">새로운 비밀번호 재입력</p>

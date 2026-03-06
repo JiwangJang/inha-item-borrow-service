@@ -28,7 +28,7 @@ export default function StudentCouncilFeePage() {
     return (
         <div className="mt-5">
             <div>
-                <p className="black-20px mb-1">등록금 인증신청 목록</p>
+                <p className="black-20px mb-1">학생회비 인증신청 목록</p>
                 <p className="regular-14px">카드를 클릭하시면 납부인증사진 확인페이지로 넘어갑니다.</p>
             </div>
             <div className="flex gap-1 mt-2">

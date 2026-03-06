@@ -13,7 +13,7 @@ public enum ApiErrorCode {
     INVALID_REQUEST_ID("이전 요청이 수락되어야 반납이 가능합니다."),
     CAN_NOT_MODIFY_REQUEST("담당자 배정 전의 요청만 수정 가능합니다."),
     CAN_NOT_CANCEL_REQUEST("대여요청만 취소 가능합니다."),
-    INCORRECT_PASSWORD("비밀번호가 다릅니다."),
+    INCORRECT_PASSWORD("기존 비밀번호가 다릅니다."),
     INCORRECT_CODE("일치하지 않는 인증코드입니다. 인증코드를 다시 확인해주세요."),
     NOT_ALLOWED_VALUE("허용되지 않는 값입니다."),
     DB_ERROR("데이터베이스 에러입니다."),
