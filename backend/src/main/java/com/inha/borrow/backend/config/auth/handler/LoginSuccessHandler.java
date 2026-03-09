@@ -63,7 +63,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
             // 초기값 내려주는 작업
             List<Request> requests = requestService.findRequestsByCondition(user, null, null, null);
-            List<Item> items = itemService.getAllItem(user);
+            List<Item> items = itemService.findAll(user);
 
             initialValue.put("borrowerInfo", borrowerCacheData);
             initialValue.put("requests", requests);

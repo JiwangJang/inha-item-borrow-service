@@ -30,7 +30,7 @@ import com.inha.borrow.backend.config.auth.admin.AdminAuthenticationProvider;
 import com.inha.borrow.backend.config.auth.borrowers.BorrowerAuthenticationProvider;
 import com.inha.borrow.backend.forAuthTest.admin.WithMockAdmin;
 import com.inha.borrow.backend.forAuthTest.borrower.WithMockBorrower;
-import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.DenyFeeVerificationDto;
+import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.UpdateStudentCouncilFeeVerificationDenyDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.FindFeeVerificationRequestDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.ModifyVerificationResponseDto;
 import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.PermitFeeVerificationDto;
@@ -185,7 +185,8 @@ public class StudentCouncilFeeVerificationControllerTest {
     @WithMockAdmin
     void denyVerificationTestSuccessForAdmin() throws Exception {
         // given
-        DenyFeeVerificationDto dto = new DenyFeeVerificationDto("test", "reason");
+        UpdateStudentCouncilFeeVerificationDenyDto dto = new UpdateStudentCouncilFeeVerificationDenyDto("test",
+                "reason");
         doNothing().when(service).denyVerificationRequest(dto);
 
         // when - then

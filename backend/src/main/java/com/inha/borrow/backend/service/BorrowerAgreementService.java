@@ -71,7 +71,7 @@ public class BorrowerAgreementService {
             borrowerCache.put(borrowerId, borrowerCacheData);
             // 개인정보 동의후 임시캐시는 지운다
             tempBorrowerCache.invalidate(borrowerId);
-            studentCouncilFeeVerificationService.initalSave(borrowerId);
+            studentCouncilFeeVerificationService.initalSave(borrower);
         }
 
         // 기존유저는 바로 저장 메서드 실행
