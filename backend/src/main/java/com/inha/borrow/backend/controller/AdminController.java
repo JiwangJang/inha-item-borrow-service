@@ -53,7 +53,7 @@ public class AdminController {
      */
     @GetMapping
     public ResponseEntity<ApiResponse<List<Admin>>> findAllAdmins() {
-        List<Admin> admins = adminService.findAllAdmins();
+        List<Admin> admins = adminService.findAll();
         ApiResponse<List<Admin>> apiResponse = new ApiResponse<List<Admin>>(true, admins);
         return ResponseEntity.ok(apiResponse);
     }

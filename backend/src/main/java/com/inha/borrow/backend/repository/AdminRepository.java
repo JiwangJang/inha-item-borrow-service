@@ -93,7 +93,7 @@ public class AdminRepository {
      * 
      * @return
      */
-    public List<Admin> findAllAdmins() {
+    public List<Admin> findAll() {
         String sql = "SELECT * FROM admin INNER JOIN division ON division.code = admin.division WHERE admin.is_delete = false;";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             String adminId = rs.getString("id");

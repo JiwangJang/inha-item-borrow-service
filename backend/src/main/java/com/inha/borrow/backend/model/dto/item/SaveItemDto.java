@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ItemDto {
+public class SaveItemDto {
     @NotBlank(message = "대여물품 이름은 비울수 없습니다.")
     private String name;
     @NotBlank(message = "대여물품 위치는 비울수 없습니다.")

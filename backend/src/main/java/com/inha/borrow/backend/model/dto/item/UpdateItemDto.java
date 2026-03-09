@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemReviseRequestDto {
+public class UpdateItemDto {
     @NotBlank(message = "대여물품 이름은 비울수 없습니다.")
     private String name;
     @NotBlank(message = "대여물품 위치는 비울수 없습니다.")

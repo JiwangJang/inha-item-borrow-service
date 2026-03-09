@@ -2,10 +2,9 @@ package com.inha.borrow.backend.service;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.ItemState;
-import com.inha.borrow.backend.model.dto.item.BorrowedItemDto;
-import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
-import com.inha.borrow.backend.model.dto.item.ItemDto;
-import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
+import com.inha.borrow.backend.model.dto.item.DeleteItemDto;
+import com.inha.borrow.backend.model.dto.item.SaveItemDto;
+import com.inha.borrow.backend.model.dto.item.UpdateItemDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.entity.user.User;
@@ -28,6 +27,8 @@ import org.springframework.stereotype.Service;
 public class ItemService {
     private final ItemRepository itemRepository;
 
+    // --------- 생성 메서드 ---------
+
     /**
      * Item객체를 저장하는 메서드
      * 
@@ -35,10 +36,11 @@ public class ItemService {
      * @return 저장된 item객체
      * @author 장지왕
      */
-    public Item createItem(ItemDto item) {
-        return itemRepository.save(item);
+    public Item saveItem(SaveItemDto dto) {
+        return itemRepository.saveItem(dto);
     }
 
+    // --------- 조회 메서드 ---------
     /**
      * 모든 Item객체를 가져오는 메서드
      * <p>
@@ -47,7 +49,7 @@ public class ItemService {
      * @return Item객체 목록
      * @author 장지왕
      */
-    public List<Item> getAllItem(User user) {
+    public List<Item> findAll(User user) {
         if (user instanceof Admin) {
             // 관리자인 경우
             return itemRepository.findAllForAdmin();
@@ -57,54 +59,29 @@ public class ItemService {
     }
 
     /**
-     * 특정 Item을 찾는 메서드
+     * 특정 대여물품의 상태를 조회하는 메서드(requestService에서 사용)
      * 
-     * @param user
-     * @param itemId
-     * @return Item
-     * @author 장지왕
+     * @param id
+     * @return
      */
-    public Item getItemById(User user, int itemId) {
-        BorrowedItemDto foundItem = itemRepository.findById(itemId);
-        if (user instanceof Admin
-                || (foundItem.getBorrowerId() != null && foundItem.getBorrowerId().equals(user.getId()))) {
-            // 관리자이거나 대여한 사람이면 모든 정보를 볼 수 있음
-            return foundItem.getAllInfoItem();
-        } else {
-            // 그렇지 않으면 부분적인 정보(Item아이디, 이름, 가격, 상태)만 볼 수 있음.
-            return foundItem.getParticialInfoItem();
-        }
+    public ItemState findItemStateById(int id) {
+        Item item = Item.builder().id(id).build();
+        return itemRepository.findItemStateById(item);
     }
 
-    /**
-     * 특정 Item을 삭제하는 메서드
-     * 
-     * @param id           삭제할 Item의 아이디
-     * @param deleteRequestDto 삭제 이유
-     *
-     * @author 장지왕 (수정 : 형민재)
-     */
-    public void deleteItem(int id, ItemDeleteRequestDto deleteRequestDto) {
-        BorrowedItemDto item = itemRepository.findById(id);
-        if(item.getState() == ItemState.AFFORD){
-            itemRepository.deleteItem(id, deleteRequestDto);
-        }else{
-            ApiErrorCode apiErrorCode =ApiErrorCode.ITEM_STATUS_NOT_AFFORD;
-            throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
-        }
-
-    }
+    // --------- 수정 메서드 ---------
 
     /**
      * 특정 Item객체의 변경사항을 반영하는 메서드
      * 
      * @param itemReviseRequestDto 변경 내용이 담긴 Item
-     * @param id   변경할 Item객체의 아이디
+     * @param id                   변경할 Item객체의 아이디
      *
      * @author 장지왕
      */
-    public void updateItemDetail(int id, ItemReviseRequestDto itemReviseRequestDto) {
-        itemRepository.updateItem(itemReviseRequestDto, id);
+    public void updateItem(UpdateItemDto dto, int itemId) {
+        Item item = Item.builder().id(itemId).build();
+        itemRepository.updateItem(item, dto);
     }
 
     /**
@@ -113,10 +90,31 @@ public class ItemService {
      * @author 형민재
      */
     public void updateState(ItemState state, int id) {
-        itemRepository.updateState(state, id);
+        Item item = Item.builder().id(id).build();
+        itemRepository.updateState(item, state);
     }
 
-    public ItemState findItemStateById(int id) {
-        return itemRepository.findItemStateById(id);
+    // --------- 삭제 메서드 ---------
+
+    /**
+     * 특정 Item을 삭제하는 메서드
+     * 
+     * @param id               삭제할 Item의 아이디
+     * @param deleteRequestDto 삭제 이유
+     *
+     * @author 장지왕 (수정 : 형민재)
+     */
+    public void deleteItem(DeleteItemDto dto, int itemId) {
+        Item deletedItem = Item.builder()
+                .id(itemId)
+                .deleteReason(dto.getDeleteReason())
+                .build();
+        ItemState foundedItemState = findItemStateById(itemId);
+        if (foundedItemState == ItemState.AFFORD) {
+            itemRepository.deleteItem(deletedItem);
+        } else {
+            ApiErrorCode apiErrorCode = ApiErrorCode.ITEM_STATUS_NOT_AFFORD;
+            throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
+        }
     }
 }
