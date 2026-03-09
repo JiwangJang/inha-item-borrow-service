@@ -3,6 +3,7 @@ package com.inha.borrow.backend.repository;
 import java.util.List;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
+import com.inha.borrow.backend.model.dto.user.borrower.BorrowerCacheData;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SavePhoneAccountNumberDto;
@@ -86,10 +87,10 @@ public class BorrowerRepository {
     /**
      * CACHE에 저장하기 위해 대여자 리스트와 납부정보를 JOIN하여 반환하는 메서드
      *
-     * @return List<CacheBorrowerDto>
+     * @return List<BorrowerCache>
      * @author 형민재
      */
-    public List<CacheBorrowerDto> findAllForCache() {
+    public List<BorrowerCacheData> findAllForCache() {
         String sql = """
                 SELECT
                     b.id,
@@ -128,7 +129,7 @@ public class BorrowerRepository {
      * @return List<Borrower>
      * @author 형민재
      */
-    public CacheBorrowerDto findByIdForCache(String borrowerId) {
+    public BorrowerCacheData findByIdForCache(String borrowerId) {
         try {
             String sql = """
                     SELECT
@@ -148,7 +149,7 @@ public class BorrowerRepository {
                     WHERE b.id = ?;
                         """;
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-                return CacheBorrowerDto.builder()
+                return BorrowerCacheData.builder()
                         .id(rs.getString("id"))
                         .name(rs.getString("name"))
                         .department(rs.getString("department"))

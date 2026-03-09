@@ -40,8 +40,8 @@ import java.util.Set;
 public class BorrowerService {
     private final BorrowerRepository borrowerRepository;
     private final StudentCouncilFeeVerificationRepository studentCouncilFeeVerificationRepository;
-    private final Cache<String, CacheBorrowerDto> borrowerCache;
-    private final Cache<String, TempBorrowerInfoDto> tempBorrowerCache;
+    private final Cache<String, BorrowerCacheData> borrowerCache;
+    private final Cache<String, TempBorrowerInfoCacheData> tempBorrowerCache;
     private final CacheScheduledTask cacheScheduledTask;
     private final String LOGIN_URL = "https://learn.inha.ac.kr/login/index.php";
     private final List<String> DEPARTMENT_LIST = List.of("소프트웨어융합공학과", "메카트로닉스공학과", "반도체산업융합학과", "금융투자학과", "산업경영학과");
@@ -82,17 +82,17 @@ public class BorrowerService {
                     .build();
 
             // 캐시에 있는 사용자인지 확인
-            CacheBorrowerDto dto = borrowerCache.getIfPresent(borrowerLoginDto.getId());
+            BorrowerCacheData borrowerCacheData = borrowerCache.getIfPresent(borrowerLoginDto.getId());
 
-            if (dto == null) {
+            if (borrowerCacheData == null) {
                 // 캐쉬에 없는 대여자라면 DB에 있는지 확인(1시간 마다 동기화 되므로)
                 try {
                     borrowerRepository.findById(borrowerLoginDto.getId());
                 } catch (ResourceNotFoundException e) {
-                    // 캐시에 임시저장하기 위한 DTO
-                    TempBorrowerInfoDto borrowerInformDto = new TempBorrowerInfoDto(name, department);
+                    // 캐시에 임시저장하기 위한 객체
+                    TempBorrowerInfoCacheData tempBorrowerInfoCache = new TempBorrowerInfoCacheData(name, department);
                     // db에 정보 있는지 확인 후 없다면 신규 사용자 이므로 임시 캐쉬에 저장
-                    tempBorrowerCache.put(borrowerLoginDto.getId(), borrowerInformDto);
+                    tempBorrowerCache.put(borrowerLoginDto.getId(), tempBorrowerInfoCache);
                 }
             }
 
@@ -110,30 +110,20 @@ public class BorrowerService {
      * @author 형민재
      */
 
-    public CacheBorrowerDto findCacheById(String borrowerId) {
-        CacheBorrowerDto cacheBorrowerDto = borrowerCache.getIfPresent(borrowerId);
-        TempBorrowerInfoDto tempBorrowerInfoDto = tempBorrowerCache.getIfPresent(borrowerId);
+    public BorrowerCacheData findCacheById(Borrower borrower) {
+        String borrowerId = borrower.getId();
+        BorrowerCacheData borrowerCacheData = borrowerCache.getIfPresent(borrowerId);
+        TempBorrowerInfoCacheData tempBorrowerInfoCacheData = tempBorrowerCache.getIfPresent(borrowerId);
 
-        if (cacheBorrowerDto == null && tempBorrowerInfoDto != null) {
-            cacheBorrowerDto = CacheBorrowerDto.builder()
+        if (borrowerCacheData == null && tempBorrowerInfoCacheData != null) {
+            borrowerCacheData = BorrowerCacheData.builder()
                     .id(borrowerId)
-                    .name(tempBorrowerInfoDto.getName())
-                    .department(tempBorrowerInfoDto.getDepartment())
+                    .name(tempBorrowerInfoCacheData.getName())
+                    .department(tempBorrowerInfoCacheData.getDepartment())
                     .build();
         }
 
-        return cacheBorrowerDto;
-    }
-
-    /**
-     * 대여자들의 정보를 반환하는 메서드
-     *
-     * @return 대여자 정보
-     * @author 형민재
-     */
-
-    public List<Borrower> findAll() {
-        return borrowerRepository.findAll();
+        return borrowerCacheData;
     }
 
     /**
@@ -143,9 +133,9 @@ public class BorrowerService {
      * @param searchType
      * @return
      */
-    public List<CacheBorrowerDto> searchBorrower(String keyword, SearchType searchType) {
+    public List<BorrowerCacheData> searchBorrower(String keyword, SearchType searchType) {
         Set<String> userIds = borrowerCache.asMap().keySet();
-        ArrayList<CacheBorrowerDto> result = new ArrayList<>();
+        ArrayList<BorrowerCacheData> result = new ArrayList<>();
 
         userIds.forEach((String id) -> {
             if (searchType == SearchType.ID && id.contains(keyword)) {
@@ -153,7 +143,7 @@ public class BorrowerService {
                 result.add(borrowerCache.getIfPresent(id));
             } else {
                 // 이름으로 찾은 경우
-                CacheBorrowerDto current = borrowerCache.getIfPresent(id);
+                BorrowerCacheData current = borrowerCache.getIfPresent(id);
                 if (current.getName().contains(keyword)) {
                     result.add(current);
                 }
@@ -164,30 +154,18 @@ public class BorrowerService {
     }
 
     /**
-     * 대여자의 이름을 수정하는 메서드
-     *
-     * @param name
-     * @param id
-     * @author 형민재
-     */
-    public void patchName(String name, String id) {
-        borrowerRepository.patchName(name, id);
-        deleteCache(id);
-        cacheScheduledTask.refreshBorrowerCache(id);
-    }
-
-    /**
-     * 대여자의 핸드폰 번호를를 수정하는 메서드
+     * 대여자의 핸드폰 번호를 수정하는 메서드
      *
      * @param borrowerId
      * @param dto
      * @author 형민재
      */
-    public void patchPhoneNumber(String borrowerId, PatchPhonenumberDto dto) {
+    public void updatePhoneNumber(Borrower borrower, UpdatePhonenumberDto dto) {
+        String borrowerId = borrower.getId();
         String newPhonenumber = dto.getNewPhonenumber();
         borrowerRepository.patchPhoneNumber(newPhonenumber, borrowerId);
         deleteCache(borrowerId);
-        cacheScheduledTask.refreshBorrowerCache(borrowerId);
+        cacheScheduledTask.refreshBorrowerCacheData(borrowerId);
     }
 
     /**
@@ -201,7 +179,7 @@ public class BorrowerService {
     public void patchAccountNumber(String accountNumber, String id) {
         borrowerRepository.patchAccountNumber(accountNumber, id);
         deleteCache(id);
-        cacheScheduledTask.refreshBorrowerCache(id);
+        cacheScheduledTask.refreshBorrowerCacheData(id);
     }
 
     /**

@@ -3,7 +3,6 @@ package com.inha.borrow.backend.model.entity.user;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -15,7 +14,6 @@ import org.springframework.security.core.GrantedAuthority;
  * @author 장지왕
  */
 @Getter
-@Setter
 @SuperBuilder
 public class Borrower extends User {
     /**

@@ -1,7 +1,7 @@
 package com.inha.borrow.backend.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
+import com.inha.borrow.backend.model.dto.user.borrower.BorrowerCacheData;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CacheScheduledTask {
     private final BorrowerRepository borrowerRepository;
-    private final Cache<String, CacheBorrowerDto> borrowerCache;
+    private final Cache<String, BorrowerCacheData> borrowerCache;
     private static final int ONE_HOUR = 3_600_000;
 
     // 시간단위는 ms임, 한시간마다 동작되는 메서드
@@ -35,10 +35,10 @@ public class CacheScheduledTask {
      */
     @Scheduled(fixedRate = ONE_HOUR)
     public void refreshBorrowerListCache() {
-        List<CacheBorrowerDto> dtoList = borrowerRepository.findAllForCache();
-        Map<String, CacheBorrowerDto> map = dtoList.stream()
+        List<BorrowerCacheData> dtoList = borrowerRepository.findAllForCache();
+        Map<String, BorrowerCacheData> map = dtoList.stream()
                 .collect(Collectors.toMap(
-                        CacheBorrowerDto::getId,
+                        BorrowerCacheData::getId,
                         dto -> dto));
         borrowerCache.putAll(map);
         log.info("사용자 캐시 갱신 완료. 총 {}명", map.size());
@@ -51,8 +51,8 @@ public class CacheScheduledTask {
      * @param borrowerId
      * @return
      */
-    public CacheBorrowerDto refreshBorrowerCache(String borrowerId) {
-        CacheBorrowerDto dto = borrowerRepository.findByIdForCache(borrowerId);
+    public BorrowerCacheData refreshBorrowerCacheData(String borrowerId) {
+        BorrowerCacheData dto = borrowerRepository.findByIdForCache(borrowerId);
         borrowerCache.put(borrowerId, dto);
         return dto;
     }
