@@ -108,8 +108,8 @@
 즉, 계층 간 데이터 전달 구조는 다음과 같습니다.
 
 ```
-Controller ↔ Service : DTO
-Service ↔ Repository : Entity
+Controller -> Service : DTO
+Service -> Repository : Entity
 ```
 
 이 규칙을 통해 계층 간 책임을 명확하게 분리하고,

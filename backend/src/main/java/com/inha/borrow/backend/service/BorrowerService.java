@@ -1,22 +1,18 @@
 package com.inha.borrow.backend.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import com.inha.borrow.backend.cache.CacheScheduledTask;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.enums.SearchType;
 import com.inha.borrow.backend.model.dto.user.borrower.*;
 
-import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
-import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,77 +35,29 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class BorrowerService {
     private final BorrowerRepository borrowerRepository;
-    private final StudentCouncilFeeVerificationRepository studentCouncilFeeVerificationRepository;
     private final Cache<String, BorrowerCacheData> borrowerCache;
     private final Cache<String, TempBorrowerInfoCacheData> tempBorrowerCache;
-    private final CacheScheduledTask cacheScheduledTask;
     private final String LOGIN_URL = "https://learn.inha.ac.kr/login/index.php";
     private final List<String> DEPARTMENT_LIST = List.of("소프트웨어융합공학과", "메카트로닉스공학과", "반도체산업융합학과", "금융투자학과", "산업경영학과");
 
+    // --------- 조회 메서드 ---------
+
     /**
-     * i-class를 활용한 로그인 메서드
-     *
-     * @param borrowerLoginDto
-     * @author 형민재
+     * 전체 대여자 캐시 반환받는 메서드
+     * 
+     * @return List<BorrowerCacheData>
      */
-    public Borrower inhaLogin(BorrowerLoginDto borrowerLoginDto) {
-        try {
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(Role.BORROWER.name()));
-            Response response = Jsoup.connect(LOGIN_URL)
-                    .data("username", borrowerLoginDto.getId(), "password", borrowerLoginDto.getPassword())
-                    .method(Method.POST)
-                    .execute();
-
-            // HTML에서 이름과 학과 추출
-            Document doc = response.parse();
-            String name = doc.select(".user-info-picture h4").text();
-            String department = doc.select(".user-info-picture .department").text();
-
-            if (name.isEmpty()) {
-                // 이름이 null이면 로그인 실패
-                throw new BadCredentialsException(ApiErrorCode.CHECK_YOUR_INFO.name());
-            }
-
-            if (!DEPARTMENT_LIST.contains(department)) {
-                // 타 단과대는 이용 불가
-                throw new BadCredentialsException(ApiErrorCode.INVALID_ID.name());
-            }
-            Borrower borrower = Borrower.builder()
-                    .id(borrowerLoginDto.getId())
-                    .name(name)
-                    .department(department)
-                    .authorities(authorities)
-                    .build();
-
-            // 캐시에 있는 사용자인지 확인
-            BorrowerCacheData borrowerCacheData = borrowerCache.getIfPresent(borrowerLoginDto.getId());
-
-            if (borrowerCacheData == null) {
-                // 캐쉬에 없는 대여자라면 DB에 있는지 확인(1시간 마다 동기화 되므로)
-                try {
-                    borrowerRepository.findById(borrowerLoginDto.getId());
-                } catch (ResourceNotFoundException e) {
-                    // 캐시에 임시저장하기 위한 객체
-                    TempBorrowerInfoCacheData tempBorrowerInfoCache = new TempBorrowerInfoCacheData(name, department);
-                    // db에 정보 있는지 확인 후 없다면 신규 사용자 이므로 임시 캐쉬에 저장
-                    tempBorrowerCache.put(borrowerLoginDto.getId(), tempBorrowerInfoCache);
-                }
-            }
-
-            return borrower;
-        } catch (IOException e) {
-            throw new RuntimeException("로그인 시도 중 연결 실패", e);
-        }
+    public List<BorrowerCacheData> findAllForCache() {
+        return borrowerRepository.findAllForCache();
     }
 
     /**
      * 대여자 캐시정보 반환하는 메서드
      *
-     * @param id
+     * @param Borrower
      * @return 대여자 정보
      * @author 형민재
      */
-
     public BorrowerCacheData findCacheById(Borrower borrower) {
         String borrowerId = borrower.getId();
         BorrowerCacheData borrowerCacheData = borrowerCache.getIfPresent(borrowerId);
@@ -153,67 +101,126 @@ public class BorrowerService {
         return result;
     }
 
+    // --------- 수정 메서드 ---------
+
     /**
      * 대여자의 핸드폰 번호를 수정하는 메서드
      *
-     * @param borrowerId
-     * @param dto
+     * @param Borrower             borrower
+     * @param UpdatePhonenumberDto dto
      * @author 형민재
      */
     public void updatePhoneNumber(Borrower borrower, UpdatePhonenumberDto dto) {
         String borrowerId = borrower.getId();
-        String newPhonenumber = dto.getNewPhonenumber();
-        borrowerRepository.patchPhoneNumber(newPhonenumber, borrowerId);
-        deleteCache(borrowerId);
-        cacheScheduledTask.refreshBorrowerCacheData(borrowerId);
+        borrowerRepository.updatePhoneNumber(borrower, dto);
+        // 캐시 초기화
+        borrowerCache.invalidate(borrowerId);
+        refreshBorrowerCacheData(borrowerId);
     }
 
     /**
      * 대여자의 반환계좌 정보를 수정하는 메서드
      *
-     * @param accountNumber
-     * @param id
+     * @param Borrower               borrower
+     * @param UpdateAccountNumberDto dto
      *
      * @author 형민재
      */
-    public void patchAccountNumber(String accountNumber, String id) {
-        borrowerRepository.patchAccountNumber(accountNumber, id);
-        deleteCache(id);
-        cacheScheduledTask.refreshBorrowerCacheData(id);
-    }
-
-    /**
-     * 아이디로 대여자의 전화번호 계좌번호를 저장하는 메서드
-     *
-     * @param dto
-     * @param id
-     *
-     * @author 형민재
-     */
-    public void savePhoneAccountNumber(String id, SavePhoneAccountNumberDto dto) {
-        StudentCouncilFeeVerification council = studentCouncilFeeVerificationRepository.findRequestByBorrowerId(id);
-        if (council != null && council.isVerify()) {
-            borrowerRepository.savePhoneAccountNumber(id, dto);
-        } else {
-            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_ALLOWED_COUNCIL_FEE;
-            throw new AccessDeniedException(apiErrorCode.name() + ":" + apiErrorCode.getMessage());
-        }
+    public void updateAccountNumber(Borrower borrower, UpdateAccountNumberDto dto) {
+        String borrowerId = borrower.getId();
+        borrowerRepository.updateAccountNumber(borrower, dto);
+        // 캐시 초기화
+        borrowerCache.invalidate(borrowerId);
+        refreshBorrowerCacheData(borrowerId);
     }
 
     /**
      * 대여자의 금지 정보를 수정하는 메서드
      *
-     * @param ban
-     * @param id
+     * @param Borrower     borrower
+     * @param UpdateBanDto dto
      * @author 형민재
      */
-    public void patchBan(PatchBanDto dto, String borrowerId) {
-        borrowerRepository.patchBan(borrowerId, dto.isBan(), dto.getBanReason());
-        deleteCache(borrowerId);
-        cacheScheduledTask.refreshBorrowerCache(borrowerId);
+    public void updateBan(Borrower borrower, UpdateBanDto dto) {
+        String borrowerId = borrower.getId();
+        borrowerRepository.updateBan(borrower, dto);
+        // 캐시 초기화
+        borrowerCache.invalidate(borrowerId);
+        refreshBorrowerCacheData(borrowerId);
     }
 
-    public void deleteCache(String borrowerId) {
-        borrowerCache.invalidate(borrowerId);
+    // --------- 특수 메서드 ---------
+
+    /**
+     * 특정 사용자 캐시 초기화 메서드
+     * 
+     * @param borrowerId
+     * @return
+     */
+    public void refreshBorrowerCacheData(String borrowerId) {
+        Borrower borrower = Borrower.builder()
+                .id(borrowerId)
+                .build();
+        BorrowerCacheData cacheData = borrowerRepository.findByIdForCache(borrower);
+        borrowerCache.put(borrowerId, cacheData);
+    }
+
+    /**
+     * i-class 연동 로그인 메서드
+     *
+     * @param borrowerLoginDto
+     * @author 형민재
+     */
+    public Borrower inhaLogin(BorrowerLoginDto borrowerLoginDto) {
+        try {
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(Role.BORROWER.name()));
+            Response response = Jsoup.connect(LOGIN_URL)
+                    .data("username", borrowerLoginDto.getId(), "password", borrowerLoginDto.getPassword())
+                    .method(Method.POST)
+                    .execute();
+
+            // HTML에서 이름과 학과 추출
+            Document doc = response.parse();
+            String name = doc.select(".user-info-picture h4").text();
+            String department = doc.select(".user-info-picture .department").text();
+
+            if (name.isEmpty()) {
+                // 이름이 null이면 로그인 실패
+                throw new BadCredentialsException(ApiErrorCode.CHECK_YOUR_INFO.name());
+            }
+
+            if (!DEPARTMENT_LIST.contains(department)) {
+                // 타 단과대는 이용 불가
+                throw new BadCredentialsException(ApiErrorCode.INVALID_ID.name());
+            }
+            Borrower borrower = Borrower.builder()
+                    .id(borrowerLoginDto.getId())
+                    .name(name)
+                    .department(department)
+                    .authorities(authorities)
+                    .build();
+
+            // 캐시에 있는 사용자인지 확인
+            BorrowerCacheData borrowerCacheData = borrowerCache.getIfPresent(borrowerLoginDto.getId());
+
+            if (borrowerCacheData == null) {
+                // 캐쉬에 없는 대여자라면 DB에 있는지 확인(1시간 마다 동기화 되므로)
+                try {
+                    Borrower tempBorrower = Borrower.builder()
+                            .id(borrowerLoginDto.getId())
+                            .build();
+                    borrowerRepository.findByIdForCache(tempBorrower);
+                } catch (ResourceNotFoundException e) {
+                    // 캐시에 임시저장하기 위한 객체
+                    TempBorrowerInfoCacheData tempBorrowerInfoCache = new TempBorrowerInfoCacheData(name, department);
+                    // db에 정보 있는지 확인 후 없다면 신규 사용자 이므로 임시 캐쉬에 저장
+                    tempBorrowerCache.put(borrowerLoginDto.getId(), tempBorrowerInfoCache);
+                }
+            }
+
+            return borrower;
+        } catch (IOException e) {
+            throw new RuntimeException("로그인 시도 중 연결 실패", e);
+        }
     }
 }

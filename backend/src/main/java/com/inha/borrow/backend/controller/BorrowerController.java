@@ -89,7 +89,7 @@ public class BorrowerController {
     @PatchMapping("/info/account-num")
     public ResponseEntity<Void> updateAccountNumber(@AuthenticationPrincipal Borrower borrower,
             @Valid @RequestBody UpdateAccountNumberDto dto) {
-        borrowerService.patchAccountNumber(borrower, dto);
+        borrowerService.updateAccountNumber(borrower, dto);
         return ResponseEntity.ok().build();
     }
 
@@ -109,7 +109,8 @@ public class BorrowerController {
         if (dto.isBan() && (dto.getBanReason() == null || dto.getBanReason().isBlank())) {
             throw new InvalidValueException(ApiErrorCode.INVALID_VALUE.name(), "차단 사유를 입력해주세요.");
         }
-        borrowerService.patchBan(dto, borrowerId);
+        Borrower borrower = Borrower.builder().id(borrowerId).build();
+        borrowerService.updateBan(borrower, dto);
         return ResponseEntity.ok().build();
     }
 }

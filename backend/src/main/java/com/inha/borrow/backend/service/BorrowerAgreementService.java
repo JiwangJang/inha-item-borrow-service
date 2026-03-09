@@ -6,7 +6,7 @@ import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.model.dto.agreement.AgreementDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerCacheData;
 import com.inha.borrow.backend.model.dto.user.borrower.SaveBorrowerDto;
-import com.inha.borrow.backend.model.dto.user.borrower.TempBorrowerCacheData;
+import com.inha.borrow.backend.model.dto.user.borrower.TempBorrowerInfoCacheData;
 import com.inha.borrow.backend.model.entity.BorrowerAgreement;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.repository.BorrowerAgreementRepository;
@@ -25,7 +25,7 @@ public class BorrowerAgreementService {
     private final BorrowerAgreementRepository borrowerAgreementRepository;
     private final BorrowerRepository borrowerRepository;
     private final Cache<String, BorrowerCacheData> borrowerCache;
-    private final Cache<String, TempBorrowerCacheData> tempBorrowerCache;
+    private final Cache<String, TempBorrowerInfoCacheData> tempBorrowerCache;
     private final StudentCouncilFeeVerificationService studentCouncilFeeVerificationService;
 
     /**
