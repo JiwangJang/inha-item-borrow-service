@@ -81,7 +81,7 @@ public class BorrowerService {
      * @param searchType
      * @return
      */
-    public List<BorrowerCacheData> searchBorrower(String keyword, SearchType searchType) {
+    public List<BorrowerCacheData> searchBorrowerCache(String keyword, SearchType searchType) {
         Set<String> userIds = borrowerCache.asMap().keySet();
         ArrayList<BorrowerCacheData> result = new ArrayList<>();
 

@@ -26,9 +26,9 @@ public class BorrowerAgreementController {
      * @author 형민재
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<Integer>> saveAgreement(@AuthenticationPrincipal Borrower user,
+    public ResponseEntity<ApiResponse<Integer>> saveAgreement(@AuthenticationPrincipal Borrower borrower,
             @RequestBody @Valid AgreementDto agreementDto) {
-        int result = borrowerAgreementService.saveAgreement(user.getId(), agreementDto);
+        int result = borrowerAgreementService.saveAgreement(borrower, agreementDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, result));
     }
 }

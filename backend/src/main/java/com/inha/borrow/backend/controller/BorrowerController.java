@@ -45,7 +45,7 @@ public class BorrowerController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<BorrowerCacheData>>> searchBorrower(@RequestParam("keyword") String keyword,
             @RequestParam("searchType") String searchType) {
-        List<BorrowerCacheData> result = borrowerService.searchBorrower(keyword, SearchType.valueOf(searchType));
+        List<BorrowerCacheData> result = borrowerService.searchBorrowerCache(keyword, SearchType.valueOf(searchType));
         return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
