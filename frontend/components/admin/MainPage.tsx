@@ -24,8 +24,12 @@ export default function MainPage() {
     const itemContext = useContext(ItemContext);
     const router = useRouter();
 
-    const requestList = requestContext.requestList.filter((request) => request.type == REQUEST_TYPE.BORROW);
-    const returnRequestList = requestContext.requestList.filter((request) => request.type == REQUEST_TYPE.RETURN);
+    const requestList = requestContext.requestList.filter(
+        (request) => request.type == REQUEST_TYPE.BORROW && request.manager?.id == null,
+    );
+    const returnRequestList = requestContext.requestList.filter(
+        (request) => request.type == REQUEST_TYPE.RETURN && request.manager?.id == null,
+    );
     const notVerifiedStudentCouncilFeeList = studentCouncilFeeContext.studentCouncilFeeList.filter(
         (ele) => !ele.verify,
     );
