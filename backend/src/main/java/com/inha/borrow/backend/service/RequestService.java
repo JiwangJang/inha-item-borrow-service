@@ -4,17 +4,16 @@ import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
-import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
-import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
-import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
+import com.inha.borrow.backend.model.dto.request.UpdateRequestDto;
+import com.inha.borrow.backend.model.dto.user.borrower.BorrowerCacheData;
+import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.repository.RequestRepository;
-import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -37,8 +36,9 @@ import java.util.Map;
 public class RequestService {
     private final RequestRepository requestRepository;
     private final ItemService itemService;
-    private final StudentCouncilFeeVerificationRepository studentCouncilFeeVerificationRepository;
-    private final Cache<String, CacheBorrowerDto> borrowerCache;
+    private final Cache<String, BorrowerCacheData> borrowerCache;
+
+    // --------- 생성 메서드 ---------
 
     /**
      * 리퀘스트를 저장하는 메서드
@@ -47,14 +47,15 @@ public class RequestService {
      * @author 형민재(수정 : 장지왕)
      */
     @Transactional
-    public SaveRequestResultDto saveRequest(SaveRequestDto saveRequestDto) {
+    public SaveRequestResultDto saveRequest(Borrower borrower, SaveRequestDto saveRequestDto) {
         // 변수 선언은 함수 시작부분에 하는것이 좋다
+        String borrowerId = borrower.getId();
         RequestType type = saveRequestDto.getType();
         int itemId = saveRequestDto.getItemId();
         int prevRequestId = saveRequestDto.getPrevRequestId();
-        CacheBorrowerDto cacheBorrower = borrowerCache.getIfPresent(saveRequestDto.getBorrowerId());
+        BorrowerCacheData cacheBorrower = borrowerCache.getIfPresent(borrowerId);
         Map<String, Object> recentRequestInfo = requestRepository
-                .getRecentRequestInfo(saveRequestDto.getBorrowerId());
+                .findRecentRequestInfo(borrower);
 
         if (cacheBorrower == null) {
             // 캐시가 제대로 등록되지 않은 경우 대여 불가 -> 학생회비 납부여부 확인 불가
@@ -106,15 +107,6 @@ public class RequestService {
                                 ApiErrorCode.REQUEST_EXIST.getMessage());
                     }
                 }
-                // boolean returnPermit = RequestType.RETURN.name().equals(currentType) &&
-                // RequestState.PERMIT.name().equals(currentState);
-                // boolean borrowReject = RequestType.BORROW.name().equals(currentType) &&
-                // RequestState.REJECT.name().equals(currentState);
-                // if (!(returnPermit || borrowReject)) {
-                // ApiErrorCode apiErrorCode = ApiErrorCode.REQUEST_EXIST;
-                // throw new InvalidValueException(apiErrorCode.name(),
-                // apiErrorCode.getMessage());
-                // }
             }
 
             // 1시간 이후인지
@@ -156,32 +148,11 @@ public class RequestService {
                 throw new InvalidValueException(ApiErrorCode.INVALID_VALUE.name(),
                         "대여요청 시간은 이전 요청과 동일해야합니다.");
             }
-            // boolean borrowPermit = currentType.equals(RequestType.BORROW.name()) &&
-            // currentState.equals(RequestState.PERMIT.name());
-            // if (!borrowPermit) {
-            // ApiErrorCode apiErrorCode = ApiErrorCode.REQUEST_EXIST;
-            // throw new InvalidValueException(apiErrorCode.name(),
-            // apiErrorCode.getMessage());
-            // }
-
         }
-        return requestRepository.save(saveRequestDto);
+        return requestRepository.saveRequest(borrower, saveRequestDto);
     }
 
-    /**
-     * ID로 리퀘스트를 가져오는 메서드
-     * 
-     * @param requestId
-     * @author 형민재
-     */
-    public Request findById(User user, int requestId) {
-        if (user instanceof Borrower) {
-            return requestRepository.findById(user.getId(), requestId);
-        } else {
-            // 관리자는 모든 대여자의 요청에 대해 조회할 수 있다.
-            return requestRepository.findById(null, requestId);
-        }
-    }
+    // --------- 조회 메서드 ---------
 
     /**
      * 리퀘스트를 여러 조건으로 가져오는 메서드
@@ -199,6 +170,8 @@ public class RequestService {
         }
     }
 
+    // --------- 수정 메서드 ---------
+
     /**
      * ID로 리퀘스트를 수정하는 메서드
      * 
@@ -208,7 +181,7 @@ public class RequestService {
      * @author 형민재
      */
     @Transactional
-    public void patchRequest(PatchRequestDto patchRequestDto, int requestId, String borrowerId) {
+    public void updateRequest(Borrower borrower, UpdateRequestDto updateRequestDto, int requestId) {
         Map<String, Object> result = requestRepository.findRequestStateAndTypeAndBorrowAtById(requestId);
         RequestState state = RequestState.valueOf((String) result.get("state"));
         RequestType type = RequestType.valueOf((String) result.get("type"));
@@ -227,35 +200,34 @@ public class RequestService {
                 throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
             }
             // 1시간 이후인지
-            if (patchRequestDto.getBorrowAt().isBefore(now.plusHours(1))) {
+            if (updateRequestDto.getBorrowAt().isBefore(now.plusHours(1))) {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "대여일시는 현재 시각보다 한시간 이후여야 합니다.");
             }
-            if (!patchRequestDto.getBorrowAt().isBefore(patchRequestDto.getReturnAt())) {
+            if (!updateRequestDto.getBorrowAt().isBefore(updateRequestDto.getReturnAt())) {
                 // 대여요청이든 반납요청이든 동일하게 적용
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "반납일시는 대여일시보다 이후여야 합니다.");
             }
-
+            // 여기에 대여물품 상태 변경 코드 넣기
         } else {
             // 반납요청인 경우
             if (state == RequestState.ASSIGNED || state == RequestState.PERMIT) {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "보류중 또는 거부됨이 아닌 반납 요청은 수정이 불가합니다.");
             }
-            if (!OffsetDateTime.now().isBefore(patchRequestDto.getReturnAt())) {
+            if (!OffsetDateTime.now().isBefore(updateRequestDto.getReturnAt())) {
                 // 반납요청시각이 현재보다 이전이면 거부
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "반납일시는 현재보다 이전일 수 없습니다.");
             }
-            if (!patchRequestDto.getBorrowAt().isEqual(borrowAt)) {
+            if (!updateRequestDto.getBorrowAt().isEqual(borrowAt)) {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "반납요청의 대여시간은 수정할 수 없습니다.");
             }
-
+            // 여기에 대여물품 상태 변경 코드 넣기
         }
-        requestRepository.patchRequest(patchRequestDto, requestId, borrowerId);
-
+        requestRepository.updateRequest(borrower, updateRequestDto, requestId);
     }
 
     /**
@@ -266,7 +238,7 @@ public class RequestService {
      * @author 형민재
      */
     @Transactional
-    public void cancelRequest(int requestId, String borrowerId) {
+    public void updateRequestCancel(Borrower borrower, int requestId) {
         Map<String, String> typeAndItemId = requestRepository.findRequestItemIdAndStateById(requestId);
         RequestState state = RequestState.valueOf(typeAndItemId.get("state"));
 
@@ -275,7 +247,7 @@ public class RequestService {
             ApiErrorCode apiErrorCode = ApiErrorCode.CAN_NOT_CANCEL_REQUEST;
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
-        requestRepository.cancelRequest(requestId, borrowerId);
+        requestRepository.updateRequestCancel(borrower, requestId);
         itemService.updateState(ItemState.AFFORD, Integer.parseInt(typeAndItemId.get("item_id")));
     }
 
@@ -285,8 +257,8 @@ public class RequestService {
      * @param adminId
      * @param requestId
      */
-    public void manageRequest(String adminId, int requestId) {
-        requestRepository.manageRequest(adminId, requestId);
+    public void updateRequestManager(Admin admin, int requestId) {
+        requestRepository.updateRequestManager(admin, requestId);
     }
 
     /**
