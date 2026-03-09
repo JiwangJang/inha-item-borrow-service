@@ -1,10 +1,12 @@
 package com.inha.borrow.backend.controller;
 
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
-import com.inha.borrow.backend.model.dto.request.PatchRequestDto;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
 import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
+import com.inha.borrow.backend.model.dto.request.UpdateRequestDto;
+import com.inha.borrow.backend.model.entity.user.Admin;
+import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.service.RequestService;
 import jakarta.validation.Valid;
@@ -33,11 +35,10 @@ public class RequestController {
      */
     @PostMapping
     public ResponseEntity<ApiResponse<SaveRequestResultDto>> saveRequest(
-            @AuthenticationPrincipal(expression = "id") String borrowerId,
+            @AuthenticationPrincipal Borrower borrower,
             @Valid @RequestBody SaveRequestDto saveRequestDto) {
-        saveRequestDto.setBorrowerId(borrowerId);
-        SaveRequestResultDto result = requestService.saveRequest(saveRequestDto);
-        // DB의 정확한 시간을 가져올수 없어 이렇게 생성시간 표시
+        SaveRequestResultDto result = requestService.saveRequest(borrower, saveRequestDto);
+        // DB의 정확한 시간을 가져오는 방법을 몰라 이렇게 생성시간 표시(나중에 수정해야함)
         result.setCreatedAt(Timestamp.from(Instant.now()));
         return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
@@ -54,7 +55,8 @@ public class RequestController {
      * @author 형민재
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Request>>> findRequestsByConditions(@AuthenticationPrincipal User user,
+    public ResponseEntity<ApiResponse<List<Request>>> findRequestsByConditions(
+            @AuthenticationPrincipal User user,
             @RequestParam(value = "borrowerId", required = false) String borrowerId,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "state", required = false) String state) {
@@ -74,9 +76,10 @@ public class RequestController {
      */
     @PatchMapping("/{request-id}/patch")
     public ResponseEntity<ApiResponse<SaveRequestDto>> updateRequest(
-            @AuthenticationPrincipal(expression = "id") String borrowerId,
-            @PathVariable("request-id") int requestId, @Valid @RequestBody PatchRequestDto patchRequestDto) {
-        requestService.patchRequest(patchRequestDto, requestId, borrowerId);
+            @AuthenticationPrincipal Borrower borrower,
+            @PathVariable("request-id") int requestId,
+            @Valid @RequestBody UpdateRequestDto patchRequestDto) {
+        requestService.updateRequest(borrower, patchRequestDto, requestId);
         return ResponseEntity.ok().build();
     }
 
@@ -89,9 +92,9 @@ public class RequestController {
      */
     @PatchMapping("/{request-id}/cancel")
     public ResponseEntity<ApiResponse<Void>> updateRequestCancel(
-            @AuthenticationPrincipal(expression = "id") String borrowerId,
+            @AuthenticationPrincipal Borrower borrower,
             @PathVariable("request-id") int requestId) {
-        requestService.cancelRequest(requestId, borrowerId);
+        requestService.updateRequestCancel(borrower, requestId);
         return ResponseEntity.ok().build();
     }
 
@@ -103,9 +106,10 @@ public class RequestController {
      * @return
      */
     @PatchMapping("/{request-id}/manage")
-    public ResponseEntity<Void> updateRequestManager(@AuthenticationPrincipal(expression = "id") String adminId,
+    public ResponseEntity<Void> updateRequestManager(
+            @AuthenticationPrincipal Admin admin,
             @PathVariable("request-id") int requestId) {
-        requestService.manageRequest(adminId, requestId);
+        requestService.updateRequestManager(admin, requestId);
         return ResponseEntity.noContent().build();
     }
 }

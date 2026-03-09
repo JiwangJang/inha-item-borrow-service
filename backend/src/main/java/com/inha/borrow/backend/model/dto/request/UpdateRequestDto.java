@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PatchRequestDto {
+public class UpdateRequestDto {
     @NotNull
     private OffsetDateTime returnAt;
     @NotNull

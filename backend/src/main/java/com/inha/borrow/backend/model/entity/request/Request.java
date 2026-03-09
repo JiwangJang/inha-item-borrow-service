@@ -7,10 +7,11 @@ import com.inha.borrow.backend.model.entity.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+
 import java.sql.Timestamp;
 
-@Data
+@Getter
 @AllArgsConstructor
 @Builder
 public class Request {

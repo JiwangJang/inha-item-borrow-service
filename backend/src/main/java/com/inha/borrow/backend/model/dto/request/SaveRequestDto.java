@@ -18,7 +18,6 @@ public class SaveRequestDto {
     private int prevRequestId;
     @NotNull
     private int itemId;
-    private String borrowerId;
     @NotNull
     private OffsetDateTime returnAt;
     @NotNull
