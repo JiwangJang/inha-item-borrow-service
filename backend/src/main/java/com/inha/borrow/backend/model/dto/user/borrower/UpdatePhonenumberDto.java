@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatchBanDto {
-    private boolean ban;
-    private String banReason;
+public class UpdatePhonenumberDto {
+    private String newPhonenumber;
 }

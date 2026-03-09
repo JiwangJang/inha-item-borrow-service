@@ -1,22 +1,18 @@
 package com.inha.borrow.backend.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import com.inha.borrow.backend.cache.CacheScheduledTask;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.enums.SearchType;
 import com.inha.borrow.backend.model.dto.user.borrower.*;
 
-import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
-import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.nodes.Document;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,15 +35,138 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class BorrowerService {
     private final BorrowerRepository borrowerRepository;
-    private final StudentCouncilFeeVerificationRepository studentCouncilFeeVerificationRepository;
-    private final Cache<String, CacheBorrowerDto> borrowerCache;
-    private final Cache<String, TempBorrowerInfoDto> tempBorrowerCache;
-    private final CacheScheduledTask cacheScheduledTask;
+    private final Cache<String, BorrowerCacheData> borrowerCache;
+    private final Cache<String, TempBorrowerInfoCacheData> tempBorrowerCache;
     private final String LOGIN_URL = "https://learn.inha.ac.kr/login/index.php";
     private final List<String> DEPARTMENT_LIST = List.of("소프트웨어융합공학과", "메카트로닉스공학과", "반도체산업융합학과", "금융투자학과", "산업경영학과");
 
+    // --------- 조회 메서드 ---------
+
     /**
-     * i-class를 활용한 로그인 메서드
+     * 전체 대여자 캐시 반환받는 메서드
+     * 
+     * @return List<BorrowerCacheData>
+     */
+    public List<BorrowerCacheData> findAllForCache() {
+        return borrowerRepository.findAllForCache();
+    }
+
+    /**
+     * 대여자 캐시정보 반환하는 메서드
+     *
+     * @param Borrower
+     * @return 대여자 정보
+     * @author 형민재
+     */
+    public BorrowerCacheData findCacheById(Borrower borrower) {
+        String borrowerId = borrower.getId();
+        BorrowerCacheData borrowerCacheData = borrowerCache.getIfPresent(borrowerId);
+        TempBorrowerInfoCacheData tempBorrowerInfoCacheData = tempBorrowerCache.getIfPresent(borrowerId);
+
+        if (borrowerCacheData == null && tempBorrowerInfoCacheData != null) {
+            borrowerCacheData = BorrowerCacheData.builder()
+                    .id(borrowerId)
+                    .name(tempBorrowerInfoCacheData.getName())
+                    .department(tempBorrowerInfoCacheData.getDepartment())
+                    .build();
+        }
+
+        return borrowerCacheData;
+    }
+
+    /**
+     * 검색 타입에 따라 대여자 정보를 반환하는 함수
+     * 
+     * @param keyword
+     * @param searchType
+     * @return
+     */
+    public List<BorrowerCacheData> searchBorrowerCache(String keyword, SearchType searchType) {
+        Set<String> userIds = borrowerCache.asMap().keySet();
+        ArrayList<BorrowerCacheData> result = new ArrayList<>();
+
+        userIds.forEach((String id) -> {
+            if (searchType == SearchType.ID && id.contains(keyword)) {
+                // 학번(ID)로 찾은경우
+                result.add(borrowerCache.getIfPresent(id));
+            } else {
+                // 이름으로 찾은 경우
+                BorrowerCacheData current = borrowerCache.getIfPresent(id);
+                if (current.getName().contains(keyword)) {
+                    result.add(current);
+                }
+            }
+        });
+
+        return result;
+    }
+
+    // --------- 수정 메서드 ---------
+
+    /**
+     * 대여자의 핸드폰 번호를 수정하는 메서드
+     *
+     * @param Borrower             borrower
+     * @param UpdatePhonenumberDto dto
+     * @author 형민재
+     */
+    public void updatePhoneNumber(Borrower borrower, UpdatePhonenumberDto dto) {
+        String borrowerId = borrower.getId();
+        borrowerRepository.updatePhoneNumber(borrower, dto);
+        // 캐시 초기화
+        borrowerCache.invalidate(borrowerId);
+        refreshBorrowerCacheData(borrowerId);
+    }
+
+    /**
+     * 대여자의 반환계좌 정보를 수정하는 메서드
+     *
+     * @param Borrower               borrower
+     * @param UpdateAccountNumberDto dto
+     *
+     * @author 형민재
+     */
+    public void updateAccountNumber(Borrower borrower, UpdateAccountNumberDto dto) {
+        String borrowerId = borrower.getId();
+        borrowerRepository.updateAccountNumber(borrower, dto);
+        // 캐시 초기화
+        borrowerCache.invalidate(borrowerId);
+        refreshBorrowerCacheData(borrowerId);
+    }
+
+    /**
+     * 대여자의 금지 정보를 수정하는 메서드
+     *
+     * @param Borrower     borrower
+     * @param UpdateBanDto dto
+     * @author 형민재
+     */
+    public void updateBan(Borrower borrower, UpdateBanDto dto) {
+        String borrowerId = borrower.getId();
+        borrowerRepository.updateBan(borrower, dto);
+        // 캐시 초기화
+        borrowerCache.invalidate(borrowerId);
+        refreshBorrowerCacheData(borrowerId);
+    }
+
+    // --------- 특수 메서드 ---------
+
+    /**
+     * 특정 사용자 캐시 초기화 메서드
+     * 
+     * @param borrowerId
+     * @return
+     */
+    public void refreshBorrowerCacheData(String borrowerId) {
+        Borrower borrower = Borrower.builder()
+                .id(borrowerId)
+                .build();
+        BorrowerCacheData cacheData = borrowerRepository.findByIdForCache(borrower);
+        borrowerCache.put(borrowerId, cacheData);
+    }
+
+    /**
+     * i-class 연동 로그인 메서드
      *
      * @param borrowerLoginDto
      * @author 형민재
@@ -82,17 +201,20 @@ public class BorrowerService {
                     .build();
 
             // 캐시에 있는 사용자인지 확인
-            CacheBorrowerDto dto = borrowerCache.getIfPresent(borrowerLoginDto.getId());
+            BorrowerCacheData borrowerCacheData = borrowerCache.getIfPresent(borrowerLoginDto.getId());
 
-            if (dto == null) {
+            if (borrowerCacheData == null) {
                 // 캐쉬에 없는 대여자라면 DB에 있는지 확인(1시간 마다 동기화 되므로)
                 try {
-                    borrowerRepository.findById(borrowerLoginDto.getId());
+                    Borrower tempBorrower = Borrower.builder()
+                            .id(borrowerLoginDto.getId())
+                            .build();
+                    borrowerRepository.findByIdForCache(tempBorrower);
                 } catch (ResourceNotFoundException e) {
-                    // 캐시에 임시저장하기 위한 DTO
-                    TempBorrowerInfoDto borrowerInformDto = new TempBorrowerInfoDto(name, department);
+                    // 캐시에 임시저장하기 위한 객체
+                    TempBorrowerInfoCacheData tempBorrowerInfoCache = new TempBorrowerInfoCacheData(name, department);
                     // db에 정보 있는지 확인 후 없다면 신규 사용자 이므로 임시 캐쉬에 저장
-                    tempBorrowerCache.put(borrowerLoginDto.getId(), borrowerInformDto);
+                    tempBorrowerCache.put(borrowerLoginDto.getId(), tempBorrowerInfoCache);
                 }
             }
 
@@ -100,142 +222,5 @@ public class BorrowerService {
         } catch (IOException e) {
             throw new RuntimeException("로그인 시도 중 연결 실패", e);
         }
-    }
-
-    /**
-     * 대여자 캐시정보 반환하는 메서드
-     *
-     * @param id
-     * @return 대여자 정보
-     * @author 형민재
-     */
-
-    public CacheBorrowerDto findCacheById(String borrowerId) {
-        CacheBorrowerDto cacheBorrowerDto = borrowerCache.getIfPresent(borrowerId);
-        TempBorrowerInfoDto tempBorrowerInfoDto = tempBorrowerCache.getIfPresent(borrowerId);
-
-        if (cacheBorrowerDto == null && tempBorrowerInfoDto != null) {
-            cacheBorrowerDto = CacheBorrowerDto.builder()
-                    .id(borrowerId)
-                    .name(tempBorrowerInfoDto.getName())
-                    .department(tempBorrowerInfoDto.getDepartment())
-                    .build();
-        }
-
-        return cacheBorrowerDto;
-    }
-
-    /**
-     * 대여자들의 정보를 반환하는 메서드
-     *
-     * @return 대여자 정보
-     * @author 형민재
-     */
-
-    public List<Borrower> findAll() {
-        return borrowerRepository.findAll();
-    }
-
-    /**
-     * 검색 타입에 따라 대여자 정보를 반환하는 함수
-     * 
-     * @param keyword
-     * @param searchType
-     * @return
-     */
-    public List<CacheBorrowerDto> searchBorrower(String keyword, SearchType searchType) {
-        Set<String> userIds = borrowerCache.asMap().keySet();
-        ArrayList<CacheBorrowerDto> result = new ArrayList<>();
-
-        userIds.forEach((String id) -> {
-            if (searchType == SearchType.ID && id.contains(keyword)) {
-                // 학번(ID)로 찾은경우
-                result.add(borrowerCache.getIfPresent(id));
-            } else {
-                // 이름으로 찾은 경우
-                CacheBorrowerDto current = borrowerCache.getIfPresent(id);
-                if (current.getName().contains(keyword)) {
-                    result.add(current);
-                }
-            }
-        });
-
-        return result;
-    }
-
-    /**
-     * 대여자의 이름을 수정하는 메서드
-     *
-     * @param name
-     * @param id
-     * @author 형민재
-     */
-    public void patchName(String name, String id) {
-        borrowerRepository.patchName(name, id);
-        deleteCache(id);
-        cacheScheduledTask.refreshBorrowerCache(id);
-    }
-
-    /**
-     * 대여자의 핸드폰 번호를를 수정하는 메서드
-     *
-     * @param borrowerId
-     * @param dto
-     * @author 형민재
-     */
-    public void patchPhoneNumber(String borrowerId, PatchPhonenumberDto dto) {
-        String newPhonenumber = dto.getNewPhonenumber();
-        borrowerRepository.patchPhoneNumber(newPhonenumber, borrowerId);
-        deleteCache(borrowerId);
-        cacheScheduledTask.refreshBorrowerCache(borrowerId);
-    }
-
-    /**
-     * 대여자의 반환계좌 정보를 수정하는 메서드
-     *
-     * @param accountNumber
-     * @param id
-     *
-     * @author 형민재
-     */
-    public void patchAccountNumber(String accountNumber, String id) {
-        borrowerRepository.patchAccountNumber(accountNumber, id);
-        deleteCache(id);
-        cacheScheduledTask.refreshBorrowerCache(id);
-    }
-
-    /**
-     * 아이디로 대여자의 전화번호 계좌번호를 저장하는 메서드
-     *
-     * @param dto
-     * @param id
-     *
-     * @author 형민재
-     */
-    public void savePhoneAccountNumber(String id, SavePhoneAccountNumberDto dto) {
-        StudentCouncilFeeVerification council = studentCouncilFeeVerificationRepository.findRequestByBorrowerId(id);
-        if (council != null && council.isVerify()) {
-            borrowerRepository.savePhoneAccountNumber(id, dto);
-        } else {
-            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_ALLOWED_COUNCIL_FEE;
-            throw new AccessDeniedException(apiErrorCode.name() + ":" + apiErrorCode.getMessage());
-        }
-    }
-
-    /**
-     * 대여자의 금지 정보를 수정하는 메서드
-     *
-     * @param ban
-     * @param id
-     * @author 형민재
-     */
-    public void patchBan(PatchBanDto dto, String borrowerId) {
-        borrowerRepository.patchBan(borrowerId, dto.isBan(), dto.getBanReason());
-        deleteCache(borrowerId);
-        cacheScheduledTask.refreshBorrowerCache(borrowerId);
-    }
-
-    public void deleteCache(String borrowerId) {
-        borrowerCache.invalidate(borrowerId);
     }
 }

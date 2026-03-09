@@ -1,12 +1,18 @@
 package com.inha.borrow.backend.model.dto.user.borrower;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatchPhonenumberDto {
-    private String newPhonenumber;
+@Builder
+public class SaveBorrowerDto {
+    String id;
+    String name;
+    String department;
+    String phonenumber;
+    String accountNumber;
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatchAccountNumberDto {
+public class UpdateAccountNumberDto {
     @NotBlank
     private String newAccountNumber;
 }

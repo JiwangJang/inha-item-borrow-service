@@ -7,7 +7,6 @@ import org.apache.http.entity.ContentType;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.inha.borrow.backend.config.auth.handler.LoginFailureHandler;
 import com.inha.borrow.backend.config.auth.handler.LoginSuccessHandler;
-import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
 import com.inha.borrow.backend.service.AdminService;
 import com.inha.borrow.backend.service.ItemService;
 import com.inha.borrow.backend.service.RequestService;
@@ -42,6 +41,7 @@ import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.dto.apiResponse.ErrorResponse;
+import com.inha.borrow.backend.model.dto.user.borrower.BorrowerCacheData;
 
 @Configuration
 @EnableWebSecurity
@@ -300,7 +300,7 @@ public class AuthConfig {
 	}
 
 	@Bean
-	LoginSuccessHandler loginSuccessHandler(Cache<String, CacheBorrowerDto> borrowerCache,
+	LoginSuccessHandler loginSuccessHandler(Cache<String, BorrowerCacheData> borrowerCache,
 			ObjectMapper objectMapper,
 			ItemService itemService,
 			RequestService requestService,

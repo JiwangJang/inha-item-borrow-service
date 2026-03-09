@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.inha.borrow.backend.enums.Role;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
-import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
+import com.inha.borrow.backend.model.dto.user.borrower.BorrowerCacheData;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.entity.user.Borrower;
@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private final Cache<String, CacheBorrowerDto> borrowerCache;
+    private final Cache<String, BorrowerCacheData> borrowerCache;
     private final ObjectMapper objectMapper;
     private final ItemService itemService;
     private final RequestService requestService;
@@ -52,9 +52,9 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         if (authority.equals(Role.BORROWER.name())) {
             Borrower borrower = (Borrower) user;
             log.info("[INFO] 대여자 로그인 / 아이디 : {}", user.getId());
-            CacheBorrowerDto cache = borrowerCache.getIfPresent(user.getId());
-            if (cache == null) {
-                cache = CacheBorrowerDto.builder()
+            BorrowerCacheData borrowerCacheData = borrowerCache.getIfPresent(user.getId());
+            if (borrowerCacheData == null) {
+                borrowerCacheData = BorrowerCacheData.builder()
                         .id(borrower.getId())
                         .name(borrower.getName())
                         .department(borrower.getDepartment())
@@ -65,7 +65,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             List<Request> requests = requestService.findRequestsByCondition(user, null, null, null);
             List<Item> items = itemService.getAllItem(user);
 
-            initialValue.put("borrowerInfo", cache);
+            initialValue.put("borrowerInfo", borrowerCacheData);
             initialValue.put("requests", requests);
             initialValue.put("items", items);
 
