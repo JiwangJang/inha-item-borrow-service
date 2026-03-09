@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifyVerificationResponseDto {
+public class UpdateStudentCouncilFeeVerificationResponseDto {
     @NotBlank
     private String borrowerId;
     @NotNull(message = "승인여부는 필수입니다.")

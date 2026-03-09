@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
-import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.DenyFeeVerificationDto;
-import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.ModifyVerificationResponseDto;
-import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.PermitFeeVerificationDto;
+import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.UpdateStudentCouncilFeeVerificationDenyDto;
+import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.UpdateStudentCouncilFeeVerificationPermitDto;
+import com.inha.borrow.backend.model.dto.studentCouncilFeeVerification.UpdateStudentCouncilFeeVerificationResponseDto;
 import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.service.StudentCouncilFeeVerificationService;
@@ -46,8 +46,7 @@ public class StuentCouncilFeeVerificationController {
     public ResponseEntity<Void> saveStudentCouncilFeeVerification(
             @RequestParam("verificationImage") MultipartFile verificationImage,
             @AuthenticationPrincipal Borrower borrower) {
-        String id = borrower.getId();
-        service.verificationRequestSave(id, verificationImage);
+        service.verificationRequestSave(borrower, verificationImage);
         return ResponseEntity.ok().build();
     }
 
@@ -60,8 +59,8 @@ public class StuentCouncilFeeVerificationController {
      * @author 장지왕
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<StudentCouncilFeeVerification>>> findAllStudentCouncilFeeVerification() {
-        List<StudentCouncilFeeVerification> result = service.findAllRequests();
+    public ResponseEntity<ApiResponse<List<StudentCouncilFeeVerification>>> findAll() {
+        List<StudentCouncilFeeVerification> result = service.findAll();
         return ResponseEntity.ok(new ApiResponse<List<StudentCouncilFeeVerification>>(true, result));
     }
 
@@ -72,9 +71,9 @@ public class StuentCouncilFeeVerificationController {
      * @author 장지왕
      */
     @GetMapping("/single")
-    public ResponseEntity<ApiResponse<StudentCouncilFeeVerification>> findStudentCouncilFeeVerificationById(
-            @AuthenticationPrincipal Borrower user) {
-        StudentCouncilFeeVerification result = service.findRequestByBorrowerId(user.getId());
+    public ResponseEntity<ApiResponse<StudentCouncilFeeVerification>> findByBorrowerId(
+            @AuthenticationPrincipal Borrower borrower) {
+        StudentCouncilFeeVerification result = service.findByBorrowerId(borrower);
         return ResponseEntity.ok(new ApiResponse<StudentCouncilFeeVerification>(true, result));
     }
 
@@ -88,9 +87,9 @@ public class StuentCouncilFeeVerificationController {
      * @author 장지왕
      */
     @PatchMapping("/{id}/permit")
-    public ResponseEntity<Void> updateStudentCouncilFeeVerificationVerify(@PathVariable("id") String id,
-            @RequestBody PermitFeeVerificationDto dto) {
-        service.permitVerificationRequest(Integer.parseInt(id), dto.getBorrowerId());
+    public ResponseEntity<Void> updateStudentCouncilFeeVerificationPermit(@PathVariable("id") String id,
+            @RequestBody UpdateStudentCouncilFeeVerificationPermitDto dto) {
+        service.updateStudentCouncilFeeVerificationPermit(dto, Integer.parseInt(id));
         return ResponseEntity.ok().build();
     }
 
@@ -101,9 +100,9 @@ public class StuentCouncilFeeVerificationController {
      * @return
      */
     @PatchMapping("/{id}/deny")
-    public ResponseEntity<Void> updateStudentCouncilFeeVerificationVerify(@PathVariable("id") String id,
-            @RequestBody @Valid DenyFeeVerificationDto dto) {
-        service.denyVerificationRequest(Integer.parseInt(id), dto);
+    public ResponseEntity<Void> updateStudentCouncilFeeVerificationDeny(@PathVariable("id") String id,
+            @RequestBody @Valid UpdateStudentCouncilFeeVerificationDenyDto dto) {
+        service.updateStudentCouncilFeeVerificationDeny(dto, Integer.parseInt(id));
         return ResponseEntity.ok().build();
     }
 
@@ -116,8 +115,8 @@ public class StuentCouncilFeeVerificationController {
      */
     @PatchMapping("/{id}/modify")
     public ResponseEntity<Void> updateStudentCouncilFeeVerificationResponse(@PathVariable("id") String id,
-            @Valid ModifyVerificationResponseDto dto) {
-        service.modifyVerificationResponse(Integer.parseInt(id), dto);
+            @Valid UpdateStudentCouncilFeeVerificationResponseDto dto) {
+        service.updateStudentCouncilFeeVerificationResponse(dto, Integer.parseInt(id));
         return ResponseEntity.ok().build();
     }
 
@@ -131,8 +130,7 @@ public class StuentCouncilFeeVerificationController {
      */
     @DeleteMapping
     public ResponseEntity<Void> updateStudentCouncilFeeVerificationCancel(@AuthenticationPrincipal Borrower borrower) {
-        String borrowerId = borrower.getId();
-        service.cancel(borrowerId);
+        service.updateStudentCouncilFeeVerificationCancel(borrower);
         return ResponseEntity.noContent().build();
     }
 }
