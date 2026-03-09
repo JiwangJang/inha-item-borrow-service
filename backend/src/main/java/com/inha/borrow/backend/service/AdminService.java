@@ -78,8 +78,8 @@ public class AdminService implements UserDetailsService {
      * 
      * @return
      */
-    public List<Admin> findAllAdmins() {
-        return adminRepository.findAllAdmins();
+    public List<Admin> findAll() {
+        return adminRepository.findAll();
     }
 
     // --------- 수정 메서드 ---------

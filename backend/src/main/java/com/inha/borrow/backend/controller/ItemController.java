@@ -1,9 +1,9 @@
 package com.inha.borrow.backend.controller;
 
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
-import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
-import com.inha.borrow.backend.model.dto.item.ItemDto;
-import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
+import com.inha.borrow.backend.model.dto.item.DeleteItemDto;
+import com.inha.borrow.backend.model.dto.item.SaveItemDto;
+import com.inha.borrow.backend.model.dto.item.UpdateItemDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.service.ItemService;
@@ -40,8 +40,8 @@ public class ItemController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<Item>> saveItem(@RequestBody @Valid ItemDto itemDto) {
-        Item newItem = itemService.createItem(itemDto);
+    public ResponseEntity<ApiResponse<Item>> saveItem(@RequestBody @Valid SaveItemDto dto) {
+        Item newItem = itemService.saveItem(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, newItem));
     }
 
@@ -53,23 +53,9 @@ public class ItemController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Item>>> getAllItems(@AuthenticationPrincipal User user) {
-        List<Item> result = itemService.getAllItem(user);
+    public ResponseEntity<ApiResponse<List<Item>>> findAll(@AuthenticationPrincipal User user) {
+        List<Item> result = itemService.findAll(user);
         return ResponseEntity.ok(new ApiResponse<>(true, result));
-    }
-
-    /**
-     * 대여물품 단일조회 메서드
-     * 
-     * @param user
-     * @param id
-     * @return
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Item>> getItemById(@AuthenticationPrincipal User user,
-            @PathVariable("id") int id) {
-        Item result = itemService.getItemById(user, id);
-        return ResponseEntity.ok(new ApiResponse<Item>(true, result));
     }
 
     // --------- 수정 메서드 ---------
@@ -82,9 +68,10 @@ public class ItemController {
      * @return
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> updateItem(@PathVariable("id") int id,
-            @Valid @RequestBody ItemReviseRequestDto itemReviseRequestDto) {
-        itemService.updateItemDetail(id, itemReviseRequestDto);
+    public ResponseEntity<ApiResponse<Void>> updateItem(
+            @PathVariable("id") int id,
+            @Valid @RequestBody UpdateItemDto dto) {
+        itemService.updateItem(dto, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(true, null));
     }
 
@@ -98,9 +85,10 @@ public class ItemController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteItem(@PathVariable("id") int id,
-            @Valid @RequestBody ItemDeleteRequestDto deleteRequestDto) {
-        itemService.deleteItem(id, deleteRequestDto);
+    public ResponseEntity<ApiResponse<Void>> deleteItem(
+            @PathVariable("id") int id,
+            @Valid @RequestBody DeleteItemDto dto) {
+        itemService.deleteItem(dto, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(true, null));
     }
 }
