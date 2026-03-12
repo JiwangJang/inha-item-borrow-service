@@ -162,7 +162,7 @@ export default function BorrowerRequestPage() {
 
             const newRequest: RequestInterface = {
                 prevRequestId: null,
-                id: result.requestId,
+                id: result.id,
                 borrowAt: body.borrowAt,
                 returnAt: body.returnAt,
                 createdAt: result.createdAt,

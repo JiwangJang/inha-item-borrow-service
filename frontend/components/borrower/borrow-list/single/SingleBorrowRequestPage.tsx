@@ -88,7 +88,6 @@ export default function SingleBorrowRequestPage({ requestId }: { requestId: stri
             const body = {
                 prevRequestId: id,
                 itemId,
-                borrowerId: borrowerInfo?.id,
                 returnAt: returnAtString == null ? toKstOffsetDateTimeString(Number(returnAt)) : returnAtString,
                 borrowAt: toKstOffsetDateTimeString(Number(borrowAt)),
                 type: REQUEST_TYPE.RETURN,
@@ -99,7 +98,7 @@ export default function SingleBorrowRequestPage({ requestId }: { requestId: stri
 
             const returnRequest: RequestInterface = {
                 prevRequestId: Number(requestId),
-                id: data.requestId,
+                id: data.id,
                 borrowerName: borrowerInfo!.name,
                 cancel: false,
                 createdAt: data.createdAt,
