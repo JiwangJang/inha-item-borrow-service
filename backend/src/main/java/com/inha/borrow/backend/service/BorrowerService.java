@@ -40,6 +40,16 @@ public class BorrowerService {
     private final String LOGIN_URL = "https://learn.inha.ac.kr/login/index.php";
     private final List<String> DEPARTMENT_LIST = List.of("소프트웨어융합공학과", "메카트로닉스공학과", "반도체산업융합학과", "금융투자학과", "산업경영학과");
 
+    // --------- 생성 메서드 ---------
+    /**
+     * 대여자 저장메서드(BorrowerAgreementService사용)
+     * 
+     * @param dto
+     */
+    public void saveBorrower(SaveBorrowerDto dto) {
+        borrowerRepository.save(dto);
+    }
+
     // --------- 조회 메서드 ---------
 
     /**

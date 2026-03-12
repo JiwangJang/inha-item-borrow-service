@@ -169,6 +169,16 @@ public class RequestService {
         }
     }
 
+    /**
+     * 특정 요청의 담당자와 대여물품 번호를 조회하는 메서드(ResponseService 사용)
+     * 
+     * @param requestId
+     * @return
+     */
+    public Request findManagerAndItemIdById(int requestId) {
+        return requestRepository.findManagerAndItemIdById(requestId);
+    }
+
     // --------- 수정 메서드 ---------
 
     /**

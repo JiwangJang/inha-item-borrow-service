@@ -10,7 +10,6 @@ import com.inha.borrow.backend.model.dto.user.borrower.TempBorrowerInfoCacheData
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 import com.inha.borrow.backend.repository.BorrowerAgreementRepository;
-import com.inha.borrow.backend.repository.BorrowerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BorrowerAgreementService {
     private final BorrowerAgreementRepository borrowerAgreementRepository;
-    private final BorrowerRepository borrowerRepository;
+    private final BorrowerService borrowerService;
     private final Cache<String, BorrowerCacheData> borrowerCache;
     private final Cache<String, TempBorrowerInfoCacheData> tempBorrowerCache;
     private final StudentCouncilFeeVerificationService studentCouncilFeeVerificationService;
@@ -53,7 +52,7 @@ public class BorrowerAgreementService {
                     .phonenumber(agreementDto.getPhoneNumber())
                     .build();
 
-            borrowerRepository.save(saveBorrowerDto);
+            borrowerService.saveBorrower(saveBorrowerDto);
 
             borrowerCacheData = BorrowerCacheData.builder()
                     .id(borrowerId)

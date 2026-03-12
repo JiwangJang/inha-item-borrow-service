@@ -12,12 +12,9 @@ import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.enums.ResponseType;
 import com.inha.borrow.backend.model.dto.response.SaveResponseDto;
 import com.inha.borrow.backend.model.dto.response.UpdateResponseDto;
-import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.Response;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
-import com.inha.borrow.backend.repository.ItemRepository;
-import com.inha.borrow.backend.repository.RequestRepository;
 import com.inha.borrow.backend.repository.ResponseRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,13 +23,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ResponseService {
     private final ResponseRepository responseRepository;
-    private final RequestRepository requestRepository;
-    private final ItemRepository itemRepository;
+    private final RequestService requestService;
+    private final ItemService itemService;
 
     @Transactional
     public Response createResponse(String adminId, SaveResponseDto dto) {
         // 요청객체 조회해서 담당자 맞는지 확인
-        Request request = requestRepository.findManagerAndItemIdById(dto.getRequestId());
+        Request request = requestService.findManagerAndItemIdById(dto.getRequestId());
         String rejectReason = dto.getRejectReason();
         int requestId = dto.getRequestId();
         String manager = request.getManager().getId();
@@ -61,26 +58,24 @@ public class ResponseService {
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
 
-        Item updatedItem = Item.builder().id(itemId).build();
-
         // 아이템 및 요청객체 상태 변경
         if (requestType == RequestType.BORROW) {
             // 대여요청인 경우
             if (isPermit) {
-                requestRepository.updateRequestState(RequestState.PERMIT, requestId);
-                itemRepository.updateState(updatedItem, ItemState.BORROWED);
+                requestService.updateRequestState(RequestState.PERMIT, requestId);
+                itemService.updateState(ItemState.BORROWED, itemId);
             } else {
-                requestRepository.updateRequestState(RequestState.REJECT, requestId);
-                itemRepository.updateState(updatedItem, ItemState.AFFORD);
+                requestService.updateRequestState(RequestState.REJECT, requestId);
+                itemService.updateState(ItemState.AFFORD, itemId);
             }
         } else {
             // 반납요청인 경우
             if (isPermit) {
-                requestRepository.updateRequestState(RequestState.PERMIT, requestId);
-                itemRepository.updateState(updatedItem, ItemState.AFFORD);
+                requestService.updateRequestState(RequestState.PERMIT, requestId);
+                itemService.updateState(ItemState.AFFORD, itemId);
             } else {
-                requestRepository.updateRequestState(RequestState.REJECT, requestId);
-                itemRepository.updateState(updatedItem, ItemState.REVIEWING);
+                requestService.updateRequestState(RequestState.REJECT, requestId);
+                itemService.updateState(ItemState.REVIEWING, itemId);
             }
         }
         return responseRepository.save(response);
@@ -90,7 +85,7 @@ public class ResponseService {
     public void updateResponse(String adminId, String responseId, UpdateResponseDto dto) {
         // 요청객체 조회해서 담당자 맞는지 확인
         int requestId = dto.getRequestId();
-        Request request = requestRepository.findManagerAndItemIdById(requestId);
+        Request request = requestService.findManagerAndItemIdById(requestId);
 
         String newRejectReason = dto.getRejectReason();
         RequestState newRequestState = dto.getRequestState();
@@ -109,16 +104,14 @@ public class ResponseService {
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
 
-        Item updatedItem = Item.builder().id(itemId).build();
-
         if (newRequestState == RequestState.PERMIT) {
-            requestRepository.updateRequestState(RequestState.PERMIT, requestId);
-            itemRepository.updateState(updatedItem, ItemState.AFFORD);
+            requestService.updateRequestState(RequestState.PERMIT, requestId);
+            itemService.updateState(ItemState.AFFORD, itemId);
             responseRepository.update(responseId, newRejectReason);
         } else {
-            requestRepository.updateRequestState(RequestState.REJECT, requestId);
-            itemRepository.updateState(updatedItem,
-                    request.getType() == RequestType.BORROW ? ItemState.AFFORD : ItemState.REVIEWING);
+            requestService.updateRequestState(RequestState.REJECT, requestId);
+            itemService.updateState(
+                    request.getType() == RequestType.BORROW ? ItemState.AFFORD : ItemState.REVIEWING, itemId);
             responseRepository.update(responseId, newRejectReason);
         }
     }
