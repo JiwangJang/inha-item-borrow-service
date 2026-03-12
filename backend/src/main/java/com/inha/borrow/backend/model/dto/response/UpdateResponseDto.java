@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatchResponseDto {
+public class UpdateResponseDto {
     @NotNull
     private int requestId;
     private RequestState requestState;

@@ -6,7 +6,6 @@ import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
-import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
 import com.inha.borrow.backend.model.dto.request.UpdateRequestDto;
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerCacheData;
 import com.inha.borrow.backend.model.entity.user.Admin;
@@ -47,7 +46,7 @@ public class RequestService {
      * @author 형민재(수정 : 장지왕)
      */
     @Transactional
-    public SaveRequestResultDto saveRequest(Borrower borrower, SaveRequestDto saveRequestDto) {
+    public Request saveRequest(Borrower borrower, SaveRequestDto saveRequestDto) {
         // 변수 선언은 함수 시작부분에 하는것이 좋다
         String borrowerId = borrower.getId();
         RequestType type = saveRequestDto.getType();

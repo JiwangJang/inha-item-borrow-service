@@ -3,7 +3,6 @@ package com.inha.borrow.backend.controller;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
-import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
 import com.inha.borrow.backend.model.dto.request.UpdateRequestDto;
 import com.inha.borrow.backend.model.entity.user.Admin;
 import com.inha.borrow.backend.model.entity.user.Borrower;
@@ -16,8 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 @Controller
@@ -34,12 +31,10 @@ public class RequestController {
      * @author 형민재
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<SaveRequestResultDto>> saveRequest(
+    public ResponseEntity<ApiResponse<Request>> saveRequest(
             @AuthenticationPrincipal Borrower borrower,
             @Valid @RequestBody SaveRequestDto saveRequestDto) {
-        SaveRequestResultDto result = requestService.saveRequest(borrower, saveRequestDto);
-        // DB의 정확한 시간을 가져오는 방법을 몰라 이렇게 생성시간 표시(나중에 수정해야함)
-        result.setCreatedAt(Timestamp.from(Instant.now()));
+        Request result = requestService.saveRequest(borrower, saveRequestDto);
         return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
@@ -75,11 +70,11 @@ public class RequestController {
      * @author 형민재
      */
     @PatchMapping("/{request-id}/patch")
-    public ResponseEntity<ApiResponse<SaveRequestDto>> updateRequest(
+    public ResponseEntity<Void> updateRequest(
             @AuthenticationPrincipal Borrower borrower,
             @PathVariable("request-id") int requestId,
-            @Valid @RequestBody UpdateRequestDto patchRequestDto) {
-        requestService.updateRequest(borrower, patchRequestDto, requestId);
+            @Valid @RequestBody UpdateRequestDto updateRequestDto) {
+        requestService.updateRequest(borrower, updateRequestDto, requestId);
         return ResponseEntity.ok().build();
     }
 

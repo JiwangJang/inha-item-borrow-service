@@ -3,10 +3,10 @@ package com.inha.borrow.backend.model.dto.response;
 import com.inha.borrow.backend.enums.ResponseType;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaveResponseDto {

@@ -10,8 +10,9 @@ import com.inha.borrow.backend.enums.ItemState;
 import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.enums.ResponseType;
-import com.inha.borrow.backend.model.dto.response.PatchResponseDto;
 import com.inha.borrow.backend.model.dto.response.SaveResponseDto;
+import com.inha.borrow.backend.model.dto.response.UpdateResponseDto;
+import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.Response;
 import com.inha.borrow.backend.model.entity.request.Request;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
@@ -60,31 +61,33 @@ public class ResponseService {
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
 
+        Item updatedItem = Item.builder().id(itemId).build();
+
         // 아이템 및 요청객체 상태 변경
         if (requestType == RequestType.BORROW) {
             // 대여요청인 경우
             if (isPermit) {
                 requestRepository.updateRequestState(RequestState.PERMIT, requestId);
-                itemRepository.updateState(ItemState.BORROWED, itemId);
+                itemRepository.updateState(updatedItem, ItemState.BORROWED);
             } else {
                 requestRepository.updateRequestState(RequestState.REJECT, requestId);
-                itemRepository.updateState(ItemState.AFFORD, itemId);
+                itemRepository.updateState(updatedItem, ItemState.AFFORD);
             }
         } else {
             // 반납요청인 경우
             if (isPermit) {
                 requestRepository.updateRequestState(RequestState.PERMIT, requestId);
-                itemRepository.updateState(ItemState.AFFORD, itemId);
+                itemRepository.updateState(updatedItem, ItemState.AFFORD);
             } else {
                 requestRepository.updateRequestState(RequestState.REJECT, requestId);
-                itemRepository.updateState(ItemState.REVIEWING, itemId);
+                itemRepository.updateState(updatedItem, ItemState.REVIEWING);
             }
         }
         return responseRepository.save(response);
     }
 
     @Transactional
-    public void updateResponse(String adminId, String responseId, PatchResponseDto dto) {
+    public void updateResponse(String adminId, String responseId, UpdateResponseDto dto) {
         // 요청객체 조회해서 담당자 맞는지 확인
         int requestId = dto.getRequestId();
         Request request = requestRepository.findManagerAndItemIdById(requestId);
@@ -106,14 +109,16 @@ public class ResponseService {
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
 
+        Item updatedItem = Item.builder().id(itemId).build();
+
         if (newRequestState == RequestState.PERMIT) {
             requestRepository.updateRequestState(RequestState.PERMIT, requestId);
-            itemRepository.updateState(ItemState.AFFORD, itemId);
+            itemRepository.updateState(updatedItem, ItemState.AFFORD);
             responseRepository.update(responseId, newRejectReason);
         } else {
             requestRepository.updateRequestState(RequestState.REJECT, requestId);
-            itemRepository.updateState(request.getType() == RequestType.BORROW ? ItemState.AFFORD : ItemState.REVIEWING,
-                    itemId);
+            itemRepository.updateState(updatedItem,
+                    request.getType() == RequestType.BORROW ? ItemState.AFFORD : ItemState.REVIEWING);
             responseRepository.update(responseId, newRejectReason);
         }
     }

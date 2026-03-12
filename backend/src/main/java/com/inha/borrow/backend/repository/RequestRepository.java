@@ -21,7 +21,6 @@ import com.inha.borrow.backend.enums.RequestState;
 import com.inha.borrow.backend.enums.RequestType;
 import com.inha.borrow.backend.model.dto.item.RequestItem;
 import com.inha.borrow.backend.model.dto.request.SaveRequestDto;
-import com.inha.borrow.backend.model.dto.request.SaveRequestResultDto;
 import com.inha.borrow.backend.model.dto.request.UpdateRequestDto;
 import com.inha.borrow.backend.model.entity.Response;
 import com.inha.borrow.backend.model.entity.request.Request;
@@ -126,7 +125,7 @@ public class RequestRepository {
      * @param request
      * @author 형민재
      */
-    public SaveRequestResultDto saveRequest(Borrower borrower, SaveRequestDto request) {
+    public Request saveRequest(Borrower borrower, SaveRequestDto request) {
         String sql = "INSERT INTO request(item_id, borrower_id, return_at, borrow_at, type) " +
                 "VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -144,7 +143,13 @@ public class RequestRepository {
         int requestId = keyHolder.getKey().intValue();
         Timestamp createdAt = Timestamp.from(Instant.now());
 
-        return new SaveRequestResultDto(requestId, createdAt);
+        Request result = Request
+                .builder()
+                .id(requestId)
+                .createdAt(createdAt)
+                .build();
+
+        return result;
     }
 
     // --------- 조회 메서드 ---------
