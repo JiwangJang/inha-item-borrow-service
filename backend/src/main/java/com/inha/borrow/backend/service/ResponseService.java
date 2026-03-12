@@ -40,6 +40,11 @@ public class ResponseService {
         ResponseType responseType = dto.getType();
         RequestState requestState = request.getState();
         boolean isPermit = !StringUtils.hasText(rejectReason);
+        Response response = Response.builder()
+                .rejectReason(dto.getRejectReason())
+                .type(dto.getType())
+                .requestId(dto.getRequestId())
+                .build();
 
         if (!adminId.equals(manager)) {
             throw new AccessDeniedException("해당 요청의 담당자만 답변할 수 있습니다.");
@@ -75,7 +80,7 @@ public class ResponseService {
                 itemRepository.updateState(ItemState.REVIEWING, itemId);
             }
         }
-        return responseRepository.save(dto);
+        return responseRepository.save(response);
     }
 
     @Transactional
