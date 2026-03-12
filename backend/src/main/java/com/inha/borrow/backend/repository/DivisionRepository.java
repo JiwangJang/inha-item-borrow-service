@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
-import com.inha.borrow.backend.model.dto.division.DivisionDto;
 import com.inha.borrow.backend.model.entity.Division;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
@@ -39,12 +38,12 @@ public class DivisionRepository {
     /**
      * Division객체를 DB에 저장하는 메서드
      */
-    public void saveDivision(DivisionDto divisionDto) {
+    public void saveDivision(Division division) {
         String sql = "INSERT INTO division(code, name) VALUE(?, ?);";
         try {
             jdbcTemplate.update(sql,
-                    divisionDto.getCode(),
-                    divisionDto.getName());
+                    division.getCode(),
+                    division.getName());
         } catch (DuplicateKeyException e) {
             ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_DIVISION_C0DE;
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
@@ -54,10 +53,10 @@ public class DivisionRepository {
     /**
      * Division이름을 수정하는 메서드
      */
-    public void updateDivision(DivisionDto divisionDto) {
+    public void updateDivision(Division division) {
         String sql = "UPDATE division SET name = ? WHERE code = ?;";
 
-        int affected = jdbcTemplate.update(sql, divisionDto.getName(), divisionDto.getCode());
+        int affected = jdbcTemplate.update(sql, division.getName(), division.getCode());
         if (affected == 0) {
             ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_DIVISION_C0DE;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());

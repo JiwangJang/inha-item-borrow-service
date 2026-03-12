@@ -1,16 +1,12 @@
 package com.inha.borrow.backend.model.dto.response;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-
 import com.inha.borrow.backend.enums.ResponseType;
-import com.inha.borrow.backend.model.entity.Response;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaveResponseDto {
@@ -18,13 +14,4 @@ public class SaveResponseDto {
     String rejectReason;
     ResponseType type;
 
-    public Response getResponse(int id) {
-        return Response.builder()
-                .id(id)
-                .requestId(requestId)
-                .rejectReason(rejectReason)
-                .type(type)
-                .createdAt(Timestamp.from(Instant.now()))
-                .build();
-    }
 }

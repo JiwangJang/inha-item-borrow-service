@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,25 +17,34 @@ import org.springframework.context.annotation.Import;
 
 import com.inha.borrow.backend.model.entity.Notice;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 @JdbcTest
 @Import(NoticeRepository.class)
+@Transactional
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 public class NoticeRepositoryTest {
     // 테스트 안돌려봄 돌려봐야함
     @Autowired
     private NoticeRepository repository;
+    private Notice notice;
 
-    private String testTitle = "title";
-    private String testContent = "content";
     private String testAuthorId = "authorId";
+
+    @BeforeEach
+    void setUp() {
+        notice = Notice.builder()
+                .title("testTitle")
+                .content("testContent")
+                .build();
+    }
 
     @Test
     @DisplayName("postNotice 메서드 테스트 - 공지 등록 테스트")
     public void postNoticeTest() {
         // given
         // when
-        repository.postNotice(testTitle, testContent, testAuthorId);
+        repository.postNotice(testAuthorId , notice);
         List<Notice> notices = repository.findAllNotices();
 
         // then
@@ -46,10 +56,10 @@ public class NoticeRepositoryTest {
     public void findAllNoticesTest() {
         // given
         // when
-        repository.postNotice(testTitle, testContent, testAuthorId);
-        repository.postNotice(testTitle, testContent, testAuthorId);
-        repository.postNotice(testTitle, testContent, testAuthorId);
-        repository.postNotice(testTitle, testContent, testAuthorId);
+        repository.postNotice(testAuthorId , notice);
+        repository.postNotice(testAuthorId , notice);
+        repository.postNotice(testAuthorId , notice);
+        repository.postNotice(testAuthorId , notice);
         List<Notice> notices = repository.findAllNotices();
 
         // then
@@ -61,12 +71,12 @@ public class NoticeRepositoryTest {
     public void findNoticeByIdTest() {
         // given
         // when
-        int id = repository.postNotice(testTitle, testContent, testAuthorId);
+        int id = repository.postNotice(testAuthorId , notice);
         Notice notice = repository.findNoticeById(id);
 
         // then
-        assertEquals(notice.getContent(), testContent);
-        assertEquals(notice.getTitle(), testTitle);
+        assertEquals(notice.getContent(), notice.getContent());
+        assertEquals(notice.getTitle(), notice.getTitle());
         assertEquals(notice.getAuthorId(), testAuthorId);
     }
 
@@ -74,7 +84,7 @@ public class NoticeRepositoryTest {
     @DisplayName("modifyNotice 메서드 테스트 - 공지 수정 테스트")
     public void modifyNoticeTest() {
         // given
-        int id = repository.postNotice(testTitle, testContent, testAuthorId);
+        int id = repository.postNotice(testAuthorId , notice);
         String newTitle = "newTitle";
         String newContent = "newContent";
         String newAuthorId = "newAuthorId";
@@ -93,7 +103,7 @@ public class NoticeRepositoryTest {
     @DisplayName("deleteNotice 메서드 테스트 - 공지 삭제 테스트")
     public void deleteNoticeTest() {
         // given
-        int id = repository.postNotice(testTitle, testContent, testAuthorId);
+        int id = repository.postNotice(testAuthorId , notice);
 
         // when
         repository.deleteNotice(id);

@@ -90,10 +90,13 @@ public class DivisionServiceTest {
     @DisplayName("Division 이름 삭제 테스트(성공)")
     void deleteDivisionSuccessTest() {
         // given
-        DivisionDto divisionDto = new DivisionDto("TEST", "테스트");
+        DivisionDto divisionDto = DivisionDto.builder()
+                .code("TEST")
+                .name("수정할거임")
+                .build();
         divisionService.saveDivision(divisionDto);
         // when
-        divisionService.deleteDivision(divisionDto);
+        divisionService.deleteDivision(divisionDto.getCode());
         List<Division> result = divisionService.findAllDivisions();
         // then
         assertEquals(result.size(), 0);
@@ -103,11 +106,14 @@ public class DivisionServiceTest {
     @DisplayName("Division 이름 삭제 테스트(실패-부서 미존재)")
     void deleteDivisionFailForNotExistTest() {
         // given
-        DivisionDto divisionDto = new DivisionDto("TEST", "수정할거임");
+        DivisionDto divisionDto = DivisionDto.builder()
+                .code("TEST")
+                .name("수정할거임")
+                .build();
         // when
         // then
         assertThrows(ResourceNotFoundException.class, () -> {
-            divisionService.deleteDivision(divisionDto);
+            divisionService.deleteDivision(divisionDto.getCode());
         });
     }
 }
