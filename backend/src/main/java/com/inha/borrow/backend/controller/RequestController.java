@@ -107,4 +107,20 @@ public class RequestController {
         requestService.updateRequestManager(admin, requestId);
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * 담당자 지정하는 메서드
+     * 
+     * @param admin
+     * @param requestId
+     * @return
+     */
+    @PatchMapping("/{request-id}/view-password")
+    public ResponseEntity<ApiResponse<Request>> updateViewPasswordAt(
+            @AuthenticationPrincipal Borrower borrower,
+            @PathVariable("request-id") int requestId) {
+        Request request = requestService.updateViewPasswordAt(requestId);
+        ApiResponse<Request> apiResponse = new ApiResponse<Request>(true, request);
+        return ResponseEntity.ok(apiResponse);
+    }
 }

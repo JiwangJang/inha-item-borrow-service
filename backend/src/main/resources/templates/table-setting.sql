@@ -97,6 +97,8 @@ create table request (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     return_at DATETIME NOT NULL,
     borrow_at DATETIME NOT NULL,
+    -- 대여물품 비밀번호 본 시각 체크
+    view_password_at DATETIME,
     type varchar(6) NOT NULL,
     state varchar(10) default 'PENDING',
     cancel boolean default false

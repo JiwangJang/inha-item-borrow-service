@@ -2,8 +2,13 @@
 
 import SameSpaceRow from "@/components/utilities/SameSpaceRow";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+    const pathname = usePathname();
+
+    const isAdminPage = pathname.startsWith("/admin");
+
     return (
         <div className="w-full common-px pt-5 pb-32 bg-[#005BAC] text-white">
             <div>
@@ -20,8 +25,15 @@ export default function Footer() {
                 <Link href={"/admin"} className="underline">
                     관리자페이지
                 </Link>{" "}
-                | {/* 메뉴얼 제작후 노션 링크 추가 */}
-                <Link href={"#"} className="underline">
+                |{" "}
+                <Link
+                    href={
+                        isAdminPage
+                            ? "https://www.notion.so/317b4e75b85f80dbadffd7f4564dc9e3"
+                            : "https://melon-radio-25e.notion.site/317b4e75b85f8095a24ed1bc348d022a"
+                    }
+                    className="underline"
+                >
                     사용 메뉴얼
                 </Link>
             </div>

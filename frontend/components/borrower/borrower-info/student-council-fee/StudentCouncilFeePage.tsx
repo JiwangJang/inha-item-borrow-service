@@ -12,6 +12,7 @@ import API_SERVER from "@/apiServer";
 import errorHandler from "@/utilities/errorHandler";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function StudentCouncilFeePage({
     verification,
@@ -99,6 +100,18 @@ export default function StudentCouncilFeePage({
                     >
                         <Image src={"/images/council-fee-example.png"} fill alt="학생회비 납부인증 사진 예시"></Image>
                     </div>
+                    <p className="mt-2">
+                        자세한 방법은{" "}
+                        <Link
+                            href={
+                                "https://melon-radio-25e.notion.site/317b4e75b85f8095a24ed1bc348d022a#317b4e75b85f80d8bbc5df7f0531bccb"
+                            }
+                            className="underline text-blue-500 bold-16px"
+                        >
+                            물품대여사업용 서비스 메뉴얼(학생회비 납부 확인 방법)
+                        </Link>
+                        을 참고하시면 되겠습니다.
+                    </p>
                 </div>
             ) : null}
         </div>
