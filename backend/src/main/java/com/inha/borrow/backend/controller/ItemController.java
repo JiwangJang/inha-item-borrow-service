@@ -1,9 +1,9 @@
 package com.inha.borrow.backend.controller;
 
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
-import com.inha.borrow.backend.model.dto.item.ItemDeleteRequestDto;
-import com.inha.borrow.backend.model.dto.item.ItemDto;
-import com.inha.borrow.backend.model.dto.item.ItemReviseRequestDto;
+import com.inha.borrow.backend.model.dto.item.DeleteItemDto;
+import com.inha.borrow.backend.model.dto.item.SaveItemDto;
+import com.inha.borrow.backend.model.dto.item.UpdateItemDto;
 import com.inha.borrow.backend.model.entity.Item;
 import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.service.ItemService;
@@ -31,36 +31,64 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<Item>>> getAllItems(@AuthenticationPrincipal User user) {
-        List<Item> result = itemService.getAllItem(user);
-        return ResponseEntity.ok(new ApiResponse<>(true, result));
-    }
+    // --------- 생성 메서드 ---------
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Item>> getItemById(@AuthenticationPrincipal User user,
-            @PathVariable("id") int id) {
-        Item result = itemService.getItemById(user, id);
-        return ResponseEntity.ok(new ApiResponse<Item>(true, result));
-    }
-
+    /**
+     * 새로운 대여물품을 등록하는 메서드
+     * 
+     * @param itemDto
+     * @return
+     */
     @PostMapping
-    public ResponseEntity<ApiResponse<Item>> createItem(@RequestBody @Valid ItemDto itemDto) {
-        Item newItem = itemService.createItem(itemDto);
+    public ResponseEntity<ApiResponse<Item>> saveItem(@RequestBody @Valid SaveItemDto dto) {
+        Item newItem = itemService.saveItem(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, newItem));
     }
 
+    // --------- 조회 메서드 ---------
+    /**
+     * 등록된 모든 대여물품을 조회하는 메서드
+     * 
+     * @param user
+     * @return
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Item>>> findAll(@AuthenticationPrincipal User user) {
+        List<Item> result = itemService.findAll(user);
+        return ResponseEntity.ok(new ApiResponse<>(true, result));
+    }
+
+    // --------- 수정 메서드 ---------
+
+    /**
+     * 대여물품의 정보를 수정하는 메서드
+     * 
+     * @param id
+     * @param itemReviseRequestDto
+     * @return
+     */
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> updateItem(@PathVariable("id") int id,
-            @Valid @RequestBody ItemReviseRequestDto itemReviseRequestDto) {
-        itemService.updateItemDetail(id, itemReviseRequestDto);
+    public ResponseEntity<ApiResponse<Void>> updateItem(
+            @PathVariable("id") int id,
+            @Valid @RequestBody UpdateItemDto dto) {
+        itemService.updateItem(dto, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(true, null));
     }
 
+    // --------- 삭제 메서드 ---------
+
+    /**
+     * 대여물품을 삭제하는 메서드
+     * 
+     * @param id
+     * @param deleteRequestDto
+     * @return
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteItem(@PathVariable("id") int id,
-            @Valid @RequestBody ItemDeleteRequestDto deleteRequestDto) {
-        itemService.deleteItem(id, deleteRequestDto);
+    public ResponseEntity<ApiResponse<Void>> deleteItem(
+            @PathVariable("id") int id,
+            @Valid @RequestBody DeleteItemDto dto) {
+        itemService.deleteItem(dto, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponse<>(true, null));
     }
 }

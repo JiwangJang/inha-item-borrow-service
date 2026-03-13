@@ -30,22 +30,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class NoticeController {
     private final NoticeService service;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Notice>> findNoticeById(@PathVariable("id") String id) {
-        Notice notice = service.findNoticeById(Integer.parseInt(id));
-        ApiResponse<Notice> result = new ApiResponse<Notice>(true, notice);
-        return ResponseEntity.ok(result);
-    }
+    // --------- 생성 메서드 ---------
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<Notice>>> findAllNotices() {
-        List<Notice> notices = service.findAllNotices();
-        ApiResponse<List<Notice>> result = new ApiResponse<>(true, notices);
-        return ResponseEntity.ok(result);
-    }
-
+    /**
+     * 공지를 등록하는 메서드
+     * 
+     * @param admin
+     * @param dto
+     * @return
+     */
     @PostMapping
-    public ResponseEntity<ApiResponse<Map<String, Integer>>> postNotice(
+    public ResponseEntity<ApiResponse<Map<String, Integer>>> saveNotice(
             @AuthenticationPrincipal Admin admin,
             @RequestBody PostNoticeDto dto) {
         int id = service.postNotice(admin.getId(), dto);
@@ -53,8 +48,32 @@ public class NoticeController {
         return ResponseEntity.status(201).body(response);
     }
 
+    // --------- 조회 메서드 ---------
+
+    /**
+     * 공지 전체 조회 메서드
+     * 
+     * @return
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Notice>>> findAllNotices() {
+        List<Notice> notices = service.findAllNotices();
+        ApiResponse<List<Notice>> result = new ApiResponse<>(true, notices);
+        return ResponseEntity.ok(result);
+    }
+
+    // --------- 수정 메서드 ---------
+
+    /**
+     * 공지 내용 수정 메서드
+     * 
+     * @param admin
+     * @param id
+     * @param dto
+     * @return
+     */
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> modifyNotice(
+    public ResponseEntity<Void> updateNotice(
             @AuthenticationPrincipal Admin admin,
             @PathVariable("id") String id,
             @RequestBody ModifyNoticeDto dto) {
@@ -63,6 +82,13 @@ public class NoticeController {
         return ResponseEntity.ok().build();
     }
 
+    // --------- 삭제 메서드 ---------
+    /**
+     * 공지를 삭제하는 메서드(hard-delete)
+     * 
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNotice(
             @PathVariable("id") String id) {

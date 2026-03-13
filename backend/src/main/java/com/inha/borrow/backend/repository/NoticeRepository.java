@@ -1,6 +1,7 @@
 package com.inha.borrow.backend.repository;
 
 import java.sql.PreparedStatement;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -24,13 +25,12 @@ public class NoticeRepository {
     /**
      * 공지사항을 등록하는 메서드
      * 
-     * @param title
-     * @param content
-     * @param authorId
+     * @param notice
+     * @param adminId
      * @author 장지왕
      * @return id
      */
-    public int postNotice(String title, String content, String authorId) {
+    public int postNotice(String adminId, Notice notice) {
         String sql = "INSERT INTO notice(title, content, author_id) VALUES(?, ?, ?);";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -38,9 +38,9 @@ public class NoticeRepository {
         jdbcTemplate.update((connection) -> {
             PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 
-            ps.setString(1, title);
-            ps.setString(2, content);
-            ps.setString(3, authorId);
+            ps.setString(1, notice.getTitle());
+            ps.setString(2, notice.getContent());
+            ps.setString(3, adminId);
             return ps;
         }, keyHolder);
 
@@ -71,8 +71,8 @@ public class NoticeRepository {
                     .id(col.getInt("notice_id"))
                     .title(col.getString("title"))
                     .content(col.getString("content"))
-                    .postedAt(col.getTimestamp("posted_at"))
-                    .updatedAt(col.getTimestamp("updated_at"))
+                    .postedAt(col.getObject("posted_at", LocalDateTime.class))
+                    .updatedAt(col.getObject("updated_at", LocalDateTime.class))
                     .authorId(col.getString("author_id"))
                     .adminName(col.getString("admin_name"))
                     .adminPosition(Role.valueOf(col.getString("admin_position")))
@@ -106,8 +106,8 @@ public class NoticeRepository {
                         .id(col.getInt("notice_id"))
                         .title(col.getString("title"))
                         .content(col.getString("content"))
-                        .postedAt(col.getTimestamp("posted_at"))
-                        .updatedAt(col.getTimestamp("updated_at"))
+                        .postedAt(col.getObject("posted_at", LocalDateTime.class))
+                        .updatedAt(col.getObject("updated_at", LocalDateTime.class))
                         .authorId(col.getString("author_id"))
                         .adminName(col.getString("admin_name"))
                         .adminPosition(Role.valueOf(col.getString("admin_position")))

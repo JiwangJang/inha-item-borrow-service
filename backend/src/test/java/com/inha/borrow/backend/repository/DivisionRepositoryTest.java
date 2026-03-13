@@ -29,7 +29,7 @@ public class DivisionRepositoryTest {
     @DisplayName("Division 전체 목록 조회 테스트")
     void findAllDivisionsTest() {
         // given
-        DivisionDto testDivision = new DivisionDto("TEST", "테스트");
+        Division testDivision = new Division("TEST", "테스트");
         divisionRepository.saveDivision(testDivision);
         // when
         List<Division> result = divisionRepository.findAllDivisions();
@@ -41,7 +41,7 @@ public class DivisionRepositoryTest {
     @DisplayName("Division 저장 테스트(성공)")
     void saveDivisionSuccessTest() {
         // given
-        DivisionDto testDivision = new DivisionDto("TEST", "테스트");
+        Division testDivision = new Division("TEST", "테스트");
         divisionRepository.saveDivision(testDivision);
         // when
         Division result = divisionRepository.findAllDivisions().get(0);
@@ -54,7 +54,8 @@ public class DivisionRepositoryTest {
     @DisplayName("Division 저장 테스트(실패-중복된 코드 값)")
     void saveDivisionFailForDuplicatedCodeTest() {
         // given
-        DivisionDto testDivision = new DivisionDto("TEST", "테스트");
+        Division testDivision = new Division("TEST", "테스트");
+
         divisionRepository.saveDivision(testDivision);
         // when
         // then
@@ -67,9 +68,9 @@ public class DivisionRepositoryTest {
     @DisplayName("Division 이름 수정 테스트(성공)")
     void updateDivisionSuccessTest() {
         // given
-        DivisionDto originDivision = new DivisionDto("TEST", "테스트");
-        DivisionDto revisedDivision = new DivisionDto("TEST", "변경된 부서명");
-        divisionRepository.saveDivision(originDivision);
+        Division oringDivision = new Division("TEST", "테스트");
+        Division revisedDivision = new Division("TEST", "변경된 부서명");
+        divisionRepository.saveDivision(oringDivision);
         // when
         divisionRepository.updateDivision(revisedDivision);
         Division result = divisionRepository.findAllDivisions().get(0);
@@ -81,7 +82,7 @@ public class DivisionRepositoryTest {
     @DisplayName("Division 이름 수정 테스트(실패-부서 미존재)")
     void updateDivisionFailForNotExistTest() {
         // given
-        DivisionDto divisionDto = new DivisionDto("TEST", "수정할거임");
+        Division divisionDto = new Division("TEST", "수정할거임");
         // when
         // then
         assertThrows(ResourceNotFoundException.class, () -> {
@@ -93,10 +94,13 @@ public class DivisionRepositoryTest {
     @DisplayName("Division 이름 삭제 테스트(성공)")
     void deleteDivisionSuccessTest() {
         // given
-        DivisionDto divisionDto = new DivisionDto("TEST", "테스트");
-        divisionRepository.saveDivision(divisionDto);
+        Division division = Division.builder()
+                .code("TEST")
+                .name("수정할거임")
+                .build();
+        divisionRepository.saveDivision(division);
         // when
-        divisionRepository.deleteDivision(divisionDto);
+        divisionRepository.deleteDivision(division.getCode());
         List<Division> result = divisionRepository.findAllDivisions();
         // then
         assertEquals(result.size(), 0);
@@ -106,11 +110,14 @@ public class DivisionRepositoryTest {
     @DisplayName("Division 이름 삭제 테스트(실패-부서 미존재)")
     void deleteDivisionFailForNotExistTest() {
         // given
-        DivisionDto divisionDto = new DivisionDto("TEST", "수정할거임");
+        DivisionDto divisionDto = DivisionDto.builder()
+                .code("TEST")
+                .name("수정할거임")
+                .build();
         // when
         // then
         assertThrows(ResourceNotFoundException.class, () -> {
-            divisionRepository.deleteDivision(divisionDto);
+            divisionRepository.deleteDivision(divisionDto.getCode());
         });
     }
 }

@@ -3,27 +3,23 @@
 import API_SERVER from "@/apiServer";
 import LoginRequired from "@/components/borrower/LoginRequired";
 import Button from "@/components/utilities/Button";
-import ReturnDateSelector, { toKstOffsetDateTimeString } from "@/components/utilities/ReturnDateSelector";
+import ReturnDateSelector from "@/components/utilities/ReturnDateSelector";
 import SameSpaceRow from "@/components/utilities/SameSpaceRow";
 import BorrowerContext from "@/context/BorrowerContext";
 import BorrowRequestContext from "@/context/BorrowRequestContext";
-import ItemContext from "@/context/ItemContext";
 import { REQUEST_STATE_TYPE } from "@/types/RequestInterface";
 import { dateFormatter } from "@/utilities/dateFormatter";
 import errorHandler from "@/utilities/errorHandler";
 import axios from "axios";
-import { notFound, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import { useContext, useState } from "react";
 
 export default function ReturnRequestPaperPage({ requestId }: { requestId: string }) {
     const [returnDateSelector, setReturnDateSelector] = useState(false);
-    const [loading, setLoading] = useState(false);
 
     const { requestList, setRequestList } = useContext(BorrowRequestContext);
     const { borrowerInfo } = useContext(BorrowerContext);
     const current = requestList.find((r) => String(r.id) == requestId);
-
-    const [confirmModal, setConfirmModal] = useState(false);
 
     if (current == null) {
         notFound();
@@ -41,7 +37,7 @@ export default function ReturnRequestPaperPage({ requestId }: { requestId: strin
     const createdAtDate = new Date(createdAt);
 
     const returnRequestRevise = async (returnAtString: string) => {
-        // borrowAt: `${borrowDate}T${borrowTime}:00+09:00`, 이런식으로 하면 됨
+        // borrowAt: `${borrowDate}T${borrowTime}:00`, 이런식으로 하면 됨
 
         if (setRequestList == null) {
             alert("새로고침후 다시 시도해주세요. 지속적으로 발생할 경우 관리자에게 연락해주세요.");
@@ -53,11 +49,11 @@ export default function ReturnRequestPaperPage({ requestId }: { requestId: strin
             alert("올바른 반납일시를 선택해주세요.");
             return;
         }
-        setLoading(true);
+
         try {
             const body = {
                 returnAt: returnAtString,
-                borrowAt: toKstOffsetDateTimeString(Number(borrowAt)),
+                borrowAt: borrowAt,
             };
 
             await axios.patch(`${API_SERVER}/requests/${requestId}/patch`, body, {
@@ -89,7 +85,6 @@ export default function ReturnRequestPaperPage({ requestId }: { requestId: strin
             );
             console.error(error);
         }
-        setLoading(false);
     };
 
     return (

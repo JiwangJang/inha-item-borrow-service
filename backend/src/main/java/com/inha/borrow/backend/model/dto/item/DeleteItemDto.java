@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemDeleteRequestDto {
+public class DeleteItemDto {
     @NotBlank(message = "삭제이유는 비워둘 수 없습니다.")
     private String deleteReason;
 }

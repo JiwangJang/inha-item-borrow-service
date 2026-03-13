@@ -7,10 +7,11 @@ import com.inha.borrow.backend.model.entity.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import java.sql.Timestamp;
+import lombok.Getter;
 
-@Data
+import java.time.LocalDateTime;
+
+@Getter
 @AllArgsConstructor
 @Builder
 public class Request {
@@ -19,9 +20,9 @@ public class Request {
     private RequestManager manager;
     private String borrowerId;
     private String borrowerName;
-    private Timestamp createdAt;
-    private Timestamp returnAt;
-    private Timestamp borrowAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime returnAt;
+    private LocalDateTime borrowAt;
     private RequestType type;
     private RequestState state;
     private Boolean cancel;

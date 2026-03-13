@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -18,11 +18,10 @@ public class SaveRequestDto {
     private int prevRequestId;
     @NotNull
     private int itemId;
-    private String borrowerId;
     @NotNull
-    private OffsetDateTime returnAt;
+    private LocalDateTime returnAt;
     @NotNull
-    private OffsetDateTime borrowAt;
+    private LocalDateTime borrowAt;
     @NotNull
     private RequestType type;
 }

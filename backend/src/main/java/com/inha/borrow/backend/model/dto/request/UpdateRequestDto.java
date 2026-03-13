@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -13,9 +13,9 @@ import jakarta.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PatchRequestDto {
+public class UpdateRequestDto {
     @NotNull
-    private OffsetDateTime returnAt;
+    private LocalDateTime returnAt;
     @NotNull
-    private OffsetDateTime borrowAt;
+    private LocalDateTime borrowAt;
 }

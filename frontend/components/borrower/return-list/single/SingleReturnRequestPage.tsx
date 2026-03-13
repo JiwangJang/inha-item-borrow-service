@@ -1,15 +1,13 @@
 "use client";
 
-import API_SERVER from "@/apiServer";
 import Button from "@/components/utilities/Button";
 import InfoRow from "@/components/utilities/InfoRow";
 import InfoTable from "@/components/utilities/InfoTable";
-import BorrowerContext from "@/context/BorrowerContext";
 import BorrowRequestContext from "@/context/BorrowRequestContext";
 import { REQUEST_STATE_TYPE, REQUEST_TYPE } from "@/types/RequestInterface";
 import { dateFormatter } from "@/utilities/dateFormatter";
 import { notFound, useRouter } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 
 export default function SingleReturnRequestPage({ requestId }: { requestId: string }) {
     const router = useRouter();

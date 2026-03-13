@@ -3,17 +3,15 @@ package com.inha.borrow.backend.controller;
 import com.inha.borrow.backend.enums.ApiErrorCode;
 import com.inha.borrow.backend.enums.SearchType;
 import com.inha.borrow.backend.model.dto.apiResponse.ApiResponse;
-import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
-import com.inha.borrow.backend.model.dto.user.borrower.PatchAccountNumberDto;
-import com.inha.borrow.backend.model.dto.user.borrower.PatchBanDto;
-import com.inha.borrow.backend.model.dto.user.borrower.PatchPhonenumberDto;
-import com.inha.borrow.backend.model.dto.user.borrower.SavePhoneAccountNumberDto;
+import com.inha.borrow.backend.model.dto.user.borrower.BorrowerCacheData;
+import com.inha.borrow.backend.model.dto.user.borrower.UpdateAccountNumberDto;
+import com.inha.borrow.backend.model.dto.user.borrower.UpdateBanDto;
+import com.inha.borrow.backend.model.dto.user.borrower.UpdatePhonenumberDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.service.BorrowerService;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,56 +35,34 @@ import java.util.List;
 public class BorrowerController {
     private final BorrowerService borrowerService;
 
+    // --------- 조회메서드 ---------
     /**
-     * 대여자목록을 불러오는 메서드
-     * 
-     * @return 200 요청 성공
-     * @author 형민재
-     */
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<Borrower>>> findAllBorrower() {
-        List<Borrower> borrower = borrowerService.findAll();
-        return ResponseEntity.ok(new ApiResponse<>(true, borrower));
-    }
-
-    /**
-     * 대여자 검색하는 거
-     * 
-     * @return 200 요청 성공
-     * @author 형민재
-     */
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<CacheBorrowerDto>>> searchBorrower(@RequestParam("keyword") String keyword,
-            @RequestParam("searchType") String searchType) {
-        List<CacheBorrowerDto> result = borrowerService.searchBorrower(keyword, SearchType.valueOf(searchType));
-        return ResponseEntity.ok(new ApiResponse<>(true, result));
-    }
-
-    /**
-     * 현재 유저의 정보 반환
+     * 대여자 검색하는 메서드
      * 
      * @return 200 요청 성공
      * @author 장지왕
      */
-    @GetMapping("/me")
-    public ResponseEntity<ApiResponse<CacheBorrowerDto>> me(@AuthenticationPrincipal Borrower borrower) {
-        CacheBorrowerDto dto = borrowerService.getMyInfo(borrower.getId());
-
-        return ResponseEntity.ok(new ApiResponse<>(true, dto));
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<BorrowerCacheData>>> searchBorrower(@RequestParam("keyword") String keyword,
+            @RequestParam("searchType") String searchType) {
+        List<BorrowerCacheData> result = borrowerService.searchBorrowerCache(keyword, SearchType.valueOf(searchType));
+        return ResponseEntity.ok(new ApiResponse<>(true, result));
     }
 
     /**
-     * 대여자를 id로 불러오는 메서드
+     * 현재 접속한 대여자의 정보를 불러오는 메서드
      * 
      * @return 200 요청 성공
      * @author 형민재
      */
     @GetMapping("/info")
-    public ResponseEntity<ApiResponse<Borrower>> findById(
-            @AuthenticationPrincipal(expression = "id") String id) {
-        Borrower foundedBorrower = borrowerService.findById(id);
+    public ResponseEntity<ApiResponse<BorrowerCacheData>> findCacheById(
+            @AuthenticationPrincipal Borrower borrower) {
+        BorrowerCacheData foundedBorrower = borrowerService.findCacheById(borrower);
         return ResponseEntity.ok(new ApiResponse<>(true, foundedBorrower));
     }
+
+    // --------- 수정메서드 ---------
 
     /**
      * phoneNumber를 수정하는 메서드
@@ -96,25 +72,9 @@ public class BorrowerController {
      * @author 형민재
      */
     @PatchMapping("/info/phonenum")
-    public ResponseEntity<Void> patchPhoneNumber(@AuthenticationPrincipal(expression = "id") String id,
-            @RequestBody PatchPhonenumberDto dto) {
-        borrowerService.patchPhoneNumber(id, dto);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * name을 수정하는 메서드
-     * 
-     * @param name
-     * @param borrowerId
-     * @return 200 요청 성공
-     * @author 형민재
-     */
-    @PatchMapping("/{borrower-id}/info/name")
-    public ResponseEntity<Void> patchName(@PathVariable("borrower-id") String borrowerId,
-            @Valid @NotBlank @RequestBody String name) {
-        // 이거 없어도 될듯(로그인 할때마다 이름 바뀌었나 확인하게 하면 되니)
-        borrowerService.patchName(borrowerId, name);
+    public ResponseEntity<Void> updatePhoneNumber(@AuthenticationPrincipal Borrower borrower,
+            @RequestBody UpdatePhonenumberDto dto) {
+        borrowerService.updatePhoneNumber(borrower, dto);
         return ResponseEntity.ok().build();
     }
 
@@ -127,29 +87,16 @@ public class BorrowerController {
      * @author 형민재
      */
     @PatchMapping("/info/account-num")
-    public ResponseEntity<Void> patchAccountNumber(@AuthenticationPrincipal(expression = "id") String borrowerId,
-            @Valid @RequestBody PatchAccountNumberDto dto) {
-        borrowerService.patchAccountNumber(dto.getNewAccountNumber(), borrowerId);
+    public ResponseEntity<Void> updateAccountNumber(@AuthenticationPrincipal Borrower borrower,
+            @Valid @RequestBody UpdateAccountNumberDto dto) {
+        borrowerService.updateAccountNumber(borrower, dto);
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * user의 전화번호 계좌번호를 수정하는 메서드
-     *
-     * @param dto
-     * @param borrowerId
-     * @return 200 요청 성공
-     * @author 형민재
-     */
-    @PatchMapping("/info/user-num")
-    public ResponseEntity<Void> patchUserNumber(@AuthenticationPrincipal(expression = "id") String borrowerId,
-            @Valid @NotBlank @RequestBody SavePhoneAccountNumberDto dto) {
-        borrowerService.savePhoneAccountNumber(borrowerId, dto);
-        return ResponseEntity.ok().build();
-    }
+    // --------- 삭제메서드 ---------
 
     /**
-     * ban을 수정하는 메서드
+     * 금지여부를 수정하는 메서드
      * 
      * @param borrowerId
      * @param ban
@@ -157,12 +104,13 @@ public class BorrowerController {
      * @author 형민재
      */
     @PatchMapping("/{borrower-id}/info/ban")
-    public ResponseEntity<Void> patchBan(@PathVariable("borrower-id") String borrowerId,
-            @RequestBody PatchBanDto dto) {
+    public ResponseEntity<Void> updateBan(@PathVariable("borrower-id") String borrowerId,
+            @RequestBody UpdateBanDto dto) {
         if (dto.isBan() && (dto.getBanReason() == null || dto.getBanReason().isBlank())) {
             throw new InvalidValueException(ApiErrorCode.INVALID_VALUE.name(), "차단 사유를 입력해주세요.");
         }
-        borrowerService.patchBan(dto, borrowerId);
+        Borrower borrower = Borrower.builder().id(borrowerId).build();
+        borrowerService.updateBan(borrower, dto);
         return ResponseEntity.ok().build();
     }
 }

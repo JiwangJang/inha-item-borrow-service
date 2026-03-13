@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DenyFeeVerificationDto {
+public class UpdateStudentCouncilFeeVerificationDenyDto {
     @NotBlank
     private String borrowerId;
     @NotBlank(message = "거절이유는 꼭 있어야 합니다.")

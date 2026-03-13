@@ -91,7 +91,9 @@ export default function FeeVerificationStatus({
                     }
                 }}
             />
-            {isReviewing ? null : <p className="mt-2 text-right"> 확인일시 : {verification.responseAt}</p>}
+            {isReviewing ? null : (
+                <p className="mt-2 text-right"> 확인일시 : {verification.responseAt?.replace("T", " ")}</p>
+            )}
             {!verification.verify && verification.responseAt != null ? (
                 <>
                     <Button

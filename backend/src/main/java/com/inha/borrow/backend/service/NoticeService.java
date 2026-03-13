@@ -24,7 +24,12 @@ public class NoticeService {
      * @author 장지왕
      */
     public int postNotice(String adminId, PostNoticeDto dto) {
-        return repository.postNotice(dto.getTitle(), dto.getContent(), adminId);
+        Notice notice = Notice.builder()
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .authorId(adminId)
+                .build();
+        return repository.postNotice(adminId,notice);
     }
 
     /**

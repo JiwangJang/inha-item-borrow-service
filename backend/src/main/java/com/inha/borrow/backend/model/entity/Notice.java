@@ -1,6 +1,6 @@
 package com.inha.borrow.backend.model.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import com.inha.borrow.backend.enums.Role;
 
@@ -18,8 +18,8 @@ public class Notice {
     private String title;
     private String content;
     private String authorId;
-    private Timestamp postedAt;
-    private Timestamp updatedAt;
+    private LocalDateTime postedAt;
+    private LocalDateTime updatedAt;
     private String adminName;
     private Role adminPosition;
 }

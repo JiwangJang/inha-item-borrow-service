@@ -13,7 +13,7 @@ export default async function checkBorrowLogin(): Promise<BorrowerInfoInterface 
         const cookie = cookieStore.toString();
 
         // 서버컴포넌트에서는 fetch 사용
-        const res = await fetch(`${API_SERVER}/borrowers/me`, {
+        const res = await fetch(`${API_SERVER}/borrowers/info`, {
             method: "GET",
             headers: {
                 cookie,

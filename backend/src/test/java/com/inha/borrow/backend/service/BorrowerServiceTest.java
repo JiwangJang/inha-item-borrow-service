@@ -2,6 +2,7 @@ package com.inha.borrow.backend.service;
 
 import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
 import com.inha.borrow.backend.model.dto.user.borrower.SavePhoneAccountNumberDto;
+import com.inha.borrow.backend.model.entity.StudentCouncilFeeVerification;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 import com.inha.borrow.backend.repository.BorrowerRepository;
 import com.inha.borrow.backend.repository.StudentCouncilFeeVerificationRepository;
@@ -84,16 +85,17 @@ class BorrowerServiceTest {
         SavePhoneAccountNumberDto updateDto = new SavePhoneAccountNumberDto("123", "123");
 
         studentCouncilFeeVerificationRepository.initialSave(testId);
-        studentCouncilFeeVerificationRepository.updateForAdmin(testId,true,"승인");
+        StudentCouncilFeeVerification result = studentCouncilFeeVerificationRepository.findRequestByBorrowerId(testId);
+        studentCouncilFeeVerificationRepository.updateForAdmin(result.getId(), true,"승인");
 
         // when
         borrowerService.savePhoneAccountNumber(testId, updateDto);
 
         // then
         // 실제 DB에 잘 업데이트되었는지 id로 다시 조회하여 검증
-        Borrower result = borrowerService.findById(testId);
-        assertThat(result.getPhonenumber()).isEqualTo("123");
-        assertThat(result.getAccountNumber()).isEqualTo("123");
+        Borrower results = borrowerService.findById(testId);
+        assertThat(results.getPhonenumber()).isEqualTo("123");
+        assertThat(results.getAccountNumber()).isEqualTo("123");
     }
 
     @Test
@@ -104,7 +106,8 @@ class BorrowerServiceTest {
         SavePhoneAccountNumberDto updateDto = new SavePhoneAccountNumberDto("010-9999-9999", "999-999-999999");
 
         studentCouncilFeeVerificationRepository.initialSave(testId);
-        studentCouncilFeeVerificationRepository.updateForAdmin(testId,false,"승인");
+        StudentCouncilFeeVerification result = studentCouncilFeeVerificationRepository.findRequestByBorrowerId(testId);
+        studentCouncilFeeVerificationRepository.updateForAdmin(result.getId(),false,"승인");
 
         // when & then
         // AccessDeniedException이 발생하고, 에러 메시지에 NOT_ALLOWED_COUNCIL_FEE가 포함되어 있는지 검증

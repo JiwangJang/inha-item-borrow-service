@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PermitFeeVerificationDto {
+public class UpdateStudentCouncilFeeVerificationPermitDto {
     @NotBlank
     String borrowerId;
 }

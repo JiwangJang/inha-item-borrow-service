@@ -52,8 +52,8 @@ CREATE TABLE student_council_fee(
     borrower_id char(8) UNIQUE,
     foreign key(borrower_id) references borrower(id),
     s3_link TEXT,
-    request_at datetime ON UPDATE CURRENT_TIMESTAMP,
-    response_at datetime,
+    request_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
+    response_at DATETIME,
     deny_reason varchar(50),
     verify boolean DEFAULT false
 );
@@ -62,7 +62,7 @@ CREATE TABLE borrower_privacy_agreement(
     id int NOT NULL primary key auto_increment,
     borrower_id char(8) UNIQUE,
     foreign key(borrower_id) references borrower(id),
-    agreed_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    agreed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     version char(2) NOT NULL
 );
 
@@ -94,9 +94,9 @@ create table request (
     foreign key(manager) references admin(id),
     foreign key(item_id) references item(id),
     foreign key(borrower_id) references borrower(id),
-    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    return_at datetime NOT NULL,
-    borrow_at datetime NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    return_at DATETIME NOT NULL,
+    borrow_at DATETIME NOT NULL,
     type varchar(6) NOT NULL,
     state varchar(10) default 'PENDING',
     cancel boolean default false
@@ -106,7 +106,7 @@ create table response(
     id int NOT NULL primary key auto_increment,
     request_id int NOT NULL,
     foreign key(request_id) references request(id),
-    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     reject_reason varchar(100),
     type char(6) NOT NULL
 );

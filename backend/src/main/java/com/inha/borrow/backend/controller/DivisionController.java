@@ -28,6 +28,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class DivisionController {
     private final DivisionService divisionService;
 
+    // --------- 생성 메서드 ---------
+
+    /**
+     * 새로운 부서를 추가하는 메서드
+     * 
+     * @param divisionDto
+     * @return
+     */
+    @PostMapping
+    public ResponseEntity<Void> saveDivision(@RequestBody @Valid DivisionDto divisionDto) {
+        divisionService.saveDivision(divisionDto);
+        return ResponseEntity.created(URI.create("/divisions")).build();
+    }
+
+    // --------- 조회 메서드 ---------
+
+    /**
+     * 부서목록을 반환하는 메서드
+     * 
+     * @return
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<List<Division>>> findAllDivisions() {
         List<Division> divisions = divisionService.findAllDivisions();
@@ -35,18 +56,27 @@ public class DivisionController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
-    public ResponseEntity<Void> saveDivision(@RequestBody @Valid DivisionDto divisionDto) {
-        divisionService.saveDivision(divisionDto);
-        return ResponseEntity.created(URI.create("/divisions")).build();
-    }
+    // --------- 수정 메서드 ---------
 
+    /**
+     * 부서명을 수정하는 메서드
+     * 
+     * @param divisionDto
+     * @return
+     */
     @PatchMapping
     public ResponseEntity<Void> updateDivision(@RequestBody @Valid DivisionDto divisionDto) {
         divisionService.updateDivision(divisionDto);
         return ResponseEntity.noContent().build();
     }
 
+    // --------- 삭제 메서드 ---------
+    /**
+     * 부서를 삭제하는 메서드(Soft-delete)
+     * 
+     * @param divisionCode
+     * @return
+     */
     @DeleteMapping
     public ResponseEntity<Void> deleteDivision(@RequestParam("division-code") String divisionCode) {
         divisionService.deleteDivision(divisionCode);

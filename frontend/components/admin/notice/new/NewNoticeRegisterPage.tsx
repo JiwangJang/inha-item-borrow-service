@@ -4,9 +4,9 @@ import API_SERVER from "@/apiServer";
 import Button from "@/components/utilities/Button";
 import Input from "@/components/utilities/Input";
 import ConfirmModal from "@/components/utilities/modal/ConfirmModal";
-import { toKstOffsetDateTimeString } from "@/components/utilities/ReturnDateSelector";
 import AdminContext from "@/context/AdminContext";
 import NoticeContext from "@/context/NoticeContext";
+import { dateFormatter } from "@/utilities/dateFormatter";
 import errorHandler from "@/utilities/errorHandler";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -40,18 +40,20 @@ export default function NewNoticeRegisterPage() {
             const res = await axios.post(`${API_SERVER}/notices`, body, { withCredentials: true });
             const { id } = res.data.data;
 
+            const today = new Date();
+
             setNoticeList((prev) => [
-                ...prev,
                 {
                     authorId: adminInfo!.id,
                     content,
                     title,
                     id,
-                    postedAt: toKstOffsetDateTimeString(new Date().getTime()),
-                    updatedAt: toKstOffsetDateTimeString(new Date().getTime()),
+                    postedAt: dateFormatter(today),
+                    updatedAt: dateFormatter(today),
                     adminName: adminInfo!.name,
                     adminPosition: adminInfo!.position,
                 },
+                ...prev,
             ]);
             alert("공지 등록이 완료됐습니다.");
             router.back();

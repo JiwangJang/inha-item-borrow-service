@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
  *
  * @author 형민재
  */
-public class CacheBorrowerDto {
+public class BorrowerCacheData {
     String id;
     String name;
     String department;

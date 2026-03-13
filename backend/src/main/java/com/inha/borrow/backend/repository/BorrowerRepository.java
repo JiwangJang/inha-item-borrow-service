@@ -3,18 +3,15 @@ package com.inha.borrow.backend.repository;
 import java.util.List;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
-import com.inha.borrow.backend.model.dto.user.borrower.BorrowerDto;
-import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
-import com.inha.borrow.backend.model.dto.user.borrower.SavePhoneAccountNumberDto;
+import com.inha.borrow.backend.model.dto.user.borrower.BorrowerCacheData;
+import com.inha.borrow.backend.model.dto.user.borrower.SaveBorrowerDto;
+import com.inha.borrow.backend.model.dto.user.borrower.UpdateAccountNumberDto;
+import com.inha.borrow.backend.model.dto.user.borrower.UpdateBanDto;
+import com.inha.borrow.backend.model.dto.user.borrower.UpdatePhonenumberDto;
 import com.inha.borrow.backend.model.entity.user.Borrower;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
@@ -27,69 +24,34 @@ import lombok.RequiredArgsConstructor;
 @Repository
 @RequiredArgsConstructor
 public class BorrowerRepository {
-
     private final JdbcTemplate jdbcTemplate;
 
-    private RowMapper<Borrower> borrowerRowMapper = (rs, rowNum) -> {
-        String id = rs.getString("id");
-        String phonenumber = rs.getString("phone_number");
-        String name = rs.getString("name");
-        String accountNumber = rs.getString("account_number");
-        String department = rs.getString("department");
-        boolean ban = rs.getBoolean("ban");
-        String banReason = rs.getString("ban_reason");
-
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("BORROWER"));
-
-        return Borrower.builder()
-                .id(id)
-                .phonenumber(phonenumber)
-                .name(name)
-                .accountNumber(accountNumber)
-                .department(department)
-                .ban(ban)
-                .banReason(banReason)
-                .authorities(authorities)
-                .build();
-    };
-
+    // --------- 생성 메서드 ---------
     /**
-     * 아이디로 대여자 정보를 가져오는 메서드
+     * 대여자 정보를 저장하는 메서드
      * 
-     * @param id 대여자 아이디
-     * @return Borrower
-     * @throws ResourceNotFoundException 없는 아이디를 찾을 경우
-     * @author 장지왕
+     * @param saveBorrowerDto
      */
-    public Borrower findById(String id) {
-        try {
-            String sql = "SELECT * FROM borrower WHERE id=?;";
-            return jdbcTemplate.queryForObject(sql, borrowerRowMapper, id);
-        } catch (IncorrectResultSizeDataAccessException e) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
+    public void save(SaveBorrowerDto saveBorrowerDto) {
+        String sql = "INSERT INTO borrower(id, name, department, phone_number, " +
+                " account_number) VALUES(?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql,
+                saveBorrowerDto.getId(),
+                saveBorrowerDto.getName(),
+                saveBorrowerDto.getDepartment(),
+                saveBorrowerDto.getPhonenumber(),
+                saveBorrowerDto.getAccountNumber());
     }
 
-    /**
-     * 대여자 리스트를 반환하는 메서드
-     * 
-     * @return List<Borrower>
-     * @author 형민재
-     */
-    public List<Borrower> findAll() {
-        String sql = "SELECT * FROM borrower";
-        List<Borrower> result = jdbcTemplate.query(sql, borrowerRowMapper);
-        return result;
-    }
+    // --------- 생성 메서드 ---------
 
     /**
      * CACHE에 저장하기 위해 대여자 리스트와 납부정보를 JOIN하여 반환하는 메서드
      *
-     * @return List<CacheBorrowerDto>
+     * @return List<BorrowerCacheData>
      * @author 형민재
      */
-    public List<CacheBorrowerDto> findAllForCache() {
+    public List<BorrowerCacheData> findAllForCache() {
         String sql = """
                 SELECT
                     b.id,
@@ -107,7 +69,7 @@ public class BorrowerRepository {
                 LEFT JOIN borrower_privacy_agreement p ON b.id = p.borrower_id;
                 """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            return CacheBorrowerDto.builder()
+            return BorrowerCacheData.builder()
                     .id(rs.getString("id"))
                     .name(rs.getString("name"))
                     .department(rs.getString("department"))
@@ -125,10 +87,10 @@ public class BorrowerRepository {
     /**
      * CACHE에 저장할 단일 대여자 객체를 가져오는 메서드
      *
-     * @return List<Borrower>
+     * @return BorrowerCacheData
      * @author 형민재
      */
-    public CacheBorrowerDto findByIdForCache(String borrowerId) {
+    public BorrowerCacheData findByIdForCache(Borrower borrower) {
         try {
             String sql = """
                     SELECT
@@ -148,7 +110,7 @@ public class BorrowerRepository {
                     WHERE b.id = ?;
                         """;
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-                return CacheBorrowerDto.builder()
+                return BorrowerCacheData.builder()
                         .id(rs.getString("id"))
                         .name(rs.getString("name"))
                         .department(rs.getString("department"))
@@ -160,81 +122,40 @@ public class BorrowerRepository {
                         .agreementVersion(rs.getString("version"))
                         .banReason(rs.getString("ban_reason"))
                         .build();
-            }, borrowerId);
+            }, borrower.getId());
         } catch (EmptyResultDataAccessException e) {
             ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
     }
 
-    public void save(BorrowerDto borrower) {
-        String sql = "INSERT INTO borrower(id, name, department, phone_number, " +
-                " account_number) VALUES(?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql,
-                borrower.getId(),
-                borrower.getName(),
-                borrower.getDepartment(),
-                borrower.getPhonenumber(),
-                borrower.getAccountNumber());
-    }
+    // --------- 수정 메서드 ---------
 
     /**
-     * 아이디로 대여자의 전화번호 계좌번호를 저장하는 메서드
-     *
-     * @param id  대여자 아이디
-     * @param dto
-     *
-     * @author 형민재
-     */
-    public void savePhoneAccountNumber(String id, SavePhoneAccountNumberDto dto) {
-        String sql = "UPDATE borrower SET phone_number = ?, account_number =? WHERE id = ?";
-        int result = jdbcTemplate.update(sql, dto.getPhoneNumber(), dto.getAccountNumber(), id);
-        if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
-    }
-
-    /**
-     * 아이디로 대여자 정보 수정 메서드
+     * 핸드폰 번호 수정하는 메서드
      * 
-     * @param id 대여자 아이디
-     * @return int
-     * @throws DataAccessException
-     * @author 형민재
+     * @param Borrower
+     * @param UpdatePhonenumberDto
      */
-    public void patchName(String name, String id) {
-        String sql = " UPDATE borrower SET name = ? WHERE id = ?";
-        int result = jdbcTemplate.update(sql, name, id);
+    public void updatePhoneNumber(Borrower borrower, UpdatePhonenumberDto dto) {
+        String sql = "UPDATE borrower SET phone_number = ? WHERE id = ?";
+        int result = jdbcTemplate.update(sql, dto.getNewPhonenumber(), borrower.getId());
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
-    }
-
-    public void patchPhoneNumber(String phoneNumber, String id) {
-        String sql = " UPDATE borrower SET phone_number = ? WHERE id = ?";
-        int result = jdbcTemplate.update(sql, phoneNumber, id);
-        if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
-            ;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
 
     }
 
-    public void patchAccountNumber(String accountNumber, String id) {
-        String sql = " UPDATE borrower SET account_number = ? WHERE id = ?";
-        int result = jdbcTemplate.update(sql, accountNumber, id);
-        if (result == 0) {
-            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
-            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
-        }
-    }
-
-    public void patchBan(String borrwerId, boolean ban, String banReason) {
-        String sql = " UPDATE borrower SET ban = ?, ban_reason = ? WHERE id = ?";
-        int result = jdbcTemplate.update(sql, ban, banReason, borrwerId);
+    /**
+     * 계좌번호 수정하는 메서드
+     * 
+     * @param Borrower
+     * @param UpdateAccountNumberDto
+     */
+    public void updateAccountNumber(Borrower borrower, UpdateAccountNumberDto dto) {
+        String sql = "UPDATE borrower SET account_number = ? WHERE id = ?";
+        int result = jdbcTemplate.update(sql, dto.getNewAccountNumber(), borrower.getId());
         if (result == 0) {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
@@ -242,10 +163,17 @@ public class BorrowerRepository {
     }
 
     /**
-     * test 코드에 사용하기 위한 메서드
+     * 이용금지 정보 수정하는 메서드
+     * 
+     * @param Borrower
+     * @param UpdateBandto
      */
-    public void deleteAll() {
-        String sql = "DELETE FROM borrower";
-        jdbcTemplate.update(sql);
+    public void updateBan(Borrower borrower, UpdateBanDto dto) {
+        String sql = "UPDATE borrower SET ban = ?, ban_reason = ? WHERE id = ?";
+        int result = jdbcTemplate.update(sql, dto.isBan(), dto.getBanReason(), borrower.getId());
+        if (result == 0) {
+            ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_BORROWER;
+            throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
+        }
     }
 }

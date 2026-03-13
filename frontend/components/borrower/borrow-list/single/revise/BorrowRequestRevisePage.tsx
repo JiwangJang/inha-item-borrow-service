@@ -79,8 +79,8 @@ export default function BorrowRequestRevisePage({ id }: { id: string }) {
     const revise = async () => {
         try {
             const body = {
-                borrowAt: `${borrowDate}T${borrowTime}:00+09:00`,
-                returnAt: `${returnDate}T${returnTime}:00+09:00`,
+                borrowAt: `${borrowDate}T${borrowTime}:00`,
+                returnAt: `${returnDate}T${returnTime}:00`,
             };
 
             await axios.patch(`${API_SERVER}/requests/${id}/patch`, body, { withCredentials: true });
@@ -92,8 +92,8 @@ export default function BorrowRequestRevisePage({ id }: { id: string }) {
                         if (String(rq.id) == id) {
                             return {
                                 ...rq,
-                                borrowAt: `${borrowDate}T${borrowTime}:00+09:00`,
-                                returnAt: `${returnDate}T${returnTime}:00+09:00`,
+                                borrowAt: `${borrowDate}T${borrowTime}:00`,
+                                returnAt: `${returnDate}T${returnTime}:00`,
                             };
                         }
                         return rq;

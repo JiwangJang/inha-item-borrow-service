@@ -2,8 +2,8 @@ package com.inha.borrow.backend.config;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.inha.borrow.backend.model.dto.user.borrower.CacheBorrowerDto;
-import com.inha.borrow.backend.model.dto.user.borrower.TempBorrowerInfoDto;
+import com.inha.borrow.backend.model.dto.user.borrower.BorrowerCacheData;
+import com.inha.borrow.backend.model.dto.user.borrower.TempBorrowerInfoCacheData;
 
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +19,7 @@ public class CacheConfig {
      * @author 형민재
      */
     @Bean
-    public Cache<String, CacheBorrowerDto> borrowerCache() {
+    public Cache<String, BorrowerCacheData> borrowerCache() {
         return Caffeine.newBuilder()
                 .maximumSize(10000)
                 .build();
@@ -31,7 +31,7 @@ public class CacheConfig {
      * @author 형민재
      */
     @Bean
-    public Cache<String, TempBorrowerInfoDto> tempBorrowerCache() {
+    public Cache<String, TempBorrowerInfoCacheData> tempBorrowerCache() {
         return Caffeine.newBuilder()
                 .maximumSize(1000)
                 .build();

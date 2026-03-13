@@ -13,10 +13,12 @@ import AGREEMENT_AGREEMENT_VERSION from "@/utilities/agreementVersion";
 export default function V1AgreementPage() {
     const borrowerContext = useContext(BorrowerContext);
     const [isAgree, setIsAgree] = useState(false);
-    const [buttonOn, setButtonOn] = useState(false);
-    const phoneNumberInputRef = useRef<HTMLInputElement>(null);
-    const accountInputRef = useRef<HTMLInputElement>(null);
+    const [phoneNumber, setPhoneNumber] = useState<string>("");
+    const [accountNumber, setAccountNumber] = useState<string>("");
     const isAgreeBefore = borrowerContext.borrowerInfo?.agreementVersion != null;
+    const phoneDigits = phoneNumber.replace(/\D/g, "");
+    const isValidPhoneNumber = /^01[0-9]\d{7,8}$/.test(phoneDigits);
+    const buttonOn = isValidPhoneNumber && isAgree && accountNumber != "";
 
     const checkboxImage =
         `${isAgree ? "/images/icons/others/active" : "/images/icons/others/inactive"}` + "/password.png";
@@ -27,45 +29,24 @@ export default function V1AgreementPage() {
         } else {
             setIsAgree(true);
         }
-
-        checkCanButtonOn();
-    };
-
-    const checkCanButtonOn = () => {
-        const phoneNumber = phoneNumberInputRef.current?.value || "";
-        const account = accountInputRef.current?.value;
-
-        const phoneDigits = phoneNumber.replace(/\D/g, "");
-        const isValidPhoneNumber = /^01[0-9]\d{7,8}$/.test(phoneDigits);
-
-        if (isAgree && account != "" && isValidPhoneNumber) {
-            setButtonOn(true);
-        } else {
-            if (buttonOn) setButtonOn(false);
-        }
     };
 
     const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = e.target.value.replace(/\D/g, "");
 
         if (value.length <= 3) {
-            e.target.value = value;
+            setPhoneNumber(value);
         } else if (value.length <= 7) {
-            e.target.value = `${value.slice(0, 3)}-${value.slice(3)}`;
+            setPhoneNumber(`${value.slice(0, 3)}-${value.slice(3)}`);
         } else {
-            e.target.value = `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`;
+            setPhoneNumber(`${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`);
         }
-
-        checkCanButtonOn();
-    };
-
-    const handleAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        checkCanButtonOn();
     };
 
     const handleSubmit = async () => {
-        const phoneNumber = phoneNumberInputRef.current?.value || "";
-        const account = accountInputRef.current?.value || "";
+        if (!buttonOn) {
+            return;
+        }
 
         try {
             await axios.post(
@@ -73,7 +54,7 @@ export default function V1AgreementPage() {
                 {
                     version: AGREEMENT_AGREEMENT_VERSION,
                     phoneNumber,
-                    accountNumber: account,
+                    accountNumber,
                 },
                 {
                     withCredentials: true,
@@ -84,7 +65,7 @@ export default function V1AgreementPage() {
                 borrowerContext.setBorrowerInfo({
                     ...borrowerContext.borrowerInfo,
                     phoneNumber,
-                    accountNumber: account,
+                    accountNumber,
                     agreementVersion: AGREEMENT_AGREEMENT_VERSION,
                 });
             }
@@ -122,16 +103,16 @@ export default function V1AgreementPage() {
                         <p className="mb-1 bold-16px">전화번호</p>
                         <Input
                             placeholder="전화번호를 입력해주세요"
-                            ref={phoneNumberInputRef}
                             onChange={handlePhoneNumberChange}
+                            value={phoneNumber}
                         />
                     </div>
                     <div className="mt-2">
                         <p className="mb-1 bold-16px">반환계좌</p>
                         <Input
                             placeholder="1111-1111-1111-11(은행명) 형식으로 입력해주세요"
-                            ref={accountInputRef}
-                            onChange={handleAccountChange}
+                            value={accountNumber}
+                            onChange={(e) => setAccountNumber(e.target.value)}
                         />
                     </div>
                     <Button

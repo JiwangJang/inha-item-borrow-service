@@ -9,7 +9,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.inha.borrow.backend.enums.ApiErrorCode;
-import com.inha.borrow.backend.model.dto.response.SaveResponseDto;
 import com.inha.borrow.backend.model.entity.Response;
 import com.inha.borrow.backend.model.exception.ResourceNotFoundException;
 
@@ -21,20 +20,20 @@ public class ResponseRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @SuppressWarnings("null")
-    public Response save(SaveResponseDto dto) {
+    public Response save(Response response) {
         String sql = "INSERT INTO response(request_id, reject_reason, type) VALUES(?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, dto.getRequestId());
-            ps.setString(2, dto.getRejectReason());
-            ps.setString(3, dto.getType().name());
+            ps.setInt(1, response.getRequestId());
+            ps.setString(2, response.getRejectReason());
+            ps.setString(3, response.getType().name());
             return ps;
         }, keyHolder);
 
         int id = keyHolder.getKey().intValue();
-        return dto.getResponse(id);
+        return response.getResponse(id);
     }
 
     public void update(String responseId, String rejectReason) {
