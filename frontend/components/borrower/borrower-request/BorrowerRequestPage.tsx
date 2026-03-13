@@ -95,6 +95,9 @@ export default function BorrowerRequestPage() {
         {} as Record<string, number>,
     );
 
+    const weekAfter = new Date();
+    weekAfter.setDate(today.getDate() + 7);
+
     const itemSelectOnChange = (value: string) => {
         setItem(value);
     };
@@ -138,15 +141,8 @@ export default function BorrowerRequestPage() {
             };
 
             const now = new Date();
-            const minBorrowAt = new Date(now.getTime() + 60 * 60 * 1000); // now + 1 hour
             const borrowAtDate = new Date(body.borrowAt);
             const returnAtDate = new Date(body.returnAt);
-
-            if (borrowAtDate < minBorrowAt) {
-                // 대여일시가 현재시각보다 1시간 이전인 경우
-                alert("대여일시는 현재 시각보다 1시간 이후여야합니다.");
-                return;
-            }
 
             if (borrowAtDate >= returnAtDate) {
                 // 반납일시가 대여일시보다 늦은 경우
@@ -168,6 +164,7 @@ export default function BorrowerRequestPage() {
                 createdAt: result.createdAt,
                 borrowerId: borrowerInfo.id,
                 borrowerName: borrowerInfo.name,
+                viewPasswordAt: null,
                 item: {
                     id: selectedItem.id,
                     name: selectedItem.name,
@@ -302,6 +299,9 @@ export default function BorrowerRequestPage() {
                         value={returnTime}
                     />
                 </div>
+                <p className="bold-16px text-center mb-1">
+                    현재부터 7일 뒤는 {weekAfter.toLocaleDateString("ko-kr")}입니다
+                </p>
                 <p className="text-placeholder pl-0.5 leading-tight regular-14px">
                     대여 기간은 원칙적으로 대여한 날로부터 최대 7일로 하며, 공휴일 또는 학생회의 사정으로 대여 및 반납이
                     곤란한 경우, 대여자의 특별한 사정으로 학생회와 사전에 협의된 경우 합리적인 선에서 조정할 수 있음.

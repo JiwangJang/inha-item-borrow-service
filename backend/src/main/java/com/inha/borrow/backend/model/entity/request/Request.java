@@ -23,6 +23,7 @@ public class Request {
     private LocalDateTime createdAt;
     private LocalDateTime returnAt;
     private LocalDateTime borrowAt;
+    private LocalDateTime viewPasswordAt;
     private RequestType type;
     private RequestState state;
     private Boolean cancel;

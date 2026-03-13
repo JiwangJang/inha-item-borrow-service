@@ -25,7 +25,7 @@ export default function Footer() {
                 <Link href={"/admin"} className="underline">
                     관리자페이지
                 </Link>{" "}
-                |
+                |{" "}
                 <Link
                     href={
                         isAdminPage

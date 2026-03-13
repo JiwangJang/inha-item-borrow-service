@@ -65,6 +65,7 @@ public class RequestRepository {
         LocalDateTime requestCreatedAt = rs.getObject("request_created_at", LocalDateTime.class);
         LocalDateTime returnAt = rs.getObject("return_at", LocalDateTime.class);
         LocalDateTime borrowAt = rs.getObject("borrow_at", LocalDateTime.class);
+        LocalDateTime viewPasswordTime = rs.getObject("view_password_at", LocalDateTime.class);
         RequestType type = RequestType.valueOf(rs.getString("type"));
         RequestState state = RequestState.valueOf(rs.getString("state"));
         Boolean cancel = rs.getBoolean("cancel");
@@ -72,10 +73,10 @@ public class RequestRepository {
         // 대응하는 요청 있는지 확인하는 부분
         int counterRequestId = rs.getInt("counter_rq_id");
 
-        if (!(counterRequestId == 0 && state == RequestState.PERMIT)) {
+        if (!(counterRequestId == 0 && state == RequestState.PERMIT && viewPasswordTime != null)) {
             // counterRequestId == 0 : 아직 반납요청을 안했다
             // 반납요청의 경우 무조건 counterRequestId가 존재함(대여요청을 기반으로 하므로)
-            // 즉, 대여요청인데 반납요청 아직 안했고 허가받은 경우에만 위치와 비밀번호 확인가능
+            // 즉, 대여요청인데 반납요청 아직 안했고 허가받고 비밀번호 보겠다고 한 경우에만 위치와 비밀번호 확인가능
             itemLocation = null;
             itemPassword = null;
         }
@@ -108,6 +109,7 @@ public class RequestRepository {
                 .createdAt(requestCreatedAt)
                 .returnAt(returnAt)
                 .borrowAt(borrowAt)
+                .viewPasswordAt(viewPasswordTime)
                 .type(type)
                 .state(state)
                 .cancel(cancel)
@@ -161,11 +163,12 @@ public class RequestRepository {
      */
     public Map<String, Object> findRecentRequestInfo(Borrower borrower) {
         try {
-            String sql = "SELECT id, borrow_at, state, type FROM request WHERE borrower_id = ? ORDER BY created_at DESC LIMIT 1";
+            String sql = "SELECT id, borrow_at, state, type, view_password_at FROM request WHERE borrower_id = ? AND cancel != true ORDER BY created_at DESC LIMIT 1";
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
                 Map<String, Object> result = new HashMap<>();
                 result.put("state", RequestState.valueOf(rs.getString("state")));
                 result.put("borrow_at", rs.getObject("borrow_at", LocalDateTime.class));
+                result.put("view_password_at", rs.getObject("view_password_at", LocalDateTime.class));
                 result.put("id", rs.getInt("id"));
                 result.put("type", RequestType.valueOf(rs.getString("type")));
                 return result;
@@ -173,6 +176,55 @@ public class RequestRepository {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    public Request findById(int requestId) {
+        String sql = """
+                SELECT
+                        rq_a.id AS request_id,
+                        rq_a.item_id,
+                        item.name AS item_name,
+                        item.price AS item_price,
+                        item.location AS item_location,
+                        item.password AS item_password,
+                        rq_a.created_at AS request_created_at,
+                        rq_a.borrower_id,
+                        borrower.name AS borrower_name,
+                        rq_a.return_at,
+                        rq_a.borrow_at,
+                        rq_a.type,
+                        rq_a.state,
+                        rq_a.cancel,
+                        rp.id AS response_id,
+                        rp.created_at AS response_created_at,
+                        rp.reject_reason,
+                        rq_a.manager,
+                        admin.name AS manager_name,
+                        admin.position,
+                        rq_b.id AS counter_rq_id,
+                        rq_a.view_password_at
+                    FROM request AS rq_a
+                        -- 대여요청과 반납요청간 짝지어주는 부분
+                        -- 대여시간이 동일하고 아이디와 티입이 다른 것을 묶는다
+                        -- 이때 대여요청(BORROW)이면서 상태가 거절(REJECT)인 것은 제외하고 조인
+                        LEFT JOIN request AS rq_b
+                            ON rq_a.borrow_at = rq_b.borrow_at
+                                AND rq_a.id != rq_b.id
+                                AND rq_a.type != rq_b.type
+                                AND NOT(rq_b.type = "BORROW" AND rq_b.state = "REJECT")
+                                AND rq_a.state != "REJECT"
+                        LEFT JOIN response AS rp
+                            ON rp.request_id = rq_a.id
+                        LEFT JOIN admin
+                            ON admin.id = rq_a.manager
+                        LEFT JOIN item
+                            ON rq_a.item_id = item.id
+                        LEFT JOIN borrower
+                            ON rq_a.borrower_id = borrower.id
+                    WHERE rq_a.cancel != true AND rq_a.id = ?;
+                """;
+        Request result = jdbcTemplate.queryForObject(sql, requestRowMapper, requestId);
+        return result;
     }
 
     /**
@@ -208,7 +260,8 @@ public class RequestRepository {
                                 rq_a.manager,
                                 admin.name AS manager_name,
                                 admin.position,
-                                rq_b.id AS counter_rq_id
+                                rq_b.id AS counter_rq_id,
+                                rq_a.view_password_at
                             FROM request AS rq_a
                                 -- 대여요청과 반납요청간 짝지어주는 부분
                                 -- 대여시간이 동일하고 아이디와 티입이 다른 것을 묶는다
@@ -423,5 +476,15 @@ public class RequestRepository {
             ApiErrorCode errorCode = ApiErrorCode.NOT_FOUND_REQUEST;
             throw new ResourceNotFoundException(errorCode.name(), errorCode.getMessage());
         }
+    }
+
+    /**
+     * 대여자가 대여물품의 비밀번호와 보관장소를 확인했음을 표시하는 메서드
+     * 
+     * @param requestId
+     */
+    public void updateViewPasswordAt(int requestId) {
+        String sql = "UPDATE request SET view_password_at = NOW() WHERE id = ?;";
+        jdbcTemplate.update(sql, requestId);
     }
 }

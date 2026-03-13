@@ -10,6 +10,7 @@ export default interface RequestInterface {
     createdAt: string;
     returnAt: string;
     borrowAt: string;
+    viewPasswordAt: string | null;
     type: RequestType;
     state: RequestStateType;
     cancel: boolean;
