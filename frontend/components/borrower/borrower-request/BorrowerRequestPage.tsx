@@ -132,8 +132,8 @@ export default function BorrowerRequestPage() {
         try {
             const body = {
                 itemId: selectedItem.id,
-                borrowAt: `${borrowDate}T${borrowTime}:00+09:00`,
-                returnAt: `${returnDate}T${returnTime}:00+09:00`,
+                borrowAt: `${borrowDate}T${borrowTime}:00`,
+                returnAt: `${returnDate}T${returnTime}:00`,
                 type: "BORROW",
             };
 

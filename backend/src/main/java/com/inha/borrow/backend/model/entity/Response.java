@@ -1,7 +1,6 @@
 package com.inha.borrow.backend.model.entity;
 
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import com.inha.borrow.backend.enums.ResponseType;
 
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Response {
     int id;
     int requestId;
-    Timestamp createdAt;
+    LocalDateTime createdAt;
     String rejectReason;
     ResponseType type;
 
@@ -27,7 +26,7 @@ public class Response {
                 .requestId(requestId)
                 .rejectReason(rejectReason)
                 .type(type)
-                .createdAt(Timestamp.from(Instant.now()))
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

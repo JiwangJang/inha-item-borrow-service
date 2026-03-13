@@ -22,7 +22,7 @@ export default function ReturnDateSelector({
             alert("날짜는 필수로 선택하셔야 합니다.");
             return;
         }
-        sendFunc(`${newDate}T${newTime}:00+09:00`);
+        sendFunc(`${newDate}T${newTime}:00`);
         onClose();
     };
 
@@ -66,19 +66,4 @@ export default function ReturnDateSelector({
             </div>
         </div>
     );
-}
-export function toKstOffsetDateTimeString(epochMilli: number): string {
-    const date = new Date(epochMilli);
-
-    // KST로 강제 변환
-    const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000);
-
-    const year = kst.getUTCFullYear();
-    const month = String(kst.getUTCMonth() + 1).padStart(2, "0");
-    const day = String(kst.getUTCDate()).padStart(2, "0");
-    const hour = String(kst.getUTCHours()).padStart(2, "0");
-    const minute = String(kst.getUTCMinutes()).padStart(2, "0");
-    const second = String(kst.getUTCSeconds()).padStart(2, "0");
-
-    return `${year}-${month}-${day}T${hour}:${minute}:${second}+09:00`;
 }

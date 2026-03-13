@@ -1,6 +1,7 @@
 package com.inha.borrow.backend.repository;
 
 import java.sql.PreparedStatement;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -29,7 +30,7 @@ public class NoticeRepository {
      * @author 장지왕
      * @return id
      */
-    public int postNotice(String adminId,Notice notice) {
+    public int postNotice(String adminId, Notice notice) {
         String sql = "INSERT INTO notice(title, content, author_id) VALUES(?, ?, ?);";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -70,8 +71,8 @@ public class NoticeRepository {
                     .id(col.getInt("notice_id"))
                     .title(col.getString("title"))
                     .content(col.getString("content"))
-                    .postedAt(col.getTimestamp("posted_at"))
-                    .updatedAt(col.getTimestamp("updated_at"))
+                    .postedAt(col.getObject("posted_at", LocalDateTime.class))
+                    .updatedAt(col.getObject("updated_at", LocalDateTime.class))
                     .authorId(col.getString("author_id"))
                     .adminName(col.getString("admin_name"))
                     .adminPosition(Role.valueOf(col.getString("admin_position")))
@@ -105,8 +106,8 @@ public class NoticeRepository {
                         .id(col.getInt("notice_id"))
                         .title(col.getString("title"))
                         .content(col.getString("content"))
-                        .postedAt(col.getTimestamp("posted_at"))
-                        .updatedAt(col.getTimestamp("updated_at"))
+                        .postedAt(col.getObject("posted_at", LocalDateTime.class))
+                        .updatedAt(col.getObject("updated_at", LocalDateTime.class))
                         .authorId(col.getString("author_id"))
                         .adminName(col.getString("admin_name"))
                         .adminPosition(Role.valueOf(col.getString("admin_position")))

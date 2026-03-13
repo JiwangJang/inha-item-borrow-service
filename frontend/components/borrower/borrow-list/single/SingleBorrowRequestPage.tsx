@@ -15,7 +15,7 @@ import errorHandler from "@/utilities/errorHandler";
 import Loading from "@/components/utilities/Loading";
 import BorrowerContext from "@/context/BorrowerContext";
 import API_SERVER from "@/apiServer";
-import ReturnDateSelector, { toKstOffsetDateTimeString } from "@/components/utilities/ReturnDateSelector";
+import ReturnDateSelector from "@/components/utilities/ReturnDateSelector";
 
 export default function SingleBorrowRequestPage({ requestId }: { requestId: string }) {
     const router = useRouter();
@@ -88,8 +88,8 @@ export default function SingleBorrowRequestPage({ requestId }: { requestId: stri
             const body = {
                 prevRequestId: id,
                 itemId,
-                returnAt: returnAtString == null ? toKstOffsetDateTimeString(Number(returnAt)) : returnAtString,
-                borrowAt: toKstOffsetDateTimeString(Number(borrowAt)),
+                returnAt: returnAtString == null ? returnAt : returnAtString,
+                borrowAt: borrowAt,
                 type: REQUEST_TYPE.RETURN,
             };
 

@@ -1,6 +1,5 @@
 package com.inha.borrow.backend.repository;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,8 +29,8 @@ public class StudentCouncilFeeVerificationRepository {
         String denyReason = (String) rs.getObject("deny_reason");
         String s3Link = (String) rs.getObject("s3_link");
         Boolean verify = (Boolean) rs.getObject("verify");
-        Timestamp requestAtTimestamp = rs.getTimestamp("request_at");
-        Timestamp responsetAtTimestamp = rs.getTimestamp("response_at");
+        LocalDateTime requestAtTimestamp = rs.getObject("request_at", LocalDateTime.class);
+        LocalDateTime responsetAtTimestamp = rs.getObject("response_at", LocalDateTime.class);
 
         StudentCouncilFeeVerification result = StudentCouncilFeeVerification
                 .builder()
@@ -41,8 +40,8 @@ public class StudentCouncilFeeVerificationRepository {
                 .denyReason(denyReason)
                 .s3Link(s3Link)
                 .verify(verify)
-                .requestAt(requestAtTimestamp != null ? requestAtTimestamp.toLocalDateTime() : null)
-                .responseAt(responsetAtTimestamp != null ? responsetAtTimestamp.toLocalDateTime() : null)
+                .requestAt(requestAtTimestamp != null ? requestAtTimestamp : null)
+                .responseAt(responsetAtTimestamp != null ? responsetAtTimestamp : null)
                 .build();
 
         return result;

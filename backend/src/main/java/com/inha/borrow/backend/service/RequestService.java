@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.benmanes.caffeine.cache.Cache;
 
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +83,7 @@ public class RequestService {
         }
 
         if (type == RequestType.BORROW) {
-            OffsetDateTime now = OffsetDateTime.now(ZoneId.of("Asia/Seoul"));
+            LocalDateTime now = LocalDateTime.now();
 
             if (recentRequestInfo != null) {
                 // 대여요청의 경우 이전 요청이 null일수도 있음(첫요청)
@@ -126,10 +124,8 @@ public class RequestService {
             int recentRequestId = (int) recentRequestInfo.get("id");
             RequestType recentRequestType = (RequestType) recentRequestInfo.get("type");
             RequestState recentRequestState = (RequestState) recentRequestInfo.get("state");
-            OffsetDateTime recentRequestBorrowAt = ((Timestamp) recentRequestInfo.get("borrow_at")).toInstant()
-                    .atZone(ZoneId.of("Asia/Seoul"))
-                    .toOffsetDateTime();
-            OffsetDateTime borrowAt = saveRequestDto.getBorrowAt();
+            LocalDateTime recentRequestBorrowAt = (LocalDateTime) recentRequestInfo.get("borrow_at");
+            LocalDateTime borrowAt = saveRequestDto.getBorrowAt();
 
             if (recentRequestType != RequestType.BORROW && recentRequestState != RequestState.PERMIT) {
                 // 최신 요청 상태 및 타입 검사
@@ -194,9 +190,8 @@ public class RequestService {
         Map<String, Object> result = requestRepository.findRequestStateAndTypeAndBorrowAtById(requestId);
         RequestState state = RequestState.valueOf((String) result.get("state"));
         RequestType type = RequestType.valueOf((String) result.get("type"));
-        OffsetDateTime borrowAt = ((Timestamp) result.get("borrow_at")).toInstant().atZone(ZoneId.of("Asia/Seoul"))
-                .toOffsetDateTime();
-        OffsetDateTime now = OffsetDateTime.now();
+        LocalDateTime borrowAt = (LocalDateTime) result.get("borrow_at");
+        LocalDateTime now = LocalDateTime.now();
 
         // 사용자가 대여요청을 수정한 경우 -> 대여 요청시간이 현재보다 한시간 뒤인지 + 반납요청시간이 대여요청시간 이후인지 확인
         // 사용자가 반납요청을 수정한 경우 -> 반납 요청시간이 현재시간보다 이후인지.
@@ -225,7 +220,7 @@ public class RequestService {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "보류중 또는 거부됨이 아닌 반납 요청은 수정이 불가합니다.");
             }
-            if (!OffsetDateTime.now().isBefore(updateRequestDto.getReturnAt())) {
+            if (!LocalDateTime.now().isBefore(updateRequestDto.getReturnAt())) {
                 // 반납요청시각이 현재보다 이전이면 거부
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "반납일시는 현재보다 이전일 수 없습니다.");

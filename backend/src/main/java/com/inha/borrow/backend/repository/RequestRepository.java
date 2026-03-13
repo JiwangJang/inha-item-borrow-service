@@ -2,8 +2,7 @@ package com.inha.borrow.backend.repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +44,7 @@ public class RequestRepository {
         // Response 관련 값
         int responseId = rs.getInt("response_id");
         String rejectReason = rs.getString("reject_reason");
-        Timestamp responseCreatedAt = rs.getTimestamp("response_created_at");
+        LocalDateTime responseCreatedAt = rs.getObject("response_created_at", LocalDateTime.class);
 
         // manager 관련 값
         String managerId = rs.getString("manager");
@@ -63,9 +62,9 @@ public class RequestRepository {
         int requestId = rs.getInt("request_id");
         String borrowerId = rs.getString("borrower_id");
         String borrowerName = rs.getString("borrower_name");
-        Timestamp requestCreatedAt = rs.getTimestamp("request_created_at");
-        Timestamp returnAt = rs.getTimestamp("return_at");
-        Timestamp borrowAt = rs.getTimestamp("borrow_at");
+        LocalDateTime requestCreatedAt = rs.getObject("request_created_at", LocalDateTime.class);
+        LocalDateTime returnAt = rs.getObject("return_at", LocalDateTime.class);
+        LocalDateTime borrowAt = rs.getObject("borrow_at", LocalDateTime.class);
         RequestType type = RequestType.valueOf(rs.getString("type"));
         RequestState state = RequestState.valueOf(rs.getString("state"));
         Boolean cancel = rs.getBoolean("cancel");
@@ -134,14 +133,14 @@ public class RequestRepository {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, request.getItemId());
             ps.setString(2, borrower.getId());
-            ps.setTimestamp(3, Timestamp.from(request.getReturnAt().toInstant()));
-            ps.setTimestamp(4, Timestamp.from(request.getBorrowAt().toInstant()));
+            ps.setObject(3, request.getReturnAt());
+            ps.setObject(4, request.getBorrowAt());
             ps.setString(5, request.getType().name());
             return ps;
         }, keyHolder);
 
         int requestId = keyHolder.getKey().intValue();
-        Timestamp createdAt = Timestamp.from(Instant.now());
+        LocalDateTime createdAt = LocalDateTime.now();
 
         Request result = Request
                 .builder()
@@ -166,7 +165,7 @@ public class RequestRepository {
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
                 Map<String, Object> result = new HashMap<>();
                 result.put("state", RequestState.valueOf(rs.getString("state")));
-                result.put("borrow_at", rs.getTimestamp("borrow_at"));
+                result.put("borrow_at", rs.getObject("borrow_at", LocalDateTime.class));
                 result.put("id", rs.getInt("id"));
                 result.put("type", RequestType.valueOf(rs.getString("type")));
                 return result;
@@ -312,7 +311,7 @@ public class RequestRepository {
                 HashMap<String, Object> result = new HashMap<>();
                 result.put("state", rs.getString("state"));
                 result.put("type", rs.getString("type"));
-                result.put("borrow_at", rs.getTimestamp("borrow_at"));
+                result.put("borrow_at", rs.getObject("borrow_at", LocalDateTime.class));
                 return result;
             }, id);
         } catch (EmptyResultDataAccessException e) {
