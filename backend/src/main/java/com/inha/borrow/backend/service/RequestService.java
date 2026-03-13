@@ -14,6 +14,8 @@ import com.inha.borrow.backend.model.entity.user.User;
 import com.inha.borrow.backend.model.exception.InvalidValueException;
 import com.inha.borrow.backend.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RequestService {
     private final RequestRepository requestRepository;
     private final ItemService itemService;
@@ -213,7 +216,6 @@ public class RequestService {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "반납일시는 대여일시보다 이후여야 합니다.");
             }
-            // 여기에 대여물품 상태 변경 코드 넣기
         } else {
             // 반납요청인 경우
             if (state == RequestState.ASSIGNED || state == RequestState.PERMIT) {
@@ -229,7 +231,6 @@ public class RequestService {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "반납요청의 대여시간은 수정할 수 없습니다.");
             }
-            // 여기에 대여물품 상태 변경 코드 넣기
         }
         requestRepository.updateRequest(borrower, updateRequestDto, requestId);
     }
@@ -261,7 +262,13 @@ public class RequestService {
      * @param adminId
      * @param requestId
      */
+    @Transactional
     public void updateRequestManager(Admin admin, int requestId) {
+        Request request = requestRepository.findManagerAndItemIdById(requestId);
+        if (request.getManager().getId() != null) {
+            throw new InvalidValueException(ApiErrorCode.ALREADY_ASSIGNED.name(),
+                    ApiErrorCode.ALREADY_ASSIGNED.getMessage());
+        }
         requestRepository.updateRequestManager(admin, requestId);
     }
 

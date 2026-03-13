@@ -86,6 +86,7 @@ public class ResponseService {
         // 요청객체 조회해서 담당자 맞는지 확인
         int requestId = dto.getRequestId();
         Request request = requestService.findManagerAndItemIdById(requestId);
+        RequestType requestType = request.getType();
 
         String newRejectReason = dto.getRejectReason();
         RequestState newRequestState = dto.getRequestState();
@@ -104,15 +105,26 @@ public class ResponseService {
             throw new InvalidValueException(apiErrorCode.name(), apiErrorCode.getMessage());
         }
 
-        if (newRequestState == RequestState.PERMIT) {
-            requestService.updateRequestState(RequestState.PERMIT, requestId);
-            itemService.updateState(ItemState.AFFORD, itemId);
-            responseRepository.update(responseId, newRejectReason);
+        // 아이템 및 요청객체 상태 변경
+        if (requestType == RequestType.BORROW) {
+            // 수정하는 응답의 원래 요청이 대여요청인 경우
+            if (newRequestState == RequestState.PERMIT) {
+                itemService.updateState(ItemState.BORROWED, itemId);
+            } else {
+                itemService.updateState(ItemState.AFFORD, itemId);
+            }
         } else {
-            requestService.updateRequestState(RequestState.REJECT, requestId);
-            itemService.updateState(
-                    request.getType() == RequestType.BORROW ? ItemState.AFFORD : ItemState.REVIEWING, itemId);
-            responseRepository.update(responseId, newRejectReason);
+            // 수정하는 응답의 원래 요청이 반납요청인 경우
+            if (newRequestState == RequestState.PERMIT) {
+                itemService.updateState(ItemState.AFFORD, itemId);
+            } else {
+                itemService.updateState(ItemState.REVIEWING, itemId);
+            }
         }
+
+        // 공통 작업
+        responseRepository.update(responseId, newRejectReason);
+        requestService.updateRequestState(newRequestState, requestId);
+
     }
 }
