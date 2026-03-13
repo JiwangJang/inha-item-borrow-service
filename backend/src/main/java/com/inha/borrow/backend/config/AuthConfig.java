@@ -129,12 +129,11 @@ public class AuthConfig {
 				})
 				.authorizeHttpRequests((authorize) -> {
 					authorize
-							// 인증과 관련된 경로는 누구나 접근 가능하다.
-							.requestMatchers("/borrowers/auth/**", "/admins/login")
-							.permitAll()
-							//
 							// CORS 허용
 							.requestMatchers(HttpMethod.OPTIONS, "/**")
+							.permitAll()
+							// 인증과 관련된 경로는 누구나 접근 가능하다.
+							.requestMatchers("/borrowers/auth/**", "/admins/login")
 							.permitAll()
 							//
 							// /notice 관련 인증 설정
@@ -186,9 +185,9 @@ public class AuthConfig {
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							//
 							// /divisions 관련 인증설정
-							// 부서 목록을 가져오는 경로는 국장권한 이상만 접근가능하다
+							// 부서 목록을 가져오는 경로는 국원권한 이상만 접근가능하다
 							.requestMatchers(HttpMethod.GET, "/divisions")
-							.hasAuthority(Role.DIVISION_HEAD.name())
+							.hasAuthority(Role.DIVISION_MEMBER.name())
 							// 부서 정보와 관련된 등로그 수정, 삭제 관련 경로는 학생회장만 접근가능하다
 							.requestMatchers("/divisions")
 							.hasAuthority(Role.PRESIDENT.name())
@@ -201,9 +200,9 @@ public class AuthConfig {
 							// 보조관리자를 생성하고 삭제하는 경로는 학생회장(PRESIDENT)만 접근 가능하다
 							.requestMatchers("/admins/sub-admin", "/admins/sub-admin/*")
 							.hasAuthority(Role.PRESIDENT.name())
-							// 관리자의 부서나 직급을 수정하는건 국장권한(DIVISION_HEAD)부터 가능하다
+							// 관리자의 부서나 직급을 수정하는건 학생회장만 가능하다
 							.requestMatchers("/admins/info/*/division", "/admins/info/*/position")
-							.hasAuthority(Role.DIVISION_HEAD.name())
+							.hasAuthority(Role.PRESIDENT.name())
 							//
 							// /requests 관련 인증설정
 							// 대여요청을 조회하는 경로는 대여자나 관리자 권한이면 접근 가능하다
@@ -230,15 +229,10 @@ public class AuthConfig {
 							.requestMatchers("/responses", "/responses/*")
 							.hasAuthority(Role.DIVISION_MEMBER.name())
 							// agreement 관련 인증설정
-							.requestMatchers("/agreement/borrower/*", "/agreement/version/*")
-							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
 							.requestMatchers(HttpMethod.POST, "/agreement")
 							.hasAnyAuthority(Role.BORROWER.name(), Role.DIVISION_MEMBER.name())
-							.requestMatchers(HttpMethod.GET, "/agreement")
-							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
 							// 이외의 경로는 무조건 인증 필요함
 							.anyRequest().authenticated();
-
 				})
 				.addFilterAt(adminAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(borrowerAuthenticationFilter,
