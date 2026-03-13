@@ -1,6 +1,7 @@
 package com.inha.borrow.backend.enums;
 
 public enum ApiErrorCode {
+    ALREADY_ASSIGNED("이미 담당자가 지정된 요청입니다."),
     EXIST_ID("이미 사용중인 아이디입니다. 다른 아이디를 사용해주세요."),
     INVALID_ID("아이디 형식에 맞지 않습니다. 다른 아이디를 사용해주세요."),
     INVALID_PASSWORD("비밀번호 형식에 맞지 않습니다. 다른 비밀번호를 사용해주세요"),
