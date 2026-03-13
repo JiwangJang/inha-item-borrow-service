@@ -86,8 +86,6 @@ public class RequestService {
         }
 
         if (type == RequestType.BORROW) {
-            LocalDateTime now = LocalDateTime.now();
-
             if (recentRequestInfo != null) {
                 // 대여요청의 경우 이전 요청이 null일수도 있음(첫요청)
                 // 대여 신청은 최근 요청의 타입이 RETURN이고 상태는 PERMIT이거나 BORROW면서 REJECT여야 한다.
@@ -109,12 +107,6 @@ public class RequestService {
                 }
             }
 
-            // 1시간 이후인지
-            if (saveRequestDto.getBorrowAt().isBefore(now.plusHours(1))) {
-                ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
-                throw new InvalidValueException(apiErrorCode.name(), "대여일시는 현재 시각보다 한시간 이후여야 합니다.");
-            }
-
             // 대여신청일 경우 대여물품이 실제로 빌릴 수 있는 상태인지 확인
             ItemState itemState = itemService.findItemStateById(itemId);
             if (itemState != ItemState.AFFORD) {
@@ -128,6 +120,7 @@ public class RequestService {
             RequestType recentRequestType = (RequestType) recentRequestInfo.get("type");
             RequestState recentRequestState = (RequestState) recentRequestInfo.get("state");
             LocalDateTime recentRequestBorrowAt = (LocalDateTime) recentRequestInfo.get("borrow_at");
+            LocalDateTime recentRequestViewPasswordAt = (LocalDateTime) recentRequestInfo.get("view_password_at");
             LocalDateTime borrowAt = saveRequestDto.getBorrowAt();
 
             if (recentRequestType != RequestType.BORROW && recentRequestState != RequestState.PERMIT) {
@@ -145,6 +138,12 @@ public class RequestService {
             if (!recentRequestBorrowAt.isEqual(borrowAt)) {
                 throw new InvalidValueException(ApiErrorCode.INVALID_VALUE.name(),
                         "대여요청 시간은 이전 요청과 동일해야합니다.");
+            }
+
+            if (recentRequestViewPasswordAt == null) {
+                // 물품수령은 대여일시 이후에 가능
+                throw new InvalidValueException(ApiErrorCode.INVALID_VALUE.name(),
+                        "물품을 수령하지 않으셨습니다.");
             }
         }
         return requestRepository.saveRequest(borrower, saveRequestDto);
@@ -212,7 +211,6 @@ public class RequestService {
                 throw new InvalidValueException(apiErrorCode.name(), "대여일시는 현재 시각보다 한시간 이후여야 합니다.");
             }
             if (!updateRequestDto.getBorrowAt().isBefore(updateRequestDto.getReturnAt())) {
-                // 대여요청이든 반납요청이든 동일하게 적용
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "반납일시는 대여일시보다 이후여야 합니다.");
             }
@@ -222,7 +220,7 @@ public class RequestService {
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "보류중 또는 거부됨이 아닌 반납 요청은 수정이 불가합니다.");
             }
-            if (!LocalDateTime.now().isBefore(updateRequestDto.getReturnAt())) {
+            if (LocalDateTime.now().isBefore(updateRequestDto.getReturnAt())) {
                 // 반납요청시각이 현재보다 이전이면 거부
                 ApiErrorCode apiErrorCode = ApiErrorCode.INVALID_VALUE;
                 throw new InvalidValueException(apiErrorCode.name(), "반납일시는 현재보다 이전일 수 없습니다.");
@@ -280,5 +278,23 @@ public class RequestService {
      */
     public void updateRequestState(RequestState state, int requestId) {
         requestRepository.updateRequestState(state, requestId);
+    }
+
+    /**
+     * 대여자가 대여물품의 비밀번호와 보관장소를 확인했음을 표시하는 메서드
+     * 
+     * @param requestId
+     */
+    @Transactional
+    public Request updateViewPasswordAt(int requestId) {
+        Request request = requestRepository.findById(requestId);
+        LocalDateTime now = LocalDateTime.now();
+
+        if (now.isBefore(request.getBorrowAt())) {
+            throw new InvalidValueException(ApiErrorCode.INVALID_VALUE.name(), "대여예정시각보다 이전에 비밀번호를 확인할 수 없습니다.");
+        }
+
+        requestRepository.updateViewPasswordAt(requestId);
+        return requestRepository.findById(requestId);
     }
 }
