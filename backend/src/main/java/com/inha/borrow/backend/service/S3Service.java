@@ -1,7 +1,9 @@
 package com.inha.borrow.backend.service;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
+import java.sql.Date;
 import java.util.UUID;
 
 @Service
@@ -48,6 +52,17 @@ public class S3Service {
         }
         amazonS3.getUrl(bucket, fileName).toString();
         return fileName;
+    }
+
+    public String getPresignedUrl(String key) {
+        Date expiration = new Date(System.currentTimeMillis() + 1000 * 60); // 1분
+
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, key)
+                .withMethod(HttpMethod.GET)
+                .withExpiration(expiration);
+
+        URL url = amazonS3.generatePresignedUrl(request);
+        return url.toString();
     }
 
     /**
