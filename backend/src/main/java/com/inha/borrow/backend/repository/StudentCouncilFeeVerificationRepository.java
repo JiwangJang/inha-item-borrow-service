@@ -144,6 +144,24 @@ public class StudentCouncilFeeVerificationRepository {
         }
     }
 
+    /**
+     * 학생회비 납부 인증 사진 이미지 S3키를 가져오는 메섣
+     * 작성자 : 장지왕
+     * 
+     * @param id
+     * @return
+     */
+    public String findStudentCoucilFeeVerificationImageById(int id) {
+        String query = "SELECT s3_link From student_council_fee WHERE id = ?;";
+        try {
+            String s3Key = jdbcTemplate.queryForObject(query, String.class, id);
+            return s3Key;
+        } catch (EmptyResultDataAccessException e) {
+            ApiErrorCode apiErrorCode = ApiErrorCode.NOT_FOUND_COUNCIL;
+            throw new ResourceNotFoundException(apiErrorCode.name(), apiErrorCode.getMessage());
+        }
+    }
+
     // --------- 수정 메서드 ---------
     /**
      * 관리자가 요청을 수정할때 사용하는 메서드

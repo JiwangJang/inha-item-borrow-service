@@ -4,7 +4,6 @@ import { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import API_SERVER from "@/apiServer";
 import StudentCouncilFeeVerificationInterface from "@/types/StudentCouncilFeeVerificationInterface";
-import S3_URL from "@/utilities/s3URL";
 
 export default function FeeVerificationStatus({
     verification,
@@ -14,7 +13,7 @@ export default function FeeVerificationStatus({
     name: string | undefined;
 }) {
     const router = useRouter();
-    const [preview, setPreview] = useState<string>(S3_URL + verification.s3Link);
+    const [preview, setPreview] = useState<string>(verification.s3Link!);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const imageInputRef = useRef<HTMLInputElement | null>(null);
     const prevObjectUrlRef = useRef<string | null>(null);
@@ -87,7 +86,7 @@ export default function FeeVerificationStatus({
                     if (isReject) {
                         imageInputRef.current?.click();
                     } else if (verification.s3Link) {
-                        window.open(S3_URL + verification.s3Link);
+                        window.open(verification.s3Link);
                     }
                 }}
             />

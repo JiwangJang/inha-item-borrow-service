@@ -87,7 +87,28 @@ public class StudentCouncilFeeVerificationService {
      * @author 장지왕
      */
     public StudentCouncilFeeVerification findByBorrowerId(Borrower borrower) {
-        return repository.findByBorrowerId(borrower);
+        StudentCouncilFeeVerification verification = repository.findByBorrowerId(borrower);
+        if (!borrower.getId().equals(verification.getBorrowerId())) {
+            throw new AccessDeniedException("자신의 학생회비 납부인증 내역만 볼 수 있습니다.");
+        }
+
+        String presignedURL = null;
+        if (verification.getS3Link() != null) {
+            // 일정시간동안만 유효한 presignedURL 생성
+            presignedURL = s3Service.getPresignedUrl(verification.getS3Link());
+        }
+
+        return StudentCouncilFeeVerification
+                .builder()
+                .id(verification.getId())
+                .borrowerId(verification.getBorrowerId())
+                .borrowerName(verification.getBorrowerName())
+                .denyReason(verification.getDenyReason())
+                .verify(verification.isVerify())
+                .requestAt(verification.getRequestAt())
+                .responseAt(verification.getResponseAt())
+                .s3Link(presignedURL)
+                .build();
     }
 
     /**
@@ -105,6 +126,18 @@ public class StudentCouncilFeeVerificationService {
                 .build();
         repository.updateForAdmin(verification, true, null);
         borrowerService.refreshBorrowerCacheData(dto.getBorrowerId());
+    }
+
+    /**
+     * 학생회비 납부 인증 사진 이미지 S3키를 presignedURL로 바꿔서 반환하는 메서드
+     * 작성자 : 장지왕
+     * 
+     * @param id
+     * @return
+     */
+    public String findStudentCoucilFeeVerificationImageById(int id) {
+        String s3Key = repository.findStudentCoucilFeeVerificationImageById(id);
+        return s3Service.getPresignedUrl(s3Key);
     }
 
     // --------- 수정 메서드 ---------

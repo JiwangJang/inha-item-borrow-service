@@ -65,6 +65,19 @@ public class StuentCouncilFeeVerificationController {
     }
 
     /**
+     * 학생회비 납부 인증 사진 이미지 S3키를 presignedURL로 바꿔서 반환하는 메서드(관리자 조회 전용)
+     * 
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}/image")
+    public ResponseEntity<ApiResponse<String>> findStudentCoucilFeeVerificationImageById(
+            @PathVariable("id") String id) {
+        String presignedURL = service.findStudentCoucilFeeVerificationImageById(Integer.parseInt(id));
+        return ResponseEntity.ok(new ApiResponse<String>(true, presignedURL));
+    }
+
+    /**
      * 인증 요청 목록 단건조회
      * 
      * @return 학생회비 납부 인증 요청 목록 / 200

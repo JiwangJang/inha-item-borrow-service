@@ -7,12 +7,11 @@ import PromptModal from "@/components/utilities/modal/PromptModal";
 import AdminStudentCouncilFeeContext from "@/context/AdminStudentCouncilFeeContext";
 import { dateFormatter } from "@/utilities/dateFormatter";
 import errorHandler from "@/utilities/errorHandler";
-import S3_URL from "@/utilities/s3URL";
 import axios, { AxiosError } from "axios";
 import { notFound, useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 
-export default function StudentCouncilFeeSinglePage({ id }: { id: number }) {
+export default function StudentCouncilFeeSinglePage({ id, presignedURL }: { id: number; presignedURL: string }) {
     const router = useRouter();
 
     const [confirmModal, setConfirmModal] = useState(false);
@@ -23,8 +22,7 @@ export default function StudentCouncilFeeSinglePage({ id }: { id: number }) {
     const [promptModalMsg, setPromptModalMsg] = useState("");
     const [promptModalFunc, setPromptModalFunc] = useState<(v: string) => void>(() => {});
 
-    const studentCouncilFeeList = useContext(AdminStudentCouncilFeeContext).studentCouncilFeeList;
-    const setStudentCouncilFeeList = useContext(AdminStudentCouncilFeeContext).setStudentCouncilFeeList;
+    const { studentCouncilFeeList, setStudentCouncilFeeList } = useContext(AdminStudentCouncilFeeContext);
     const selected = studentCouncilFeeList.find((fee) => fee.id == id);
 
     if (!selected) {
@@ -107,9 +105,9 @@ export default function StudentCouncilFeeSinglePage({ id }: { id: number }) {
             <div
                 className="w-full h-60 bg-no-repeat bg-center bg-contain rounded-xl border border-boxBorder bg-white cursor-pointer"
                 style={{
-                    backgroundImage: `url(${S3_URL + selected.s3Link})`,
+                    backgroundImage: `url(${presignedURL})`,
                 }}
-                onClick={() => window.open(S3_URL + selected.s3Link!)}
+                onClick={() => window.open(presignedURL!)}
             />
             <div className="mt-3 flex flex-col">
                 <InfoRow label="제출자" value={`${selected.borrowerName} (${selected.borrowerId})}`} />

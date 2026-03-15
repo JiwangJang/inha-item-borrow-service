@@ -152,7 +152,8 @@ public class AuthConfig {
 							//
 							// /student-council-fee-verification 관련 인증 설정
 							// /student-council-fee-verification GET 요청은 학생회 임원만 가능
-							.requestMatchers(HttpMethod.GET, "/student-council-fee-verification")
+							.requestMatchers(HttpMethod.GET, "/student-council-fee-verification",
+									"/student-council-fee-verification/*/image")
 							.hasAnyAuthority(Role.DIVISION_MEMBER.name())
 							// /student-council-fee-verification/permit,dney,modify는 관리자만 접근가능
 							.requestMatchers(HttpMethod.PATCH, "/student-council-fee-verification/*/**")
